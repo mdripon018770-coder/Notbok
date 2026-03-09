@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Account</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#f4f5f8;
+}
+
+/* HEADER */
+
+.header{
+background:linear-gradient(90deg,#5b57ea,#6f63ff);
+color:white;
+padding:18px;
+display:flex;
+align-items:center;
+justify-content:center;
+position:relative;
+font-size:20px;
+font-weight:bold;
+}
+
+.back{
+position:absolute;
+left:15px;
+background:#ffffff30;
+width:40px;
+height:40px;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:18px;
+cursor:pointer;
+}
+
+/* CONTAINER */
+
+.container{
+padding:20px;
+}
+
+/* PROFILE CARD */
+
+.profile-card{
+background:#0f4c4c;
+color:white;
+border-radius:25px;
+padding:20px;
+}
+
+.profile-top{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.avatar{
+width:60px;
+height:60px;
+border-radius:15px;
+background:#ffffff30;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:28px;
+}
+
+.profile-name{
+font-size:18px;
+font-weight:bold;
+}
+
+.profile-sub{
+font-size:13px;
+opacity:0.8;
+}
+
+/* BALANCE BOX */
+
+.balance-box{
+margin-top:15px;
+background:#ffffff20;
+padding:15px;
+border-radius:20px;
+}
+
+.balance-title{
+display:flex;
+justify-content:space-between;
+font-weight:bold;
+margin-bottom:10px;
+}
+
+.actions{
+display:flex;
+justify-content:space-between;
+text-align:center;
+}
+
+.action{
+flex:1;
+}
+
+.action i{
+display:block;
+margin:auto;
+background:#ffffff30;
+width:45px;
+height:45px;
+border-radius:12px;
+line-height:45px;
+margin-bottom:5px;
+}
+
+/* SETTINGS BOX */
+
+.box{
+background:white;
+border-radius:20px;
+margin-top:20px;
+padding:10px;
+}
+
+.item{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:15px;
+border-bottom:1px solid #eee;
+}
+
+.item:last-child{
+border-bottom:none;
+}
+
+.item-left{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.icon{
+width:40px;
+height:40px;
+border-radius:12px;
+background:#f2f2ff;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#6f63ff;
+}
+
+.title{
+font-weight:bold;
+}
+
+.sub{
+font-size:13px;
+color:#777;
+}
+
+/* SWITCH */
+
+.switch{
+width:45px;
+height:24px;
+background:#ccc;
+border-radius:20px;
+position:relative;
+cursor:pointer;
+}
+
+.switch::after{
+content:"";
+width:20px;
+height:20px;
+background:white;
+border-radius:50%;
+position:absolute;
+top:2px;
+left:2px;
+transition:0.3s;
+}
+
+.switch.active{
+background:#6f63ff;
+}
+
+.switch.active::after{
+left:23px;
+}
+
+/* LOGOUT */
+
+.logout{
+margin-top:25px;
+background:#ef4444;
+color:white;
+padding:16px;
+text-align:center;
+border-radius:30px;
+font-size:18px;
+font-weight:bold;
+}
+
+.dark{
+background:#111;
+color:white;
+}
+
+.dark .box{
+background:#1e1e1e;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<div class="back" onclick="history.back()">
+<i class="fa fa-arrow-left"></i>
+</div>
+Account
+</div>
+
+<div class="container">
+
+<!-- PROFILE -->
+
+<div class="profile-card">
+
+<div class="profile-top">
+
+<div class="avatar">
+<i class="fa fa-user"></i>
+</div>
+
+<div>
+<div class="profile-name">
+Robin Khan (@Robin123)
+</div>
+<div class="profile-sub">
+UID : 1715
+</div>
+<div class="profile-sub">
+KYC : Not verified
+</div>
+</div>
+
+</div>
+
+<div class="balance-box">
+
+<div class="balance-title">
+<div>Total balance</div>
+<div>৳0.00</div>
+</div>
+
+<div class="actions">
+
+<div class="action">
+<i class="fa fa-plus"></i>
+Deposit
+</div>
+
+<div class="action">
+<i class="fa fa-arrow-down"></i>
+Withdraw
+</div>
+
+<div class="action">
+<i class="fa fa-crown"></i>
+VIP
+</div>
+
+<div class="action">
+<i class="fa fa-id-card"></i>
+KYC
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- SETTINGS -->
+
+<div class="box">
+
+<div class="item">
+
+<div class="item-left">
+<div class="icon"><i class="fa fa-moon"></i></div>
+
+<div>
+<div class="title">Darkmode</div>
+<div class="sub">On / Off</div>
+</div>
+
+</div>
+
+<div class="switch" onclick="toggleDark(this)"></div>
+
+</div>
+
+<div class="item">
+
+<div class="item-left">
+<div class="icon"><i class="fa fa-bell"></i></div>
+
+<div>
+<div class="title">Notification</div>
+<div class="sub">All notifications</div>
+</div>
+
+</div>
+
+<i class="fa fa-angle-right"></i>
+
+</div>
+
+<div class="item">
+
+<div class="item-left">
+<div class="icon"><i class="fa fa-language"></i></div>
+
+<div>
+<div class="title">Language</div>
+<div class="sub">English</div>
+</div>
+
+</div>
+
+<i class="fa fa-angle-right"></i>
+
+</div>
+
+<div class="item">
+
+<div class="item-left">
+<div class="icon"><i class="fa fa-gear"></i></div>
+
+<div>
+<div class="title">Setting</div>
+<div class="sub">Profile & Security</div>
+</div>
+
+</div>
+
+<i class="fa fa-angle-right"></i>
+
+</div>
+
+</div>
+
+<!-- SERVICE -->
+
+<div class="box">
+
+<div style="padding:15px;font-weight:bold">
+Service center
+</div>
+
+<div class="item">
+
+<div class="item-left">
+<div class="icon"><i class="fa fa-paper-plane"></i></div>
+
+<div>
+<div class="title">Support</div>
+<div class="sub">Telegram</div>
+</div>
+
+</div>
+
+<i class="fa fa-angle-right"></i>
+
+</div>
+
+<div class="item">
+
+<div class="item-left">
+<div class="icon"><i class="fa fa-comment"></i></div>
+
+<div>
+<div class="title">Feedback</div>
+<div class="sub">Send message</div>
+</div>
+
+</div>
+
+<i class="fa fa-angle-right"></i>
+
+</div>
+
+<div class="item">
+
+<div class="item-left">
+<div class="icon"><i class="fa fa-info-circle"></i></div>
+
+<div>
+<div class="title">About us</div>
+<div class="sub">Company info</div>
+</div>
+
+</div>
+
+<i class="fa fa-angle-right"></i>
+
+</div>
+
+</div>
+
+<div class="logout">
+Log out
+</div>
+
+</div>
+
+<script>
+
+function toggleDark(el){
+
+el.classList.toggle("active");
+
+document.body.classList.toggle("dark");
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#f2f2f2;
+}
+
+/* MENU BUTTON */
+
+.menu-btn{
+position:fixed;
+top:20px;
+left:20px;
+background:#6f63ff;
+width:45px;
+height:45px;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+font-size:20px;
+cursor:pointer;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+position:fixed;
+top:0;
+left:-300px;
+width:300px;
+height:100%;
+background:white;
+transition:0.3s;
+z-index:9999;
+overflow:auto;
+}
+
+/* TOP BALANCE BOX */
+
+.balance-box{
+background:linear-gradient(135deg,#5b57ea,#6f63ff);
+color:white;
+padding:20px;
+border-radius:0 0 25px 25px;
+position:relative;
+}
+
+.balance-box h1{
+margin:5px 0 15px;
+}
+
+.close-btn{
+position:absolute;
+right:15px;
+top:15px;
+background:#ffffff33;
+width:40px;
+height:40px;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+}
+
+/* ACTION ICON */
+
+.side-actions{
+display:flex;
+justify-content:space-between;
+text-align:center;
+}
+
+.side-actions div{
+font-size:12px;
+}
+
+.side-actions i{
+display:block;
+background:#ffffff33;
+width:45px;
+height:45px;
+border-radius:12px;
+line-height:45px;
+margin:auto;
+margin-bottom:5px;
+}
+
+/* MENU */
+
+.menu-title{
+padding:15px;
+color:#999;
+font-size:14px;
+}
+
+.menu-item{
+display:flex;
+align-items:center;
+padding:15px;
+border-bottom:1px solid #eee;
+}
+
+.menu-icon{
+background:#f3f3ff;
+width:40px;
+height:40px;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+margin-right:10px;
+color:#6f63ff;
+}
+
+.menu-text{
+flex:1;
+font-size:16px;
+}
+
+.menu-arrow{
+color:#aaa;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- MENU BUTTON -->
+
+<div class="menu-btn" onclick="openMenu()">
+<i class="fa fa-bars"></i>
+</div>
+
+<!-- SIDEBAR -->
+
+<div id="sidebar" class="sidebar">
+
+<div class="balance-box">
+
+<div class="close-btn" onclick="closeMenu()">✕</div>
+
+<p>Balance</p>
+<h1>৳0.00</h1>
+
+<div class="side-actions">
+
+<div>
+<i class="fa fa-plus"></i>
+Deposit
+</div>
+
+<div>
+<i class="fa fa-arrow-down"></i>
+Withdraw
+</div>
+
+<div>
+<i class="fa fa-credit-card"></i>
+Gateway
+</div>
+
+<div>
+<i class="fa fa-wallet"></i>
+Wallet
+</div>
+
+</div>
+
+</div>
+
+<div class="menu-title">MENU</div>
+
+<div class="menu-item">
+<div class="menu-icon"><i class="fa fa-chart-pie"></i></div>
+<div class="menu-text">Overview</div>
+<div class="menu-arrow"><i class="fa fa-angle-right"></i></div>
+</div>
+
+<div class="menu-item">
+<div class="menu-icon"><i class="fa fa-wallet"></i></div>
+<div class="menu-text">Wallet</div>
+<div class="menu-arrow"><i class="fa fa-angle-right"></i></div>
+</div>
+
+<div class="menu-item">
+<div class="menu-icon"><i class="fa fa-crown"></i></div>
+<div class="menu-text">VIP</div>
+<div class="menu-arrow"><i class="fa fa-angle-right"></i></div>
+</div>
+
+<div class="menu-item">
+<div class="menu-icon"><i class="fa fa-gear"></i></div>
+<div class="menu-text">Settings</div>
+<div class="menu-arrow"><i class="fa fa-angle-right"></i></div>
+</div>
+
+<div class="menu-item">
+<div class="menu-icon"><i class="fa fa-paper-plane"></i></div>
+<div class="menu-text">Support</div>
+<div class="menu-arrow"><i class="fa fa-angle-right"></i></div>
+</div>
+
+<div class="menu-title">OTHERS</div>
+
+<div class="menu-item">
+<div class="menu-icon"><i class="fa fa-right-from-bracket"></i></div>
+<div class="menu-text">Log out</div>
+<div class="menu-arrow"><i class="fa fa-angle-right"></i></div>
+</div>
+
+</div>
+
+<script>
+
+function openMenu(){
+document.getElementById("sidebar").style.left="0";
+}
+
+function closeMenu(){
+document.getElementById("sidebar").style.left="-300px";
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deposit</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f3f4f6;
+margin:0;
+}
+
+.header{
+background:linear-gradient(90deg,#6a5cff,#4f46e5);
+color:white;
+padding:16px;
+text-align:center;
+font-size:20px;
+}
+
+.card{
+background:white;
+margin:15px;
+padding:15px;
+border-radius:12px;
+}
+
+input{
+width:100%;
+padding:14px;
+margin-top:10px;
+border:none;
+background:#f3f4f6;
+border-radius:8px;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+background:#6a5cff;
+color:white;
+font-size:16px;
+}
+
+#status{
+margin-top:10px;
+color:#444;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+Deposit
+</div>
+
+<div class="card">
+
+<b>Send Money To</b><br><br>
+
+📱 bKash Personal: <b>01877059049</b><br>
+📱 Nagad Personal: <b>01877059049</b>
+
+</div>
+
+<div class="card">
+
+<input id="amount" placeholder="Enter amount">
+
+<input id="number" placeholder="Sender number">
+
+<input id="trx" placeholder="Transaction ID">
+
+<button id="submitBtn">Submit Deposit</button>
+
+<p id="status"></p>
+
+</div>
+
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyCpwfTWOsU6Gb3rLvMjcKnewLMnlkq5plg",
+authDomain: "amar-bazar-d99b4.firebaseapp.com",
+databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com",
+projectId: "amar-bazar-d99b4",
+storageBucket: "amar-bazar-d99b4.appspot.com",
+messagingSenderId: "1000008221916",
+appId: "1:1000008221916:web:6bd19561f4b64e2002e019"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+
+document.getElementById("submitBtn").addEventListener("click", function(){
+
+let amount=document.getElementById("amount").value
+let number=document.getElementById("number").value
+let trx=document.getElementById("trx").value
+
+let status=document.getElementById("status")
+
+let time=10
+
+status.innerHTML="Processing "+time+"s"
+
+let timer=setInterval(()=>{
+
+time--
+
+status.innerHTML="Processing "+time+"s"
+
+if(time<=0){
+
+clearInterval(timer)
+
+push(ref(db,"deposits"),{
+
+amount:amount,
+number:number,
+trx:trx,
+status:"pending",
+time:new Date().toLocaleString()
+
+})
+
+status.innerHTML="Deposit Submitted ✅"
+
+}
+
+},1000)
+
+})
+
+</script>
+
+</body>
+</html>

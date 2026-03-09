@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Settings Center</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f2f2f2;
+margin:0;
+}
+
+.header{
+background:linear-gradient(90deg,#6a5cff,#4b3df0);
+color:white;
+text-align:center;
+padding:15px;
+font-size:20px;
+}
+
+.card{
+background:white;
+margin:15px;
+padding:15px;
+border-radius:10px;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+.avatar{
+width:65px;
+height:65px;
+border-radius:50%;
+}
+
+.avatar-box{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.camera{
+background:#6a5cff;
+color:white;
+padding:10px;
+border-radius:10px;
+cursor:pointer;
+}
+
+.input{
+width:100%;
+padding:10px;
+margin-top:10px;
+border:1px solid #ccc;
+border-radius:6px;
+}
+
+.pass-box{
+position:relative;
+}
+
+.eye{
+position:absolute;
+right:10px;
+top:15px;
+cursor:pointer;
+}
+
+.btn{
+background:#6a5cff;
+color:white;
+padding:12px;
+border:none;
+border-radius:8px;
+width:100%;
+margin-top:10px;
+font-size:16px;
+}
+
+.small{
+font-size:12px;
+color:gray;
+}
+
+textarea{
+width:100%;
+height:80px;
+margin-top:10px;
+padding:10px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">Settings Center</div>
+
+<!-- Avatar -->
+<div class="card avatar-box">
+
+<div>
+<img id="avatar" class="avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+<br><b>Robin Khan</b>
+</div>
+
+<label class="camera">
+📷
+<input type="file" id="upload" hidden>
+</label>
+
+</div>
+
+
+<!-- Password -->
+
+<div class="card">
+
+<h3>Change Password</h3>
+
+<input class="input" type="password" id="oldpass" placeholder="Old Password">
+
+<div class="pass-box">
+<input class="input" type="password" id="newpass" placeholder="New Password">
+<span class="eye" onclick="toggle('newpass')">👁</span>
+</div>
+
+<div class="pass-box">
+<input class="input" type="password" id="confirmpass" placeholder="Confirm Password">
+<span class="eye" onclick="toggle('confirmpass')">👁</span>
+</div>
+
+<p class="small">Password must be 6-15 characters</p>
+
+<button class="btn" onclick="changePassword()">Save Password</button>
+
+</div>
+
+
+<!-- Profile Info -->
+
+<div class="card">
+
+<h3>Profile Information</h3>
+
+<label>Date Of Birth</label>
+<input type="date" class="input" id="dob">
+
+<label>About</label>
+<textarea id="about" placeholder="Write about yourself"></textarea>
+
+<button class="btn" onclick="saveProfile()">Save Profile</button>
+
+</div>
+
+
+<!-- KYC -->
+
+<div class="card">
+
+<h3>KYC Verify</h3>
+
+<label>NID Front</label>
+<input type="file" class="input" id="nidfront">
+
+<label>NID Back</label>
+<input type="file" class="input" id="nidback">
+
+<button class="btn" onclick="verify()">Verify Identity</button>
+
+<p id="kycstatus"></p>
+
+</div>
+
+
+<script>
+
+// Avatar
+if(localStorage.getItem("avatar")){
+avatar.src=localStorage.getItem("avatar")
+}
+
+upload.onchange=function(){
+
+let reader=new FileReader()
+
+reader.onload=function(){
+localStorage.setItem("avatar",reader.result)
+avatar.src=reader.result
+}
+
+reader.readAsDataURL(this.files[0])
+
+}
+
+
+// Password
+if(!localStorage.getItem("password")){
+localStorage.setItem("password","123456")
+}
+
+function toggle(id){
+
+let input=document.getElementById(id)
+
+if(input.type=="password"){
+input.type="text"
+}else{
+input.type="password"
+}
+
+}
+
+function changePassword(){
+
+let old=oldpass.value
+let newp=newpass.value
+let conf=confirmpass.value
+let saved=localStorage.getItem("password")
+
+if(old!=saved){
+alert("Old Password Wrong")
+return
+}
+
+if(newp.length<6 || newp.length>15){
+alert("Password must be 6-15 characters")
+return
+}
+
+if(newp!=conf){
+alert("Password not match")
+return
+}
+
+localStorage.setItem("password",newp)
+
+alert("Password Changed Successfully")
+
+}
+
+
+// Profile Save
+
+if(localStorage.getItem("dob")){
+dob.value=localStorage.getItem("dob")
+}
+
+if(localStorage.getItem("about")){
+about.value=localStorage.getItem("about")
+}
+
+function saveProfile(){
+
+localStorage.setItem("dob",dob.value)
+localStorage.setItem("about",about.value)
+
+alert("Profile Saved")
+
+}
+
+
+// KYC
+
+function verify(){
+
+if(localStorage.getItem("kyc")=="done"){
+alert("Already Verified")
+return
+}
+
+if(!nidfront.files[0] || !nidback.files[0]){
+alert("Upload both NID images")
+return
+}
+
+localStorage.setItem("kyc","done")
+
+document.getElementById("kycstatus").innerHTML="✅ Verified"
+
+}
+
+if(localStorage.getItem("kyc")=="done"){
+document.getElementById("kycstatus").innerHTML="✅ Verified"
+}
+
+</script>
+
+</body>
+</html>
