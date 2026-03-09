@@ -1,213 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ledger Pro Smart</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { 
-            --bg: #0f172a; 
-            --card: #1e293b;
-            --primary: #818cf8;
-            --neon-green: #2dd4bf;
-            --neon-pink: #f472b6;
-            --text-main: #f1f5f9;
-            --text-dim: #94a3b8;
-        }
-        
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text-main); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wallet</title>
 
-        /* Header */
-        .app-nav {
-            padding: 15px; background: rgba(30, 41, 59, 0.9);
-            backdrop-filter: blur(10px); text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            position: sticky; top: 0; z-index: 100;
-        }
-        .app-nav h1 { 
-            font-size: 18px; margin: 0; letter-spacing: 1px;
-            background: linear-gradient(to right, var(--primary), var(--neon-pink));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        /* Search Area */
-        .search-area { padding: 15px; }
-        .search-box {
-            width: 100%; background: var(--card); border: 1px solid rgba(255,255,255,0.1);
-            padding: 10px 15px 10px 40px; border-radius: 12px; color: white; font-size: 14px; outline: none; box-sizing: border-box;
-        }
-        .search-wrap { position: relative; }
-        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-dim); }
+<style>
 
-        /* Ledger Grid */
-        .ledger-container { padding: 0 15px 100px 15px; display: grid; gap: 10px; }
-        
-        .smart-card {
-            background: var(--card); padding: 15px; border-radius: 15px;
-            border-left: 4px solid var(--primary); display: flex;
-            justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
+body{
+margin:0;
+font-family:Arial;
+background:#f2f3f7;
+}
 
-        .cust-details b { font-size: 15px; color: var(--text-main); display: block; }
-        .cust-details small { color: var(--text-dim); font-size: 11px; display: block; margin-top: 2px; }
-        .time-tag { font-size: 10px; color: var(--primary); font-weight: bold; margin-top: 4px; display: block; }
-        
-        .balance-box { text-align: right; }
-        .balance-box label { font-size: 9px; color: var(--neon-pink); font-weight: bold; text-transform: uppercase; }
-        .balance-box div { font-size: 18px; font-weight: 800; color: var(--neon-green); }
+.header{
+background:linear-gradient(90deg,#6a5af9,#5b4de0);
+color:white;
+padding:18px;
+text-align:center;
+font-size:20px;
+font-weight:bold;
+position:relative;
+}
 
-        /* Floating Button */
-        .fab-add {
-            position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
-            background: linear-gradient(135deg, var(--primary), var(--neon-pink));
-            border-radius: 50%; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 0 15px rgba(129, 140, 248, 0.4); cursor: pointer; font-size: 20px; color: white;
-        }
+.back{
+position:absolute;
+left:15px;
+top:15px;
+background:white;
+color:#6a5af9;
+width:40px;
+height:40px;
+border-radius:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:18px;
+}
 
-        /* Editor Modal */
-        .smart-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg); z-index: 1000; flex-direction: column;
-        }
-        .modal-head { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
-        .modal-body { flex: 1; padding: 20px; display: flex; flex-direction: column; }
-        
-        .entry-input {
-            background: #1e293b; border: 1px solid rgba(255,255,255,0.1);
-            padding: 10px; border-radius: 10px; color: white; margin-bottom: 12px; font-size: 14px; outline: none;
-        }
-        .entry-textarea {
-            flex: 1; background: transparent; border: none; color: #cbd5e1;
-            font-size: 16px; line-height: 1.6; resize: none; outline: none; margin-top: 5px;
-        }
-        
-        .save-btn {
-            background: var(--primary); color: white; border: none;
-            padding: 14px; border-radius: 12px; font-weight: bold; font-size: 14px;
-        }
-    </style>
+.balance-box{
+margin:20px;
+padding:25px;
+border-radius:18px;
+background:linear-gradient(90deg,#6a5af9,#5b4de0);
+color:white;
+}
+
+.balance-box h3{
+margin:0;
+font-size:18px;
+}
+
+.balance{
+font-size:34px;
+margin-top:10px;
+font-weight:bold;
+}
+
+.row{
+display:flex;
+gap:15px;
+margin:20px;
+}
+
+.small-box{
+flex:1;
+background:#eaeaea;
+padding:18px;
+border-radius:12px;
+}
+
+.small-box h4{
+margin:0;
+font-size:15px;
+color:#555;
+}
+
+.small-box p{
+margin-top:8px;
+font-size:22px;
+font-weight:bold;
+}
+
+.actions{
+display:flex;
+justify-content:space-around;
+background:#eaeaea;
+margin:20px;
+padding:20px;
+border-radius:15px;
+}
+
+.action{
+text-align:center;
+}
+
+.icon{
+width:55px;
+height:55px;
+border-radius:15px;
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+font-size:22px;
+margin:auto;
+}
+
+.deposit{
+background:#ffa500;
+}
+
+.withdraw{
+background:#ff4f6d;
+}
+
+.dephistory{
+background:#6a5af9;
+}
+
+.withhistory{
+background:#28c76f;
+}
+
+.action p{
+margin-top:8px;
+font-size:14px;
+font-weight:600;
+}
+
+</style>
 </head>
+
 <body>
 
-<div class="app-nav">
-    <h1>LEDGER PRO SMART</h1>
+<div class="header">
+
+<div class="back">
+<i class="fa fa-arrow-left"></i>
 </div>
 
-<div class="search-area">
-    <div class="search-wrap">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" id="searchInput" class="search-box" placeholder="Find customer..." onkeyup="loadData()">
-    </div>
+Wallet
+
 </div>
 
-<div class="ledger-container" id="ledgerList"></div>
 
-<div class="fab-add" onclick="openEditor()">
-    <i class="fas fa-plus"></i>
+<div class="balance-box">
+
+<h3>Total balance</h3>
+
+<div class="balance">৳0.00</div>
+
 </div>
 
-<div class="smart-modal" id="modal">
-    <div class="modal-head">
-        <i class="fas fa-arrow-left" onclick="closeEditor()" style="cursor:pointer; color: var(--text-dim);"></i>
-        <span style="font-weight: bold; font-size: 14px;">MANAGE ENTRY</span>
-        <i class="fas fa-trash" id="delIcon" onclick="deleteItem()" style="color: var(--neon-pink); display: none; cursor:pointer;"></i>
-    </div>
-    <div class="modal-body">
-        <input type="text" id="name" class="entry-input" placeholder="Customer Name">
-        <input type="number" id="phone" class="entry-input" placeholder="Phone (Optional)">
-        <textarea id="text" class="entry-textarea" placeholder="Example:&#10;Sugar 50&#10;Salt 20"></textarea>
-        <button class="save-btn" onclick="saveData()">SAVE CHANGES</button>
-    </div>
+
+<div class="row">
+
+<div class="small-box">
+<h4>Total deposit amount</h4>
+<p>৳0.00</p>
 </div>
 
-<script>
-    let records = JSON.parse(localStorage.getItem('smart_ledger_time_db')) || [];
-    let currentEditId = null;
+<div class="small-box">
+<h4>Total withdraw amount</h4>
+<p>৳0.00</p>
+</div>
 
-    function openEditor(id = null) {
-        if (id) {
-            currentEditId = id;
-            let item = records.find(r => r.id === id);
-            document.getElementById('name').value = item.name;
-            document.getElementById('phone').value = item.phone || '';
-            document.getElementById('text').value = item.text;
-            document.getElementById('delIcon').style.display = 'block';
-        } else {
-            currentEditId = null;
-            document.getElementById('name').value = '';
-            document.getElementById('phone').value = '';
-            document.getElementById('text').value = '';
-            document.getElementById('delIcon').style.display = 'none';
-        }
-        document.getElementById('modal').style.display = 'flex';
-    }
+</div>
 
-    function closeEditor() { document.getElementById('modal').style.display = 'none'; }
 
-    function saveData() {
-        let name = document.getElementById('name').value.trim();
-        let phone = document.getElementById('phone').value.trim();
-        let text = document.getElementById('text').value;
+<div class="actions">
 
-        if (!name) return alert("Enter Name");
+<div class="action">
+<div class="icon deposit">
+<i class="fa fa-plus"></i>
+</div>
+<p>Deposit</p>
+</div>
 
-        // Time and Date Calculation
-        let now = new Date();
-        let dateStr = now.toLocaleDateString('en-GB'); // DD/MM/YYYY
-        let timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        let fullStamp = dateStr + " | " + timeStr;
+<div class="action">
+<div class="icon withdraw">
+<i class="fa fa-arrow-down"></i>
+</div>
+<p>Withdraw</p>
+</div>
 
-        let total = 0;
-        let nums = text.match(/\d+/g);
-        if (nums) nums.forEach(n => total += parseInt(n));
+<div class="action">
+<div class="icon dephistory">
+<i class="fa fa-clock-rotate-left"></i>
+</div>
+<p>Deposit history</p>
+</div>
 
-        if (currentEditId) {
-            let idx = records.findIndex(r => r.id === currentEditId);
-            // Keeping old time or updating it? Usually, we update the timestamp on edit.
-            records[idx] = { id: currentEditId, name, phone, text, total, time: fullStamp };
-        } else {
-            records.push({ id: Date.now(), name, phone, text, total, time: fullStamp });
-        }
+<div class="action">
+<div class="icon withhistory">
+<i class="fa fa-rotate-left"></i>
+</div>
+<p>Withdraw history</p>
+</div>
 
-        localStorage.setItem('smart_ledger_time_db', JSON.stringify(records));
-        closeEditor();
-        loadData();
-    }
-
-    function deleteItem() {
-        if (confirm("Delete this record?")) {
-            records = records.filter(r => r.id !== currentEditId);
-            localStorage.setItem('smart_ledger_time_db', JSON.stringify(records));
-            closeEditor();
-            loadData();
-        }
-    }
-
-    function loadData() {
-        let list = document.getElementById('ledgerList');
-        let search = document.getElementById('searchInput').value.toLowerCase();
-        list.innerHTML = '';
-
-        records.filter(r => r.name.toLowerCase().includes(search)).forEach(r => {
-            list.innerHTML += `
-                <div class="smart-card" onclick="openEditor(${r.id})">
-                    <div class="cust-details">
-                        <b>${r.name}</b>
-                        <small>${r.phone ? '📞 ' + r.phone : 'No Number'}</small>
-                        <span class="time-tag"><i class="far fa-clock"></i> ${r.time}</span>
-                    </div>
-                    <div class="balance-box">
-                        <label>Total Due</label>
-                        <div>৳ ${r.total}</div>
-                    </div>
-                </div>
-            `;
-        });
-    }
-    loadData();
-</script>
+</div>
 
 </body>
 </html>
