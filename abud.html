@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#f4f5f8;
+}
+
+/* Header */
+.header{
+    background:linear-gradient(90deg,#5b57ea,#6f63ff);
+    color:white;
+    padding:18px;
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+    position:relative;
+}
+.back{
+    position:absolute;
+    left:15px;
+    top:50%;
+    transform:translateY(-50%);
+    background:#ffffff30;
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+}
+
+/* Container */
+.container{
+    padding:20px;
+}
+
+/* Card */
+.card{
+    background:white;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:15px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* Title */
+.title{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+/* Text */
+.text{
+    font-size:14px;
+    color:#555;
+    line-height:1.6;
+}
+
+/* Contact */
+.contact{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:10px;
+}
+.contact i{
+    width:35px;
+    height:35px;
+    background:#6f63ff20;
+    color:#6f63ff;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* Version */
+.version{
+    text-align:center;
+    margin-top:20px;
+    color:#888;
+    font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="back" onclick="history.back()"><i class="fa fa-arrow-left"></i></div>
+    About Us
+</div>
+
+<div class="container">
+
+    <div class="card">
+        <div class="title">About Our App</div>
+        <div class="text">
+            This platform is designed to provide users with a smooth and enjoyable experience. 
+            Users can explore features, play games, and interact easily in a simple interface.
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="title">Our Mission</div>
+        <div class="text">
+            Our goal is to create a fast, secure, and user-friendly platform where everyone can enjoy without any hassle.
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="title">Security & Fair Play</div>
+        <div class="text">
+            We ensure that user data is protected and all activities are handled transparently for a fair experience.
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="title">Contact Us</div>
+
+        <div class="contact">
+            <i class="fa fa-paper-plane"></i>
+            <div>Telegram Support</div>
+        </div>
+
+        <div class="contact">
+            <i class="fa fa-envelope"></i>
+            <div>Email: support@example.com</div>
+        </div>
+    </div>
+
+    <div class="version">
+        Version 1.0.1
+    </div>
+
+</div>
+
+</body>
+</html>
