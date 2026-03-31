@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    body { margin: 0; font-family: Arial; background: #f4f5f8; transition: 0.3s; }
+    .header { background: linear-gradient(90deg, #5b57ea, #6f63ff); color: white; padding: 18px; display: flex; align-items: center; justify-content: center; position: relative; font-size: 20px; font-weight: bold; }
+    .back { position: absolute; left: 15px; background: #ffffff30; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; }
+    .container { padding: 20px; }
+    .profile-card { background: #0f4c4c; color: white; border-radius: 25px; padding: 20px; transition: 0.3s; }
+    .profile-top { display: flex; align-items: center; gap: 15px; }
+    .avatar { width: 60px; height: 60px; border-radius: 15px; background: #ffffff30; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+    .profile-name { font-size: 18px; font-weight: bold; }
+    .profile-sub { font-size: 13px; opacity: 0.8; }
+    .balance-box { margin-top: 15px; background: #ffffff20; padding: 15px; border-radius: 20px; }
+    .balance-title { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 10px; }
+    .actions { display: flex; justify-content: space-between; text-align: center; margin-top: 10px; }
+    .action { flex: 1; font-size: 12px; }
+    .action i { display: block; margin: auto; background: #ffffff30; width: 45px; height: 45px; border-radius: 12px; line-height: 45px; margin-bottom: 5px; }
+    .box { background: white; border-radius: 20px; margin-top: 20px; padding: 10px; transition: 0.3s; }
+    .item { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; }
+    .item:last-child { border-bottom: none; }
+    .item-left { display: flex; align-items: center; gap: 10px; }
+    .icon { width: 40px; height: 40px; border-radius: 12px; background: #f2f2ff; display: flex; align-items: center; justify-content: center; color: #6f63ff; }
+    .title { font-weight: bold; font-size: 15px; }
+    .sub { font-size: 12px; color: #777; }
+    .switch { width: 45px; height: 24px; background: #ccc; border-radius: 20px; position: relative; cursor: pointer; }
+    .switch::after { content: ""; width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: 0.3s; }
+    .switch.active { background: #6f63ff; }
+    .switch.active::after { left: 23px; }
+    .logout { margin-top: 25px; background: #ef4444; color: white; padding: 16px; text-align: center; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; }
+
+    /* Dark Mode Styles */
+    .dark { background: #111; color: white; }
+    .dark .box { background: #1e1e1e; color: white; }
+    .dark .item { border-bottom: 1px solid #333; }
+    .dark .sub { color: #aaa; }
+    .dark .icon { background: #333; }
+
+/* Full Page Style */
+.settings-full-page {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #f8f9fe; z-index: 1000; display: none; overflow-y: auto;
+}
+.settings-full-page.active { display: block; }
+
+/* Header */
+.settings-header {
+    background: #6f63ff; color: white; padding: 15px;
+    display: flex; align-items: center; justify-content: center; position: relative;
+}
+.settings-header .back-icon { position: absolute; left: 15px; cursor: pointer; }
+.header-title { font-size: 18px; font-weight: bold; }
+
+/* Content Layout */
+.settings-content { padding: 15px; }
+.settings-box {
+    background: white; border-radius: 20px; padding: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px;
+}
+.profile-card-flex { display: flex; align-items: center; justify-content: space-between; }
+.profile-left { display: flex; align-items: center; gap: 15px; }
+
+/* Avatar & Text */
+.avatar-circle { width: 65px; height: 65px; border-radius: 50%; overflow: hidden; background: #eee; }
+.avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+.change-txt { font-size: 12px; color: #888; }
+.user-name-txt { margin: 2px 0; font-size: 18px; color: #333; }
+.uid-txt { font-size: 12px; color: #aaa; }
+
+/* ক্যামেরা বাটন - ছবির মতো গোল এবং শ্যাডোসহ */
+.camera-btn-circle {
+    width: 45px; height: 45px; background: #eeedff; color: #6f63ff;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px; transition: 0.3s;
+}
+.camera-btn-circle:hover { background: #6f63ff; color: white; }
+
+/* Items list */
+.section-title { margin: 10px 0 10px 5px; color: #333; font-size: 16px; }
+.settings-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0; border-bottom: 1px solid #f5f5f5; cursor: pointer;
+}
+.settings-item.no-border { border-bottom: none; }
+.item-left { display: flex; align-items: center; gap: 12px; }
+.icon-box-blue {
+    width: 38px; height: 38px; background: #eeedff; color: #6f63ff;
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+}
+.item-main-title { font-size: 15px; font-weight: bold; color: #333; }
+.item-sub-title { font-size: 12px; color: #999; }
+.item-right { color: #999; font-size: 13px; }
+
+/* Verify Button */
+.verify-identity-btn {
+    width: 100%; background: #6f63ff; color: white; border: none;
+    padding: 15px; border-radius: 15px; font-size: 16px; font-weight: bold;
+    box-shadow: 0 4px 15px rgba(111, 99, 255, 0.3); cursor: pointer;
+}
+
+.lang-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 15px 0; border-bottom: 1px solid #f5f5f5; cursor: pointer;
+}
+.lang-item:last-child { border-bottom: none; }
+.tick-mark { color: #6f63ff; font-size: 18px; }
+
+/* স্লাইড এনিমেশন আগের মতোই থাকবে */
+#language-page { transition: 0.4s; }
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="back" onclick="history.back()"><i class="fa fa-arrow-left"></i></div>
+    <span id="txt-header">Account</span>
+</div>
+
+<div class="container">
+    <div class="profile-card">
+        <div class="profile-top">
+            <div class="avatar"><i class="fa fa-user"></i></div>
+            <div>
+                <div class="profile-name">Robin Khan (@Robin123)</div>
+                <div class="profile-sub">UID : 1715</div>
+                <div class="profile-sub"><span id="txt-kyc-status">KYC : Not verified</span></div>
+            </div>
+        </div>
+        <div class="balance-box">
+            <div class="balance-title">
+                <div id="txt-balance-label">Total balance</div>
+                <div>৳0.00</div>
+            </div>
+            <div class="actions">
+                <div class="action"><i class="fa fa-plus"></i><span id="txt-deposit">Deposit</span></div>
+                <div class="action"><i class="fa fa-arrow-down"></i><span id="txt-withdraw">Withdraw</span></div>
+                <div class="action"><i class="fa fa-crown"></i>VIP</div>
+                <div class="action"><i class="fa fa-id-card"></i>KYC</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="box">
+    <div class="item">
+        <div class="item-left">
+            <div class="icon"><i class="fa fa-moon"></i></div>
+            <div>
+                <div class="title" id="txt-darkmode">Darkmode</div>
+                <div class="sub" id="txt-onoff">On / Off</div>
+            </div>
+        </div>
+        <div class="switch" onclick="toggleDark(this)"></div>
+    </div>
+
+    <div class="item">
+        <div class="item-left">
+            <div class="icon"><i class="fa fa-bell"></i></div>
+            <div>
+                <div class="title" id="txt-notif">Notification</div>
+                <div class="sub" id="txt-all-notif">All notifications</div>
+            </div>
+        </div>
+        <i class="fa fa-angle-right"></i>
+    </div>
+
+    <div class="item" onclick="changeLanguage()">
+        <div class="item-left">
+            <div class="icon"><i class="fa fa-language"></i></div>
+            <div>
+                <div class="title" id="txt-lang-title">Language</div>
+                <div class="sub" id="current-lang">English</div>
+            </div>
+        </div>
+        <i class="fa fa-angle-right"></i>
+    </div>
+
+    <div class="item" onclick="openSettings()">
+        <div class="item-left">
+            <div class="icon"><i class="fa fa-gear"></i></div>
+            <div>
+                <div class="title" id="txt-setting">Setting</div>
+                <div class="sub" id="txt-security">Profile & Security</div>
+            </div>
+        </div>
+        <i class="fa fa-angle-right"></i>
+    </div>
+</div>
+
+<div id="language-page" class="settings-full-page">
+    <div class="settings-header">
+        <div class="back-icon" onclick="closeLanguage()"><i class="fa fa-arrow-left"></i></div>
+        <div class="header-title">Language</div>
+    </div>
+
+    <div class="settings-content">
+        <div class="settings-box">
+            <div class="lang-item" onclick="selectLanguage('English', this)">
+                <div class="item-left">
+                    <div class="icon-box-blue"><i class="fa fa-globe"></i></div>
+                    <div>
+                        <div class="item-main-title">English</div>
+                        <div class="item-sub-title">Default</div>
+                    </div>
+                </div>
+                <div class="tick-mark"><i class="fa fa-check"></i></div>
+            </div>
+
+            <div class="lang-item" onclick="selectLanguage('Bangla', this)">
+                <div class="item-left">
+                    <div class="icon-box-blue"><i class="fa fa-globe"></i></div>
+                    <div>
+                        <div class="item-main-title">বাংলা</div>
+                        <div class="item-sub-title">Bangla</div>
+                    </div>
+                </div>
+                <div class="tick-mark" style="display:none;"><i class="fa fa-check"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="settings-page" class="settings-full-page">
+    <div class="settings-header">
+        <div class="back-icon" onclick="closeSettings()"><i class="fa fa-arrow-left"></i></div>
+        <div class="header-title">Settings Center</div>
+    </div>
+
+    <div class="settings-content">
+        <div class="settings-box profile-card-flex">
+            <div class="profile-left">
+                <div class="avatar-circle" id="profile-avatar-container">
+                    <img src="https://via.placeholder.com/70" id="user-avatar-preview">
+                </div>
+                <div class="profile-info">
+                    <span class="change-txt" onclick="editProfileName()">Change Name</span>
+                    <h3 class="user-name-txt profile-name">Robin Khan</h3>
+                    <span class="uid-txt">UID : 1715</span>
+                </div>
+            </div>
+            <div class="camera-btn-circle" onclick="uploadAvatar()">
+                <i class="fa fa-camera"></i>
+            </div>
+        </div>
+
+        <h4 class="section-title">Security Information</h4>
+        <div class="settings-box">
+            <div class="settings-item" onclick="changePassword()">
+                <div class="item-left">
+                    <div class="icon-box-blue"><i class="fa fa-lock"></i></div>
+                    <div>
+                        <div class="item-main-title">Login Password</div>
+                        <div class="item-sub-title">Edit</div>
+                    </div>
+                </div>
+                <div class="item-right">Edit <i class="fa fa-angle-right"></i></div>
+            </div>
+
+            <div class="settings-item">
+                <div class="item-left">
+                    <div class="icon-box-blue"><i class="fa fa-envelope"></i></div>
+                    <div>
+                        <div class="item-main-title">Bind Mailbox</div>
+                        <div class="item-sub-title">Edit</div>
+                    </div>
+                </div>
+                <div class="item-right">Edit <i class="fa fa-angle-right"></i></div>
+            </div>
+
+            <div class="settings-item no-border">
+                <div class="item-left">
+                    <div class="icon-box-blue"><i class="fa fa-info-circle"></i></div>
+                    <div>
+                        <div class="item-main-title">Updated Version</div>
+                        <div class="item-sub-title">1.0.1</div>
+                    </div>
+                </div>
+                <div class="item-right"><i class="fa fa-angle-right"></i></div>
+            </div>
+        </div>
+
+        <h4 class="section-title">KYC Verify</h4>
+        <div class="kyc-container">
+            <button class="verify-identity-btn" onclick="alert('KYC System Loading...')">
+                Verify Identity
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="box">
+    <div style="padding:15px; font-weight:bold;" id="txt-service-center">Service center</div>
+
+    <div class="item">
+        <div class="item-left">
+            <div class="icon"><i class="fa fa-paper-plane"></i></div>
+            <div>
+                <div class="title" id="txt-support">Support</div>
+                <div class="sub">Telegram</div>
+            </div>
+        </div>
+        <i class="fa fa-angle-right"></i>
+    </div>
+
+    <div class="item">
+        <div class="item-left">
+            <div class="icon"><i class="fa fa-comment"></i></div>
+            <div>
+                <div class="title" id="txt-feedback">Feedback</div>
+                <div class="sub" id="txt-send-msg">Send message</div>
+            </div>
+        </div>
+        <i class="fa fa-angle-right"></i>
+    </div>
+
+    <div class="item" onclick="window.location.href='https://mdripon018770-coder.github.io/Notbok/abud.html'" style="cursor:pointer;">
+        <div class="item-left">
+            <div class="icon"><i class="fa fa-info-circle"></i></div>
+            <div>
+                <div class="title" id="txt-about">About us</div>
+                <div class="sub">Company info</div>
+            </div>
+        </div>
+        <i class="fa fa-angle-right"></i>
+    </div>
+
+    <div class="logout" id="txt-logout" style="margin-top: 30px; display:flex; align-items:center; justify-content:center; background:#ef4444; color:white; padding:15px; border-radius:50px; font-size:18px; font-weight:bold; cursor:pointer; width: 100%; box-sizing: border-box;">
+        Log out
+    </div>
+</div>
+
+<script>
+    // ১. ভাষা পরিবর্তনের ডাটা
+    let currentLang = localStorage.getItem('lang') || 'en';
+    const translations = {
+        en: {
+            header: "Account", kyc: "KYC : Not verified", balance: "Total balance",
+            deposit: "Deposit", withdraw: "Withdraw", darkmode: "Darkmode",
+            onoff: "On / Off", notif: "Notification", allNotif: "All notifications",
+            langTitle: "Language", langName: "English", setting: "Setting",
+            security: "Profile & Security", service: "Service center",
+            support: "Support", feedback: "Feedback", sendMsg: "Send message", logout: "Log out"
+        },
+        bn: {
+            header: "অ্যাকাউন্ট", kyc: "KYC : ভেরিফাইড নয়", balance: "মোট ব্যালেন্স",
+            deposit: "ডিপোজিট", withdraw: "উইথড্র", darkmode: "ডার্ক মোড",
+            onoff: "চালু / বন্ধ", notif: "নোটিফিকেশন", allNotif: "সব নোটিফিকেশন",
+            langTitle: "ভাষা", langName: "বাংলা", setting: "সেটিং",
+            security: "প্রোফাইল ও সিকিউরিটি", service: "সার্ভিস সেন্টার",
+            support: "সাপোর্ট", feedback: "ফিডব্যাক", sendMsg: "মেসেজ পাঠান", logout: "লগ আউট"
+        }
+    };
+
+    function updateUI() {
+    const t = translations[currentLang];
+
+    document.getElementById('txt-header').innerText = t.header;
+    document.getElementById('txt-kyc-status').innerText = t.kyc;
+    document.getElementById('txt-balance-label').innerText = t.balance;
+    document.getElementById('txt-deposit').innerText = t.deposit;
+    document.getElementById('txt-withdraw').innerText = t.withdraw;
+    document.getElementById('txt-darkmode').innerText = t.darkmode;
+    document.getElementById('txt-onoff').innerText = t.onoff;
+    document.getElementById('txt-notif').innerText = t.notif;
+    document.getElementById('txt-all-notif').innerText = t.allNotif;
+    document.getElementById('txt-lang-title').innerText = t.langTitle;
+    document.getElementById('current-lang').innerText = t.langName;
+    document.getElementById('txt-setting').innerText = t.setting;
+    document.getElementById('txt-security').innerText = t.security;
+    document.getElementById('txt-service-center').innerText = t.service;
+    document.getElementById('txt-support').innerText = t.support;
+    document.getElementById('txt-feedback').innerText = t.feedback;
+    document.getElementById('txt-send-msg').innerText = t.sendMsg;
+    document.getElementById('txt-logout').innerText = t.logout;
+}
+
+    // ২. পেজ কন্ট্রোল ফাংশন (ডুপ্লিকেট রিমুভ করা হয়েছে)
+    function changeLanguage() {
+        document.getElementById('language-page').classList.add('active');
+    }
+
+    function closeLanguage() {
+        document.getElementById('language-page').classList.remove('active');
+    }
+
+    function openSettings() {
+        document.getElementById('settings-page').classList.add('active');
+    }
+
+    function closeSettings() {
+        document.getElementById('settings-page').classList.remove('active');
+    }
+
+    // ৩. ভাষা সিলেকশন ও টিক মার্ক
+    function selectLanguage(lang, element) {
+    document.querySelectorAll('.tick-mark').forEach(tick => tick.style.display = 'none');
+    element.querySelector('.tick-mark').style.display = 'block';
+    
+    currentLang = (lang === 'Bangla') ? 'bn' : 'en';
+
+    localStorage.setItem('lang', currentLang); // 👈 এই লাইনটা add করবি
+
+    updateUI();
+    
+    setTimeout(closeLanguage, 500);
+}
+
+    // ৪. ডার্ক মোড ও অন্যান্য লজিক
+    function toggleDark(el){
+        el.classList.toggle("active");
+        document.body.classList.toggle("dark");
+    }
+
+    function editProfileName() {
+        let currentName = document.querySelector('.profile-name').innerText;
+        let newName = prompt("আপনার নতুন নাম লিখুন:", currentName);
+        if (newName) {
+            document.querySelector('.profile-name').innerText = newName;
+            alert("নাম সফলভাবে আপডেট হয়েছে!");
+        }
+    }
+
+    function uploadAvatar() {
+    let fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+
+    fileInput.onchange = e => {
+        let file = e.target.files[0];
+        let reader = new FileReader();
+
+        reader.readAsDataURL(file);
+        reader.onload = readerEvent => {
+            let content = readerEvent.target.result;
+
+            // Settings page image
+            document.getElementById('user-avatar-preview').src = content;
+
+            // Account page image
+            document.querySelector('.avatar').innerHTML =
+                `<img src="${content}" style="width:100%;height:100%;border-radius:15px;">`;
+
+            // SAVE (reload er por o thakbe)
+            localStorage.setItem("profilePic", content);
+
+            alert("প্রোফাইল ছবি আপডেট হয়েছে!");
+        }
+    }
+
+    fileInput.click();
+}
+    let currentAppPass = "1234"; 
+    function changePassword() {
+        let oldPass = prompt("বর্তমান (Old) পাসওয়ার্ডটি দিন:");
+        if (oldPass === currentAppPass) {
+            let newPass = prompt("নতুন পাসওয়ার্ড লিখুন:");
+            let confirmPass = prompt("পাসওয়ার্ডটি আবার লিখুন:");
+            if (newPass === confirmPass && newPass !== "") {
+                currentAppPass = newPass; 
+                alert("পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে!");
+            }
+        } else {
+            alert("বর্তমান পাসওয়ার্ডটি ভুল!");
+        }
+    }
+
+window.onload = function() {
+    updateUI();
+
+    // saved profile pic load
+    let savedPic = localStorage.getItem("profilePic");
+    if(savedPic){
+        document.getElementById('user-avatar-preview').src = savedPic;
+        document.querySelector('.avatar').innerHTML =
+            `<img src="${savedPic}" style="width:100%;height:100%;border-radius:15px;">`;
+    }
+};
+</script>
+
+</body>
+</html>
