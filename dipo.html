@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Deposits - 2Xbet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+        body { background-color: #f1f4f6; color: #333; padding-bottom: 30px; }
+
+        /* Header & Info Styling */
+        .header { background: #fff; padding: 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 1000; }
+        .info-box { background: #fff; margin: 12px; padding: 18px; border-radius: 10px; border: 1px solid #ddd; }
+        .acc-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .acc-number { font-size: 18px; font-weight: 800; color: #004d40; }
+
+        /* Method Section Title */
+        .section-title { padding: 0 15px; font-size: 14px; font-weight: bold; color: #666; text-transform: uppercase; margin-top: 10px; }
+
+        /* Payment Grid */
+        .payment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 15px; }
+        .method-card { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 20px 10px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .method-card:active { transform: scale(0.95); }
+        .method-card img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 10px; }
+        .method-card span { display: block; font-size: 14px; font-weight: 600; color: #444; }
+
+        /* Modal Styling */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: #fff; width: 90%; max-width: 360px; border-radius: 15px; padding: 25px; position: relative; animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .close-modal { position: absolute; top: 10px; right: 15px; font-size: 25px; color: #999; cursor: pointer; }
+        .modal-logo { width: 100px; display: block; margin: 0 auto 15px; }
+        .payment-instruction { background: #e8f5e9; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; border: 1px dashed #00a86b; text-align: center; }
+        .copy-target { display: flex; align-items: center; justify-content: space-between; background: #fff; padding: 10px; border-radius: 5px; margin-top: 8px; font-weight: bold; border: 1px solid #ddd; }
+
+        .input-group { margin-bottom: 12px; }
+        .input-group label { display: block; font-size: 12px; color: #777; margin-bottom: 5px; font-weight: bold; }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; outline: none; transition: 0.3s; }
+        .input-group input:focus { border-color: #004d40; box-shadow: 0 0 5px rgba(0,77,64,0.2); }
+        .confirm-btn { width: 100%; background: #004d40; color: white; border: none; padding: 15px; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+
+        /* Status Overlay */
+        #statusOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 3000; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .spinner-box { margin-bottom: 20px; }
+        .success-icon { font-size: 70px; color: #00a86b; margin-bottom: 20px; }
+
+/* কপি আইকনে ক্লিক করলে এটি সামান্য বড় হবে */
+.fa-copy:active {
+    transform: scale(1.3);
+    color: #ff9800 !important;
+    transition: 0.1s;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div onclick="history.back()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Account deposits</div>
+        <i class="fas fa-redo-alt" onclick="location.reload()" style="cursor:pointer;"></i>
+    </div>
+
+    <div class="info-box">
+        <div class="acc-row">
+            <span class="acc-number" id="displayUserID">Loading...</span>
+            <i class="far fa-copy" style="color:#00a86b; cursor:pointer;" onclick="copyText(document.getElementById('displayUserID').innerText)"></i>
+        </div>
+        <p style="font-size:12px; color:#2e7d32; font-weight: 500;">Get 100% bonus on first deposit up to ৳12,000!</p>
+    </div>
+
+    <div class="section-title">Recommended Methods</div>
+
+    <div class="payment-grid">
+        <div class="method-card" onclick="openPayment('bKash', 'https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/bikash.png')">
+            <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/bikash.png" alt="bKash">
+            <span>bKash</span>
+        </div>
+        <div class="method-card" onclick="openPayment('Nagad', 'https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/nogod.png')">
+            <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/nogod.png" alt="Nagad">
+            <span>Nagad</span>
+        </div>
+        <div class="method-card" onclick="openPayment('Rocket', 'https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/rocet.png')">
+            <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/rocet.png" alt="Rocket">
+            <span>Rocket</span>
+        </div>
+        <div class="method-card" onclick="openPayment('Upay', 'https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/upay.png')">
+            <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/upay.png" alt="Upay">
+            <span>Upay</span>
+        </div>
+        <div class="method-card" onclick="openPayment('NexusPay', 'https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/nexcus.png')">
+            <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/nexcus.png" alt="NexusPay">
+            <span>NexusPay</span>
+        </div>
+        <div class="method-card" onclick="openPayment('Binance', 'https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/binance.png')">
+            <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/binance.png" alt="Binance">
+            <span>Binance</span>
+        </div>
+        <div class="method-card" onclick="openPayment('Telegram Pay', 'https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/teligram.png')">
+            <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/teligram.png" alt="Telegram Pay">
+            <span>Telegram Pay</span>
+        </div>
+        <div class="method-card" onclick="openPayment('AstroPay', 'https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/astroa.png')">
+            <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/astroa.png" alt="AstroPay">
+            <span>AstroPay</span>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">×</span>
+            <img src="" id="modalLogo" class="modal-logo" alt="Method">
+            
+            <div class="payment-instruction">
+                এই নম্বরে টাকা <b>Send Money</b> করুন:
+                <div class="copy-target">
+                    <span id="targetNumber">017XXXXXXXX</span>
+                    <i class="far fa-copy" style="color:#00a86b; cursor:pointer;" onclick="copyText(document.getElementById('targetNumber').innerText)"></i>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Amount (Min 200.00 BDT)</label>
+                <input type="number" id="depAmount" placeholder="200.00">
+            </div>
+
+            <div class="input-group">
+                <label>Your Sender Number</label>
+                <input type="text" id="senderNum" placeholder="01XXXXXXXXX">
+            </div>
+
+            <div class="input-group">
+                <label>Transaction ID</label>
+                <input type="text" id="trxID" placeholder="TRX8899XX66">
+            </div>
+
+            <button class="confirm-btn" onclick="submitDeposit()">CONFIRM DEPOSIT</button>
+        </div>
+    </div>
+
+    <div id="statusOverlay">
+        <div id="processContent">
+            <div class="spinner-box">
+                <i class="fas fa-sync fa-spin" style="font-size: 60px; color: #ff9800;"></i>
+            </div>
+            <h2 style="color: #333;">Processing Request...</h2>
+            <p style="font-size: 18px; font-weight: bold; color: #004d40; margin-top: 10px;">
+                Please wait <span id="timer">10</span>s
+            </p>
+        </div>
+
+        <div id="successContent" style="display: none;">
+            <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+            <h2 style="color: #00a86b;">Success ✅</h2>
+            <p style="padding: 10px 20px; color: #666; font-weight: 500;">আপনার ডিপোজিট রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে। কিছুক্ষণের মধ্যে ব্যালেন্স যোগ হবে।</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBCjxDS76NO2ib-hW_d9TmPPNIQFnjBO3k",
+            authDomain: "wallet-app-73793.firebaseapp.com",
+            projectId: "wallet-app-73793",
+            databaseURL: "https://wallet-app-73793-default-rtdb.asia-southeast1.firebasedatabase.app"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const currentUser = localStorage.getItem("userId") || "Unknown User";
+
+        document.getElementById('displayUserID').innerText = currentUser;
+
+        // ১. অ্যাডমিন নম্বর লোড করা
+        let adminNum = "017XXXXXXXX";
+        onValue(ref(db, "settings/adminNumber"), (snap) => {
+            if(snap.exists()){
+                adminNum = snap.val();
+                window.currentAdminNum = adminNum;
+            }
+        });
+
+        // ২. সাবমিট ফাংশন
+        window.submitDeposit = function() {
+            const amt = document.getElementById('depAmount').value;
+            const sender = document.getElementById('senderNum').value;
+            const trx = document.getElementById('trxID').value;
+            const method = document.getElementById('modalLogo').alt;
+
+            if(amt >= 200 && sender && trx) {
+                document.getElementById('paymentModal').style.display = 'none';
+                document.getElementById('statusOverlay').style.display = 'flex';
+
+                // Firebase-এ রিকোয়েস্ট পাঠানো
+                push(ref(db, "depositRequests"), {
+                    phone: currentUser,
+                    amount: amt,
+                    senderNumber: sender,
+                    trxid: trx,
+                    method: method,
+                    adminId: window.currentAdminNum || "017XXXXXXXX",
+                    status: "pending",
+                    time: new Date().toLocaleString()
+                }).then(() => {
+                    startTimer();
+                }).catch(err => alert("Error: " + err.message));
+            } else {
+                alert("সবগুলো তথ্য সঠিকভাবে পূরণ করুন!");
+            }
+        }
+
+        function startTimer() {
+            let sec = 10;
+            const timerEl = document.getElementById('timer');
+            const interval = setInterval(() => {
+                sec--;
+                timerEl.innerText = sec;
+                if(sec <= 0) {
+                    clearInterval(interval);
+                    showSuccess();
+                }
+            }, 1000);
+        }
+
+        function showSuccess() {
+            document.getElementById('processContent').style.display = 'none';
+            document.getElementById('successContent').style.display = 'block';
+            setTimeout(() => {
+                window.location.href = '2xbet.html';
+            }, 2500);
+        }
+    </script>
+
+    <script>
+        function openPayment(name, logo) {
+            document.getElementById('modalLogo').src = logo;
+            document.getElementById('modalLogo').alt = name;
+            document.getElementById('targetNumber').innerText = window.currentAdminNum || "Loading...";
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        function copyText(text) {
+    navigator.clipboard.writeText(text);
+    // অ্যালার্ট রিমুভ করা হয়েছে, এখন সরাসরি কপি হবে।
+}
+
+    </script>
+</body>
+</html>
