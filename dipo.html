@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Deposits - 2Xbet</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
         body { background-color: #f1f4f6; color: #333; padding-bottom: 30px; }
@@ -242,12 +245,27 @@
         }
 
         function showSuccess() {
-            document.getElementById('processContent').style.display = 'none';
-            document.getElementById('successContent').style.display = 'block';
-            setTimeout(() => {
-                window.location.href = '2xbet.html'; 
-            }, 2500);
-        }
+    // ১. প্রসেসিং লেখা সরিয়ে সাকসেস মেসেজ দেখানো
+    document.getElementById('processContent').style.display = 'none';
+    document.getElementById('successContent').style.display = 'block';
+
+    setTimeout(() => {
+        // ২. পুরো স্ট্যাটাস ওভারলে (সাদা স্ক্রিন) বন্ধ করে দেওয়া
+        document.getElementById('statusOverlay').style.display = 'none';
+
+        // ৩. ইনপুট ফিল্ডগুলো খালি করে দেওয়া (যাতে আবার নতুন রিকোয়েস্ট দেওয়া যায়)
+        document.getElementById('depAmount').value = '';
+        document.getElementById('senderNum').value = '';
+        document.getElementById('trxID').value = '';
+
+        // ৪. পরবর্তী ব্যবহারের জন্য কন্টেন্টগুলো আগের অবস্থায় ফিরিয়ে রাখা
+        document.getElementById('successContent').style.display = 'none';
+        document.getElementById('processContent').style.display = 'block';
+        document.getElementById('timer').innerText = '10';
+
+    }, 3000); // ৩ সেকেন্ড পর অটোমেটিক আগের স্ক্রিনে ফিরে আসবে
+}
+
 
     </script>
 </body>
