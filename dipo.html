@@ -156,7 +156,7 @@
         </div>
     </div>
 
-    <script type="module">
+            <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
@@ -174,15 +174,33 @@
         document.getElementById('displayUserID').innerText = currentUser;
 
         // ১. অ্যাডমিন নম্বর লোড করা
-        let adminNum = "017XXXXXXXX";
+        window.currentAdminNum = "017XXXXXXXX"; // ডিফল্ট
         onValue(ref(db, "settings/adminNumber"), (snap) => {
             if(snap.exists()){
-                adminNum = snap.val();
-                window.currentAdminNum = adminNum;
+                window.currentAdminNum = snap.val();
             }
         });
 
-        // ২. সাবমিট ফাংশন
+        // ২. পেমেন্ট মোডাল ওপেন করা (window. দিয়ে কানেক্ট করা হয়েছে)
+        window.openPayment = function(name, logo) {
+            document.getElementById('modalLogo').src = logo;
+            document.getElementById('modalLogo').alt = name;
+            document.getElementById('targetNumber').innerText = window.currentAdminNum;
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+
+        // ৩. মোডাল ক্লোজ করা
+        window.closeModal = function() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        // ৪. কপি ফাংশন
+        window.copyText = function(text) {
+            navigator.clipboard.writeText(text);
+            // এখানে আপনি চাইলে একটি ছোট টোস্ট বা মেসেজ দিতে পারেন
+        }
+
+        // ৫. ডিপোজিট সাবমিট করা
         window.submitDeposit = function() {
             const amt = document.getElementById('depAmount').value;
             const sender = document.getElementById('senderNum').value;
@@ -193,21 +211,20 @@
                 document.getElementById('paymentModal').style.display = 'none';
                 document.getElementById('statusOverlay').style.display = 'flex';
 
-                // Firebase-এ রিকোয়েস্ট পাঠানো
                 push(ref(db, "depositRequests"), {
                     phone: currentUser,
                     amount: amt,
                     senderNumber: sender,
                     trxid: trx,
                     method: method,
-                    adminId: window.currentAdminNum || "017XXXXXXXX",
+                    adminId: window.currentAdminNum,
                     status: "pending",
                     time: new Date().toLocaleString()
                 }).then(() => {
                     startTimer();
                 }).catch(err => alert("Error: " + err.message));
             } else {
-                alert("সবগুলো তথ্য সঠিকভাবে পূরণ করুন!");
+                alert("সবগুলো তথ্য সঠিকভাবে পূরণ করুন এবং নূন্যতম ২০০ টাকা দিন!");
             }
         }
 
@@ -225,31 +242,12 @@
         }
 
         function showSuccess() {
-    document.getElementById('processContent').style.display = 'none';
-    document.getElementById('successContent').style.display = 'block';
-    
-    // ২.৫ সেকেন্ড পর অটোমেটিক ২xbet.html পেজে নিয়ে যাবে
-    setTimeout(() => {
-        window.location.href = '2xbet.html'; 
-    }, 2500);
-}
-
-
-        function openPayment(name, logo) {
-            document.getElementById('modalLogo').src = logo;
-            document.getElementById('modalLogo').alt = name;
-            document.getElementById('targetNumber').innerText = window.currentAdminNum || "Loading...";
-            document.getElementById('paymentModal').style.display = 'flex';
+            document.getElementById('processContent').style.display = 'none';
+            document.getElementById('successContent').style.display = 'block';
+            setTimeout(() => {
+                window.location.href = '2xbet.html'; 
+            }, 2500);
         }
-
-        function closeModal() {
-            document.getElementById('paymentModal').style.display = 'none';
-        }
-
-        function copyText(text) {
-    navigator.clipboard.writeText(text);
-    // অ্যালার্ট রিমুভ করা হয়েছে, এখন সরাসরি কপি হবে।
-}
 
     </script>
 </body>
