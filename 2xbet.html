@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2Xbet - Pro</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">  
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
         body { background-color: #f0f3f5; color: #333; padding-bottom: 80px; }
 
@@ -82,29 +84,238 @@
         .nav-item i { font-size: 22px; display: block; margin-bottom: 3px; }
         .nav-item.active { color: #00a86b; }
         .center-btn { background: #00a86b; color: white !important; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -30px; border: 4px solid #f0f3f5; box-shadow: 0 4px 10px rgba(0,168,107,0.3); }
+
+/* --- আপনার পাঠানো নতুন CSS ডিজাইন --- */
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+body { background-color: #f0f7f7; min-height: 100vh; }
+
+/* --- Login Page --- */
+#login-page { display: block; }
+.top-pattern {
+    height: 35vh;
+    background-color: #b2dfdb;
+    background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+    position: relative;
+}
+.back-circle {
+    position: absolute; top: 20px; left: 20px;
+    width: 40px; height: 40px; background: rgba(0, 0, 0, 0.2);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;
+}
+.card {
+    background: white; 
+    margin-top: -20px; /* আপনার রিকোয়েস্ট অনুযায়ী */
+    border-radius: 30px 30px 0 0; 
+    padding: 40px 25px; /* আপনার রিকোয়েস্ট অনুযায়ী */
+    min-height: 65vh; 
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+    position: relative;
+    z-index: 10;
+}
+
+/* --- Register Page --- */
+#register-page { display: none; }
+.reg-header { padding: 15px; display: flex; align-items: center; background-color: #f0f7f7; }
+.reg-card { background: white; margin: 10px 15px; border-radius: 20px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+
+/* --- Common Elements --- */
+.input-group { margin-bottom: 20px; position: relative; border-bottom: 1.5px solid #e0e0e0; }
+.green-label { color: #00b359; font-size: 13px; font-weight: bold; margin-bottom: 5px; display: block; }
+input { border: none; outline: none; width: 100%; font-size: 16px; padding: 10px 0; background: transparent; }
+
+.eye-icon { position: absolute; right: 5px; bottom: 12px; color: #999; cursor: pointer; font-size: 18px; }
+
+.btn-main {
+    background: #00b359; color: white; width: 100%; padding: 15px;
+    border: none; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 15px; cursor: pointer;
+}
+.switch-text { text-align: center; margin-top: 30px; color: #777; font-size: 15px; }
+.switch-text span { color: #00b359; font-weight: bold; cursor: pointer; }
+
+.check-item { display: flex; gap: 10px; margin: 15px 20px; color: #465e5e; font-size: 14px; align-items: center; }
+.check-item input { width: 18px; height: 18px; accent-color: #00b359; }
+
+.pass-hint {
+    color: #ff4d4d;
+    font-size: 11px;
+    display: block;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+/* Side Menu Styles */
+.side-menu {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 2000;
+    display: none; /* শুরুতে লুকানো থাকবে */
+    transition: 0.3s ease;
+}
+
+.menu-content {
+    background: white;
+    width: 80%;
+    height: 100%;
+    position: absolute;
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    transition: transform 0.4s ease-in-out;
+}
+
+/* ৩টি স্টাইল এর জন্য ক্লাস */
+.from-bottom { bottom: 0; left: 0; width: 100%; height: 70%; border-radius: 25px 25px 0 0; transform: translateY(100%); }
+.from-right { top: 0; right: 0; height: 100%; transform: translateX(100%); border-radius: 25px 0 0 25px; }
+.from-left { top: 0; left: 0; height: 100%; transform: translateX(-100%); border-radius: 0 25px 25px 0; }
+
+/* মেনু কন্টেন্ট এনিমেশন একটিভ হলে */
+.menu-active { transform: translate(0) !important; }
+
+/* প্রোফাইল স্টাইল */
+.user-profile-section { display: flex; align-items: center; gap: 15px; padding: 10px 0; }
+.avatar-circle { width: 50px; height: 50px; background: #004d40; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.user-details h3 { font-size: 18px; color: #333; }
+.user-details p { font-size: 13px; color: #888; }
+
+.menu-option { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid #f9f9f9; cursor: pointer; font-weight: 500; }
+.menu-option i { color: #00a86b; width: 25px; text-align: center; font-size: 18px; }
+
     </style>
 </head>
 <body>
 
-    <div class="header">
-    <div class="logo-area">
-        <i class="fas fa-bars"></i>
-        <h2>2XBET</h2>
-    </div>
-    <div class="balance-container" onclick="window.location.href='https://mdripon018770-coder.github.io/Notbok/dipo.html'">
-        <span class="balance-amount">৳ <span id="mainBalance">0.00</span></span>
-        <div class="add-balance-icon">
-            <i class="fas fa-plus"></i>
+    <div id="auth-container">
+    <div id="login-page">
+        <div class="top-pattern">
+            <div class="back-circle" onclick="showRegister()"><i class="fa-solid fa-arrow-left"></i></div>
+        </div>
+
+        <div class="card">
+            <h2 style="color: #004d40; font-size: 30px; margin-bottom: 25px; margin-top: 10px;">Log in</h2>
+            
+            <div class="input-group">
+                <input type="text" placeholder="Email or ID" id="loginId">
+            </div>
+
+            <div style="margin-top: 15px;">
+                <span class="green-label" style="display: block; text-align: left; margin-bottom: 5px; color: #00b359; font-weight: bold;">Password</span>
+                <div class="input-group">
+                    <input type="password" placeholder="Enter Password" id="loginPass">
+                    <i class="fa-solid fa-eye eye-icon" onclick="togglePass('loginPass')"></i>
+                </div>
+            </div>
+
+            <button class="btn-main" onclick="handleLogin()" style="margin-top: 25px;">Log in</button>
+            
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="#" onclick="handleForgotPassword()" style="color: #00b359; font-weight: bold; text-decoration: none; font-size: 16px;">
+                    Forgot your password?
+                </a>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px; color: #757575; font-size: 14px;">
+                Don't have an account? <span onclick="showRegister()" style="color: #00b359; font-weight: bold; cursor: pointer;">Register</span>
+            </div>
         </div>
     </div>
 </div>
 
 
+    <div id="register-page" style="display: none;">
+        <div class="reg-header" style="padding: 15px; display: flex; align-items: center;">
+            <i class="fa-solid fa-arrow-left" style="font-size: 20px; color: #5f7d7d; cursor:pointer" onclick="showLogin()"></i>
+            <div style="flex:1; text-align:center; margin-right: 20px;">
+                <h1 style="font-size:18px; color:#5f7d7d;">Registration</h1>
+            </div>
+        </div>
+
+        <div class="reg-card">
+            <div class="input-group">
+                <input type="text" placeholder="Full Name *" id="regName">
+            </div>
+            <div class="input-group">
+                <input type="tel" placeholder="Phone number *" id="regPhone">
+            </div>
+            <div class="input-group">
+                <input type="email" placeholder="Email address *" id="regEmail">
+            </div>
+            <div>
+                <span class="green-label">Password *</span>
+                <div class="input-group">
+                    <input type="text" placeholder="Create Password" id="regPass">
+                    <i class="fa-solid fa-eye eye-icon" onclick="togglePass('regPass')"></i>
+                </div>
+                <span class="pass-hint">
+                    * বড় হাতের (A-Z), ছোট হাতের (a-z) এবং নাম্বার (0-9) ব্যবহার করুন।
+                </span>
+            </div>
+            <div>
+                <span class="green-label">Confirm Password *</span>
+                <div class="input-group">
+                    <input type="text" placeholder="Confirm Password" id="confirmPass">
+                    <i class="fa-solid fa-eye eye-icon" onclick="togglePass('confirmPass')"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="check-item"><input type="checkbox" checked> I confirm that I am over 18 years old</div>
+        <div class="check-item"><input type="checkbox" checked> I accept Terms and conditions</div>
+
+        <div style="padding: 0 15px;">
+            <button class="btn-main" onclick="handleRegister()">Register</button>
+        </div>
+
+        <div class="switch-text" style="margin-bottom: 30px;">
+            Already have an account? <span onclick="showLogin()" style="color: #00b359; font-weight: bold; cursor: pointer;">Log in</span>
+        </div>
+    </div>
+</div>
+
+<div id="forgotModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center;">
+    <div style="background: white; width: 85%; border-radius: 20px; padding: 25px; position: relative;">
+        <i class="fa-solid fa-xmark" onclick="closeForgotModal()" style="position: absolute; right: 20px; top: 20px; font-size: 20px; color: #666; cursor: pointer;"></i>
+        
+        <h3 style="color: #004d40; margin-bottom: 20px;">Reset Password</h3>
+        
+        <div class="input-group">
+            <input type="tel" id="forgotPhone" placeholder="Registered Phone Number">
+        </div>
+        <div class="input-group">
+            <input type="email" id="forgotEmail" placeholder="Registered Email address">
+        </div>
+        
+        <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Admin will manually check your details and send you a reset PIN or Message.</p>
+        
+        <button class="btn-main" onclick="submitResetRequest()">Send Request</button>
+    </div>
+</div>
+
+<div id="main-app" style="display: none;">
+    <div class="header">
+        <div class="logo-area">
+            <i class="fas fa-bars"></i>
+            <h2>2XBET</h2>
+        </div>
+        <div class="balance-container" onclick="window.location.href='https://mdripon018770-coder.github.io/Notbok/dipo.html'">
+            <span class="balance-amount">৳ <span id="mainBalance">0.00</span></span>
+            <div class="add-balance-icon">
+                <i class="fas fa-plus"></i>
+            </div>
+        </div>
+    </div>
+
     <div class="icon-menu">
         <div class="menu-item active"><i class="fas fa-star"></i>Top</div>
         <div class="menu-item"><i class="fas fa-soccer-ball"></i>Sports</div>
         <div class="menu-item"><i class="fas fa-gamepad"></i>Esports</div>
-        <div class="menu-item" onclick="window.location.href='https://mdripon018770-coder.github.io/Notbok/plan.html'"><i class="fas fa-plane"></i>Aviator</div>
+        <div class="menu-item" onclick="window.location.href='https://mdripon018770-coder.github.io/Notbok/av.html'" style="cursor: pointer;">
+            <i class="fas fa-plane"></i>Aviator
+        </div>
         <div class="menu-item"><i class="fas fa-spade"></i>Casino</div>
     </div>
 
@@ -115,8 +326,8 @@
     </div>
 
     <div class="promo-section">
-        <div class="promo-card">
-            <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/aviator.png">
+        <div class="promo-card" onclick="window.location.href='https://mdripon018770-coder.github.io/Notbok/av.html'" style="cursor: pointer;">
+            <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/aviator.png" alt="Aviator Game">
         </div>
     </div>
 
@@ -146,36 +357,312 @@
     </div>
 
     <nav class="bottom-nav">
-        <div class="nav-item active"><i class="fas fa-fire"></i>Popular</div>
-        <div class="nav-item"><i class="far fa-star"></i>Favorites</div>
-        <div class="nav-item"><div class="center-btn"><i class="fas fa-ticket-alt"></i></div>Bet Slip</div>
-        <div class="nav-item"><i class="fas fa-history"></i>History</div>
-        <div class="nav-item" onclick="window.location.href='acunt.html'"><i class="fas fa-th-large"></i>Menu</div>
-    </nav>
+    <div class="nav-item active"><i class="fas fa-fire"></i>Popular</div>
+    <div class="nav-item"><i class="far fa-star"></i>Favorites</div>
+    <div class="nav-item"><div class="center-btn"><i class="fas fa-ticket-alt"></i></div>Bet Slip</div>
+    <div class="nav-item"><i class="fas fa-history"></i>History</div>
+    <div class="nav-item" onclick="toggleMenu()"><i class="fas fa-th-large"></i>Menu</div>
+</nav>
+
+<div id="side-menu" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:2000;" onclick="closeMenu()">
+    <div class="menu-content" style="background:white; position:absolute; transition:0.4s cubic-bezier(0.4, 0, 0.2, 1); padding:25px; box-shadow:0 0 20px rgba(0,0,0,0.3);" onclick="event.stopPropagation()">
+        <div style="text-align: right;"><i class="fas fa-times" onclick="closeMenu()" style="font-size:24px; color:#666; cursor:pointer;"></i></div>
+        
+        <div style="display:flex; align-items:center; gap:15px; margin-top:10px;">
+            <div style="width:55px; height:55px; background:#004d40; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:20px;"><i class="fas fa-user"></i></div>
+            <div>
+                <h3 id="menuUserName" style="font-size:18px; margin:0; color:#333;">User Profile</h3>
+                <p id="menuUserPhone" style="font-size:14px; color:#888; margin:5px 0 0;">017XXXXXXXX</p>
+            </div>
+        </div>
+
+        <div style="margin-top:35px;">
+            <div class="menu-opt" onclick="window.location.href='https://mdripon018770-coder.github.io/Notbok/dipo.html'" style="padding:15px 0; border-bottom:1px solid #f0f0f0; display:flex; align-items:center; gap:15px;">
+                <i class="fas fa-wallet" style="color:#00a86b; width:20px;"></i> <span>Deposit Money</span>
+            </div>
+            <div class="menu-opt" style="padding:15px 0; border-bottom:1px solid #f0f0f0; display:flex; align-items:center; gap:15px;">
+                <i class="fas fa-money-check-alt" style="color:#00a86b; width:20px;"></i> <span>Withdraw Funds</span>
+            </div>
+            <div class="menu-opt" style="padding:15px 0; border-bottom:1px solid #f0f0f0; display:flex; align-items:center; gap:15px;">
+                <i class="fas fa-history" style="color:#00a86b; width:20px;"></i> <span>My Bets History</span>
+            </div>
+            <div class="menu-opt" onclick="window.location.href='https://wa.me/88017XXXXXXXX'" style="padding:15px 0; border-bottom:1px solid #f0f0f0; display:flex; align-items:center; gap:15px;">
+                <i class="fab fa-whatsapp" style="color:#25D366; width:20px;"></i> <span>Contact Admin</span>
+            </div>
+            <div class="menu-opt" onclick="handleLogout()" style="padding:15px 0; color:#ff4d4d; margin-top:25px; display:flex; align-items:center; gap:15px;">
+                <i class="fas fa-sign-out-alt" style="width:20px;"></i> <span>Sign Out</span>
+            </div>
+        </div>
+    </div>
+</div>
+
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+    // Firebase ইম্পোর্ট (আপনার দেওয়া মেইন অ্যাপের কানেকশন অনুযায়ী)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBCjxDS76NO2ib-hW_d9TmPPNIQFnjBO3k",
-            authDomain: "wallet-app-73793.firebaseapp.com",
-            projectId: "wallet-app-73793",
-            databaseURL: "https://wallet-app-73793-default-rtdb.asia-southeast1.firebasedatabase.app"
-        };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        let userId = localStorage.getItem("userId");
+    const firebaseConfig = {
+        apiKey: "AIzaSyBCjxDS76NO2ib-hW_d9TmPPNIQFnjBO3k",
+        authDomain: "wallet-app-73793.firebaseapp.com",
+        projectId: "wallet-app-73793",
+        databaseURL: "https://wallet-app-73793-default-rtdb.asia-southeast1.firebasedatabase.app"
+    };
 
-        if (userId) {
-            onValue(ref(db, "users/" + userId + "/balance"), (snap) => {
-                const val = snap.val() || 0;
-                document.getElementById("mainBalance").innerText = parseFloat(val).toFixed(2);
-            });
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+// এই ফাংশনটি দিয়ে সব অ্যালার্ট কন্ট্রোল হবে
+window.showAlert = (message, icon = 'info') => {
+    Swal.fire({
+        text: message,
+        icon: icon, // success, error, warning, info - এই ৪টি আইকন ব্যবহার করা যাবে
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#00b359', // আপনার পছন্দের সবুজ রঙ
+        background: '#ffffff',
+        color: '#004d40',
+        heightAuto: false // মোবাইলে স্ক্রিন নড়াচড়া বন্ধ করার জন্য
+    });
+};
+
+// ডিফল্ট alert-কেও এর সাথে কানেক্ট করে দিন
+window.alert = (msg) => window.showAlert(msg);
+
+    // ১. পেজ পরিবর্তন করার ফাংশন (আগেরগুলোই থাকল)
+    window.showRegister = function() {
+        document.getElementById('login-page').style.display = 'none';
+        document.getElementById('register-page').style.display = 'block';
+        window.scrollTo(0,0);
+    }
+
+    window.showLogin = function() {
+        document.getElementById('register-page').style.display = 'none';
+        document.getElementById('login-page').style.display = 'block';
+        window.scrollTo(0,0);
+    }
+
+    window.togglePass = function(id) {
+        const input = document.getElementById(id);
+        const icon = input.nextElementSibling;
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
         } else {
-            window.location.href = 'login.html';
+            input.type = "password";
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
         }
-    </script>
+    }
+
+    window.handleRegister = async function() {
+    const fullName = document.getElementById('regName').value;
+    const phone = document.getElementById('regPhone').value; // এই ফোন নম্বরটিই হবে লগইন আইডি
+    const email = document.getElementById('regEmail').value;
+    const password = document.getElementById('regPass').value;
+    const confirmPass = document.getElementById('confirmPass').value;
+
+    if(!fullName || !phone || !password) {
+        alert("সব তথ্য দিন!");
+        return;
+    }
+
+    if(password !== confirmPass) {
+        alert("পাসওয়ার্ড মিলছে না!");
+        return;
+    }
+
+    try {
+        // ফোন নম্বর ব্যবহার করে Firebase-এ সেভ করা হচ্ছে
+        await set(ref(db, 'users/' + phone), {
+            name: fullName,
+            phone: phone,
+            email: email,
+            password: password,
+            balance: 0.00,
+            createdAt: new Date().toISOString()
+        });
+
+        localStorage.setItem("userId", phone); // ফোন নম্বরটি সেভ করে রাখা হলো
+        alert("রেজিস্ট্রেশন সফল!");
+        
+        document.getElementById('auth-container').style.display = 'none';
+        document.getElementById('main-app').style.display = 'block';
+
+    } catch (error) {
+        alert("আবার চেষ্টা করুন!");
+    }
+}
+
+window.handleLogin = async function() {
+    const loginPhone = document.getElementById('loginId').value.trim();
+    const loginPass = document.getElementById('loginPass').value;
+
+    if(!loginPhone || !loginPass) {
+        alert("ফোন নম্বর এবং পাসওয়ার্ড দিন!");
+        return;
+    }
+
+    try {
+        // Firebase থেকে তথ্য আনা হচ্ছে
+        const userRef = ref(db, 'users/' + loginPhone);
+        const snapshot = await get(userRef); 
+
+        if (snapshot.exists()) {
+            const userData = snapshot.val();
+            
+            // পাসওয়ার্ড চেক করা হচ্ছে
+            if (userData.password === loginPass) {
+                // ১. তথ্য সেভ করা (পাসওয়ার্ডসহ সেভ হবে যাতে পরের বার অটো-ফিল হয়)
+                localStorage.setItem("userId", loginPhone);
+                localStorage.setItem("userPass", loginPass); // পাসওয়ার্ড মেমোরিতে সেভ হলো
+                localStorage.setItem("userBalance", userData.balance || "0.00");
+
+                // ২. লগইন স্ক্রিন সরিয়ে সরাসরি হোম পেজ (Main App) দেখানো
+                document.getElementById('auth-container').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+                
+                // ৩. হোম পেজের ব্যালেন্স আপডেট করা
+                document.getElementById('mainBalance').innerText = userData.balance || "0.00";
+                
+                alert("লগইন সফল হয়েছে!");
+            } else {
+                alert("ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।");
+            }
+        } else {
+            alert("এই একাউন্টটি পাওয়া যায়নি!");
+        }
+    } catch (error) {
+        console.error("Login Error: ", error);
+        alert("সার্ভার সমস্যা! ডাটা কানেকশন চেক করুন।");
+    }
+}
+
+// ১. পপআপ ওপেন ও ক্লোজ করার ফাংশন
+window.handleForgotPassword = function() {
+    document.getElementById('forgotModal').style.display = 'flex';
+}
+
+window.closeForgotModal = function() {
+    document.getElementById('forgotModal').style.display = 'none';
+}
+
+// ২. রিকোয়েস্ট সাবমিট করার ফাংশন
+window.submitResetRequest = async function() {
+    const phone = document.getElementById('forgotPhone').value;
+    const email = document.getElementById('forgotEmail').value;
+
+    if(!phone || !email) {
+        alert("Please provide both Phone and Email!");
+        return;
+    }
+
+    try {
+        // Firebase-e 'reset_requests' নামে একটি নতুন লিস্টে ডাটা সেভ হবে
+        const requestId = "REQ" + Date.now();
+        await set(ref(db, 'password_resets/' + phone), {
+            phone: phone,
+            email: email,
+            status: "pending",
+            time: new Date().toLocaleString()
+        });
+
+        alert("Request Sent! Admin will check and contact you soon.");
+        closeForgotModal();
+        
+        // Clear inputs
+        document.getElementById('forgotPhone').value = "";
+        document.getElementById('forgotEmail').value = "";
+
+    } catch (error) {
+        console.error(error);
+        alert("Something went wrong!");
+    }
+}
+
+
+window.handleLogout = function() {
+    // ১. লোকাল স্টোরেজ থেকে ইউজারের সব তথ্য পুরোপুরি মুছে ফেলা
+    localStorage.clear(); 
+
+    // ২. ইন্টারফেস পরিবর্তন করা (মেইন অ্যাপ লুকিয়ে লগইন পেজ দেখানো)
+    document.getElementById('main-app').style.display = 'none';
+    document.getElementById('auth-container').style.display = 'block';
+    document.getElementById('login-page').style.display = 'block';
+
+    // ৩. সাইড মেনু খোলা থাকলে তা বন্ধ করা
+    if(typeof closeMenu === 'function') {
+        closeMenu();
+    }
+
+    alert("লগআউট সফল হয়েছে!");
+}
+
+
+
+window.addEventListener('load', function() {
+    // ১. storage theke data ana
+    const savedUserId = localStorage.getItem("userId");
+    const savedPass = localStorage.getItem("userPass");
+
+    // ২. jodi data thake tobei input field-e boshano hobe
+    if (savedUserId && savedPass) {
+        document.getElementById('loginId').value = savedUserId;
+        document.getElementById('loginPass').value = savedPass;
+        
+        // apni jodi chan auto-fill thakar por-o user login page-ei thakbe, 
+        // tobe niche 'main-app' show korar proyojon nei.
+    } else {
+        // jodi data na thake (notun user), tobe box khali thakbe ebong placeholder dekhabe
+        document.getElementById('loginId').value = "";
+        document.getElementById('loginPass').value = "";
+    }
+});
+
+</script>
+
+<script>
+
+let clickCount = 0; // কতবার ক্লিক হয়েছে তা মাপার জন্য
+
+window.toggleMenu = function() {
+    const menu = document.getElementById('side-menu');
+    const content = menu.querySelector('.menu-content');
+    
+    // ইউজার ডাটা বসানো (Optional: Firebase থেকে আনা যেতে পারে)
+    const phone = localStorage.getItem("userId") || "017XXXXXXXX";
+    document.getElementById('menuUserPhone').innerText = phone;
+
+    // সব আগের ক্লাস রিমুভ করা
+    content.classList.remove('from-bottom', 'from-right', 'from-left');
+    
+    // ক্লিক অনুযায়ী স্টাইল সেট করা
+    clickCount++;
+    if(clickCount === 1) {
+        content.classList.add('from-bottom');
+    } else if(clickCount === 2) {
+        content.classList.add('from-right');
+    } else if(clickCount === 3) {
+        content.classList.add('from-left');
+        clickCount = 0; // ৩ বার হলে আবার ১ থেকে শুরু হবে
+    }
+
+    menu.style.display = 'block';
+    // এনিমেশন এর জন্য সামান্য দেরি করা
+    setTimeout(() => {
+        content.classList.add('menu-active');
+    }, 10);
+}
+
+window.closeMenu = function() {
+    const menu = document.getElementById('side-menu');
+    const content = menu.querySelector('.menu-content');
+    
+    content.classList.remove('menu-active');
+    setTimeout(() => {
+        menu.style.display = 'none';
+    }, 400);
+}
+
+</script>
 </body>
 </html>
