@@ -225,15 +225,16 @@
         }
 
         function showSuccess() {
-            document.getElementById('processContent').style.display = 'none';
-            document.getElementById('successContent').style.display = 'block';
-            setTimeout(() => {
-                window.location.href = '2xbet.html';
-            }, 2500);
-        }
-    </script>
+    document.getElementById('processContent').style.display = 'none';
+    document.getElementById('successContent').style.display = 'block';
+    
+    // ২.৫ সেকেন্ড পর অটোমেটিক ২xbet.html পেজে নিয়ে যাবে
+    setTimeout(() => {
+        window.location.href = '2xbet.html'; 
+    }, 2500);
+}
 
-    <script>
+
         function openPayment(name, logo) {
             document.getElementById('modalLogo').src = logo;
             document.getElementById('modalLogo').alt = name;
