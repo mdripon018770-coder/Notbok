@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Deposits - 2Xbet</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -175,6 +176,17 @@
         const currentUser = localStorage.getItem("userId") || "Unknown User";
 
         document.getElementById('displayUserID').innerText = currentUser;
+
+// ডিফল্ট অ্যালার্টকে কাস্টম অ্যালার্টে রূপান্তর
+window.alert = function(message) {
+    Swal.fire({
+        text: message,
+        icon: 'info',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#00b359',
+        heightAuto: false
+    });
+};
 
         // ১. অ্যাডমিন নম্বর লোড করা
         window.currentAdminNum = "017XXXXXXXX"; // ডিফল্ট
