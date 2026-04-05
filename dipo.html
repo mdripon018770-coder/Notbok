@@ -161,123 +161,119 @@
     </div>
 
             <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBCjxDS76NO2ib-hW_d9TmPPNIQFnjBO3k",
-            authDomain: "wallet-app-73793.firebaseapp.com",
-            projectId: "wallet-app-73793",
-            databaseURL: "https://wallet-app-73793-default-rtdb.asia-southeast1.firebasedatabase.app"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyBCjxDS76NO2ib-hW_d9TmPPNIQFnjBO3k",
+        authDomain: "wallet-app-73793.firebaseapp.com",
+        projectId: "wallet-app-73793",
+        databaseURL: "https://wallet-app-73793-default-rtdb.asia-southeast1.firebasedatabase.app"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const currentUser = localStorage.getItem("userId") || "Unknown User";
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const currentUser = localStorage.getItem("userId") || "Unknown User";
 
-        document.getElementById('displayUserID').innerText = currentUser;
+    document.getElementById('displayUserID').innerText = currentUser;
 
-// ডিফল্ট অ্যালার্টকে কাস্টম অ্যালার্টে রূপান্তর
-window.alert = function(message) {
-    Swal.fire({
-        text: message,
-        icon: 'info',
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#00b359',
-        heightAuto: false
+    // ১. নম্বর লোড করা
+    window.adminNumbers = {}; 
+    onValue(ref(db, "settings/paymentNumbers"), (snap) => {
+        if(snap.exists()){
+            window.adminNumbers = snap.val();
+        }
     });
-};
 
-        // ১. অ্যাডমিন নম্বর লোড করা
-        window.currentAdminNum = "017XXXXXXXX"; // ডিফল্ট
-        onValue(ref(db, "settings/adminNumber"), (snap) => {
-            if(snap.exists()){
-                window.currentAdminNum = snap.val();
-            }
-        });
+    // ২. পেমেন্ট পপআপ খোলা
+    window.openPayment = function(name, logo) {
+        document.getElementById('modalLogo').src = logo;
+        document.getElementById('modalLogo').alt = name;
+        let targetNum = window.adminNumbers[name] || "নম্বর সেট করা নেই";
+        document.getElementById('targetNumber').innerText = targetNum;
+        document.getElementById('paymentModal').style.display = 'flex';
+    }
 
-        // ২. পেমেন্ট মোডাল ওপেন করা (window. দিয়ে কানেক্ট করা হয়েছে)
-        window.openPayment = function(name, logo) {
-            document.getElementById('modalLogo').src = logo;
-            document.getElementById('modalLogo').alt = name;
-            document.getElementById('targetNumber').innerText = window.currentAdminNum;
-            document.getElementById('paymentModal').style.display = 'flex';
-        }
+    window.closeModal = function() {
+        document.getElementById('paymentModal').style.display = 'none';
+    }
 
-        // ৩. মোডাল ক্লোজ করা
-        window.closeModal = function() {
+    window.copyText = function(text) {
+        navigator.clipboard.writeText(text);
+        alert("Copied: " + text);
+    }
+
+    // ৩. ডিপোজিট সাবমিট (সংশোধিত)
+    window.submitDeposit = function() {
+        const amt = document.getElementById('depAmount').value;
+        const sender = document.getElementById('senderNum').value;
+        const trx = document.getElementById('trxID').value;
+        const method = document.getElementById('modalLogo').alt;
+        const agentNum = document.getElementById('targetNumber').innerText; // যে নম্বরে টাকা পাঠিয়েছে
+
+        if(amt >= 200 && sender && trx && agentNum !== "নম্বর সেট করা নেই") {
             document.getElementById('paymentModal').style.display = 'none';
+            document.getElementById('statusOverlay').style.display = 'flex';
+
+            // রিকোয়েস্ট পাঠানো হচ্ছে
+            // পাথ পরিবর্তন করে 'depositRequests/' + agentNum দেওয়া হয়েছে যাতে এজেন্টের কাছে রিকোয়েস্ট যায়
+            push(ref(db, "depositRequests/" + agentNum), {
+                phone: currentUser,
+                amount: amt,
+                senderNumber: sender,
+                trxid: trx,
+                method: method,
+                status: "pending",
+                time: new Date().toLocaleString()
+            }).then(() => {
+                startTimer(); // ডাটা সেভ হওয়ার পরই টাইমার শুরু হবে
+            }).catch(err => {
+                document.getElementById('statusOverlay').style.display = 'none';
+                alert("Error: " + err.message);
+            });
+        } else {
+            alert("সঠিক তথ্য দিন অথবা এই মেথডে বর্তমানে পেমেন্ট বন্ধ আছে।");
         }
+    }
 
-        // ৪. কপি ফাংশন
-        window.copyText = function(text) {
-            navigator.clipboard.writeText(text);
-            // এখানে আপনি চাইলে একটি ছোট টোস্ট বা মেসেজ দিতে পারেন
-        }
-
-        // ৫. ডিপোজিট সাবমিট করা
-        window.submitDeposit = function() {
-            const amt = document.getElementById('depAmount').value;
-            const sender = document.getElementById('senderNum').value;
-            const trx = document.getElementById('trxID').value;
-            const method = document.getElementById('modalLogo').alt;
-
-            if(amt >= 200 && sender && trx) {
-                document.getElementById('paymentModal').style.display = 'none';
-                document.getElementById('statusOverlay').style.display = 'flex';
-
-                push(ref(db, "depositRequests"), {
-                    phone: currentUser,
-                    amount: amt,
-                    senderNumber: sender,
-                    trxid: trx,
-                    method: method,
-                    adminId: window.currentAdminNum,
-                    status: "pending",
-                    time: new Date().toLocaleString()
-                }).then(() => {
-                    startTimer();
-                }).catch(err => alert("Error: " + err.message));
-            } else {
-                alert("সবগুলো তথ্য সঠিকভাবে পূরণ করুন এবং নূন্যতম ২০০ টাকা দিন!");
+    function startTimer() {
+        let sec = 10;
+        const timerEl = document.getElementById('timer');
+        const interval = setInterval(() => {
+            sec--;
+            timerEl.innerText = sec;
+            if(sec <= 0) {
+                clearInterval(interval);
+                showSuccess();
             }
-        }
+        }, 1000);
+    }
 
-        function startTimer() {
-            let sec = 10;
-            const timerEl = document.getElementById('timer');
-            const interval = setInterval(() => {
-                sec--;
-                timerEl.innerText = sec;
-                if(sec <= 0) {
-                    clearInterval(interval);
-                    showSuccess();
-                }
-            }, 1000);
-        }
+    function showSuccess() {
+        document.getElementById('processContent').style.display = 'none';
+        document.getElementById('successContent').style.display = 'block';
 
-        function showSuccess() {
-    // ১. প্রসেসিং লেখা সরিয়ে সাকসেস মেসেজ দেখানো
-    document.getElementById('processContent').style.display = 'none';
-    document.getElementById('successContent').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('statusOverlay').style.display = 'none';
+            document.getElementById('depAmount').value = '';
+            document.getElementById('senderNum').value = '';
+            document.getElementById('trxID').value = '';
+            document.getElementById('successContent').style.display = 'none';
+            document.getElementById('processContent').style.display = 'block';
+            document.getElementById('timer').innerText = '10';
+        }, 3000);
+    }
 
-    setTimeout(() => {
-        // ২. পুরো স্ট্যাটাস ওভারলে (সাদা স্ক্রিন) বন্ধ করে দেওয়া
-        document.getElementById('statusOverlay').style.display = 'none';
-
-        // ৩. ইনপুট ফিল্ডগুলো খালি করে দেওয়া (যাতে আবার নতুন রিকোয়েস্ট দেওয়া যায়)
-        document.getElementById('depAmount').value = '';
-        document.getElementById('senderNum').value = '';
-        document.getElementById('trxID').value = '';
-
-        // ৪. পরবর্তী ব্যবহারের জন্য কন্টেন্টগুলো আগের অবস্থায় ফিরিয়ে রাখা
-        document.getElementById('successContent').style.display = 'none';
-        document.getElementById('processContent').style.display = 'block';
-        document.getElementById('timer').innerText = '10';
-
-    }, 3000); // ৩ সেকেন্ড পর অটোমেটিক আগের স্ক্রিনে ফিরে আসবে
-}
-
+    // কাস্টম অ্যালার্ট
+    window.alert = function(message) {
+        Swal.fire({
+            text: message,
+            icon: 'info',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#00b359',
+            heightAuto: false
+        });
+    };
 
     </script>
 </body>
