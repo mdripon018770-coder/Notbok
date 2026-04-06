@@ -4,9 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>2xBet Fixed Slot</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
         :root { --reel-h: 80px; }
         body { background: #001a14; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: Arial, sans-serif; }
+
+        /* SweetAlert Custom Style - পপআপকে গেমের সাথে ম্যাচ করানোর জন্য */
+        .swal2-popup {
+            background: #0a0a23 !important;
+            border: 2px solid #ffd700 !important;
+            color: #fff !important;
+            border-radius: 15px !important;
+        }
+        .swal2-title, .swal2-html-container {
+            color: #fff !important;
+        }
+        .swal2-confirm {
+            background: linear-gradient(to bottom, #ffcc00, #ff8800) !important;
+            color: #000 !important;
+            font-weight: bold !important;
+        }
+
+        /* উইন হলে ঘরগুলো কাঁপার অ্যানিমেশন */
+        @keyframes winShake {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); border: 2px solid #00ff00; box-shadow: 0 0 15px #00ff00; }
+            100% { transform: scale(1); }
+        }
+        
+        .win-active {
+            animation: winShake 0.5s infinite;
+            z-index: 10;
+        }
 
         /* মেইন কন্টেইনার - আপনার স্ক্রিনশট অনুযায়ী সাইজ */
         .app-container {
@@ -35,26 +66,71 @@
         .bottom-bar { display: flex; width: 100%; justify-content: space-between; align-items: center; padding: 10px 15px; box-sizing: border-box; background: rgba(0,0,0,0.4); }
         .balance-box { text-align: left; min-width: 90px; }
         
-        .spin-wrap { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); }
-        .spin-btn { 
-            width: 90px; height: 90px; background: radial-gradient(circle, #ffcc00, #ff8800); 
-            border-radius: 50%; border: 4px solid #fff; font-weight: bold; cursor: pointer;
-            box-shadow: 0 0 15px rgba(255,215,0,0.4);
+                        /* ১. স্পিন বাটনের পজিশন (যা আপনি ঠিক করেছিলেন) */
+        .spin-wrap { 
+            position: absolute; 
+            bottom: 5px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            z-index: 100;
         }
 
-        .side-btns { display: flex; flex-direction: column; gap: 5px; }
-        .opt-btn { background: #0f3460; color: #fff; border: 1px solid #ffd700; border-radius: 4px; padding: 4px 8px; font-size: 10px; width: 65px; }
+                /* ১. স্পিন বাটনের এনিমেটেড ডিজাইন (যা আপনি পছন্দ করেছেন) */
+        .spin-wrap { 
+            position: absolute; 
+            bottom: -5px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            z-index: 100;
+        }
 
-        #winTxt { color: #00ff00; font-weight: bold; position: absolute; bottom: 120px; width: 100%; text-align: center; font-size: 20px; }
+        .spin-btn { 
+            width: 75px; height: 75px; 
+            background: radial-gradient(circle, #ffd700, #ff8800, #b8860b); 
+            border-radius: 50%; border: 3px solid #fff; 
+            font-weight: bold; font-size: 14px; color: #000;
+            cursor: pointer; outline: none; text-transform: uppercase;
+            box-shadow: 0 0 15px #ffcc00, inset 0 0 10px rgba(255,255,255,0.5);
+            transition: 0.2s;
+            animation: pulse-glow 2s infinite; 
+        }
 
-        .spinning { animation: slideDown 0.1s linear infinite; }
-        @keyframes slideDown { from { top: 0; } to { top: calc(-1 * var(--reel-h)); } }
+        .spin-btn:active { transform: scale(0.9); filter: brightness(1.2); }
+        .spin-btn:disabled { background: #555; box-shadow: none; animation: none; color: #888; }
 
-@keyframes winShake {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 5px #ffcc00; }
+            50% { box-shadow: 0 0 25px #ff8800, 0 0 40px rgba(255, 215, 0, 0.3); }
+            100% { box-shadow: 0 0 5px #ffcc00; }
+        }
+
+        .bottom-bar { 
+            display: flex; width: 100%; 
+            justify-content: space-between; align-items: flex-end; 
+            padding: 0 15px 12px 15px; box-sizing: border-box; 
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            height: 85px; 
+        }
+
+        /* ২. স্ক্রলিং এর গতি কমানো হয়েছে (0.1s থেকে 0.3s করা হয়েছে) */
+        .spinning { 
+            animation: slideVertical 0.3s linear infinite !important; 
+        }
+
+        @keyframes slideVertical {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        /* থামার সময় সুন্দর একটি বাউন্স ইফেক্ট */
+        .stop-effect {
+            animation: bounceIn 0.4s ease-out forwards;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: translateY(-25px); }
+            100% { transform: translateY(0); }
+        }
 
     </style>
 </head>
@@ -189,7 +265,7 @@
         }
     }
 
-    // --- এখান থেকে নতুন পরিবর্তন (উইন হাইলাইট) ---
+        // --- এখান থেকে নতুন পরিবর্তন (উইন হাইলাইট ও পপআপ আপডেট) ---
     function highlightWin(line) {
         line.forEach(idx => {
             const reelBox = document.getElementById('r' + idx).parentElement;
@@ -216,6 +292,7 @@
         }
         
         let totalWin = 0;
+        let winningSymbol = ""; // জেতা কার্ডটি সেভ রাখার জন্য
         const lines = [
             [0, 1, 2], [3, 4, 5], [6, 7, 8], // Horizontal
             [0, 4, 8], [2, 4, 6]             // Diagonal
@@ -226,7 +303,8 @@
                 const matched = iconData.find(item => item.sym === r[line[0]]);
                 if(matched) {
                     totalWin += bet * matched.mult;
-                    highlightWin(line); // ঘরগুলো লাল করবে
+                    winningSymbol = r[line[0]]; // কোন কার্ডে জিতেছে তা নেওয়া হলো
+                    highlightWin(line); 
                 }
             }
         });
@@ -234,41 +312,79 @@
         if(totalWin > 0) {
             let afterWin = window.mainBalance + totalWin;
             await window.syncWithMainApp(afterWin);
-            showWinEffect(totalWin);
+            
+            // এখন টাকা এবং কার্ড দুটোই পপআপে পাঠানো হবে
+            showWinEffect(totalWin, winningSymbol);
         }
     }
     // --- শেষ ---
 
-    function showWinEffect(amount) {
+        function showWinEffect(amount, winSymbol) {
+        // স্ক্রিনের নিচের ছোট উইন টেক্সট আপডেট
         const winTxt = document.getElementById('winTxt');
-        winTxt.innerHTML = `<span style="font-size:24px; color:#ffcc00; text-shadow: 0 0 10px #ff0000; font-weight:bold;">WIN: ৳${amount}</span>`;
-        
-        for(let i=0; i<25; i++) {
+        if(winTxt) winTxt.innerHTML = `<span style="font-size:22px; color:#ffcc00; text-shadow: 0 0 10px #ff0000; font-weight:bold;">WIN: ৳${amount}</span>`;
+
+        // স্ক্রিনের মাঝখানে স্টাইলিশ পপআপ
+        Swal.fire({
+            title: '<span style="color: #ffd700; font-size: 26px; text-shadow: 0 0 10px #ff8800; font-weight: bold;">BIG WIN!</span>',
+            html: `
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <div style="margin: 15px 0; padding: 10px; background: #fff; border: 4px solid #ffd700; border-radius: 15px; box-shadow: 0 0 20px rgba(255,215,0,0.5);">
+                        ${winSymbol.includes('.png') ? 
+                            `<img src="${winSymbol}" style="width: 75px; height: 75px; display: block;">` : 
+                            `<span style="font-size: 55px; line-height: 1; display: block;">${winSymbol}</span>`
+                        }
+                    </div>
+                    <div style="font-size: 35px; font-weight: bold; color: #00ff00; text-shadow: 2px 2px 4px #000;">৳${amount}</div>
+                    <div style="color: #eee; font-size: 14px; margin-top: 8px; font-family: 'Arial', sans-serif;">অভিনন্দন! আপনি জিতেছেন।</div>
+                </div>
+            `,
+            background: '#0a0a23',
+            backdrop: 'rgba(0,0,0,0.8)',
+            timer: 3000,
+            showConfirmButton: false,
+            showClass: { popup: 'animate__animated animate__zoomIn' },
+            hideClass: { popup: 'animate__animated animate__fadeOut' }
+        });
+
+        // স্ক্রিনে টাকার বৃষ্টি (💰)
+        for(let i=0; i<30; i++) {
             const money = document.createElement('div');
             money.innerText = "💰"; 
             money.style.cssText = `position: fixed; left: ${Math.random() * 100}vw; top: -50px; z-index: 10000; font-size: 25px; transition: transform 2s linear, top 2s linear; pointer-events: none;`;
             document.body.appendChild(money);
-            setTimeout(() => { money.style.top = "110vh"; money.style.transform = `rotate(${Math.random() * 360}deg)`; }, 50);
+            setTimeout(() => { 
+                money.style.top = "110vh"; 
+                money.style.transform = `rotate(${Math.random() * 360}deg)`; 
+            }, 50);
             setTimeout(() => { money.remove(); }, 2050);
         }
     }
 
+    // বেট কমানো বা বাড়ানোর ফাংশন
     function chgBet(v) {
         let d = document.getElementById('betDisplay');
         let n = parseInt(d.innerText) + v;
         if(n >= 5) d.innerText = n;
     }
 
+    // অটো স্পিন টগল ফাংশন
     function toggleAuto() {
         isAuto = !isAuto;
-        document.getElementById('autoBtn').style.background = isAuto ? 'gold' : '#0f3460';
-        document.getElementById('autoBtn').style.color = isAuto ? 'black' : 'white';
-        if(isAuto) spin();
+        const autoBtn = document.getElementById('autoBtn');
+        if(isAuto) {
+            autoBtn.style.background = 'linear-gradient(to bottom, #ffd700, #ff8800)';
+            autoBtn.style.color = 'black';
+            spin(); // অটো স্পিন শুরু
+        } else {
+            autoBtn.style.background = '#0f3460';
+            autoBtn.style.color = 'white';
+        }
     }
 
+    // গেম লোড হওয়ার সময় ইনিশিয়েট করা
     window.onload = init;
+
 </script>
-
-
 </body>
 </html>
