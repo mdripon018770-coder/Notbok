@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2xBet Fixed Slot</title>
+    <style>
+        :root { --reel-h: 80px; }
+        body { background: #001a14; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: Arial, sans-serif; }
+
+        /* মেইন কন্টেইনার - আপনার স্ক্রিনশট অনুযায়ী সাইজ */
+        .app-container {
+            width: 350px; height: 92vh; background: #0a0a23; border: 3px solid #ffd700; border-radius: 20px;
+            display: flex; flex-direction: column; position: relative; overflow: hidden;
+        }
+
+        /* ব্যানার ফিক্সড */
+        .jackpot-banner { width: 100%; height: 110px; object-fit: contain; margin-top: 10px; }
+
+        .paytable { background: rgba(255, 215, 0, 0.05); margin: 8px; padding: 8px; border: 1px solid #ffd700; border-radius: 10px; font-size: 10px; color: #ffd700; display: grid; grid-template-columns: 1fr 1fr; }
+
+        /* স্লট গ্রিড - সাদা ভাব দূর করা হয়েছে */
+        .slot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; background: #12123b; margin: 8px; padding: 12px; border-radius: 15px; }
+        .reel-box { height: var(--reel-h); background: #fff; border-radius: 8px; overflow: hidden; position: relative; }
+        .reel-strip { position: absolute; width: 100%; top: 0; }
+        .symbol { height: var(--reel-h); display: flex; align-items: center; justify-content: center; }
+        .symbol img { width: 65px; height: 65px; mix-blend-mode: multiply; } /* সাদা অংশ কাটবে */
+
+        /* কন্ট্রোলস এবং বাটন */
+        .controls { margin-top: auto; padding-bottom: 10px; display: flex; flex-direction: column; align-items: center; }
+        .bet-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+        .btn-small { background: #eee; border: none; width: 35px; height: 35px; border-radius: 4px; font-weight: bold; }
+        .bet-val { background: #000; border: 2px solid #ffd700; color: #ffd700; width: 80px; padding: 6px; text-align: center; border-radius: 6px; font-size: 18px; }
+
+        .bottom-bar { display: flex; width: 100%; justify-content: space-between; align-items: center; padding: 10px 15px; box-sizing: border-box; background: rgba(0,0,0,0.4); }
+        .balance-box { text-align: left; min-width: 90px; }
+        
+        .spin-wrap { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); }
+        .spin-btn { 
+            width: 90px; height: 90px; background: radial-gradient(circle, #ffcc00, #ff8800); 
+            border-radius: 50%; border: 4px solid #fff; font-weight: bold; cursor: pointer;
+            box-shadow: 0 0 15px rgba(255,215,0,0.4);
+        }
+
+        .side-btns { display: flex; flex-direction: column; gap: 5px; }
+        .opt-btn { background: #0f3460; color: #fff; border: 1px solid #ffd700; border-radius: 4px; padding: 4px 8px; font-size: 10px; width: 65px; }
+
+        #winTxt { color: #00ff00; font-weight: bold; position: absolute; bottom: 120px; width: 100%; text-align: center; font-size: 20px; }
+
+        .spinning { animation: slideDown 0.1s linear infinite; }
+        @keyframes slideDown { from { top: 0; } to { top: calc(-1 * var(--reel-h)); } }
+
+@keyframes winShake {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/Jacpot.png" class="jackpot-banner">
+
+    <div class="paytable">
+        <div>777 🏆 : 100x</div> <div>🍎 Apple : 15x</div>
+        <div>💎 Diamond : 25x</div> <div>⭐ Star : 5x</div>
+    </div>
+
+    <div class="slot-grid" id="grid">
+        </div>
+
+    <div id="winTxt"></div>
+
+    <div class="controls">
+        <div class="bet-row">
+            <button class="btn-small" onclick="chgBet(-5)">-</button>
+            <div id="betDisplay" class="bet-val">10</div>
+            <button class="btn-small" onclick="chgBet(5)">+</button>
+        </div>
+
+        <div class="bottom-bar">
+            <div class="balance-box">
+                <div style="color:#ffd700; font-size:9px;">BALANCE</div>
+                <div id="bal" style="color:#fff; font-size:18px; font-weight:bold;">1000.00</div>
+            </div>
+            
+            <div class="spin-wrap">
+                <button id="spinBtn" class="spin-btn" onclick="spin()">SPIN</button>
+            </div>
+
+            <div class="side-btns">
+                <button id="autoBtn" class="opt-btn" onclick="toggleAuto()">AUTO</button>
+                <button id="fastBtn" class="opt-btn">FAST</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, update, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBCjxDS76NO2ib-hW_d9TmPPNIQFnjBO3k",
+        authDomain: "wallet-app-73793.firebaseapp.com",
+        projectId: "wallet-app-73793",
+        databaseURL: "https://wallet-app-73793-default-rtdb.asia-southeast1.firebasedatabase.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    let currentUser = localStorage.getItem("userId");
+
+    window.mainBalance = 0; // গ্লোবাল ব্যালেন্স
+
+    if (currentUser) {
+        onValue(ref(db, `users/${currentUser}/balance`), (snap) => {
+            window.mainBalance = parseFloat(snap.val() || 0);
+            const balDisplay = document.getElementById('bal');
+            if(balDisplay) balDisplay.innerText = window.mainBalance.toFixed(2);
+        });
+    }
+
+    // ফায়ারবেসে ব্যালেন্স আপডেট করার ফাংশন
+    window.syncWithMainApp = async function(newVal) {
+        if (currentUser) {
+            await update(ref(db, `users/${currentUser}`), { balance: parseFloat(newVal.toFixed(2)) });
+        }
+    }
+</script>
+
+<script>
+    const bUrl = "https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/";
+    
+    const iconData = [
+        { sym: bUrl+"777.png", mult: 100 },
+        { sym: "💎", mult: 25 },
+        { sym: "🍎", mult: 15 },
+        { sym: "⭐", mult: 5 },
+        { sym: "🍇", mult: 3 },
+        { sym: bUrl+"7.png", mult: 2 },
+        { sym: bUrl+"77.png", mult: 5 }
+    ];
+
+    const icons = [bUrl+"777.png", "💎", "🍎", "⭐", "🍇", bUrl+"7.png", bUrl+"77.png", "🍎", "⭐"];
+    let isAuto = false;
+
+    function init() {
+        const grid = document.getElementById('grid');
+        grid.innerHTML = ""; 
+        for(let i=0; i<9; i++) {
+            grid.innerHTML += `<div class="reel-box"><div id="r${i}" class="reel-strip"></div></div>`;
+            setSym(i, icons[Math.floor(Math.random()*icons.length)]);
+        }
+    }
+
+    function setSym(idx, val) {
+        const el = document.getElementById('r'+idx);
+        if(!el) return;
+        el.innerHTML = `<div class="symbol" data-val="${val}">${val.includes('.png') ? `<img src="${val}">` : `<span style="font-size:40px">${val}</span>`}</div>`;
+    }
+
+    async function spin() {
+        const bet = parseInt(document.getElementById('betDisplay').innerText);
+        if(window.mainBalance < bet) return alert("লো ব্যালেন্স!");
+
+        let afterBet = window.mainBalance - bet;
+        await window.syncWithMainApp(afterBet);
+
+        document.getElementById('spinBtn').disabled = true;
+        document.getElementById('winTxt').innerText = "";
+
+        for(let i=0; i<9; i++) {
+            const el = document.getElementById('r'+i);
+            el.classList.add('spinning');
+            
+            setTimeout(async () => {
+                el.classList.remove('spinning');
+                const res = icons[Math.floor(Math.random()*icons.length)];
+                setSym(i, res);
+                if(i === 8) {
+                    document.getElementById('spinBtn').disabled = false;
+                    await checkWin(bet);
+                    if(isAuto) setTimeout(spin, 1200);
+                }
+            }, 800 + (i * 100));
+        }
+    }
+
+    // --- এখান থেকে নতুন পরিবর্তন (উইন হাইলাইট) ---
+    function highlightWin(line) {
+        line.forEach(idx => {
+            const reelBox = document.getElementById('r' + idx).parentElement;
+            reelBox.style.border = "3px solid #ff0000"; // লাল বর্ডার
+            reelBox.style.boxShadow = "0 0 15px #ff0000"; // লাল আলো
+            reelBox.style.animation = "winShake 0.5s infinite"; // কাঁপার অ্যানিমেশন
+        });
+
+        setTimeout(() => {
+            line.forEach(idx => {
+                const reelBox = document.getElementById('r' + idx).parentElement;
+                reelBox.style.border = "none";
+                reelBox.style.boxShadow = "none";
+                reelBox.style.animation = "none";
+            });
+        }, 3000);
+    }
+
+    async function checkWin(bet) {
+        const r = [];
+        for(let i=0; i<9; i++) {
+            const sym = document.getElementById('r'+i).children[0];
+            r.push(sym.getAttribute('data-val'));
+        }
+        
+        let totalWin = 0;
+        const lines = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Horizontal
+            [0, 4, 8], [2, 4, 6]             // Diagonal
+        ];
+
+        lines.forEach(line => {
+            if(r[line[0]] === r[line[1]] && r[line[1]] === r[line[2]]) {
+                const matched = iconData.find(item => item.sym === r[line[0]]);
+                if(matched) {
+                    totalWin += bet * matched.mult;
+                    highlightWin(line); // ঘরগুলো লাল করবে
+                }
+            }
+        });
+
+        if(totalWin > 0) {
+            let afterWin = window.mainBalance + totalWin;
+            await window.syncWithMainApp(afterWin);
+            showWinEffect(totalWin);
+        }
+    }
+    // --- শেষ ---
+
+    function showWinEffect(amount) {
+        const winTxt = document.getElementById('winTxt');
+        winTxt.innerHTML = `<span style="font-size:24px; color:#ffcc00; text-shadow: 0 0 10px #ff0000; font-weight:bold;">WIN: ৳${amount}</span>`;
+        
+        for(let i=0; i<25; i++) {
+            const money = document.createElement('div');
+            money.innerText = "💰"; 
+            money.style.cssText = `position: fixed; left: ${Math.random() * 100}vw; top: -50px; z-index: 10000; font-size: 25px; transition: transform 2s linear, top 2s linear; pointer-events: none;`;
+            document.body.appendChild(money);
+            setTimeout(() => { money.style.top = "110vh"; money.style.transform = `rotate(${Math.random() * 360}deg)`; }, 50);
+            setTimeout(() => { money.remove(); }, 2050);
+        }
+    }
+
+    function chgBet(v) {
+        let d = document.getElementById('betDisplay');
+        let n = parseInt(d.innerText) + v;
+        if(n >= 5) d.innerText = n;
+    }
+
+    function toggleAuto() {
+        isAuto = !isAuto;
+        document.getElementById('autoBtn').style.background = isAuto ? 'gold' : '#0f3460';
+        document.getElementById('autoBtn').style.color = isAuto ? 'black' : 'white';
+        if(isAuto) spin();
+    }
+
+    window.onload = init;
+</script>
+
+
+</body>
+</html>
