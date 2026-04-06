@@ -89,6 +89,20 @@
     100% { transform: translateY(-100px); opacity: 0; }
 }
 
+/* উইন মেসেজ অ্যানিমেশন */
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translate(-50%, -20%) scale(0.8); }
+    20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+    80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -80%) scale(0.8); }
+}
+
+/* টাকা উড়ে যাওয়ার অ্যানিমেশন */
+@keyframes flyToBalance {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--target-x), var(--target-y)) scale(0.5); opacity: 0; }
+}
+
     </style>
 </head>
 <body>
@@ -184,6 +198,7 @@
 
     window.balance = 0;
 
+    // ১. রিয়েল টাইম ব্যালেন্স লোড
     if (currentUser) {
         onValue(ref(db, `users/${currentUser}/balance`), (snap) => {
             window.balance = parseFloat(snap.val() || 0);
@@ -192,101 +207,106 @@
         });
     }
 
+    // ২. ডেটাবেসে টাকা আপডেট করার মেইন ফাংশন
     window.syncBalanceWithFirebase = async function(newBalance) {
         if (currentUser) {
-            await update(ref(db, `users/${currentUser}`), { balance: parseFloat(newBalance) });
+            await update(ref(db, `users/${currentUser}`), { balance: parseFloat(newBalance.toFixed(2)) });
         }
     }
 
-// ডিফল্ট অ্যালার্টকে কাস্টম অ্যালার্টে রূপান্তর
-window.alert = function(message) {
-    Swal.fire({
-        text: message,
-        icon: 'info',
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#00b359',
-        heightAuto: false
-    });
-};
+    window.alert = function(message) {
+        Swal.fire({ text: message, icon: 'info', confirmButtonText: 'OK', confirmButtonColor: '#00b359', heightAuto: false });
+    };
 
+    // ৩. বেট ধরার ফাংশন
     window.handleBet = async function(id) {
-        if(!isWaiting) return;
+        if(!window.isWaiting) return;
         let amt = parseFloat(document.getElementById('amt' + id).value);
         if(window.balance < amt) return alert("Low Balance");
         
-        window.balance -= amt; 
-        document.getElementById("main-balance").innerText = window.balance.toFixed(2);
-        await window.syncBalanceWithFirebase(window.balance);
+        let newBal = window.balance - amt;
+        await window.syncBalanceWithFirebase(newBal);
         
-        bets[id].active = true;
-        bets[id].amt = amt;
+        window.bets[id].active = true;
+        window.bets[id].amt = amt;
         document.getElementById('b' + id).style.display = 'none';
         document.getElementById('c' + id).style.display = 'block';
     }
 
+    // ৪. ক্যাশআউট ফাংশন (উইন অ্যানিমেশনসহ)
     window.handleCashout = async function(id) {
-    if(!window.isFlying || !window.bets[id].active) return;
-    
-    // ১. কত টাকা জিতলো সেটা ক্যালকুলেট করা
-    let winAmt = window.bets[id].amt * window.currentMult;
-    
-    // ২. স্ক্রিনে "You Win" অ্যানিমেশন দেখানো (নিচ থেকে উপরে উঠবে)
-    showWinAnimation(winAmt);
-    
-    // ৩. ব্যালেন্স আপডেট করা
-    window.balance += winAmt;
-    document.getElementById("main-balance").innerText = window.balance.toFixed(2);
-    
-    // ৪. ডাটাবেসে নতুন ব্যালেন্স সেভ করা
-    if (typeof window.syncBalanceWithFirebase === "function") {
-        await window.syncBalanceWithFirebase(window.balance);
-    } else {
-        // যদি উপরের ফাংশন না থাকে তবে সরাসরি আপডেট
-        await update(ref(db, `users/${currentUser}`), { balance: window.balance });
-    }
-    
-    // ৫. বাটনের অবস্থা পরিবর্তন করা
-    window.bets[id].active = false;
-    document.getElementById('b' + id).style.display = 'block';
-    document.getElementById('c' + id).style.display = 'none';
-    document.getElementById('b' + id).disabled = true;
-}
-
-// এই ফাংশনটি মেসেজটি তৈরি করে অ্যানিমেশন দিবে
-function showWinAnimation(amount) {
-    // অ্যানিমেশনের জন্য একটি কন্টেইনার তৈরি (যদি না থাকে)
-    let container = document.getElementById('win-anim-box');
-    if(!container) {
-        container = document.createElement('div');
-        container.id = 'win-anim-box';
-        container.style.cssText = "position:fixed; bottom:20%; left:50%; transform:translateX(-50%); z-index:9999; pointer-events:none;";
-        document.body.appendChild(container);
+        if(!window.isFlying || !window.bets[id].active) return;
+        
+        let winAmt = window.bets[id].amt * window.currentMult;
+        
+        // অ্যানিমেশন দেখানো
+        showWinAnimation(winAmt, id);
+        
+        // টাকা ব্যালেন্সে যোগ করা
+        let newBal = window.balance + winAmt;
+        await window.syncBalanceWithFirebase(newBal);
+        
+        // বাটন রিসেট
+        window.bets[id].active = false;
+        document.getElementById('b' + id).style.display = 'block';
+        document.getElementById('c' + id).style.display = 'none';
+        document.getElementById('b' + id).disabled = true;
     }
 
-    const msg = document.createElement('div');
-    // স্টাইল: গোল্ডেন কালার এবং সুন্দর শ্যাডো
-    msg.style.cssText = `
-        background: linear-gradient(145deg, #ffcc00, #ff9900);
-        color: #000;
-        padding: 12px 25px;
-        border-radius: 50px;
-        font-weight: bold;
-        font-size: 22px;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        margin-bottom: 10px;
-        border: 2px solid #fff;
-        text-align: center;
-        animation: winMoveUp 2s ease-out forwards;
-    `;
-    msg.innerHTML = `🎉 YOU WIN: ${amount.toFixed(2)} BDT`;
-    
-    container.appendChild(msg);
-    
-    // ২ সেকেন্ড পর মেসেজটি মুছে যাবে
-    setTimeout(() => { msg.remove(); }, 2000);
-}
+    // ৫. উইন অ্যানিমেশন লজিক (টাকা উড়ে উপরে যাবে)
+    function showWinAnimation(amount, id) {
+        const btn = document.getElementById('c' + id);
+        const btnRect = btn.getBoundingClientRect();
+        const balBox = document.querySelector('.balance-box').getBoundingClientRect();
 
+        // একটি অস্থায়ী এলিমেন্ট তৈরি করা
+        const flyingText = document.createElement('div');
+        flyingText.innerText = "+" + amount.toFixed(2);
+        flyingText.style.cssText = `
+            position: fixed;
+            left: ${btnRect.left + btnRect.width/2}px;
+            top: ${btnRect.top}px;
+            color: #ffc107;
+            font-weight: bold;
+            font-size: 20px;
+            z-index: 10000;
+            transition: all 1s ease-in-out;
+            pointer-events: none;
+        `;
+        document.body.appendChild(flyingText);
+
+        // ১ মিলি-সেকেন্ড পরে এটি ব্যালেন্সের দিকে উড়ে যাবে
+        setTimeout(() => {
+            flyingText.style.left = (balBox.left + balBox.width/2) + "px";
+            flyingText.style.top = (balBox.top) + "px";
+            flyingText.style.opacity = "0";
+            flyingText.style.transform = "scale(1.5)";
+        }, 50);
+
+        // ২ সেকেন্ড পর এলিমেন্টটি ডিলিট হয়ে যাবে
+        setTimeout(() => { flyingText.remove(); }, 1000);
+
+        // বড় সাকসেস মেসেজ
+        const winMsg = document.createElement('div');
+        winMsg.style.cssText = `
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            z-index: 10001;
+            animation: fadeInOut 2s forwards;
+        `;
+        winMsg.innerText = `YOU WON: ${amount.toFixed(2)} BDT`;
+        document.body.appendChild(winMsg);
+        setTimeout(() => { winMsg.remove(); }, 2000);
+    }
 </script>
+
 
 <script>
     const canvas = document.getElementById('gameCanvas');
