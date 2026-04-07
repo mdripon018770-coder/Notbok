@@ -187,24 +187,69 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    
+    // ১. ইউজার আইডি চেক (GitHub হোস্টিং এর জন্য গুরুত্বপূর্ণ)
     let currentUser = localStorage.getItem("userId");
 
-    window.mainBalance = 0; // গ্লোবাল ব্যালেন্স
+    window.mainBalance = 0; 
 
-    if (currentUser) {
-        onValue(ref(db, `users/${currentUser}/balance`), (snap) => {
-            window.mainBalance = parseFloat(snap.val() || 0);
-            const balDisplay = document.getElementById('bal');
-            if(balDisplay) balDisplay.innerText = window.mainBalance.toFixed(2);
+    // ২. রিয়েল টাইম ব্যালেন্স লোড ফাংশন
+    function loadUserBalance() {
+        if (!currentUser) {
+            console.error("User ID not found! Please login from the main app.");
+            return;
+        }
+
+        const balRef = ref(db, `users/${currentUser}/balance`);
+        onValue(balRef, (snap) => {
+            if (snap.exists()) {
+                window.mainBalance = parseFloat(snap.val());
+                const balDisplay = document.getElementById('bal');
+                if(balDisplay) balDisplay.innerText = window.mainBalance.toFixed(2);
+            }
         });
     }
 
-    // ফায়ারবেসে ব্যালেন্স আপডেট করার ফাংশন
+    // ৩. ফায়ারবেসে ব্যালেন্স আপডেট করার মেইন ফাংশন
     window.syncWithMainApp = async function(newVal) {
         if (currentUser) {
-            await update(ref(db, `users/${currentUser}`), { balance: parseFloat(newVal.toFixed(2)) });
+            try {
+                await update(ref(db, `users/${currentUser}`), { 
+                    balance: parseFloat(newVal.toFixed(2)) 
+                });
+            } catch (e) {
+                console.error("Balance Update Failed:", e);
+            }
         }
     }
+
+    // পেজ লোড হলে ব্যালেন্স চেক শুরু হবে
+    window.addEventListener('load', loadUserBalance);
+</script>
+
+<script>
+    // --- আপনার আগের গেম লজিক এখানে থাকবে ---
+    // শুধু spin() ফাংশনের ভেতরে নিচের পরিবর্তনটুকু নিশ্চিত করুন:
+
+    async function spin() {
+        const betDisplay = document.getElementById('betDisplay');
+        const bet = parseInt(betDisplay.innerText);
+
+        // ব্যালেন্স চেক (window.mainBalance ব্যবহার করা হয়েছে)
+        if(window.mainBalance < bet) {
+            Swal.fire({ icon: 'error', title: 'দুঃখিত!', text: 'আপনার ব্যালেন্স পর্যাপ্ত নয়।' });
+            return;
+        }
+
+        // বেটের টাকা কেটে নেওয়া
+        let afterBet = window.mainBalance - bet;
+        await window.syncWithMainApp(afterBet);
+
+        document.getElementById('spinBtn').disabled = true;
+        // ... বাকি স্পিনিং অ্যানিমেশন কোড ...
+    }
+    
+    // ... আপনার checkWin এবং অন্যান্য ফাংশনগুলো আগের মতোই থাকবে ...
 </script>
 
 <script>
