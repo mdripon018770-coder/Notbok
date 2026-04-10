@@ -178,6 +178,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
     import { getDatabase, ref, update, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
+    // ১. ফায়ারবেস কনফিগারেশন
     const firebaseConfig = {
         apiKey: "AIzaSyBCjxDS76NO2ib-hW_d9TmPPNIQFnjBO3k",
         authDomain: "wallet-app-73793.firebaseapp.com",
@@ -187,74 +188,14 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    
-    // ১. ইউজার আইডি চেক (GitHub হোস্টিং এর জন্য গুরুত্বপূর্ণ)
-    let currentUser = localStorage.getItem("userId");
 
-    window.mainBalance = 0; 
+    // ২. গ্লোবাল ভেরিয়েবল
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentUser = urlParams.get('id') || localStorage.getItem("userId");
+    window.mainBalance = 0;
+    let isAuto = false;
 
-    // ২. রিয়েল টাইম ব্যালেন্স লোড ফাংশন
-    function loadUserBalance() {
-        if (!currentUser) {
-            console.error("User ID not found! Please login from the main app.");
-            return;
-        }
-
-        const balRef = ref(db, `users/${currentUser}/balance`);
-        onValue(balRef, (snap) => {
-            if (snap.exists()) {
-                window.mainBalance = parseFloat(snap.val());
-                const balDisplay = document.getElementById('bal');
-                if(balDisplay) balDisplay.innerText = window.mainBalance.toFixed(2);
-            }
-        });
-    }
-
-    // ৩. ফায়ারবেসে ব্যালেন্স আপডেট করার মেইন ফাংশন
-    window.syncWithMainApp = async function(newVal) {
-        if (currentUser) {
-            try {
-                await update(ref(db, `users/${currentUser}`), { 
-                    balance: parseFloat(newVal.toFixed(2)) 
-                });
-            } catch (e) {
-                console.error("Balance Update Failed:", e);
-            }
-        }
-    }
-
-    // পেজ লোড হলে ব্যালেন্স চেক শুরু হবে
-    window.addEventListener('load', loadUserBalance);
-</script>
-
-<script>
-    // --- আপনার আগের গেম লজিক এখানে থাকবে ---
-    // শুধু spin() ফাংশনের ভেতরে নিচের পরিবর্তনটুকু নিশ্চিত করুন:
-
-    async function spin() {
-        const betDisplay = document.getElementById('betDisplay');
-        const bet = parseInt(betDisplay.innerText);
-
-        // ব্যালেন্স চেক (window.mainBalance ব্যবহার করা হয়েছে)
-        if(window.mainBalance < bet) {
-            Swal.fire({ icon: 'error', title: 'দুঃখিত!', text: 'আপনার ব্যালেন্স পর্যাপ্ত নয়।' });
-            return;
-        }
-
-        // বেটের টাকা কেটে নেওয়া
-        let afterBet = window.mainBalance - bet;
-        await window.syncWithMainApp(afterBet);
-
-        document.getElementById('spinBtn').disabled = true;
-        // ... বাকি স্পিনিং অ্যানিমেশন কোড ...
-    }
-    
-    // ... আপনার checkWin এবং অন্যান্য ফাংশনগুলো আগের মতোই থাকবে ...
-</script>
-
-<script>
     const bUrl = "https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/";
-    
     const iconData = [
         { sym: bUrl+"777.png", mult: 100 },
         { sym: "💎", mult: 25 },
@@ -264,18 +205,37 @@
         { sym: bUrl+"7.png", mult: 2 },
         { sym: bUrl+"77.png", mult: 5 }
     ];
-
     const icons = [bUrl+"777.png", "💎", "🍎", "⭐", "🍇", bUrl+"7.png", bUrl+"77.png", "🍎", "⭐"];
-    let isAuto = false;
 
-    function init() {
+    // ৩. ব্যালেন্স সিঙ্ক এবং ফাংশনসমূহ (Window এর সাথে যুক্ত করা যাতে বাটন কাজ করে)
+    
+    window.loadUserBalance = function() {
+        if (!currentUser) return;
+        const balRef = ref(db, `users/${currentUser}/balance`);
+        onValue(balRef, (snap) => {
+            if (snap.exists()) {
+                window.mainBalance = parseFloat(snap.val());
+                document.getElementById('bal').innerText = window.mainBalance.toFixed(2);
+            }
+        });
+    };
+
+    window.syncWithMainApp = async function(newVal) {
+        if (currentUser) {
+            try {
+                await update(ref(db, `users/${currentUser}`), { balance: parseFloat(newVal.toFixed(2)) });
+            } catch (e) { console.error(e); }
+        }
+    };
+
+    window.init = function() {
         const grid = document.getElementById('grid');
         grid.innerHTML = ""; 
         for(let i=0; i<9; i++) {
             grid.innerHTML += `<div class="reel-box"><div id="r${i}" class="reel-strip"></div></div>`;
             setSym(i, icons[Math.floor(Math.random()*icons.length)]);
         }
-    }
+    };
 
     function setSym(idx, val) {
         const el = document.getElementById('r'+idx);
@@ -283,9 +243,19 @@
         el.innerHTML = `<div class="symbol" data-val="${val}">${val.includes('.png') ? `<img src="${val}">` : `<span style="font-size:40px">${val}</span>`}</div>`;
     }
 
-    async function spin() {
+    window.chgBet = function(v) {
+        let d = document.getElementById('betDisplay');
+        let n = parseInt(d.innerText) + v;
+        if(n >= 5) d.innerText = n;
+    };
+
+    window.spin = async function() {
         const bet = parseInt(document.getElementById('betDisplay').innerText);
-        if(window.mainBalance < bet) return alert("লো ব্যালেন্স!");
+        if(window.mainBalance < bet) {
+            Swal.fire({ icon: 'error', title: 'দুঃখিত!', text: 'আপনার ব্যালেন্স পর্যাপ্ত নয়।' });
+            isAuto = false;
+            return;
+        }
 
         let afterBet = window.mainBalance - bet;
         await window.syncWithMainApp(afterBet);
@@ -303,33 +273,14 @@
                 setSym(i, res);
                 if(i === 8) {
                     document.getElementById('spinBtn').disabled = false;
-                    await checkWin(bet);
-                    if(isAuto) setTimeout(spin, 1200);
+                    await window.checkWin(bet);
+                    if(isAuto) setTimeout(window.spin, 1200);
                 }
             }, 800 + (i * 100));
         }
-    }
+    };
 
-        // --- এখান থেকে নতুন পরিবর্তন (উইন হাইলাইট ও পপআপ আপডেট) ---
-    function highlightWin(line) {
-        line.forEach(idx => {
-            const reelBox = document.getElementById('r' + idx).parentElement;
-            reelBox.style.border = "3px solid #ff0000"; // লাল বর্ডার
-            reelBox.style.boxShadow = "0 0 15px #ff0000"; // লাল আলো
-            reelBox.style.animation = "winShake 0.5s infinite"; // কাঁপার অ্যানিমেশন
-        });
-
-        setTimeout(() => {
-            line.forEach(idx => {
-                const reelBox = document.getElementById('r' + idx).parentElement;
-                reelBox.style.border = "none";
-                reelBox.style.boxShadow = "none";
-                reelBox.style.animation = "none";
-            });
-        }, 3000);
-    }
-
-    async function checkWin(bet) {
+    window.checkWin = async function(bet) {
         const r = [];
         for(let i=0; i<9; i++) {
             const sym = document.getElementById('r'+i).children[0];
@@ -337,19 +288,16 @@
         }
         
         let totalWin = 0;
-        let winningSymbol = ""; // জেতা কার্ডটি সেভ রাখার জন্য
-        const lines = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Horizontal
-            [0, 4, 8], [2, 4, 6]             // Diagonal
-        ];
+        let winningSymbol = "";
+        const lines = [[0,1,2],[3,4,5],[6,7,8],[0,4,8],[2,4,6]];
 
         lines.forEach(line => {
             if(r[line[0]] === r[line[1]] && r[line[1]] === r[line[2]]) {
                 const matched = iconData.find(item => item.sym === r[line[0]]);
                 if(matched) {
                     totalWin += bet * matched.mult;
-                    winningSymbol = r[line[0]]; // কোন কার্ডে জিতেছে তা নেওয়া হলো
-                    highlightWin(line); 
+                    winningSymbol = r[line[0]];
+                    highlightWin(line);
                 }
             }
         });
@@ -357,79 +305,47 @@
         if(totalWin > 0) {
             let afterWin = window.mainBalance + totalWin;
             await window.syncWithMainApp(afterWin);
-            
-            // এখন টাকা এবং কার্ড দুটোই পপআপে পাঠানো হবে
             showWinEffect(totalWin, winningSymbol);
         }
-    }
-    // --- শেষ ---
+    };
 
-        function showWinEffect(amount, winSymbol) {
-        // স্ক্রিনের নিচের ছোট উইন টেক্সট আপডেট
-        const winTxt = document.getElementById('winTxt');
-        if(winTxt) winTxt.innerHTML = `<span style="font-size:22px; color:#ffcc00; text-shadow: 0 0 10px #ff0000; font-weight:bold;">WIN: ৳${amount}</span>`;
-
-        // স্ক্রিনের মাঝখানে স্টাইলিশ পপআপ
-        Swal.fire({
-            title: '<span style="color: #ffd700; font-size: 26px; text-shadow: 0 0 10px #ff8800; font-weight: bold;">BIG WIN!</span>',
-            html: `
-                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                    <div style="margin: 15px 0; padding: 10px; background: #fff; border: 4px solid #ffd700; border-radius: 15px; box-shadow: 0 0 20px rgba(255,215,0,0.5);">
-                        ${winSymbol.includes('.png') ? 
-                            `<img src="${winSymbol}" style="width: 75px; height: 75px; display: block;">` : 
-                            `<span style="font-size: 55px; line-height: 1; display: block;">${winSymbol}</span>`
-                        }
-                    </div>
-                    <div style="font-size: 35px; font-weight: bold; color: #00ff00; text-shadow: 2px 2px 4px #000;">৳${amount}</div>
-                    <div style="color: #eee; font-size: 14px; margin-top: 8px; font-family: 'Arial', sans-serif;">অভিনন্দন! আপনি জিতেছেন।</div>
-                </div>
-            `,
-            background: '#0a0a23',
-            backdrop: 'rgba(0,0,0,0.8)',
-            timer: 3000,
-            showConfirmButton: false,
-            showClass: { popup: 'animate__animated animate__zoomIn' },
-            hideClass: { popup: 'animate__animated animate__fadeOut' }
+    function highlightWin(line) {
+        line.forEach(idx => {
+            const reelBox = document.getElementById('r' + idx).parentElement;
+            reelBox.style.animation = "winShake 0.5s infinite";
         });
-
-        // স্ক্রিনে টাকার বৃষ্টি (💰)
-        for(let i=0; i<30; i++) {
-            const money = document.createElement('div');
-            money.innerText = "💰"; 
-            money.style.cssText = `position: fixed; left: ${Math.random() * 100}vw; top: -50px; z-index: 10000; font-size: 25px; transition: transform 2s linear, top 2s linear; pointer-events: none;`;
-            document.body.appendChild(money);
-            setTimeout(() => { 
-                money.style.top = "110vh"; 
-                money.style.transform = `rotate(${Math.random() * 360}deg)`; 
-            }, 50);
-            setTimeout(() => { money.remove(); }, 2050);
-        }
+        setTimeout(() => {
+            line.forEach(idx => {
+                document.getElementById('r' + idx).parentElement.style.animation = "none";
+            });
+        }, 3000);
     }
 
-    // বেট কমানো বা বাড়ানোর ফাংশন
-    function chgBet(v) {
-        let d = document.getElementById('betDisplay');
-        let n = parseInt(d.innerText) + v;
-        if(n >= 5) d.innerText = n;
+    function showWinEffect(amount, winSymbol) {
+        document.getElementById('winTxt').innerHTML = `<span style="font-size:22px; color:#ffcc00;">WIN: ৳${amount}</span>`;
+        Swal.fire({
+            title: 'BIG WIN!',
+            html: `<div style="font-size:30px; color:#00ff00;">৳${amount}</div>`,
+            background: '#0a0a23',
+            timer: 2500,
+            showConfirmButton: false
+        });
     }
 
-    // অটো স্পিন টগল ফাংশন
-    function toggleAuto() {
+    window.toggleAuto = function() {
         isAuto = !isAuto;
         const autoBtn = document.getElementById('autoBtn');
-        if(isAuto) {
-            autoBtn.style.background = 'linear-gradient(to bottom, #ffd700, #ff8800)';
-            autoBtn.style.color = 'black';
-            spin(); // অটো স্পিন শুরু
-        } else {
-            autoBtn.style.background = '#0f3460';
-            autoBtn.style.color = 'white';
-        }
-    }
+        autoBtn.style.background = isAuto ? 'orange' : '#eee';
+        if(isAuto) window.spin();
+    };
 
-    // গেম লোড হওয়ার সময় ইনিশিয়েট করা
-    window.onload = init;
+    // ৪. শুরু করা
+    window.addEventListener('load', () => {
+        window.init();
+        window.loadUserBalance();
+    });
 
 </script>
+
 </body>
 </html>
