@@ -194,121 +194,19 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    let currentUser = localStorage.getItem("userId");
 
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentUser = urlParams.get('id') || localStorage.getItem("userId");
+    
+    // গ্লোবাল ভেরিয়েবল
     window.balance = 0;
+    let currentMult = 1.00;
+    let isFlying = false;
+    let isWaiting = false;
+    let gameInterval;
+    let bets = { 1: { active: false, amt: 0 }, 2: { active: false, amt: 0 } };
 
-    // ১. রিয়েল টাইম ব্যালেন্স লোড
-    if (currentUser) {
-        onValue(ref(db, `users/${currentUser}/balance`), (snap) => {
-            window.balance = parseFloat(snap.val() || 0);
-            const display = document.getElementById("main-balance");
-            if(display) display.innerText = window.balance.toFixed(2);
-        });
-    }
-
-    // ২. ডেটাবেসে টাকা আপডেট করার মেইন ফাংশন
-    window.syncBalanceWithFirebase = async function(newBalance) {
-        if (currentUser) {
-            await update(ref(db, `users/${currentUser}`), { balance: parseFloat(newBalance.toFixed(2)) });
-        }
-    }
-
-    window.alert = function(message) {
-        Swal.fire({ text: message, icon: 'info', confirmButtonText: 'OK', confirmButtonColor: '#00b359', heightAuto: false });
-    };
-
-    // ৩. বেট ধরার ফাংশন
-    window.handleBet = async function(id) {
-        if(!window.isWaiting) return;
-        let amt = parseFloat(document.getElementById('amt' + id).value);
-        if(window.balance < amt) return alert("Low Balance");
-        
-        let newBal = window.balance - amt;
-        await window.syncBalanceWithFirebase(newBal);
-        
-        window.bets[id].active = true;
-        window.bets[id].amt = amt;
-        document.getElementById('b' + id).style.display = 'none';
-        document.getElementById('c' + id).style.display = 'block';
-    }
-
-    // ৪. ক্যাশআউট ফাংশন (উইন অ্যানিমেশনসহ)
-    window.handleCashout = async function(id) {
-        if(!window.isFlying || !window.bets[id].active) return;
-        
-        let winAmt = window.bets[id].amt * window.currentMult;
-        
-        // অ্যানিমেশন দেখানো
-        showWinAnimation(winAmt, id);
-        
-        // টাকা ব্যালেন্সে যোগ করা
-        let newBal = window.balance + winAmt;
-        await window.syncBalanceWithFirebase(newBal);
-        
-        // বাটন রিসেট
-        window.bets[id].active = false;
-        document.getElementById('b' + id).style.display = 'block';
-        document.getElementById('c' + id).style.display = 'none';
-        document.getElementById('b' + id).disabled = true;
-    }
-
-    // ৫. উইন অ্যানিমেশন লজিক (টাকা উড়ে উপরে যাবে)
-    function showWinAnimation(amount, id) {
-        const btn = document.getElementById('c' + id);
-        const btnRect = btn.getBoundingClientRect();
-        const balBox = document.querySelector('.balance-box').getBoundingClientRect();
-
-        // একটি অস্থায়ী এলিমেন্ট তৈরি করা
-        const flyingText = document.createElement('div');
-        flyingText.innerText = "+" + amount.toFixed(2);
-        flyingText.style.cssText = `
-            position: fixed;
-            left: ${btnRect.left + btnRect.width/2}px;
-            top: ${btnRect.top}px;
-            color: #ffc107;
-            font-weight: bold;
-            font-size: 20px;
-            z-index: 10000;
-            transition: all 1s ease-in-out;
-            pointer-events: none;
-        `;
-        document.body.appendChild(flyingText);
-
-        // ১ মিলি-সেকেন্ড পরে এটি ব্যালেন্সের দিকে উড়ে যাবে
-        setTimeout(() => {
-            flyingText.style.left = (balBox.left + balBox.width/2) + "px";
-            flyingText.style.top = (balBox.top) + "px";
-            flyingText.style.opacity = "0";
-            flyingText.style.transform = "scale(1.5)";
-        }, 50);
-
-        // ২ সেকেন্ড পর এলিমেন্টটি ডিলিট হয়ে যাবে
-        setTimeout(() => { flyingText.remove(); }, 1000);
-
-        // বড় সাকসেস মেসেজ
-        const winMsg = document.createElement('div');
-        winMsg.style.cssText = `
-            position: fixed;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(40, 167, 69, 0.9);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: bold;
-            z-index: 10001;
-            animation: fadeInOut 2s forwards;
-        `;
-        winMsg.innerText = `YOU WON: ${amount.toFixed(2)} BDT`;
-        document.body.appendChild(winMsg);
-        setTimeout(() => { winMsg.remove(); }, 2000);
-    }
-</script>
-
-
-<script>
+    // ক্যানভাস এলিমেন্ট
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const plane = document.getElementById('plane');
@@ -318,49 +216,66 @@
     const crashMsg = document.getElementById('crash-msg');
     const histBar = document.getElementById('historyBar');
 
-    let currentMult = 1.00;
-    let isFlying = false;
-    let isWaiting = false;
-    let gameInterval;
-    let currentTotalBets = 0;
-    let currentTotalCash = 0;
-    const fakeNames = ["R*p*n", "M*h*m", "S*h*l", "A*k*f", "S*m*n", "N*y*m", "J*b*r", "F*h*m", "R*b*n", "I*m*t", "K*a*m", "L*t*f"];
+    // Firebase থেকে ব্যালেন্স আনা
+    if (currentUser) {
+        onValue(ref(db, `users/${currentUser}/balance`), (snap) => {
+            if (snap.exists()) {
+                window.balance = parseFloat(snap.val() || 0);
+                document.getElementById("main-balance").innerText = window.balance.toFixed(2);
+            }
+        });
+    }
 
-    let bets = { 1: { active: false, amt: 0 }, 2: { active: false, amt: 0 } };
+    async function syncBalance(newBal) {
+        if (currentUser) {
+            await update(ref(db, `users/${currentUser}`), { balance: parseFloat(newBal.toFixed(2)) });
+        }
+    }
 
-    function resizeCanvas() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    function changeAmt(id, val) {
+    // বাটন ফাংশনসমূহ গ্লোবাল করা
+    window.changeAmt = (id, val) => {
         let input = document.getElementById('amt' + id);
         let cur = parseInt(input.value);
         if(cur + val >= 10) input.value = cur + val;
     }
-    function setAmt(id, val) { document.getElementById('amt' + id).value = val; }
+    window.setAmt = (id, val) => { document.getElementById('amt' + id).value = val; }
 
-    function showFakeUsers() {
-        const list = document.getElementById('fakeUserList');
-        if(!list) return;
-        list.innerHTML = "";
-        for(let i=0; i<30; i++) {
-            let name = fakeNames[Math.floor(Math.random()*fakeNames.length)] + Math.floor(Math.random()*99);
-            let bet = (Math.random() * 500 + 10).toFixed(0);
-            list.innerHTML += `<div class="user-row"><span class="user-name">${name}</span><span class="user-amt">${bet}</span><span class="user-multiplier" id="fake-m-${i}">-</span></div>`;
+    window.handleBet = async function(id) {
+        if(!isWaiting) return; 
+        let amt = parseFloat(document.getElementById('amt' + id).value);
+        if(window.balance < amt) {
+            Swal.fire({ text: "ব্যালেন্স কম!", icon: 'error' });
+            return;
         }
+        await syncBalance(window.balance - amt);
+        bets[id].active = true;
+        bets[id].amt = amt;
+        document.getElementById('b' + id).style.display = 'none';
+        document.getElementById('c' + id).style.display = 'block';
+    };
+
+    window.handleCashout = async function(id) {
+        if(!isFlying || !bets[id].active) return;
+        let winAmt = bets[id].amt * currentMult;
+        showWinAnimation(winAmt, id);
+        await syncBalance(window.balance + winAmt);
+        bets[id].active = false;
+        document.getElementById('b' + id).style.display = 'block';
+        document.getElementById('c' + id).style.display = 'none';
+        document.getElementById('b' + id).disabled = true;
     }
- 
+
     function startTimer() {
         isWaiting = true; isFlying = false;
         let timeLeft = 10.0;
-        currentTotalBets = Math.floor(Math.random() * 50) + 120;
-        currentTotalCash = currentTotalBets * (Math.random() * 30 + 20);
         showFakeUsers();
         document.getElementById('b1').disabled = false;
         document.getElementById('b2').disabled = false;
         timerUI.style.display = 'block';
         multDisplay.style.display = 'none';
         crashMsg.style.display = 'none';
+        
+        // প্লেন নিচে সেট করা
         plane.style.display = 'block';
         plane.style.transition = "none";
         plane.style.left = "40px";
@@ -368,16 +283,10 @@
         plane.style.transform = "translate(-50%, -50%) rotate(0deg)";
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        let timerInterval = setInterval(() => {
+        let tInterval = setInterval(() => {
             timeLeft -= 0.1;
             progressBar.style.width = (timeLeft / 10) * 100 + "%";
-            if(timeLeft > 0.5) {
-                currentTotalBets += Math.floor(Math.random() * 10);
-                currentTotalCash += (Math.random() * 1200);
-                document.getElementById('total-bets').innerText = currentTotalBets;
-                document.getElementById('total-sum').innerText = currentTotalCash.toLocaleString('en-US', {minimumFractionDigits: 2});
-            }
-            if (timeLeft <= 0) { clearInterval(timerInterval); startFlight(); }
+            if (timeLeft <= 0) { clearInterval(tInterval); startFlight(); }
         }, 100);
     }
 
@@ -387,8 +296,6 @@
         multDisplay.style.display = 'block';
         multDisplay.style.color = 'white';
         currentMult = 1.00;
-        document.getElementById('b1').disabled = true;
-        document.getElementById('b2').disabled = true;
         let crashAt = (Math.random() * 5 + 1.1).toFixed(2); 
 
         gameInterval = setInterval(() => {
@@ -397,18 +304,15 @@
             let prog = Math.min((currentMult - 1) / 10, 1); 
             let x = 40 + (prog * (canvas.width - 150));
             let y = (canvas.height - 40) - (Math.pow(prog, 0.3) * (canvas.height - 140));
+            
             plane.style.left = x + 'px';
             plane.style.top = y + 'px';
             plane.style.transform = "translate(-50%, -50%) rotate(2deg)"; 
             renderCanvas(x, y);
 
-            if(Math.random() > 0.94) {
-                let idx = Math.floor(Math.random() * 30);
-                let mEl = document.getElementById(`fake-m-${idx}`);
-                if(mEl && mEl.innerText === "-") mEl.innerHTML = `<span class="multiplier-badge">${currentMult.toFixed(2)}x</span>`;
-            }
             if(bets[1].active) document.getElementById('w1').innerText = (bets[1].amt * currentMult).toFixed(2);
             if(bets[2].active) document.getElementById('w2').innerText = (bets[2].amt * currentMult).toFixed(2);
+            
             if (currentMult >= crashAt) finishGame(x, y);
         }, 35);
     }
@@ -428,25 +332,47 @@
         clearInterval(gameInterval); isFlying = false;
         crashMsg.style.display = 'block';
         multDisplay.style.color = '#ff3333';
-        resetPanels();
-        let nb = document.createElement('span');
-        nb.className = 'hist-badge'; nb.innerText = currentMult.toFixed(2) + 'x';
-        histBar.prepend(nb);
-        plane.style.transition = "all 0.5s ease-in";
-        plane.style.left = (canvas.width + 300) + "px"; 
-        plane.style.top = (ly - 100) + "px"; 
-        setTimeout(startTimer, 3000);
-    }
-
-    function resetPanels() {
+        
+        // প্যানেল রিসেট
         bets[1].active = false; bets[2].active = false;
         document.getElementById('b1').style.display = 'block';
         document.getElementById('c1').style.display = 'none';
         document.getElementById('b2').style.display = 'block';
         document.getElementById('c2').style.display = 'none';
+
+        let nb = document.createElement('span');
+        nb.className = 'hist-badge'; nb.innerText = currentMult.toFixed(2) + 'x';
+        histBar.prepend(nb);
+        
+        plane.style.transition = "all 0.5s ease-in";
+        plane.style.left = (canvas.width + 300) + "px"; 
+        setTimeout(startTimer, 3000);
     }
 
-    window.onload = startTimer;
+    function showWinAnimation(amount, id) {
+        const winMsg = document.createElement('div');
+        winMsg.style.cssText = `position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); background: rgba(40, 167, 69, 0.9); color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; z-index: 10001; animation: fadeInOut 2s forwards;`;
+        winMsg.innerText = `YOU WON: ৳${amount.toFixed(2)}`;
+        document.body.appendChild(winMsg);
+        setTimeout(() => { winMsg.remove(); }, 2000);
+    }
+
+    function showFakeUsers() {
+        const list = document.getElementById('fakeUserList');
+        if(!list) return;
+        list.innerHTML = "";
+        const fakeNames = ["R*p*n", "M*h*m", "S*h*l", "A*k*f", "S*m*n", "N*y*m"];
+        for(let i=0; i<15; i++) {
+            let name = fakeNames[Math.floor(Math.random()*fakeNames.length)] + Math.floor(Math.random()*99);
+            let bet = (Math.random() * 500 + 10).toFixed(0);
+            list.innerHTML += `<div class="user-row"><span class="user-name">${name}</span><span class="user-amt">${bet}</span><span class="user-multiplier">-</span></div>`;
+        }
+    }
+
+    function resizeCanvas() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    startTimer();
 </script>
 </body>
 </html>
