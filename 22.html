@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>22Bet Full UI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border: none; outline: none; }
+        body { background-color: #f0f4f7; color: #1a2b3c; padding-bottom: 70px; }
+
+        /* --- Header Section --- */
+        .header { display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; height: 55px; position: sticky; top: 0; background: #f0f4f7; z-index: 100; }
+        .balance-pill { display: flex; align-items: center; background: #fff; border-radius: 25px; padding: 3px 12px 3px 3px; gap: 8px; }
+        .plus-circle { background: #28a745; color: #fff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        .logo img { height: 22px; }
+        .search-icon { color: #7a8a94; font-size: 20px; }
+
+        /* --- Top Categories --- */
+        .top-nav { display: flex; background: #fff; }
+        .nav-item { flex: 1; text-align: center; padding: 10px 0; color: #7a8a94; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .nav-item i { display: block; font-size: 20px; margin-bottom: 4px; }
+        .nav-item.active { color: #28a745; border-bottom: 3px solid #28a745; }
+
+        /* --- Home Page Content --- */
+        #home-content { display: block; }
+        .sub-cats { display: flex; overflow-x: auto; padding: 12px 10px; gap: 10px; scrollbar-width: none; background: #fff; }
+        .sub-cat-card { min-width: 60px; text-align: center; }
+        .icon-bg { width: 52px; height: 52px; background: #fcfdfe; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #28a745; font-size: 22px; margin-bottom: 5px; }
+        .sub-cat-card span { font-size: 10px; font-weight: 600; }
+
+        .banners { display: flex; overflow-x: auto; padding: 15px 10px; gap: 12px; scrollbar-width: none; }
+        .banner-card { min-width: 135px; text-align: center; }
+        .banner-card img { width: 135px; height: 135px; border-radius: 20px; object-fit: cover; margin-bottom: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+        .banner-card span { font-size: 11px; font-weight: bold; line-height: 1.2; display: block; }
+
+        .live-head { display: flex; justify-content: space-between; padding: 10px 15px; align-items: center; }
+        .live-head h2 { font-size: 18px; font-weight: 800; }
+        .live-badge { background: #e0f2e9; color: #28a745; font-size: 12px; padding: 2px 8px; border-radius: 10px; margin-left: 5px; }
+        
+        .match-box { background: #fff; margin: 0 12px 12px; border-radius: 15px; padding: 15px; }
+        .match-title { font-size: 11px; color: #888; margin-bottom: 10px; display: flex; justify-content: space-between; }
+        .team { display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; margin-bottom: 5px; }
+
+        /* --- Menu Page Content --- */
+        #menu-content { display: none; padding: 10px; }
+        .profile-section { display: flex; align-items: center; margin-bottom: 15px; padding: 5px; }
+        .avatar { width: 45px; height: 45px; background: #cfd8dc; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; }
+        .profile-info { margin-left: 12px; }
+        .profile-info h4 { font-size: 14px; text-transform: uppercase; }
+        .profile-info p { font-size: 11px; color: #28a745; font-weight: bold; }
+
+        .profile-icons { margin-left: auto; display: flex; gap: 15px; align-items: center; }
+        .profile-icons .fa-envelope { font-size: 24px; color: #7a8a94; }
+        .profile-icons .fa-cog { font-size: 22px; color: #7a8a94; }
+
+        /* --- ওপরের অংশ: ব্যাকগ্রাউন্ডের সাথে মিশে থাকবে --- */
+        .menu-balance-box { background: #f0f4f7; border-radius: 12px; padding: 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+        .wallet-info { display: flex; align-items: center; gap: 8px; background: #fff; padding: 8px 12px; border-radius: 8px; flex: 1; margin-right: 10px; }
+        .dep-btn { background: #28a745; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; font-size: 13px; }
+
+        .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+        .quick-item { background: #f0f4f7; border-radius: 12px; padding: 12px 5px; text-align: center; }
+        .quick-item i { display: block; font-size: 22px; color: #28a745; margin-bottom: 6px; }
+        .quick-item span { font-size: 10px; font-weight: bold; color: #1a2b3c; }
+
+        /* --- নিচের অংশ: সাদা কার্ড (বর্ডার হিসেবে বোঝা যাবে) --- */
+        .menu-list-card { background: #fff; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .menu-icon { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #28a745; font-size: 16px; flex-shrink: 0; }
+        .menu-text { flex: 1; }
+        .menu-text b { display: block; font-size: 14px; color: #1a2b3c; }
+        .menu-text span { font-size: 10px; color: #888; }
+        .arrow-right { color: #ccc; font-size: 12px; }
+
+        /* --- Bottom Navigation --- */
+        .bottom-bar { position: fixed; bottom: 0; width: 100%; height: 65px; background: #fff; display: flex; align-items: center; z-index: 1000; }
+        .bottom-item { flex: 1; text-align: center; color: #7a8a94; font-size: 10px; font-weight: bold; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        .bottom-item i { font-size: 20px; margin-bottom: 3px; }
+        .bottom-item.active { color: #28a745; }
+
+        .slip-btn { position: relative; width: 65px; height: 100%; }
+        .slip-icon { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); background: #28a745; width: 55px; height: 55px; border-radius: 50%; border: 4px solid #f0f4f7; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2); }
+        .slip-text { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="balance-pill">
+            <div class="plus-circle"><i class="fas fa-plus"></i></div>
+            <span style="font-weight: bold; font-size: 14px;">0 ৳</span>
+        </div>
+        <div class="logo">
+            <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/22.png" alt="22BET">
+        </div>
+        <div class="search-icon"><i class="fas fa-search"></i></div>
+    </div>
+
+    <div class="top-nav">
+        <div class="nav-item active"><i class="fas fa-certificate"></i>Top</div>
+        <div class="nav-item"><i class="fas fa-futbol"></i>Sports</div>
+        <div class="nav-item"><i class="fas fa-gamepad"></i>Esports</div>
+        <div class="nav-item"><i class="fas fa-clone"></i>Casino</div>
+        <div class="nav-item"><i class="fas fa-dice"></i>22Games</div>
+    </div>
+
+    <div id="home-content">
+        <div class="sub-cats">
+            <div class="sub-cat-card"><div class="icon-bg"><i class="fas fa-check-circle"></i></div><span>All</span></div>
+            <div class="sub-cat-card"><div class="icon-bg"><i class="fas fa-futbol"></i></div><span>Football</span></div>
+            <div class="sub-cat-card"><div class="icon-bg"><i class="fas fa-baseball-ball"></i></div><span>Tennis</span></div>
+            <div class="sub-cat-card"><div class="icon-bg"><i class="fas fa-basketball-ball"></i></div><span>Basketball</span></div>
+            <div class="sub-cat-card"><div class="icon-bg"><i class="fas fa-hockey-puck"></i></div><span>Ice Hockey</span></div>
+        </div>
+
+        <div class="banners">
+            <div class="banner-card">
+                <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/welcome.png">
+                <span>Welcome Sports Bonus</span>
+            </div>
+            <div class="banner-card">
+                <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/package.png">
+                <span>WELCOME PACKAGE</span>
+            </div>
+            <div class="banner-card">
+                <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/vip.png">
+                <span>Exclusive VIP Cashback</span>
+            </div>
+        </div>
+
+        <div class="live-head">
+            <h2>Top LIVE <span class="live-badge">Sport</span></h2>
+            <span style="color: #28a745; font-weight: bold; font-size: 13px;">All</span>
+        </div>
+
+        <div class="match-box">
+            <div class="match-title"><span>🏏 Indian Premier League</span> <i class="far fa-star"></i></div>
+            <div class="team"><span>Delhi Capitals</span><span>75/10</span></div>
+            <div class="team"><span>RCB</span><span>13/0 (2.0)</span></div>
+        </div>
+    </div>
+
+    <div id="menu-content">
+        <div class="profile-section">
+            <div class="avatar"><i class="fas fa-user"></i></div>
+            <div class="profile-info">
+                <h4>HABIB SONAR MD</h4>
+                <p>Personal profile</p>
+            </div>
+            <div class="profile-icons">
+                <i class="fas fa-envelope"></i> 
+                <i class="fas fa-cog"></i>      
+            </div>
+        </div>
+
+        <div class="menu-balance-box">
+            <div class="wallet-info">
+                <i class="fas fa-wallet" style="color: #28a745;"></i>
+                <span style="font-weight: bold; font-size: 14px;">0 ৳</span>
+                <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: auto; color: #ccc;"></i>
+            </div>
+            <button class="dep-btn">+ Deposit</button>
+        </div>
+
+        <div class="quick-grid">
+            <div class="quick-item"><i class="fas fa-certificate"></i><span>Top</span></div>
+            <div class="quick-item"><i class="fas fa-futbol"></i><span>Sports</span></div>
+            <div class="quick-item"><i class="fas fa-clone"></i><span>Casino</span></div>
+            <div class="quick-item"><i class="fas fa-dice"></i><span>22Games</span></div>
+        </div>
+
+        <div class="menu-list-card">
+            <div class="menu-icon"><i class="fas fa-stopwatch"></i></div>
+            <div class="menu-text"><b>LIVE</b><span>Bet on live events</span></div>
+            <i class="fas fa-chevron-right arrow-right"></i>
+        </div>
+
+        <div class="menu-list-card">
+            <div class="menu-icon"><i class="far fa-calendar-alt"></i></div>
+            <div class="menu-text"><b>Pre-match</b><span>Bet on upcoming events</span></div>
+            <i class="fas fa-chevron-right arrow-right"></i>
+        </div>
+
+        <div class="menu-list-card">
+            <div class="menu-icon"><i class="fas fa-gem"></i></div>
+            <div class="menu-text"><b>Slot</b><span>Top slot games</span></div>
+            <i class="fas fa-chevron-right arrow-right"></i>
+        </div>
+
+        <div class="menu-list-card">
+            <div class="menu-icon"><i class="fas fa-video"></i></div>
+            <div class="menu-text"><b>Live Casino</b><span>Play with live dealers</span></div>
+            <i class="fas fa-chevron-right arrow-right"></i>
+        </div>
+
+        <div class="menu-list-card">
+            <div class="menu-icon"><i class="fas fa-dice"></i></div>
+            <div class="menu-text"><b>22Games</b><span>Play and win prizes</span></div>
+            <i class="fas fa-chevron-right arrow-right"></i>
+        </div>
+
+        <div class="menu-list-card">
+            <div class="menu-icon"><i class="fas fa-percentage"></i></div>
+            <div class="menu-text"><b>Promo</b><span>Bonuses and special offers</span></div>
+            <i class="fas fa-chevron-right arrow-right"></i>
+        </div>
+
+        <div class="menu-list-card">
+            <div class="menu-icon"><i class="fas fa-headset"></i></div>
+            <div class="menu-text"><b>Customer Support</b><span>Get help 24/7</span></div>
+            <i class="fas fa-chevron-right arrow-right"></i>
+        </div>
+
+        <div class="menu-list-card">
+            <div class="menu-icon"><i class="fas fa-info-circle"></i></div>
+            <div class="menu-text"><b>Information</b><span>Rules and licensing</span></div>
+            <i class="fas fa-chevron-right arrow-right"></i>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <div class="bottom-item active" id="pop-tab" onclick="switchTab('home')">
+            <i class="fas fa-fire-alt"></i><span>Popular</span>
+        </div>
+        <div class="bottom-item"><i class="far fa-star"></i><span>Favorites</span></div>
+        
+        <div class="slip-btn">
+            <div class="slip-icon"><i class="fas fa-ticket-alt"></i></div>
+            <span class="slip-text">Bet slip</span>
+        </div>
+
+        <div class="bottom-item"><i class="far fa-clock"></i><span>History</span></div>
+        <div class="bottom-item" id="menu-tab" onclick="switchTab('menu')">
+            <i class="fas fa-th-large"></i><span>Menu</span>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            const home = document.getElementById('home-content');
+            const menu = document.getElementById('menu-content');
+            const popTab = document.getElementById('pop-tab');
+            const menuTab = document.getElementById('menu-tab');
+            const header = document.querySelector('.header');
+            const topNav = document.querySelector('.top-nav');
+
+            if(tab === 'menu') {
+                home.style.display = 'none';
+                menu.style.display = 'block';
+                header.style.display = 'none'; 
+                topNav.style.display = 'none'; 
+                menuTab.classList.add('active');
+                popTab.classList.remove('active');
+            } else {
+                home.style.display = 'block';
+                menu.style.display = 'none';
+                header.style.display = 'flex'; 
+                topNav.style.display = 'flex'; 
+                popTab.classList.add('active');
+                menuTab.classList.remove('active');
+            }
+        }
+    </script>
+
+</body>
+</html>
