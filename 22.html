@@ -7,11 +7,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border: none; outline: none; }
-        body { background-color: #f0f4f7; color: #1a2b3c; padding-bottom: 70px; }
+        body { background-color: #f0f4f7; color: #1a2b3c; padding-bottom: 70px; overflow-x: hidden; }
+
+        /* --- Slide-in Page Container --- */
+        #deposit-page-overlay {
+            position: fixed;
+            top: 0;
+            right: -100%; /* শুরুতে স্ক্রিনের বাইরে থাকবে */
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 2000;
+            transition: right 0.4s ease; /* স্লাইড অ্যানিমেশন */
+        }
+        #deposit-page-overlay.active {
+            right: 0; /* একটিভ হলে স্ক্রিনে চলে আসবে */
+        }
+        #deposit-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
 
         /* --- Header Section --- */
         .header { display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; height: 55px; position: sticky; top: 0; background: #f0f4f7; z-index: 100; }
-        .balance-pill { display: flex; align-items: center; background: #fff; border-radius: 25px; padding: 3px 12px 3px 3px; gap: 8px; }
+        .balance-pill { display: flex; align-items: center; background: #fff; border-radius: 25px; padding: 3px 12px 3px 3px; gap: 8px; cursor: pointer; }
         .plus-circle { background: #28a745; color: #fff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
         .logo img { height: 22px; }
         .search-icon { color: #7a8a94; font-size: 20px; }
@@ -54,17 +74,15 @@
         .profile-icons .fa-envelope { font-size: 24px; color: #7a8a94; }
         .profile-icons .fa-cog { font-size: 22px; color: #7a8a94; }
 
-        /* --- ওপরের অংশ: ব্যাকগ্রাউন্ডের সাথে মিশে থাকবে --- */
         .menu-balance-box { background: #f0f4f7; border-radius: 12px; padding: 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
         .wallet-info { display: flex; align-items: center; gap: 8px; background: #fff; padding: 8px 12px; border-radius: 8px; flex: 1; margin-right: 10px; }
-        .dep-btn { background: #28a745; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; font-size: 13px; }
+        .dep-btn { background: #28a745; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; }
 
         .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
         .quick-item { background: #f0f4f7; border-radius: 12px; padding: 12px 5px; text-align: center; }
         .quick-item i { display: block; font-size: 22px; color: #28a745; margin-bottom: 6px; }
         .quick-item span { font-size: 10px; font-weight: bold; color: #1a2b3c; }
 
-        /* --- নিচের অংশ: সাদা কার্ড (বর্ডার হিসেবে বোঝা যাবে) --- */
         .menu-list-card { background: #fff; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .menu-icon { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #28a745; font-size: 16px; flex-shrink: 0; }
         .menu-text { flex: 1; }
@@ -86,8 +104,12 @@
 </head>
 <body>
 
+    <div id="deposit-page-overlay">
+        <iframe id="deposit-frame" src=""></iframe>
+    </div>
+
     <div class="header">
-        <div class="balance-pill">
+        <div class="balance-pill" onclick="openDeposit()">
             <div class="plus-circle"><i class="fas fa-plus"></i></div>
             <span style="font-weight: bold; font-size: 14px;">0 ৳</span>
         </div>
@@ -160,7 +182,7 @@
                 <span style="font-weight: bold; font-size: 14px;">0 ৳</span>
                 <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: auto; color: #ccc;"></i>
             </div>
-            <button class="dep-btn">+ Deposit</button>
+            <button class="dep-btn" onclick="openDeposit()">+ Deposit</button>
         </div>
 
         <div class="quick-grid">
@@ -237,6 +259,24 @@
     </div>
 
     <script>
+        // ডিপোজিট পেজ স্লাইড করে খোলার ফাংশন
+        function openDeposit() {
+            const overlay = document.getElementById('deposit-page-overlay');
+            const frame = document.getElementById('deposit-frame');
+            // আপনার গিটহাব লাইভ লিঙ্কটি এখানে সঠিকভাবে বসানো হয়েছে
+            frame.src = 'https://mdripon018770-coder.github.io/Notbok/22dp.html'; 
+            overlay.classList.add('active');
+        }
+
+        // ডিপোজিট পেজ বন্ধ করার ফাংশন
+        window.closeDeposit = function() {
+            const overlay = document.getElementById('deposit-page-overlay');
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('deposit-frame').src = ""; 
+            }, 400);
+        }
+
         function switchTab(tab) {
             const home = document.getElementById('home-content');
             const menu = document.getElementById('menu-content');
