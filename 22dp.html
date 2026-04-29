@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Deposits UI</title>
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-minimal/minimal.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { background-color: #f4f7f6; padding-bottom: 50px; }
+
+        /* Header */
+        .header {
+            background-color: #fff; padding: 10px 15px; display: flex; align-items: center;
+            border-bottom: 1px solid #e0e0e0; height: 55px; position: sticky; top: 0; z-index: 100;
+        }
+        .header h2 { flex-grow: 1; text-align: center; color: #4d8281; font-size: 19px; font-weight: 700; }
+        .icon-btn svg { width: 24px; height: 24px; fill: none; stroke: #4d8281; stroke-width: 2.5; }
+
+        /* Account Info Section */
+        .account-info { padding: 15px; background: #fff; }
+        .account-display { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: bold; font-size: 18px; color: #333; }
+        .copy-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; }
+        .copy-btn svg { width: 18px; height: 18px; color: #4d8281; }
+        .btn-types { background-color: #00897b; color: white; border: none; padding: 10px 14px; border-radius: 2px; font-size: 14px; font-weight: 500; }
+
+        /* Banner Text Styles from Screenshot */
+        .banner-container { padding: 0 15px; margin-top: 10px; }
+        .info-box { background: #e0e0e0; padding: 12px; margin-bottom: 10px; font-size: 14px; color: #555; line-height: 1.4; border-radius: 2px; }
+        .info-box a { color: #333; text-decoration: none; font-weight: bold; }
+        
+        .bonus-box { background: #e0e0e0; padding: 12px; margin-bottom: 10px; border-radius: 2px; }
+        .bonus-box h4 { font-size: 14px; color: #444; margin-bottom: 8px; font-weight: 600; }
+        .bonus-box ol { padding-left: 20px; font-size: 13px; color: #666; }
+        .bonus-box li { margin-bottom: 4px; }
+
+        .section-title {
+            text-align: center; color: #777; font-size: 12px; text-transform: uppercase;
+            background-color: #e8eded; padding: 10px 0; letter-spacing: 1px; margin-top: 15px;
+        }
+
+        /* Grid System */
+        .payment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: #e0e0e0; padding: 1px; }
+        .payment-card {
+            background: white; padding: 25px 10px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; cursor: pointer; height: 130px;
+        }
+        .payment-card span { font-size: 13px; color: #666; margin-top: 15px; text-align: center; line-height: 1.2; }
+
+        /* Logos */
+        .logo-box img { height: 40px; width: auto; max-width: 80px; object-fit: contain; }
+        .combo-logo { display: flex; align-items: center; gap: 4px; background: #f5f5f5; padding: 5px 12px; border-radius: 20px; }
+        .combo-logo img { height: 22px; width: 22px; }
+
+        /* Loader */
+        .loader-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; z-index: 9999;
+        }
+        .dot-loader { display: flex; gap: 8px; }
+        .dot-loader div { width: 12px; height: 12px; background: #fff; border-radius: 50%; animation: bounce 1.2s infinite; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; } 40% { transform: scale(1.2); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div id="loader" class="loader-overlay"><div class="dot-loader"><div></div><div></div><div></div><div></div></div></div>
+
+    <div class="header">
+        <div class="icon-btn"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg></div>
+        <h2>Account deposits</h2>
+        <div class="icon-btn" onclick="location.reload()"><svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path></svg></div>
+    </div>
+
+    <div class="account-info">
+        <div class="account-display">
+            ACCOUNT 1593064585
+            <button class="copy-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+        </div>
+        <button class="btn-types">Types of payment systems</button>
+    </div>
+
+    <div class="banner-container">
+        <div class="info-box">
+            Join 22Bet Payment Agent & Affiliate Programs – contact us via email at <br>
+            <a href="mailto:asia@22betaffiliate.com">asia@22betaffiliate.com</a>
+        </div>
+
+        <div class="bonus-box">
+            <h4>Get your bonus in 3 steps:</h4>
+            <ol>
+                <li>Fill in your profile</li>
+                <li>Verify your phone number and email</li>
+                <li>Make a deposit that meets the bonus requirements</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="section-title">Recommended</div>
+    <div class="payment-grid">
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Bkash_logo.png/1200px-Bkash_logo.png"></div>
+            <span>bKash</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://freelogovectors.net/wp-content/uploads/2023/05/bkash-logo-freelogovectors.net_.png"></div>
+            <span>Bkash</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://download.logo.wine/logo/Nagad/Nagad-Vertical-Logo.wine.png"></div>
+            <span>Nagad</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://download.logo.wine/logo/Nagad/Nagad-Logo.wine.png"></div>
+            <span>Nagad</span>
+        </div>
+    </div>
+
+    <div class="section-title">Cryptocurrency</div>
+
+    <div class="payment-grid">
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png"></div>
+            <span>Bitcoin</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/ethereum-eth-logo.png"></div>
+            <span>Ethereum</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/tron-trx-logo.png"></div>
+            <span>TRON</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png"></div>
+            <span>Dogecoin</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="combo-logo"><img src="https://cryptologos.cc/logos/tether-usdt-logo.png"><img src="https://cryptologos.cc/logos/ethereum-eth-logo.png"></div>
+            <span>Tether on Ethereum</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="combo-logo"><img src="https://cryptologos.cc/logos/tether-usdt-logo.png"><img src="https://cryptologos.cc/logos/tron-trx-logo.png"></div>
+            <span>Tether on Tron</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/litecoin-ltc-logo.png"></div>
+            <span>Litecoin</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="combo-logo"><img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png"><img src="https://cryptologos.cc/logos/ethereum-eth-logo.png"></div>
+            <span>USD Coin on Ethereum</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/xrp-xrp-logo.png"></div>
+            <span>XRP</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/cosmos-atom-logo.png"></div>
+            <span>Cosmos Atom</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/solana-sol-logo.png"></div>
+            <span>Solana</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="combo-logo"><img src="https://cryptologos.cc/logos/tether-usdt-logo.png"><img src="https://cryptologos.cc/logos/solana-sol-logo.png"></div>
+            <span>Tether on Solana</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="combo-logo"><img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png"><img src="https://cryptologos.cc/logos/solana-sol-logo.png"></div>
+            <span>USD Coin on Solana</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/polygon-matic-logo.png"></div>
+            <span>Polygon</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/digibyte-dgb-logo.png"></div>
+            <span>DigiByte</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/bitcoin-cash-bch-logo.png"></div>
+            <span>Bitcoin Cash</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/qtum-qtum-logo.png"></div>
+            <span>QTUM</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/dash-dash-logo.png"></div>
+            <span>Dash</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="combo-logo"><img src="https://cryptologos.cc/logos/ethereum-eth-logo.png"><img src="https://cryptologos.cc/logos/optimism-ethereum-op-logo.png"></div>
+            <span>Ethereum on Optimism</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="combo-logo"><img src="https://cryptologos.cc/logos/tether-usdt-logo.png"><img src="https://cryptologos.cc/logos/optimism-ethereum-op-logo.png"></div>
+            <span>Tether on Optimism</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="combo-logo"><img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png"><img src="https://cryptologos.cc/logos/optimism-ethereum-op-logo.png"></div>
+            <span>USD Coin on Optimism</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="combo-logo"><img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png"><img src="https://cryptologos.cc/logos/optimism-ethereum-op-logo.png"></div>
+            <span>Bridged USD Coin on Optimism</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="combo-logo"><img src="https://cryptologos.cc/logos/dai-dai-logo.png"><img src="https://cryptologos.cc/logos/ethereum-eth-logo.png"></div>
+            <span>Dai on Ethereum</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="combo-logo"><img src="https://cryptologos.cc/logos/shiba-inu-shib-logo.png"><img src="https://cryptologos.cc/logos/ethereum-eth-logo.png"></div>
+            <span>SHIBA INU on Ethereum</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/zcash-zec-logo.png"></div>
+            <span>ZCash</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/monero-xmr-logo.png"></div>
+            <span>Monero</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/trueusd-tusd-logo.png"></div>
+            <span>TrueUSD</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/paxos-standard-pax-logo.png"></div>
+            <span>Standard Paxos</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/cardano-ada-logo.png"></div>
+            <span>Cardano</span>
+        </div>
+        <div class="payment-card" onclick="runLoader()">
+            <div class="logo-box"><img src="https://cryptologos.cc/logos/stellar-xlm-logo.png"></div>
+            <span>Stellar</span>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function runLoader() {
+            const loader = document.getElementById('loader');
+            loader.style.display = 'flex';
+            setTimeout(() => {
+                loader.style.display = 'none';
+                Swal.fire({
+                    title: 'Deposit',
+                    text: 'Please confirm your deposit network.',
+                    confirmButtonColor: '#00897b'
+                });
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
