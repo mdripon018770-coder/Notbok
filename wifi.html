@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetSpeed Pro Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600;700&display=swap');
+        body { font-family: 'Hind Siliguri', sans-serif; background: #f8fafc; margin: 0; padding-bottom: 90px; overflow-x: hidden; }
+
+        /* কার্ড ডিজাইন */
+        .glass-card { background: white; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; }
+        .balance-card { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); border-radius: 20px; color: white; box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2); }
+
+        /* স্লাইডার এনিমেশন (ডান থেকে বামে একটা একটা করে আসবে) */
+        .slider-container {
+            width: 100%;
+            height: 110px; /* ছবির উচ্চতা আরও ছোট করা হয়েছে */
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+        }
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transform: translateX(100%); /* শুরুতে ডানে থাকবে */
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0); /* সামনে আসবে */
+        }
+        .slide.exit {
+            opacity: 0;
+            transform: translateX(-100%); /* বামে চলে যাবে */
+        }
+        .slide img { width: 100%; height: 100%; object-fit: cover; border-radius: 15px; }
+
+        /* আইকন বক্স */
+        .menu-icon {
+            width: 50px;
+            height: 50px;
+            background: #f1f5f9;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+            color: #6366f1;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="p-4 flex justify-between items-center bg-white shadow-sm sticky top-0 z-50">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg">
+                <i class="fa-solid fa-bolt text-white text-sm"></i>
+            </div>
+            <h1 class="text-md font-black italic">NetSpeed <span class="text-indigo-600">PRO</span></h1>
+        </div>
+        <div class="flex gap-3 text-slate-400">
+            <i class="fa-solid fa-share-nodes"></i>
+            <i class="fa-solid fa-bell"></i>
+        </div>
+    </div>
+
+    <div class="p-4 space-y-4">
+        
+        <div class="grid grid-cols-12 gap-3">
+            <div class="col-span-5 glass-card p-4 flex flex-col items-center justify-center">
+                <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Live Speed</p>
+                <h2 id="liveSpeed" class="text-2xl font-black text-indigo-600">19.5</h2>
+                <p class="text-[8px] font-bold text-slate-400">MBPS</p>
+            </div>
+            <div class="col-span-7 balance-card p-4 flex flex-col justify-between">
+                <p class="text-[9px] font-bold opacity-80 uppercase">Balance</p>
+                <h2 class="text-xl font-black italic">৳ 540.00</h2>
+                <button class="bg-white text-indigo-600 text-[9px] py-1.5 rounded-lg font-black mt-2 shadow-sm uppercase">Add Balance</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+            <div class="bg-white border border-green-100 rounded-xl py-2 px-3 flex items-center gap-2">
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span class="text-[10px] font-black text-green-600 uppercase">Status: Active</span>
+            </div>
+            <div class="bg-white border border-orange-100 rounded-xl py-2 px-3 flex items-center gap-2">
+                <i class="fa-solid fa-calendar text-orange-500 text-[10px]"></i>
+                <span class="text-[10px] font-black text-orange-600">১২ দিন বাকি</span>
+            </div>
+        </div>
+
+        <div class="mt-2">
+            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Special Offers</h3>
+            <div class="slider-container" id="offerSlider">
+                <div class="slide active">
+                    <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/ups.png" alt="Offer 1">
+                </div>
+                <div class="slide">
+                    <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/tp1.png" alt="Offer 2">
+                </div>
+                <div class="slide">
+                    <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/stan.png" alt="Offer 3">
+                </div>
+            </div>
+        </div>
+
+        <div class="pt-2">
+            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Dashboard</h3>
+            <div class="grid grid-cols-4 gap-y-5">
+                <div class="flex flex-col items-center">
+                    <div class="menu-icon"><i class="fa-solid fa-wallet"></i></div>
+                    <span class="text-[9px] font-bold text-slate-500">বিল দিন</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="menu-icon text-purple-500"><i class="fa-solid fa-box"></i></div>
+                    <span class="text-[9px] font-bold text-slate-500">প্যাকেজ</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="menu-icon text-orange-500"><i class="fa-solid fa-headset"></i></div>
+                    <span class="text-[9px] font-bold text-slate-500">সাপোর্ট</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="menu-icon text-slate-500"><i class="fa-solid fa-history"></i></div>
+                    <span class="text-[9px] font-bold text-slate-500">হিস্ট্রি</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="menu-icon text-blue-400"><i class="fa-solid fa-router"></i></div>
+                    <span class="text-[9px] font-bold text-slate-500">রাউটার</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="menu-icon text-cyan-500"><i class="fa-solid fa-microchip"></i></div>
+                    <span class="text-[9px] font-bold text-slate-500">ONU</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="menu-icon text-pink-500"><i class="fa-solid fa-gift"></i></div>
+                    <span class="text-[9px] font-bold text-slate-500">অফার</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="menu-icon text-indigo-500"><i class="fa-solid fa-user-shield"></i></div>
+                    <span class="text-[9px] font-bold text-slate-500">প্রোফাইল</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-slate-100 flex justify-around items-center z-50">
+        <div class="flex flex-col items-center text-indigo-600">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[8px] font-black uppercase">Home</span>
+        </div>
+        <div class="flex flex-col items-center text-slate-300">
+            <i class="fa-solid fa-chart-line text-lg"></i>
+            <span class="text-[8px] font-black uppercase">Usage</span>
+        </div>
+        <div class="flex flex-col items-center text-slate-300">
+            <i class="fa-solid fa-circle-user text-lg"></i>
+            <span class="text-[8px] font-black uppercase">Profile</span>
+        </div>
+    </div>
+
+    <script>
+        // লাইভ স্পিড সিমুলেশন
+        setInterval(() => {
+            document.getElementById('liveSpeed').innerText = (Math.random() * (20.2 - 19.1) + 19.1).toFixed(1);
+        }, 2500);
+
+        // স্লাইড বাই স্লাইড এনিমেশন লজিক
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+
+        function nextSlide() {
+            // বর্তমান স্লাইডকে বামে পাঠিয়ে দেওয়া
+            slides[currentSlide].classList.remove('active');
+            slides[currentSlide].classList.add('exit');
+
+            // স্লাইড ইনডেক্স আপডেট
+            currentSlide = (currentSlide + 1) % slides.length;
+
+            // নতুন স্লাইডকে সামনে আনা
+            slides[currentSlide].classList.remove('exit');
+            slides[currentSlide].classList.add('active');
+            
+            // পুরনো স্লাইড ক্লিনআপ (যাতে আবার ডান দিক থেকে আসতে পারে)
+            setTimeout(() => {
+                slides.forEach((slide, index) => {
+                    if (index !== currentSlide) slide.classList.remove('exit');
+                });
+            }, 800);
+        }
+
+        // প্রতি ৩ সেকেন্ড পর পর ছবি বদলাবে
+        setInterval(nextSlide, 3000);
+    </script>
+</body>
+</html>
