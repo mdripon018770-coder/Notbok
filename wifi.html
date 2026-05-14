@@ -6,197 +6,500 @@
     <title>NetSpeed Pro Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600;700&display=swap');
-        body { font-family: 'Hind Siliguri', sans-serif; background: #f8fafc; margin: 0; padding-bottom: 90px; overflow-x: hidden; }
+        body { font-family: 'Hind Siliguri', sans-serif; background: #f4f7fe; margin: 0; padding-bottom: 90px; }
 
-        /* কার্ড ডিজাইন */
-        .glass-card { background: white; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; }
-        .balance-card { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); border-radius: 20px; color: white; box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2); }
-
-        /* স্লাইডার এনিমেশন (ডান থেকে বামে একটা একটা করে আসবে) */
-        .slider-container {
-            width: 100%;
-            height: 110px; /* ছবির উচ্চতা আরও ছোট করা হয়েছে */
+        .premium-balance-card {
+            background: linear-gradient(135deg, #1e1b4b 0%, #4338ca 100%);
+            border-radius: 0 0 25px 25px; 
+            padding: 20px 20px 25px 20px;
+            color: white;
             position: relative;
             overflow: hidden;
-            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(67, 56, 202, 0.2);
         }
-        .slide {
+        
+        .premium-balance-card::before {
+            content: '';
             position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transform: translateX(100%); /* শুরুতে ডানে থাকবে */
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            top: -30%;
+            right: -10%;
+            width: 140px;
+            height: 140px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 50%;
         }
-        .slide.active {
-            opacity: 1;
-            transform: translateX(0); /* সামনে আসবে */
-        }
-        .slide.exit {
-            opacity: 0;
-            transform: translateX(-100%); /* বামে চলে যাবে */
-        }
-        .slide img { width: 100%; height: 100%; object-fit: cover; border-radius: 15px; }
 
-        /* আইকন বক্স */
+        .glass-card { background: white; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+
+        .slider-container { width: 100%; height: 180px; position: relative; overflow: hidden; border-radius: 20px; background: #fff; }
+        .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: 0.8s ease-in-out; display: flex; align-items: center; justify-content: center; }
+        .slide.active { opacity: 1; }
+        .slide img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
         .menu-icon {
-            width: 50px;
-            height: 50px;
-            background: #f1f5f9;
-            border-radius: 15px;
+            width: 55px;
+            height: 55px;
+            background: white;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 6px;
-            color: #6366f1;
-            font-size: 18px;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: 0.3s;
+            overflow: hidden;
         }
+        .menu-icon img { width: 35px; height: 35px; object-fit: contain; }
+        .menu-icon:active { transform: scale(0.9); }
+
+        /* প্যানেল গুলোর বেসিক স্টাইল */
+        #webPanel, #depositPanel, #billFormPanel, #noticePanel, #supportPanel, #serverPanel {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: #f4f7fe;
+            z-index: 1000;
+            transition: 0.5s;
+        }
+        #webPanel.open, #depositPanel.open, #billFormPanel.open, #noticePanel.open, #supportPanel.open, #serverPanel.open { left: 0; }
+        
+        .nav-active-bill { color: #1e1b4b !important; }
+        .bill-text-glow { text-shadow: 0 0 1px rgba(30, 27, 75, 0.2); }
+
+        .payment-card { background: white; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: 0.3s; }
+        .payment-card:active { transform: scale(0.95); }
+        .payment-card img { width: 60px; height: 60px; border-radius: 12px; margin-bottom: 10px; }
+
+        .input-box { background: white; border: 1.5px solid #e2e8f0; border-radius: 15px; padding: 12px 15px; width: 100%; font-weight: 600; font-size: 14px; outline: none; margin-bottom: 15px; transition: 0.3s; }
+        .input-box:focus { border-color: #4338ca; box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1); }
+
+        .notice-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: red;
+            color: white;
+            font-size: 9px;
+            font-weight: bold;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+
+        .support-btn {
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            transition: 0.3s;
+        }
+        .support-btn:active { transform: scale(0.96); }
+
+        /* সার্ভার আইটেম স্টাইল */
+        .server-item {
+            background: white;
+            padding: 15px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            border-left: 4px solid #4338ca;
+            transition: 0.3s;
+        }
+        .server-item:active { transform: scale(0.97); background: #f8fafc; }
     </style>
 </head>
 <body>
 
-    <div class="p-4 flex justify-between items-center bg-white shadow-sm sticky top-0 z-50">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg">
-                <i class="fa-solid fa-bolt text-white text-sm"></i>
-            </div>
-            <h1 class="text-md font-black italic">NetSpeed <span class="text-indigo-600">PRO</span></h1>
+    <!-- Server Popup Panel -->
+    <div id="serverPanel" class="p-6 overflow-y-auto">
+        <div class="flex items-center gap-3 mb-6">
+            <button onclick="closeServer()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                <i class="fa-solid fa-arrow-left text-slate-800"></i>
+            </button>
+            <h2 class="text-xl font-black text-slate-800 uppercase">WiFi Servers</h2>
         </div>
-        <div class="flex gap-3 text-slate-400">
-            <i class="fa-solid fa-share-nodes"></i>
-            <i class="fa-solid fa-bell"></i>
+
+        <div class="space-y-6">
+            <!-- Movie Servers -->
+            <div>
+                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Movie & FTP Servers</h3>
+                <div onclick="openRouter('http://circleftp.net/')" class="server-item">
+                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-film"></i></div>
+                    <span class="font-bold text-slate-700">Circle FTP</span>
+                </div>
+                <div onclick="openRouter('http://timepassbd.live/')" class="server-item">
+                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-play"></i></div>
+                    <span class="font-bold text-slate-700">TimePass BD</span>
+                </div>
+                <div onclick="openRouter('http://172.16.50.4/')" class="server-item">
+                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-server"></i></div>
+                    <span class="font-bold text-slate-700">Local Server (50.4)</span>
+                </div>
+                <div onclick="openRouter('https://moviehaat.net/')" class="server-item">
+                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-clapperboard"></i></div>
+                    <span class="font-bold text-slate-700">Movie Haat</span>
+                </div>
+                <div onclick="openRouter('https://movies.discoveryftp.net/')" class="server-item">
+                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <span class="font-bold text-slate-700">Discovery FTP</span>
+                </div>
+            </div>
+
+            <!-- TV Servers -->
+            <div>
+                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Live TV Servers</h3>
+                <div onclick="openRouter('http://bdiptv.net/')" class="server-item" style="border-left-color: #ef4444;">
+                    <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-tv"></i></div>
+                    <span class="font-bold text-slate-700">BD IPTV</span>
+                </div>
+                <div onclick="openRouter('http://iptvidn.com/')" class="server-item" style="border-left-color: #ef4444;">
+                    <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-satellite-dish"></i></div>
+                    <span class="font-bold text-slate-700">IPTV IDN</span>
+                </div>
+                <div onclick="openRouter('https://11plus.live/#')" class="server-item" style="border-left-color: #ef4444;">
+                    <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-circle-play"></i></div>
+                    <span class="font-bold text-slate-700">11 Plus Live</span>
+                </div>
+                <div onclick="openRouter('http://172.16.29.28/')" class="server-item" style="border-left-color: #ef4444;">
+                    <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-tv"></i></div>
+                    <span class="font-bold text-slate-700">Local TV (29.28)</span>
+                </div>
+                <div onclick="openRouter('http://172.16.18.18/')" class="server-item" style="border-left-color: #ef4444;">
+                    <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-display"></i></div>
+                    <span class="font-bold text-slate-700">Local TV (18.18)</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="p-4 space-y-4">
-        
-        <div class="grid grid-cols-12 gap-3">
-            <div class="col-span-5 glass-card p-4 flex flex-col items-center justify-center">
+    <!-- Support Panel -->
+    <div id="supportPanel" class="p-6">
+        <div class="flex items-center gap-3 mb-6">
+            <button onclick="closeSupport()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                <i class="fa-solid fa-arrow-left text-slate-800"></i>
+            </button>
+            <h2 class="text-xl font-black text-slate-800 uppercase">Customer Support</h2>
+        </div>
+        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-1">Direct Call</h3>
+        <a href="tel:01717348500" class="support-btn">
+            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-phone"></i></div>
+            <div><p class="text-xs font-black text-slate-800 italic">Md Ripon Hossain</p><p class="text-[10px] text-slate-400 font-bold">01717-348500</p></div>
+        </a>
+        <a href="tel:01728266397" class="support-btn">
+            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-phone"></i></div>
+            <div><p class="text-xs font-black text-slate-800 italic">Md Sahajalal</p><p class="text-[10px] text-slate-400 font-bold">01728-266397</p></div>
+        </a>
+        <a href="tel:01713577573" class="support-btn">
+            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-phone"></i></div>
+            <div><p class="text-xs font-black text-slate-800 italic">Md Sanaullah</p><p class="text-[10px] text-slate-400 font-bold">01713-577573</p></div>
+        </a>
+        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-6 mb-4 ml-1">WhatsApp Message</h3>
+        <a href="https://wa.me/8801877059049" class="support-btn border-b-4 border-green-500">
+            <div class="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-brands fa-whatsapp"></i></div>
+            <div><p class="text-xs font-black text-slate-800 italic">Manager WhatsApp</p><p class="text-[10px] text-slate-400 font-bold">এনি টাইম মেসেজ করুন (018770-59049)</p></div>
+        </a>
+        <a href="https://wa.me/8801713577573" class="support-btn border-b-4 border-green-500">
+            <div class="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-brands fa-whatsapp"></i></div>
+            <div><p class="text-xs font-black text-slate-800 italic">Billing Help</p><p class="text-[10px] text-slate-400 font-bold">বিল সংক্রান্ত সমস্যার জন্য (017135-77573)</p></div>
+        </a>
+        <a href="https://wa.me/8801957469914" class="support-btn border-b-4 border-green-500">
+            <div class="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-brands fa-whatsapp"></i></div>
+            <div><p class="text-xs font-black text-slate-800 italic">Technical Support</p><p class="text-[10px] text-slate-400 font-bold">কানেকশন সমস্যা সমাধান (019574-69914)</p></div>
+        </a>
+    </div>
+
+    <div id="billFormPanel" class="p-6">
+        <div class="flex items-center gap-3 mb-6">
+            <button onclick="closeBillForm()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm"><i class="fa-solid fa-arrow-left text-slate-800"></i></button>
+            <h2 class="text-xl font-black text-slate-800 uppercase">ওয়াইফাই বিল দিন</h2>
+        </div>
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">IP Name / User ID</label>
+            <input type="text" id="ipName" class="input-box mt-1" placeholder="উদাঃ User0182">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Monthly Bill (৳)</label>
+            <input type="number" id="billAmount" class="input-box mt-1" placeholder="টাকার পরিমাণ লিখুন">
+            <button onclick="submitBill()" class="w-full bg-indigo-600 text-white font-black py-4 rounded-2xl shadow-lg shadow-indigo-100 active:scale-95 transition-all mt-4">SUBMIT BILL</button>
+        </div>
+    </div>
+
+    <div id="noticePanel" class="p-6">
+        <div class="flex items-center gap-3 mb-6">
+            <button onclick="closeNotice()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm"><i class="fa-solid fa-arrow-left text-slate-800"></i></button>
+            <h2 class="text-xl font-black text-slate-800 uppercase">Notification</h2>
+        </div>
+        <div id="noticeList" class="space-y-4"><p class="text-center text-slate-400 text-sm mt-10">কোনো নোটিশ নেই</p></div>
+    </div>
+
+    <div id="depositPanel" class="p-6 overflow-y-auto">
+        <div class="flex items-center gap-4 mb-8">
+            <button onclick="closeDeposit()" class="text-slate-800 text-xl"><i class="fa-solid fa-arrow-left"></i></button>
+            <h1 class="text-xl font-black text-slate-800">Deposit</h1>
+        </div>
+        <div class="bg-white p-5 rounded-3xl border-l-4 border-green-500 mb-8">
+            <h2 class="text-green-600 font-black text-lg mb-1">First Deposit Bonus!</h2>
+            <p class="text-slate-500 text-[11px] font-bold">Get 100% bonus on your first deposit up to ৳10,000</p>
+        </div>
+        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Select Payment Method</h3>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="payment-card flex flex-col items-center"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/bkash.png" alt="bkash"><span class="text-[10px] font-black text-slate-600 uppercase">bKash Personal</span></div>
+            <div class="payment-card flex flex-col items-center"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/bkash.png" alt="bkash"><span class="text-[10px] font-black text-slate-600 uppercase">bKash Agent</span></div>
+            <div class="payment-card flex flex-col items-center"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/bkash.png" alt="bkash"><span class="text-[10px] font-black text-slate-600 uppercase">bKash Merchant</span></div>
+            <div class="payment-card flex flex-col items-center"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/nagad.png" alt="nagad"><span class="text-[10px] font-black text-slate-600 uppercase">Nagad Personal</span></div>
+            <div class="payment-card flex flex-col items-center"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/nagad.png" alt="nagad"><span class="text-[10px] font-black text-slate-600 uppercase">Nagad Agent</span></div>
+            <div class="payment-card flex flex-col items-center"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/rocket.png" alt="rocket"><span class="text-[10px] font-black text-slate-600 uppercase">Rocket</span></div>
+        </div>
+    </div>
+
+    <div id="webPanel">
+        <div class="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full z-[1001]" onclick="closeLink()"><i class="fa-solid fa-xmark px-2"></i></div>
+        <iframe id="linkFrame" src="" frameborder="0" style="width: 100%; height: 100%;"></iframe>
+    </div>
+
+    <div class="premium-balance-card">
+        <div class="flex justify-between items-center">
+            <div class="bg-white/15 p-2.5 rounded-lg backdrop-blur-md border border-white/10"><i class="fa-solid fa-crown text-yellow-400 text-md"></i></div>
+            <div class="text-right">
+                <p class="text-[10px] font-bold opacity-70 uppercase tracking-widest">Main Balance</p>
+                <h2 class="text-3xl font-black italic">৳ <span id="mainBalanceDisplay">0.00</span></h2>
+            </div>
+        </div>
+        <div class="mt-4 flex justify-between items-center">
+            <span class="text-[10px] font-black uppercase text-green-400 tracking-wider">Amar Bazar Active</span>
+            <button onclick="openDeposit()" class="bg-white text-indigo-900 text-[10px] px-6 py-2 rounded-full font-black uppercase shadow-lg">Add Balance</button>
+        </div>
+    </div>
+
+    <div class="p-4 space-y-4 -mt-3">
+        <div class="glass-card p-3.5 flex justify-between items-center border-l-4 border-indigo-500 relative z-10">
+            <div>
                 <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Live Speed</p>
-                <h2 id="liveSpeed" class="text-2xl font-black text-indigo-600">19.5</h2>
-                <p class="text-[8px] font-bold text-slate-400">MBPS</p>
+                <div class="flex items-baseline gap-1"><h2 id="liveSpeed" class="text-xl font-black text-slate-800">20.8</h2><span class="text-[9px] font-bold text-indigo-500">MBPS</span></div>
             </div>
-            <div class="col-span-7 balance-card p-4 flex flex-col justify-between">
-                <p class="text-[9px] font-bold opacity-80 uppercase">Balance</p>
-                <h2 class="text-xl font-black italic">৳ 540.00</h2>
-                <button class="bg-white text-indigo-600 text-[9px] py-1.5 rounded-lg font-black mt-2 shadow-sm uppercase">Add Balance</button>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-            <div class="bg-white border border-green-100 rounded-xl py-2 px-3 flex items-center gap-2">
-                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span class="text-[10px] font-black text-green-600 uppercase">Status: Active</span>
-            </div>
-            <div class="bg-white border border-orange-100 rounded-xl py-2 px-3 flex items-center gap-2">
-                <i class="fa-solid fa-calendar text-orange-500 text-[10px]"></i>
-                <span class="text-[10px] font-black text-orange-600">১২ দিন বাকি</span>
+            <div class="flex gap-2">
+                <div class="bg-green-50 px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-green-100">
+                    <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                    <span class="text-[8px] font-black text-green-600 uppercase">Active</span>
+                </div>
+                <div class="bg-orange-50 px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-orange-100">
+                    <i class="fa-solid fa-calendar text-orange-500 text-[8px]"></i>
+                    <span class="text-[8px] font-black text-orange-600">১২ দিন</span>
+                </div>
             </div>
         </div>
 
-        <div class="mt-2">
-            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Special Offers</h3>
+        <div>
+            <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Special Offers</h3>
             <div class="slider-container" id="offerSlider">
-                <div class="slide active">
-                    <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/ups.png" alt="Offer 1">
-                </div>
-                <div class="slide">
-                    <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/tp1.png" alt="Offer 2">
-                </div>
-                <div class="slide">
-                    <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/stan.png" alt="Offer 3">
-                </div>
+                <div class="slide active"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/ups.png"></div>
+                <div class="slide"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/tp1.png"></div>
+                <div class="slide"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/stan.png"></div>
             </div>
         </div>
 
-        <div class="pt-2">
-            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Dashboard</h3>
+        <div>
+            <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Router Config</h3>
             <div class="grid grid-cols-4 gap-y-5">
-                <div class="flex flex-col items-center">
-                    <div class="menu-icon"><i class="fa-solid fa-wallet"></i></div>
-                    <span class="text-[9px] font-bold text-slate-500">বিল দিন</span>
+                <div class="flex flex-col items-center" onclick="openRouter('http://192.168.0.1')">
+                    <div class="menu-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e6/TP-Link_Logo.svg" alt="TP-Link"></div>
+                    <span class="text-[9px] font-bold text-slate-500 uppercase">TP-Link</span>
                 </div>
-                <div class="flex flex-col items-center">
-                    <div class="menu-icon text-purple-500"><i class="fa-solid fa-box"></i></div>
-                    <span class="text-[9px] font-bold text-slate-500">প্যাকেজ</span>
+                <div class="flex flex-col items-center" onclick="openRouter('http://192.168.0.1')">
+                    <div class="menu-icon"><img src="https://www.tendacn.com/images/logo.png" alt="Tenda"></div>
+                    <span class="text-[9px] font-bold text-slate-500 uppercase">Tenda</span>
                 </div>
-                <div class="flex flex-col items-center">
-                    <div class="menu-icon text-orange-500"><i class="fa-solid fa-headset"></i></div>
-                    <span class="text-[9px] font-bold text-slate-500">সাপোর্ট</span>
+                <div class="flex flex-col items-center" onclick="openRouter('http://192.168.1.1')">
+                    <div class="menu-icon"><img src="https://www.netis-systems.com/static/images/logo.png" alt="Netis"></div>
+                    <span class="text-[9px] font-bold text-slate-500 uppercase">Netis</span>
                 </div>
-                <div class="flex flex-col items-center">
-                    <div class="menu-icon text-slate-500"><i class="fa-solid fa-history"></i></div>
-                    <span class="text-[9px] font-bold text-slate-500">হিস্ট্রি</span>
+                <div class="flex flex-col items-center" onclick="openRouter('http://192.168.1.1')">
+                    <div class="menu-icon"><img src="https://www.mercusys.com/static/images/logo.svg" alt="Mercusys"></div>
+                    <span class="text-[9px] font-bold text-slate-500 uppercase">Mercusys</span>
                 </div>
-                <div class="flex flex-col items-center">
-                    <div class="menu-icon text-blue-400"><i class="fa-solid fa-router"></i></div>
-                    <span class="text-[9px] font-bold text-slate-500">রাউটার</span>
+                <div class="flex flex-col items-center" onclick="openRouter('http://192.168.0.1')">
+                    <div class="menu-icon"><img src="https://www.totolink.net/static/images/logo.png" alt="Totolink"></div>
+                    <span class="text-[9px] font-bold text-slate-500 uppercase">Totolink</span>
                 </div>
-                <div class="flex flex-col items-center">
-                    <div class="menu-icon text-cyan-500"><i class="fa-solid fa-microchip"></i></div>
-                    <span class="text-[9px] font-bold text-slate-500">ONU</span>
+                <div class="flex flex-col items-center" onclick="openRouter('http://192.168.31.1')">
+                    <div class="menu-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/a/ae/Xiaomi_logo_%282021-%29.svg" alt="Mi"></div>
+                    <span class="text-[9px] font-bold text-slate-500 uppercase">Mi Router</span>
                 </div>
-                <div class="flex flex-col items-center">
-                    <div class="menu-icon text-pink-500"><i class="fa-solid fa-gift"></i></div>
-                    <span class="text-[9px] font-bold text-slate-500">অফার</span>
+                <div class="flex flex-col items-center" onclick="openRouter('http://192.168.0.1')">
+                    <div class="menu-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/b/bc/D-Link_logo.svg" alt="D-Link"></div>
+                    <span class="text-[9px] font-bold text-slate-500 uppercase">D-Link</span>
                 </div>
-                <div class="flex flex-col items-center">
-                    <div class="menu-icon text-indigo-500"><i class="fa-solid fa-user-shield"></i></div>
-                    <span class="text-[9px] font-bold text-slate-500">প্রোফাইল</span>
+                <div class="flex flex-col items-center" onclick="openRouter('http://192.168.1.1')">
+                    <div class="menu-icon text-indigo-600"><i class="fa-solid fa-microchip"></i></div>
+                    <span class="text-[9px] font-bold text-slate-500 uppercase">ONU</span>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Bottom Navigation -->
     <div class="fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-slate-100 flex justify-around items-center z-50">
-        <div class="flex flex-col items-center text-indigo-600">
-            <i class="fa-solid fa-house text-lg"></i>
-            <span class="text-[8px] font-black uppercase">Home</span>
+        <div class="flex flex-col items-center text-slate-400" onclick="location.reload()">
+            <i class="fa-solid fa-house-chimney text-md"></i>
+            <span class="text-[8px] font-black uppercase mt-1">Home</span>
         </div>
-        <div class="flex flex-col items-center text-slate-300">
-            <i class="fa-solid fa-chart-line text-lg"></i>
-            <span class="text-[8px] font-black uppercase">Usage</span>
+        
+        <div onclick="openSupport()" class="flex flex-col items-center text-slate-400 cursor-pointer">
+            <i class="fa-solid fa-headset text-md"></i>
+            <span class="text-[8px] font-black uppercase mt-1">Support</span>
         </div>
-        <div class="flex flex-col items-center text-slate-300">
-            <i class="fa-solid fa-circle-user text-lg"></i>
-            <span class="text-[8px] font-black uppercase">Profile</span>
+
+        <div onclick="openServer()" class="flex flex-col items-center text-slate-400 cursor-pointer">
+            <i class="fa-solid fa-server text-md text-indigo-600"></i>
+            <span class="text-[8px] font-black uppercase mt-1 text-indigo-600">Servers</span>
+        </div>
+
+        <div onclick="openBillForm()" class="flex flex-col items-center nav-active-bill cursor-pointer">
+            <i class="fa-solid fa-wallet text-md"></i> 
+            <span class="text-[8px] font-black uppercase mt-1 bill-text-glow">বিল দিন</span> 
         </div>
     </div>
 
     <script>
-        // লাইভ স্পিড সিমুলেশন
-        setInterval(() => {
-            document.getElementById('liveSpeed').innerText = (Math.random() * (20.2 - 19.1) + 19.1).toFixed(1);
-        }, 2500);
+        let currentBalance = 0.00;
+        let notifications = [];
 
-        // স্লাইড বাই স্লাইড এনিমেশন লজিক
-        const slides = document.querySelectorAll('.slide');
-        let currentSlide = 0;
-
-        function nextSlide() {
-            // বর্তমান স্লাইডকে বামে পাঠিয়ে দেওয়া
-            slides[currentSlide].classList.remove('active');
-            slides[currentSlide].classList.add('exit');
-
-            // স্লাইড ইনডেক্স আপডেট
-            currentSlide = (currentSlide + 1) % slides.length;
-
-            // নতুন স্লাইডকে সামনে আনা
-            slides[currentSlide].classList.remove('exit');
-            slides[currentSlide].classList.add('active');
-            
-            // পুরনো স্লাইড ক্লিনআপ (যাতে আবার ডান দিক থেকে আসতে পারে)
-            setTimeout(() => {
-                slides.forEach((slide, index) => {
-                    if (index !== currentSlide) slide.classList.remove('exit');
-                });
-            }, 800);
+        // Amar Bazar Live Balance Integration
+        async function fetchLiveBalance() {
+            try {
+                // এখানে আপনার Amar Bazar API বা Firebase URL বসান
+                // const response = await fetch('YOUR_AMAR_BAZAR_API_URL');
+                // const data = await response.json();
+                // currentBalance = data.balance;
+                
+                // ডেমো হিসেবে লাইভ আপডেট দেখাচ্ছি
+                document.getElementById('mainBalanceDisplay').innerText = currentBalance.toFixed(2);
+            } catch (err) {
+                console.error("Balance update failed");
+            }
         }
 
-        // প্রতি ৩ সেকেন্ড পর পর ছবি বদলাবে
-        setInterval(nextSlide, 3000);
+        // ৫ সেকেন্ড পর পর ব্যালেন্স অটো আপডেট হবে
+        setInterval(fetchLiveBalance, 5000);
+        window.onload = fetchLiveBalance;
+
+        function openRouter(url) {
+            const panel = document.getElementById('webPanel');
+            document.getElementById('linkFrame').src = url;
+            panel.classList.add('open');
+        }
+
+        function closeLink() {
+            const panel = document.getElementById('webPanel');
+            panel.classList.remove('open');
+            setTimeout(() => { document.getElementById('linkFrame').src = ""; }, 500);
+        }
+
+        function openDeposit() { document.getElementById('depositPanel').classList.add('open'); }
+        function closeDeposit() { document.getElementById('depositPanel').classList.remove('open'); }
+        function openBillForm() { document.getElementById('billFormPanel').classList.add('open'); }
+        function closeBillForm() { document.getElementById('billFormPanel').classList.remove('open'); }
+        
+        function openNotice() { 
+            document.getElementById('noticePanel').classList.add('open'); 
+        }
+        function closeNotice() { document.getElementById('noticePanel').classList.remove('open'); }
+
+        function openSupport() { document.getElementById('supportPanel').classList.add('open'); }
+        function closeSupport() { document.getElementById('supportPanel').classList.remove('open'); }
+
+        function openServer() { document.getElementById('serverPanel').classList.add('open'); }
+        function closeServer() { document.getElementById('serverPanel').classList.remove('open'); }
+
+        function submitBill() {
+            const ip = document.getElementById('ipName').value;
+            const amount = parseFloat(document.getElementById('billAmount').value);
+            if(!ip || isNaN(amount)) {
+                Swal.fire({ icon: 'error', title: 'ভুল হয়েছে', text: 'সঠিক তথ্য দিন!', confirmButtonColor: '#4338ca' });
+                return;
+            }
+            if(amount > currentBalance) {
+                Swal.fire({ icon: 'warning', title: 'ব্যালেন্স নেই', text: 'পর্যাপ্ত ব্যালেন্স নেই!', confirmButtonColor: '#4338ca' });
+                return;
+            }
+
+            let timerInterval;
+            Swal.fire({
+                title: 'প্রসেসিং হচ্ছে...',
+                html: 'অপেক্ষা করুন <b></b> সেকেন্ড।',
+                timer: 5000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                    const b = Swal.getHtmlContainer().querySelector('b');
+                    timerInterval = setInterval(() => { b.textContent = Math.ceil(Swal.getTimerLeft() / 1000); }, 100);
+                },
+                willClose: () => { clearInterval(timerInterval); }
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    currentBalance -= amount;
+                    document.getElementById('mainBalanceDisplay').innerText = currentBalance.toFixed(2);
+                    const now = new Date();
+                    const dateTime = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+                    addNotification(ip, amount, dateTime);
+                    Swal.fire({ icon: 'success', title: 'ধন্যবাদ!', text: 'আপনার পেমেন্ট সফল হয়েছে।', confirmButtonColor: '#10b981' });
+                    document.getElementById('ipName').value = "";
+                    document.getElementById('billAmount').value = "";
+                    closeBillForm();
+                }
+            });
+        }
+
+        function addNotification(ip, amount, time) {
+            const noticeList = document.getElementById('noticeList');
+            if(notifications.length === 0) noticeList.innerHTML = "";
+            const newNotice = { ip, amount, time, status: 'Success' };
+            notifications.unshift(newNotice);
+            const html = `
+                <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-green-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-bold text-slate-800">Bill Payment Success</h4>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">IP: ${ip}</p>
+                        </div>
+                        <span class="text-[10px] bg-green-100 text-green-600 px-2 py-1 rounded-md font-bold">SUCCESS</span>
+                    </div>
+                    <div class="mt-3 flex justify-between items-center border-t border-slate-50 pt-3">
+                        <span class="text-indigo-600 font-black">৳ ${amount.toFixed(2)}</span>
+                        <span class="text-[9px] text-slate-400 font-bold">${time}</span>
+                    </div>
+                </div>`;
+            noticeList.insertAdjacentHTML('afterbegin', html);
+        }
+
+        setInterval(() => {
+            const liveSpeedEl = document.getElementById('liveSpeed');
+            if(liveSpeedEl) liveSpeedEl.innerText = (Math.random() * (21.0 - 19.8) + 19.8).toFixed(1);
+        }, 3000);
+
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+        setInterval(() => {
+            if(slides.length > 0) {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }
+        }, 4000);
     </script>
 </body>
 </html>
