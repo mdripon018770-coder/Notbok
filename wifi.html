@@ -7,6 +7,68 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        // Amar Bazar Console Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCpwfTWOsU6Gb3rLvMjcKnewLMnlkq5plg",
+            authDomain: "amar-bazar-d99b4.firebaseapp.com",
+            databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com",
+            projectId: "amar-bazar-d99b4",
+            storageBucket: "amar-bazar-d99b4.firebasestorage.app",
+            messagingSenderId: "1000008221916",
+            appId: "1:1000008221916:web:6bd19561f4b64e2002e019"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // অমর বাজারের ডাটাবেস থেকে ইউজার ডাটা রিয়েল-টাইম সিঙ্ক করার লজিক
+        window.syncWithAmarBazar = function() {
+            const userMobile = localStorage.getItem('mobile'); 
+            
+            if (userMobile) {
+                const userRef = ref(db, 'users/' + userMobile);
+                onValue(userRef, (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        const userName = data.full_name || data.name || "User";
+                        const userPhone = data.mobile || userMobile;
+
+                        // অমর বাজারের ডাটা দিয়ে UI আপডেট
+                        document.getElementById('liveUserName').innerText = userName.toUpperCase();
+                        document.getElementById('mainBalanceDisplay').innerText = parseFloat(data.balance || 0).toFixed(2);
+                        document.getElementById('liveUserPhone').innerText = userPhone;
+                        
+                        // --- আপনার রিকোয়েস্ট অনুযায়ী পরিবর্তন ---
+                        // AMAR BAZAR ACTIVE এর জায়গায় নাম ও নম্বর শো করানো হয়েছে
+                        document.getElementById('userActiveInfo').innerText = userName + " (" + userPhone + ")";
+                        
+                        localStorage.setItem('balance', data.balance);
+                        localStorage.setItem('full_name', userName);
+                        currentBalance = parseFloat(data.balance);
+                    }
+                });
+            }
+        };
+
+        window.updateFirebaseBalance = function(newBalance) {
+            const userMobile = localStorage.getItem('mobile');
+            if (userMobile) {
+                update(ref(db, 'users/' + userMobile), {
+                    balance: newBalance
+                });
+            }
+        };
+
+        window.addEventListener('load', () => {
+            window.syncWithAmarBazar();
+        });
+    </script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600;700&display=swap');
         body { font-family: 'Hind Siliguri', sans-serif; background: #f4f7fe; margin: 0; padding-bottom: 90px; }
@@ -55,7 +117,6 @@
         .menu-icon img { width: 35px; height: 35px; object-fit: contain; }
         .menu-icon:active { transform: scale(0.9); }
 
-        /* প্যানেল গুলোর বেসিক স্টাইল */
         #webPanel, #depositPanel, #billFormPanel, #noticePanel, #supportPanel, #serverPanel {
             position: fixed;
             top: 0;
@@ -78,23 +139,6 @@
         .input-box { background: white; border: 1.5px solid #e2e8f0; border-radius: 15px; padding: 12px 15px; width: 100%; font-weight: 600; font-size: 14px; outline: none; margin-bottom: 15px; transition: 0.3s; }
         .input-box:focus { border-color: #4338ca; box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1); }
 
-        .notice-count {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: red;
-            color: white;
-            font-size: 9px;
-            font-weight: bold;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid white;
-        }
-
         .support-btn {
             background: white;
             padding: 15px;
@@ -108,7 +152,6 @@
         }
         .support-btn:active { transform: scale(0.96); }
 
-        /* সার্ভার আইটেম স্টাইল */
         .server-item {
             background: white;
             padding: 15px;
@@ -126,7 +169,6 @@
 </head>
 <body>
 
-    <!-- Server Popup Panel -->
     <div id="serverPanel" class="p-6 overflow-y-auto">
         <div class="flex items-center gap-3 mb-6">
             <button onclick="closeServer()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
@@ -136,7 +178,6 @@
         </div>
 
         <div class="space-y-6">
-            <!-- Movie Servers -->
             <div>
                 <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Movie & FTP Servers</h3>
                 <div onclick="openRouter('http://circleftp.net/')" class="server-item">
@@ -161,7 +202,6 @@
                 </div>
             </div>
 
-            <!-- TV Servers -->
             <div>
                 <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Live TV Servers</h3>
                 <div onclick="openRouter('http://bdiptv.net/')" class="server-item" style="border-left-color: #ef4444;">
@@ -188,7 +228,6 @@
         </div>
     </div>
 
-    <!-- Support Panel -->
     <div id="supportPanel" class="p-6">
         <div class="flex items-center gap-3 mb-6">
             <button onclick="closeSupport()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
@@ -275,12 +314,12 @@
         <div class="flex justify-between items-center">
             <div class="bg-white/15 p-2.5 rounded-lg backdrop-blur-md border border-white/10"><i class="fa-solid fa-crown text-yellow-400 text-md"></i></div>
             <div class="text-right">
-                <p class="text-[10px] font-bold opacity-70 uppercase tracking-widest">Main Balance</p>
+                <p id="liveUserName" class="text-[10px] font-bold opacity-70 uppercase tracking-widest">LOADING...</p>
                 <h2 class="text-3xl font-black italic">৳ <span id="mainBalanceDisplay">0.00</span></h2>
             </div>
         </div>
         <div class="mt-4 flex justify-between items-center">
-            <span class="text-[10px] font-black uppercase text-green-400 tracking-wider">Amar Bazar Active</span>
+            <span id="userActiveInfo" class="text-[10px] font-black uppercase text-green-400 tracking-wider italic">LOADING STATUS...</span>
             <button onclick="openDeposit()" class="bg-white text-indigo-900 text-[10px] px-6 py-2 rounded-full font-black uppercase shadow-lg">Add Balance</button>
         </div>
     </div>
@@ -351,23 +390,19 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
     <div class="fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-slate-100 flex justify-around items-center z-50">
         <div class="flex flex-col items-center text-slate-400" onclick="location.reload()">
             <i class="fa-solid fa-house-chimney text-md"></i>
             <span class="text-[8px] font-black uppercase mt-1">Home</span>
         </div>
-        
         <div onclick="openSupport()" class="flex flex-col items-center text-slate-400 cursor-pointer">
             <i class="fa-solid fa-headset text-md"></i>
             <span class="text-[8px] font-black uppercase mt-1">Support</span>
         </div>
-
         <div onclick="openServer()" class="flex flex-col items-center text-slate-400 cursor-pointer">
             <i class="fa-solid fa-server text-md text-indigo-600"></i>
             <span class="text-[8px] font-black uppercase mt-1 text-indigo-600">Servers</span>
         </div>
-
         <div onclick="openBillForm()" class="flex flex-col items-center nav-active-bill cursor-pointer">
             <i class="fa-solid fa-wallet text-md"></i> 
             <span class="text-[8px] font-black uppercase mt-1 bill-text-glow">বিল দিন</span> 
@@ -378,24 +413,25 @@
         let currentBalance = 0.00;
         let notifications = [];
 
-        // Amar Bazar Live Balance Integration
-        async function fetchLiveBalance() {
+        function updateFromConsole() {
             try {
-                // এখানে আপনার Amar Bazar API বা Firebase URL বসান
-                // const response = await fetch('YOUR_AMAR_BAZAR_API_URL');
-                // const data = await response.json();
-                // currentBalance = data.balance;
-                
-                // ডেমো হিসেবে লাইভ আপডেট দেখাচ্ছি
+                const userBalance = localStorage.getItem('balance') || "0.00";
+                const userName = localStorage.getItem('full_name') || "User";
+                const userPhone = localStorage.getItem('mobile') || "01XXXXXXXXX";
+
+                currentBalance = parseFloat(userBalance);
                 document.getElementById('mainBalanceDisplay').innerText = currentBalance.toFixed(2);
+                document.getElementById('liveUserName').innerText = userName.toUpperCase();
+                
+                // রিয়েল-টাইম স্ট্যাটাস আপডেট
+                document.getElementById('userActiveInfo').innerText = userName + " (" + userPhone + ")";
             } catch (err) {
-                console.error("Balance update failed");
+                console.log("Sync Error");
             }
         }
 
-        // ৫ সেকেন্ড পর পর ব্যালেন্স অটো আপডেট হবে
-        setInterval(fetchLiveBalance, 5000);
-        window.onload = fetchLiveBalance;
+        setInterval(updateFromConsole, 2000);
+        window.onload = updateFromConsole;
 
         function openRouter(url) {
             const panel = document.getElementById('webPanel');
@@ -413,21 +449,17 @@
         function closeDeposit() { document.getElementById('depositPanel').classList.remove('open'); }
         function openBillForm() { document.getElementById('billFormPanel').classList.add('open'); }
         function closeBillForm() { document.getElementById('billFormPanel').classList.remove('open'); }
-        
-        function openNotice() { 
-            document.getElementById('noticePanel').classList.add('open'); 
-        }
+        function openNotice() { document.getElementById('noticePanel').classList.add('open'); }
         function closeNotice() { document.getElementById('noticePanel').classList.remove('open'); }
-
         function openSupport() { document.getElementById('supportPanel').classList.add('open'); }
         function closeSupport() { document.getElementById('supportPanel').classList.remove('open'); }
-
         function openServer() { document.getElementById('serverPanel').classList.add('open'); }
         function closeServer() { document.getElementById('serverPanel').classList.remove('open'); }
 
         function submitBill() {
             const ip = document.getElementById('ipName').value;
             const amount = parseFloat(document.getElementById('billAmount').value);
+            
             if(!ip || isNaN(amount)) {
                 Swal.fire({ icon: 'error', title: 'ভুল হয়েছে', text: 'সঠিক তথ্য দিন!', confirmButtonColor: '#4338ca' });
                 return;
@@ -441,7 +473,7 @@
             Swal.fire({
                 title: 'প্রসেসিং হচ্ছে...',
                 html: 'অপেক্ষা করুন <b></b> সেকেন্ড।',
-                timer: 5000,
+                timer: 3000,
                 timerProgressBar: true,
                 didOpen: () => {
                     Swal.showLoading();
@@ -451,11 +483,19 @@
                 willClose: () => { clearInterval(timerInterval); }
             }).then((result) => {
                 if (result.dismiss === Swal.DismissReason.timer) {
-                    currentBalance -= amount;
+                    const newBalance = currentBalance - amount;
+                    currentBalance = newBalance;
+                    localStorage.setItem('balance', currentBalance.toFixed(2));
                     document.getElementById('mainBalanceDisplay').innerText = currentBalance.toFixed(2);
+                    
+                    if (window.updateFirebaseBalance) {
+                        window.updateFirebaseBalance(newBalance);
+                    }
+                    
                     const now = new Date();
                     const dateTime = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
                     addNotification(ip, amount, dateTime);
+                    
                     Swal.fire({ icon: 'success', title: 'ধন্যবাদ!', text: 'আপনার পেমেন্ট সফল হয়েছে।', confirmButtonColor: '#10b981' });
                     document.getElementById('ipName').value = "";
                     document.getElementById('billAmount').value = "";
@@ -470,7 +510,7 @@
             const newNotice = { ip, amount, time, status: 'Success' };
             notifications.unshift(newNotice);
             const html = `
-                <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-green-500">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-green-500 mb-3">
                     <div class="flex justify-between items-start">
                         <div>
                             <h4 class="font-bold text-slate-800">Bill Payment Success</h4>
