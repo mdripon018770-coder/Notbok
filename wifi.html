@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NetSpeed Pro Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -10,7 +10,7 @@
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, onValue, update, get, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         // Amar Bazar Console Firebase Config
         const firebaseConfig = {
@@ -26,6 +26,42 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // গলোবাল ভ্যারিয়েবল মেয়াদের দিন ট্র্যাক করার জন্য
+        window.userExpiryDays = 30; 
+
+        // --- নতুন লগইন লজিক (Firebase থেকে) ---
+        window.processLogin = async function() {
+            const mobile = document.getElementById('loginMobile').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+
+            if(!mobile || !password) {
+                Swal.fire('ভুল', 'মোবাইল এবং পাসওয়ার্ড দিন', 'error');
+                return;
+            }
+
+            const userRef = ref(db, 'users/' + mobile);
+            try {
+                const snapshot = await get(userRef);
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    if (userData.password === password) {
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('mobile', mobile);
+                        
+                        document.getElementById('loginScreen').style.display = 'none';
+                        document.getElementById('mainApp').style.display = 'block';
+                        window.syncWithAmarBazar();
+                    } else {
+                        Swal.fire('ভুল পাসওয়ার্ড', 'সঠিক পাসওয়ার্ড দিন', 'error');
+                    }
+                } else {
+                    Swal.fire('ইউজার নেই', 'এই নম্বরটি রেজিস্টার্ড নয়', 'error');
+                }
+            } catch (e) {
+                Swal.fire('Error', 'সার্ভার কানেকশন সমস্যা', 'error');
+            }
+        };
+
         // অমর বাজারের ডাটাবেস থেকে ইউজার ডাটা রিয়েল-টাইম সিঙ্ক করার লজিক
         window.syncWithAmarBazar = function() {
             const userMobile = localStorage.getItem('mobile'); 
@@ -37,19 +73,77 @@
                     if (data) {
                         const userName = data.full_name || data.name || "User";
                         const userPhone = data.mobile || userMobile;
-
-                        // অমর বাজারের ডাটা দিয়ে UI আপডেট
-                        document.getElementById('liveUserName').innerText = userName.toUpperCase();
-                        document.getElementById('mainBalanceDisplay').innerText = parseFloat(data.balance || 0).toFixed(2);
-                        document.getElementById('liveUserPhone').innerText = userPhone;
                         
-                        // --- আপনার রিকোয়েস্ট অনুযায়ী পরিবর্তন ---
-                        // AMAR BAZAR ACTIVE এর জায়গায় নাম ও নম্বর শো করানো হয়েছে
+                        // ফিক্সড লজিক: অ্যাডমিন প্যানেলের duration_days অথবা expiry_days যেকোনো একটি থাকলেই দিন রিড করবে
+                        let expiryDays = 0;
+                        if (data.duration_days !== undefined) {
+                            expiryDays = parseInt(data.duration_days);
+                        } else if (data.expiry_days !== undefined) {
+                            expiryDays = parseInt(data.expiry_days);
+                        }
+                        
+                        window.userExpiryDays = expiryDays;
+
+                        // ফায়ারবেস রিয়েলটাইম ডেটা দিয়ে সরাসরি ইন্টারফেসের সব এলিমেন্ট আপডেট
+                        const nameElements = document.querySelectorAll('#liveUserName');
+                        nameElements.forEach(el => el.innerText = userName.toUpperCase());
+
+                        const balanceElements = document.querySelectorAll('#mainBalanceDisplay');
+                        balanceElements.forEach(el => el.innerText = parseFloat(data.balance || 0).toFixed(2));
+                        
+                        if(document.getElementById('liveUserPhone')) {
+                            document.getElementById('liveUserPhone').innerText = userPhone;
+                        }
+                        
                         document.getElementById('userActiveInfo').innerText = userName + " (" + userPhone + ")";
                         
                         localStorage.setItem('balance', data.balance);
                         localStorage.setItem('full_name', userName);
                         currentBalance = parseFloat(data.balance);
+
+                        // অটোমেটিক্যালি এই ইউজারের আইডি ইনপুট বক্সে ইউজারের নাম সেট করা
+                        if(document.getElementById('ipName') && !document.getElementById('ipName').value) {
+                            document.getElementById('ipName').value = userName;
+                        }
+
+                        // --- একটিভ / ডিএকটিভ এবং ওয়াইফাই স্ট্যাটাস রিয়েল-টাইম আপডেট লজিক ---
+                        const statusContainer = document.getElementById('wifiStatusContainer');
+                        const expiryDaysDisplay = document.getElementById('expiryDaysDisplay');
+                        const liveSpeedEl = document.getElementById('liveSpeed');
+
+                        if (expiryDays <= 0) {
+                            // মেয়াদ ০ হলে Deactive দেখাবে (লাল রঙ)
+                            statusContainer.innerHTML = `
+                                <div class="bg-red-50 px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-red-100">
+                                    <div class="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                                    <span class="text-[8px] font-black text-red-600 uppercase">Deactive</span>
+                                </div>
+                            `;
+                            expiryDaysDisplay.className = "text-[8px] font-black text-red-600";
+                            expiryDaysDisplay.innerText = "০ দিন (মেয়াদ শেষ)";
+                            if(liveSpeedEl) liveSpeedEl.innerText = "0.0"; // ওয়াইফাই স্পিড বন্ধ বা ০ দেখাবে
+                            
+                            // ইউজারকে সচেতন করার জন্য একটি অ্যালার্ট নোটিশ
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'লাইনটি সাময়িক বন্ধ আছে!',
+                                text: 'আপনার ওয়াইফাই লাইনের মেয়াদ শেষ হয়ে গেছে। অনুগ্রহ করে নিচে বিল দিন বাটনে ক্লিক করে বিল পরিশোধ করুন।',
+                                confirmButtonColor: '#4338ca'
+                            });
+                        } else {
+                            // মেয়াদ থাকলে Active দেখাবে (সবুজ রঙ)
+                            statusContainer.innerHTML = `
+                                <div class="bg-green-50 px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-green-100">
+                                    <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                                    <span class="text-[8px] font-black text-green-600 uppercase">Active</span>
+                                </div>
+                            `;
+                            expiryDaysDisplay.className = "text-[8px] font-black text-orange-600";
+                            expiryDaysDisplay.innerText = expiryDays + " দিন";
+                        }
+
+                        // এই ইউজারের সুনির্দিষ্ট ওয়াইফাই বিল হিস্ট্রি লোড করা
+                        window.loadWifiBillHistory(userMobile);
                     }
                 });
             }
@@ -64,14 +158,152 @@
             }
         };
 
+        // নতুন ডিপোজিট রিকোয়েস্ট পাঠানোর ফাংশน (Realtime Database-এ জমা হবে)
+        window.sendDepositRequestToFirebase = function(gatewayName, amount, trxId) {
+            const userMobile = localStorage.getItem('mobile') || "Unknown";
+            const userName = localStorage.getItem('full_name') || "Unknown User";
+            
+            const depositRequestsRef = ref(db, 'deposit_requests');
+            const newRequestRef = push(depositRequestsRef);
+            
+            const now = new Date();
+            const dateTime = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+
+            return set(newRequestRef, {
+                mobile: userMobile,
+                name: userName,
+                gateway: gatewayName,
+                amount: parseFloat(amount),
+                transaction_id: trxId,
+                status: "Pending",
+                timestamp: dateTime
+            });
+        };
+
+        // --- নতুন ওয়াইফাই বিল অ্যাডমিন ট্র্যাকিং ফাংশন (মেয়াদ বাড়ানোর কোড এখান থেকে কেটে নেওয়া হয়েছে, এটি এখন অ্যাডমিন অ্যাপ্রুভ করলে বাড়বে) ---
+        window.sendWifiPaymentToFirebase = function(ip, area, amount, trxId, method) {
+            const userMobile = localStorage.getItem('mobile') || "Unknown";
+            const userName = localStorage.getItem('full_name') || "Unknown User";
+            
+            const wifiPaymentsRef = ref(db, 'wifi_payments');
+            const newPaymentRef = push(wifiPaymentsRef);
+            
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+            return set(newPaymentRef, {
+                mobile: userMobile,
+                name: userName,
+                ip_user_id: ip,
+                area: area,
+                amount: parseFloat(amount),
+                transaction_id: trxId || "N/A",
+                payment_method: method || "Wallet",
+                date: dateStr,
+                time: timeStr,
+                status: "Pending", // পেমেন্ট সাবমিট হলে ডিফল্ট স্ট্যাটাস 'Pending' থাকবে
+                invoice_id: "SB" + Math.floor(1000 + Math.random() * 9000)
+            });
+        };
+
+        // --- রিয়েল-টাইম ডাটাবেস থেকে শুধুমাত্র নির্দিষ্ট ইউজারের রিসিট হিস্ট্রি রিড করার লজিক (স্ট্যাটাস ব্যাজ সহ আপডেট করা হয়েছে) ---
+        window.loadWifiBillHistory = function(userMobile) {
+            const wifiPaymentsRef = ref(db, 'wifi_payments');
+            onValue(wifiPaymentsRef, (snapshot) => {
+                const historyContainer = document.getElementById('wifiReceiptsHistory');
+                if(!historyContainer) return;
+                
+                historyContainer.innerHTML = "";
+                let hasData = false;
+
+                if(snapshot.exists()) {
+                    const data = snapshot.val();
+                    // ডানাকে রিভার্স ক্রোনোলজিতে সাজানো (নতুনটা ওপরে দেখাবে)
+                    const sortedKeys = Object.keys(data).reverse();
+
+                    sortedKeys.forEach(key => {
+                        const payment = data[key];
+                        // ফিল্টার লজিক: শুধুমাত্র রিকোয়েস্টকারী ইউজারের ডাটা ম্যাচ করবে
+                        if(payment.mobile === userMobile) {
+                            hasData = true;
+
+                            // স্ট্যাটাস অনুযায়ী ব্যাজের কালার ও টেক্সট নির্ধারণ লজিক
+                            let statusBadge = '';
+                            let borderColor = 'border-amber-500';
+                            let headerBg = 'bg-amber-500';
+                            
+                            if (payment.status === 'Success' || payment.status === 'Approved') {
+                                statusBadge = '<span class="bg-emerald-500 text-white px-2 py-0.5 rounded text-[10px] font-bold">PAID</span>';
+                                borderColor = 'border-emerald-500';
+                                headerBg = 'bg-emerald-500';
+                            } else if (payment.status === 'Rejected') {
+                                statusBadge = '<span class="bg-red-500 text-white px-2 py-0.5 rounded text-[10px] font-bold">REJECTED</span>';
+                                borderColor = 'border-red-500';
+                                headerBg = 'bg-red-500';
+                            } else {
+                                statusBadge = '<span class="bg-amber-500 text-white px-2 py-0.5 rounded text-[10px] font-bold animate-pulse">PENDING</span>';
+                                borderColor = 'border-amber-400';
+                                headerBg = 'bg-amber-500';
+                            }
+
+                            const cardHTML = `
+                                <div class="bg-white border-2 ${borderColor} rounded-2xl overflow-hidden shadow-md mb-4 w-full">
+                                    <div class="${headerBg} text-white p-3 text-center">
+                                        <h4 class="font-extrabold text-[12px] tracking-wider uppercase">SHINHAJ BROAD BRAND NETWORK SERVICE</h4>
+                                        <p class="text-[9px] opacity-90">Internet Service Provider & IT Solution</p>
+                                    </div>
+                                    <div class="p-4 text-xs font-semibold text-slate-700 space-y-2">
+                                        <div class="flex justify-between items-center border-b border-dashed border-slate-200 pb-2 mb-2">
+                                            <span>Invoice No: <strong class="text-slate-900">#${payment.invoice_id || 'SB000'}</strong></span>
+                                            ${statusBadge}
+                                        </div>
+                                        <div class="flex justify-between"><span>User ID / IP:</span><strong class="text-slate-900">${payment.ip_user_id}</strong></div>
+                                        <div class="flex justify-between"><span>Customer Name:</span><span>${payment.name}</span></div>
+                                        <div class="flex justify-between"><span>Village / Area:</span><strong class="text-slate-900">${payment.area || 'N/A'}</strong></div>
+                                        <div class="flex justify-between"><span>Registered Mobile:</span><span>${payment.mobile}</span></div>
+                                        <div class="flex justify-between"><span>Method / TrxID:</span><span class="text-slate-500">${payment.payment_method || 'Wallet'} (${payment.transaction_id || 'N/A'})</span></div>
+                                        <div class="flex justify-between border-t border-dashed border-slate-200 pt-2 mt-2">
+                                            <span class="text-indigo-600 font-black text-sm">Amount Paid:</span>
+                                            <span class="text-indigo-600 font-black text-sm">৳ ${parseFloat(payment.amount).toFixed(2)}</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 px-4 py-2 flex justify-between items-center border-t border-slate-100 text-[10px] text-slate-400 font-bold">
+                                        <span>${payment.date} | ${payment.time}</span>
+                                        <i class="fa-solid fa-cloud-arrow-down text-indigo-600 text-sm cursor-pointer active:scale-90 transition-all"></i>
+                                    </div>
+                                </div>
+                            `;
+                            historyContainer.insertAdjacentHTML('beforeend', cardHTML);
+                        }
+                    });
+                }
+
+                if(!hasData) {
+                    historyContainer.innerHTML = `<p class="text-center text-slate-400 text-xs py-10 font-bold uppercase">কোনো বিল রিসিট পাওয়া যায়নি</p>`;
+                }
+            });
+        };
+
         window.addEventListener('load', () => {
-            window.syncWithAmarBazar();
+            if(localStorage.getItem('isLoggedIn') === 'true') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                window.syncWithAmarBazar();
+            }
         });
     </script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600;700&display=swap');
-        body { font-family: 'Hind Siliguri', sans-serif; background: #f4f7fe; margin: 0; padding-bottom: 90px; }
+        body { font-family: 'Hind Siliguri', sans-serif; background: #f4f7fe; margin: 0; padding-bottom: 90px; overflow-x: hidden; }
+
+        /* Login Screen CSS */
+        #loginScreen {
+            position: fixed; top:0; left:0; width:100%; height:100%; 
+            background: #f4f7fe; z-index: 10000; display: flex; 
+            align-items: center; justify-content: center; box-sizing: border-box;
+        }
 
         .premium-balance-card {
             background: linear-gradient(135deg, #1e1b4b 0%, #4338ca 100%);
@@ -81,6 +313,8 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 8px 20px rgba(67, 56, 202, 0.2);
+            width: 100%;
+            box-sizing: border-box;
         }
         
         .premium-balance-card::before {
@@ -94,12 +328,12 @@
             border-radius: 50%;
         }
 
-        .glass-card { background: white; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .glass-card { background: white; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); width: 100%; box-sizing: border-box; }
 
-        .slider-container { width: 100%; height: 180px; position: relative; overflow: hidden; border-radius: 20px; background: #fff; }
+        .slider-container { width: 100%; height: 180px; position: relative; overflow: hidden; border-radius: 20px; background: #fff; box-sizing: border-box; }
         .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: 0.8s ease-in-out; display: flex; align-items: center; justify-content: center; }
         .slide.active { opacity: 1; }
-        .slide img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .slide img { width: 100%; height: 100%; object-fit: cover; border-radius: 20px; }
 
         .menu-icon {
             width: 55px;
@@ -117,7 +351,7 @@
         .menu-icon img { width: 35px; height: 35px; object-fit: contain; }
         .menu-icon:active { transform: scale(0.9); }
 
-        #webPanel, #depositPanel, #billFormPanel, #noticePanel, #supportPanel, #serverPanel {
+        #webPanel, #depositPanel, #billFormPanel, #noticePanel, #supportPanel, #serverPanel, #gatewayFormPanel {
             position: fixed;
             top: 0;
             left: -100%;
@@ -125,18 +359,19 @@
             height: 100%;
             background: #f4f7fe;
             z-index: 1000;
-            transition: 0.5s;
+            transition: 0.4s ease-in-out;
+            box-sizing: border-box;
         }
-        #webPanel.open, #depositPanel.open, #billFormPanel.open, #noticePanel.open, #supportPanel.open, #serverPanel.open { left: 0; }
+        #webPanel.open, #depositPanel.open, #billFormPanel.open, #noticePanel.open, #supportPanel.open, #serverPanel.open, #gatewayFormPanel.open { left: 0; }
         
         .nav-active-bill { color: #1e1b4b !important; }
         .bill-text-glow { text-shadow: 0 0 1px rgba(30, 27, 75, 0.2); }
 
-        .payment-card { background: white; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: 0.3s; }
+        .payment-card { background: white; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: 0.3s; cursor: pointer; box-sizing: border-box; width: 100%; }
         .payment-card:active { transform: scale(0.95); }
         .payment-card img { width: 60px; height: 60px; border-radius: 12px; margin-bottom: 10px; }
 
-        .input-box { background: white; border: 1.5px solid #e2e8f0; border-radius: 15px; padding: 12px 15px; width: 100%; font-weight: 600; font-size: 14px; outline: none; margin-bottom: 15px; transition: 0.3s; }
+        .input-box { background: white; border: 1.5px solid #e2e8f0; border-radius: 15px; padding: 12px 15px; width: 100%; font-weight: 600; font-size: 14px; outline: none; margin-bottom: 15px; transition: 0.3s; box-sizing: border-box; }
         .input-box:focus { border-color: #4338ca; box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1); }
 
         .support-btn {
@@ -149,6 +384,8 @@
             margin-bottom: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.03);
             transition: 0.3s;
+            box-sizing: border-box;
+            width: 100%;
         }
         .support-btn:active { transform: scale(0.96); }
 
@@ -163,275 +400,358 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
             border-left: 4px solid #4338ca;
             transition: 0.3s;
+            box-sizing: border-box;
+            width: 100%;
         }
         .server-item:active { transform: scale(0.97); background: #f8fafc; }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 flex justify-center items-start min-h-screen">
 
-    <div id="serverPanel" class="p-6 overflow-y-auto">
-        <div class="flex items-center gap-3 mb-6">
-            <button onclick="closeServer()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
-                <i class="fa-solid fa-arrow-left text-slate-800"></i>
-            </button>
-            <h2 class="text-xl font-black text-slate-800 uppercase">WiFi Servers</h2>
+    <div class="w-full max-w-md bg-[#f4f7fe] min-h-screen shadow-2xl relative flex flex-col overflow-x-hidden">
+
+        <div id="loginScreen" class="max-w-md mx-auto">
+            <div class="w-full max-w-[320px] p-6 bg-white rounded-[30px] shadow-xl text-center mx-4">
+                <div class="w-20 h-20 bg-indigo-600 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-100">
+                    <i class="fa-solid fa-wifi text-white text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-black text-slate-800 mb-1">NetSpeed Pro</h2>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Login to continue</p>
+                
+                <input type="number" id="loginMobile" class="input-box" placeholder="মোবাইল নম্বর দিন">
+                <input type="password" id="loginPassword" class="input-box" placeholder="পাসওয়ার্ড দিন">
+                
+                <button onclick="processLogin()" class="w-full bg-indigo-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all mt-2">LOGIN</button>
+                <p class="text-[9px] text-slate-400 mt-6 font-bold uppercase tracking-tighter italic">Designed for high-speed network management</p>
+            </div>
         </div>
 
-        <div class="space-y-6">
-            <div>
-                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Movie & FTP Servers</h3>
-                <div onclick="openRouter('http://circleftp.net/')" class="server-item">
-                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-film"></i></div>
-                    <span class="font-bold text-slate-700">Circle FTP</span>
+        <div id="mainApp" class="w-full flex-1 flex flex-col" style="display: none;">
+
+        <div id="serverPanel" class="p-6 overflow-y-auto max-w-md mx-auto">
+            <div class="flex items-center gap-3 mb-6">
+                <button onclick="closeServer()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                    <i class="fa-solid fa-arrow-left text-slate-800"></i>
+                </button>
+                <h2 class="text-xl font-black text-slate-800 uppercase">WiFi Servers</h2>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Movie & FTP Servers</h3>
+                    <div onclick="openRouter('http://circleftp.net/')" class="server-item">
+                        <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-film"></i></div>
+                        <span class="font-bold text-slate-700">Circle FTP</span>
+                    </div>
+                    <div onclick="openRouter('http://timepassbd.live/')" class="server-item">
+                        <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-play"></i></div>
+                        <span class="font-bold text-slate-700">TimePass BD</span>
+                    </div>
+                    <div onclick="openRouter('http://172.16.50.4/')" class="server-item">
+                        <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-server"></i></div>
+                        <span class="font-bold text-slate-700">Local Server (50.4)</span>
+                    </div>
+                    <div onclick="openRouter('https://moviehaat.net/')" class="server-item">
+                        <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-clapperboard"></i></div>
+                        <span class="font-bold text-slate-700">Movie Haat</span>
+                    </div>
+                    <div onclick="openRouter('https://movies.discoveryftp.net/')" class="server-item">
+                        <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-magnifying-glass"></i></div>
+                        <span class="font-bold text-slate-700">Discovery FTP</span>
+                    </div>
                 </div>
-                <div onclick="openRouter('http://timepassbd.live/')" class="server-item">
-                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-play"></i></div>
-                    <span class="font-bold text-slate-700">TimePass BD</span>
+
+                <div>
+                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Live TV Servers</h3>
+                    <div onclick="openRouter('http://bdiptv.net/')" class="server-item" style="border-left-color: #ef4444;">
+                        <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-tv"></i></div>
+                        <span class="font-bold text-slate-700">BD IPTV</span>
+                    </div>
+                    <div onclick="openRouter('http://iptvidn.com/')" class="server-item" style="border-left-color: #ef4444;">
+                        <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-satellite-dish"></i></div>
+                        <span class="font-bold text-slate-700">IPTV IDN</span>
+                    </div>
+                    <div onclick="openRouter('https://11plus.live/#')" class="server-item" style="border-left-color: #ef4444;">
+                        <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-circle-play"></i></div>
+                        <span class="font-bold text-slate-700">11 Plus Live</span>
+                    </div>
+                    <div onclick="openRouter('http://172.16.29.28/')" class="server-item" style="border-left-color: #ef4444;">
+                        <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-tv"></i></div>
+                        <span class="font-bold text-slate-700">Local TV (29.28)</span>
+                    </div>
+                    <div onclick="openRouter('http://172.16.18.18/')" class="server-item" style="border-left-color: #ef4444;">
+                        <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-display"></i></div>
+                        <span class="font-bold text-slate-700">Local TV (18.18)</span>
+                    </div>
                 </div>
-                <div onclick="openRouter('http://172.16.50.4/')" class="server-item">
-                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-server"></i></div>
-                    <span class="font-bold text-slate-700">Local Server (50.4)</span>
+            </div>
+        </div>
+
+        <div id="supportPanel" class="p-6 max-w-md mx-auto">
+            <div class="flex items-center gap-3 mb-6">
+                <button onclick="closeSupport()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                    <i class="fa-solid fa-arrow-left text-slate-800"></i>
+                </button>
+                <h2 class="text-xl font-black text-slate-800 uppercase">Customer Support</h2>
+            </div>
+            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-1">Direct Call</h3>
+            <a href="tel:01717348500" class="support-btn">
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-phone"></i></div>
+                <div><p class="text-xs font-black text-slate-800 italic">Md Ripon Hossain</p><p class="text-[10px] text-slate-400 font-bold">01717-348500</p></div>
+            </a>
+            <a href="tel:01728266397" class="support-btn">
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-phone"></i></div>
+                <div><p class="text-xs font-black text-slate-800 italic">Md Sahajalal</p><p class="text-[10px] text-slate-400 font-bold">01728-266397</p></div>
+            </a>
+            <a href="tel:01713577573" class="support-btn">
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-phone"></i></div>
+                <div><p class="text-xs font-black text-slate-800 italic">Md Sanaullah</p><p class="text-[10px] text-slate-400 font-bold">01713-577573</p></div>
+            </a>
+            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-6 mb-4 ml-1">WhatsApp Message</h3>
+            <a href="https://wa.me/8801877059049" class="support-btn border-b-4 border-green-500">
+                <div class="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-brands fa-whatsapp"></i></div>
+                <div><p class="text-xs font-black text-slate-800 italic">Manager WhatsApp</p><p class="text-[10px] text-slate-400 font-bold">এনি টাইম মেসেজ করুন (018770-59049)</p></div>
+            </a>
+            <a href="https://wa.me/8801713577573" class="support-btn border-b-4 border-green-500">
+                <div class="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-brands fa-whatsapp"></i></div>
+                <div><p class="text-xs font-black text-slate-800 italic">Billing Help</p><p class="text-[10px] text-slate-400 font-bold">বিল সংক্রান্ত সমস্যার জন্য (017135-77573)</p></div>
+            </a>
+            <a href="https://wa.me/8801957469914" class="support-btn border-b-4 border-green-500">
+                <div class="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-brands fa-whatsapp"></i></div>
+                <div><p class="text-xs font-black text-slate-800 italic">Technical Support</p><p class="text-[10px] text-slate-400 font-bold">কানেকশন সমস্যা সমাধান (019574-69914)</p></div>
+            </a>
+        </div>
+
+        <div id="billFormPanel" class="flex flex-col h-full max-w-md mx-auto">
+            <div class="p-6 pb-2 flex items-center gap-3">
+                <button onclick="closeBillForm()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                    <i class="fa-solid fa-arrow-left text-slate-800"></i>
+                </button>
+                <h2 class="text-xl font-black text-slate-800 uppercase">ওয়াইফাই বিল দিন</h2>
+            </div>
+
+            <div class="flex-1 overflow-y-auto px-6 pb-24">
+                <div class="bg-white p-5 rounded-3xl border-l-4 border-pink-500 mb-6 shadow-sm">
+                    <h2 class="text-pink-600 font-black text-md mb-1">বিল বিকাশ করুন ৫২৫ টাকা ওনলি সেন্ট মানি করুন</h2>
+                    <p class="text-slate-500 text-[11px] font-bold">নিচের নাম্বারটি কপি করে আপনার বিকাশ অ্যাপ থেকে সেন্ড মানি করুন।</p>
+                    
+                    <div class="mt-3 flex items-center justify-between bg-slate-50 border border-slate-200 p-3 rounded-xl">
+                        <div>
+                            <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wider">bKash Number</span>
+                            <span id="billCopyNumber" class="text-md font-black text-slate-800 tracking-wider">01877059049</span>
+                        </div>
+                        <button onclick="copyBillWalletNumber()" class="w-9 h-9 bg-pink-50 text-pink-600 rounded-xl flex items-center justify-center active:scale-90 transition-all">
+                            <i id="billCopyIcon" class="fa-regular fa-copy text-xs"></i>
+                        </button>
+                    </div>
                 </div>
-                <div onclick="openRouter('https://moviehaat.net/')" class="server-item">
-                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-clapperboard"></i></div>
-                    <span class="font-bold text-slate-700">Movie Haat</span>
+
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Transaction ID (TrxID)</label>
+                    <input type="text" id="billTrxId" class="input-box mt-1" placeholder="বিকাশ পেমেন্টের Transaction ID দিন">
+
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">IP Name / User ID</label>
+                    <input type="text" id="ipName" class="input-box mt-1" placeholder="উদাঃ User0182">
+                    
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Village / Area (গ্রাম বা এলাকা)</label>
+                    <input type="text" id="userArea" class="input-box mt-1" placeholder="আপনার গ্রাম বা এলাকার নাম লিখুন">
+                    
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Monthly Bill (৳)</label>
+                    <input type="number" id="billAmount" class="input-box mt-1" placeholder="টাকার পরিমাণ লিখুন" value="525">
+                    
+                    <button onclick="submitBill()" class="w-full bg-indigo-600 text-white font-black py-4 rounded-2xl shadow-lg shadow-indigo-100 active:scale-95 transition-all mt-2">SUBMIT BILL</button>
                 </div>
-                <div onclick="openRouter('https://movies.discoveryftp.net/')" class="server-item">
-                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-magnifying-glass"></i></div>
-                    <span class="font-bold text-slate-700">Discovery FTP</span>
+
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="fa-solid fa-receipt text-emerald-500 text-md"></i>
+                    <h3 class="text-[11px] font-black text-slate-400 uppercase tracking-widest">আপনার পেমেন্ট রিসিট সমূহ</h3>
+                </div>
+
+                <div id="wifiReceiptsHistory" class="space-y-4">
+                    <p class="text-center text-slate-400 text-xs py-10 font-bold uppercase">로드 হচ্ছে...</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="noticePanel" class="p-6 max-w-md mx-auto">
+            <div class="flex items-center gap-3 mb-6">
+                <button onclick="closeNotice()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm"><i class="fa-solid fa-arrow-left text-slate-800"></i></button>
+                <h2 class="text-xl font-black text-slate-800 uppercase">Notification</h2>
+            </div>
+            <div id="noticeList" class="space-y-4"><p class="text-center text-slate-400 text-sm mt-10">কোনো নোটিশ নেই</p></div>
+        </div>
+
+        <div id="depositPanel" class="p-6 overflow-y-auto max-w-md mx-auto">
+            <div class="flex items-center gap-4 mb-8">
+                <button onclick="closeDeposit()" class="text-slate-800 text-xl"><i class="fa-solid fa-arrow-left"></i></button>
+                <h1 class="text-xl font-black text-slate-800">Add Balance</h1>
+            </div>
+            <div class="bg-white p-5 rounded-3xl border-l-4 border-green-500 mb-8">
+                <h2 class="text-green-600 font-black text-lg mb-1">Only Send Money korun! </h2>
+                <p class="text-slate-500 text-[11px] font-bold">plce add your bln</p>
+            </div>
+            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Select Payment Method</h3>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div class="payment-card flex flex-col items-center" onclick="openGatewayForm('bKash Personal')">
+                    <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/bikash.png" alt="bkash">
+                    <span class="text-[10px] font-black text-slate-600 uppercase">bKash Personal</span>
+                </div>
+                <div class="payment-card flex flex-col items-center" onclick="openGatewayForm('Nagad Personal')">
+                    <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/nogod.png" alt="nagad">
+                    <span class="text-[10px] font-black text-slate-600 uppercase">Nagad Personal</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="gatewayFormPanel" class="p-6 overflow-y-auto max-w-md mx-auto">
+            <div class="flex items-center gap-4 mb-6">
+                <button onclick="closeGatewayForm()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                    <i class="fa-solid fa-arrow-left text-slate-800"></i>
+                </button>
+                <h2 id="gatewayTitle" class="text-xl font-black text-slate-800 uppercase">Payment</h2>
+            </div>
+
+            <div class="bg-white p-5 rounded-3xl border-l-4 border-indigo-600 mb-6 shadow-sm">
+                <h2 class="text-indigo-600 font-black text-lg mb-1">Only Send Money korun!</h2>
+                <p class="text-slate-500 text-[12px] font-bold">নিচের নাম্বারটি কপি করে আপনার ওয়ালেট থেকে সেন্ড মানি করুন।</p>
+                
+                <div class="mt-4 flex items-center justify-between bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
+                    <div>
+                        <span class="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Wallet Number</span>
+                        <span id="copyNumber" class="text-md font-black text-slate-800 tracking-wider">01877059049</span>
+                    </div>
+                    <button onclick="copyWalletNumber()" class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center active:scale-90 transition-all">
+                        <i id="copyIcon" class="fa-regular fa-copy text-sm"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Amount (টাকার পরিমাণ)</label>
+                <input type="number" id="depositAmount" class="input-box mt-1" placeholder="কত টাকা পাঠিয়েছেন লিখুন">
+                
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Transaction ID (TrxID)</label>
+                <input type="text" id="depositTrxId" class="input-box mt-1" placeholder="পেমেন্ট এর Transaction ID দিন">
+                
+                <button onclick="submitDepositRequest()" class="w-full bg-indigo-600 text-white font-black py-4 rounded-2xl shadow-lg shadow-indigo-100 active:scale-95 transition-all mt-4">SUBMIT REQUEST</button>
+            </div>
+        </div>
+
+        <div id="webPanel" class="max-w-md mx-auto">
+            <div class="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full z-[1001]" onclick="closeLink()"><i class="fa-solid fa-xmark px-2"></i></div>
+            <iframe id="linkFrame" src="" frameborder="0" style="width: 100%; height: 100%;"></iframe>
+        </div>
+
+        <div class="premium-balance-card">
+            <div class="flex justify-between items-center">
+                <div class="bg-white/15 p-2.5 rounded-lg backdrop-blur-md border border-white/10"><i class="fa-solid fa-crown text-yellow-400 text-md"></i></div>
+                <div class="text-right">
+                    <p id="liveUserName" class="text-[10px] font-bold opacity-70 uppercase tracking-widest">LOADING...</p>
+                    <h2 class="text-3xl font-black italic">৳ <span id="mainBalanceDisplay">0.00</span></h2>
+                </div>
+            </div>
+            <div class="mt-4 flex justify-between items-center">
+                <span id="userActiveInfo" class="text-[10px] font-black uppercase text-green-400 tracking-wider italic">LOADING STATUS...</span>
+                <button onclick="openDeposit()" class="bg-white text-indigo-900 text-[10px] px-6 py-2 rounded-full font-black uppercase shadow-lg">Add Balance</button>
+            </div>
+        </div>
+
+        <div class="p-4 space-y-4 -mt-3 flex-1">
+            <div class="glass-card p-3.5 flex justify-between items-center border-l-4 border-indigo-500 relative z-10">
+                <div>
+                    <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Live Speed</p>
+                    <div class="flex items-baseline gap-1"><h2 id="liveSpeed" class="text-xl font-black text-slate-800">20.8</h2><span class="text-[9px] font-bold text-indigo-500">MBPS</span></div>
+                </div>
+                <div class="flex gap-2">
+                    <div id="wifiStatusContainer">
+                        <div class="bg-green-50 px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-green-100">
+                            <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                            <span class="text-[8px] font-black text-green-600 uppercase">Active</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-orange-50 px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-orange-100">
+                        <i class="fa-solid fa-calendar text-orange-500 text-[8px]"></i>
+                        <span id="expiryDaysDisplay" class="text-[8px] font-black text-orange-600">로드 হচ্ছে...</span>
+                    </div>
                 </div>
             </div>
 
             <div>
-                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Live TV Servers</h3>
-                <div onclick="openRouter('http://bdiptv.net/')" class="server-item" style="border-left-color: #ef4444;">
-                    <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-tv"></i></div>
-                    <span class="font-bold text-slate-700">BD IPTV</span>
-                </div>
-                <div onclick="openRouter('http://iptvidn.com/')" class="server-item" style="border-left-color: #ef4444;">
-                    <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-satellite-dish"></i></div>
-                    <span class="font-bold text-slate-700">IPTV IDN</span>
-                </div>
-                <div onclick="openRouter('https://11plus.live/#')" class="server-item" style="border-left-color: #ef4444;">
-                    <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-circle-play"></i></div>
-                    <span class="font-bold text-slate-700">11 Plus Live</span>
-                </div>
-                <div onclick="openRouter('http://172.16.29.28/')" class="server-item" style="border-left-color: #ef4444;">
-                    <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-tv"></i></div>
-                    <span class="font-bold text-slate-700">Local TV (29.28)</span>
-                </div>
-                <div onclick="openRouter('http://172.16.18.18/')" class="server-item" style="border-left-color: #ef4444;">
-                    <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-display"></i></div>
-                    <span class="font-bold text-slate-700">Local TV (18.18)</span>
+                <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Special Offers</h3>
+                <div class="slider-container" id="offerSlider">
+                    <div class="slide active"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/ups.png"></div>
+                    <div class="slide"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/tp1.png"></div>
+                    <div class="slide"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/stan.png"></div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div id="supportPanel" class="p-6">
-        <div class="flex items-center gap-3 mb-6">
-            <button onclick="closeSupport()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
-                <i class="fa-solid fa-arrow-left text-slate-800"></i>
-            </button>
-            <h2 class="text-xl font-black text-slate-800 uppercase">Customer Support</h2>
-        </div>
-        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-1">Direct Call</h3>
-        <a href="tel:01717348500" class="support-btn">
-            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-phone"></i></div>
-            <div><p class="text-xs font-black text-slate-800 italic">Md Ripon Hossain</p><p class="text-[10px] text-slate-400 font-bold">01717-348500</p></div>
-        </a>
-        <a href="tel:01728266397" class="support-btn">
-            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-phone"></i></div>
-            <div><p class="text-xs font-black text-slate-800 italic">Md Sahajalal</p><p class="text-[10px] text-slate-400 font-bold">01728-266397</p></div>
-        </a>
-        <a href="tel:01713577573" class="support-btn">
-            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-phone"></i></div>
-            <div><p class="text-xs font-black text-slate-800 italic">Md Sanaullah</p><p class="text-[10px] text-slate-400 font-bold">01713-577573</p></div>
-        </a>
-        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-6 mb-4 ml-1">WhatsApp Message</h3>
-        <a href="https://wa.me/8801877059049" class="support-btn border-b-4 border-green-500">
-            <div class="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-brands fa-whatsapp"></i></div>
-            <div><p class="text-xs font-black text-slate-800 italic">Manager WhatsApp</p><p class="text-[10px] text-slate-400 font-bold">এনি টাইম মেসেজ করুন (018770-59049)</p></div>
-        </a>
-        <a href="https://wa.me/8801713577573" class="support-btn border-b-4 border-green-500">
-            <div class="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-brands fa-whatsapp"></i></div>
-            <div><p class="text-xs font-black text-slate-800 italic">Billing Help</p><p class="text-[10px] text-slate-400 font-bold">বিল সংক্রান্ত সমস্যার জন্য (017135-77573)</p></div>
-        </a>
-        <a href="https://wa.me/8801957469914" class="support-btn border-b-4 border-green-500">
-            <div class="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-brands fa-whatsapp"></i></div>
-            <div><p class="text-xs font-black text-slate-800 italic">Technical Support</p><p class="text-[10px] text-slate-400 font-bold">কানেকশন সমস্যা সমাধান (019574-69914)</p></div>
-        </a>
-    </div>
-
-    <div id="billFormPanel" class="p-6">
-        <div class="flex items-center gap-3 mb-6">
-            <button onclick="closeBillForm()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm"><i class="fa-solid fa-arrow-left text-slate-800"></i></button>
-            <h2 class="text-xl font-black text-slate-800 uppercase">ওয়াইফাই বিল দিন</h2>
-        </div>
-        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">IP Name / User ID</label>
-            <input type="text" id="ipName" class="input-box mt-1" placeholder="উদাঃ User0182">
-            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Monthly Bill (৳)</label>
-            <input type="number" id="billAmount" class="input-box mt-1" placeholder="টাকার পরিমাণ লিখুন">
-            <button onclick="submitBill()" class="w-full bg-indigo-600 text-white font-black py-4 rounded-2xl shadow-lg shadow-indigo-100 active:scale-95 transition-all mt-4">SUBMIT BILL</button>
-        </div>
-    </div>
-
-    <div id="noticePanel" class="p-6">
-        <div class="flex items-center gap-3 mb-6">
-            <button onclick="closeNotice()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm"><i class="fa-solid fa-arrow-left text-slate-800"></i></button>
-            <h2 class="text-xl font-black text-slate-800 uppercase">Notification</h2>
-        </div>
-        <div id="noticeList" class="space-y-4"><p class="text-center text-slate-400 text-sm mt-10">কোনো নোটিশ নেই</p></div>
-    </div>
-
-    <div id="depositPanel" class="p-6 overflow-y-auto">
-        <div class="flex items-center gap-4 mb-8">
-            <button onclick="closeDeposit()" class="text-slate-800 text-xl"><i class="fa-solid fa-arrow-left"></i></button>
-            <h1 class="text-xl font-black text-slate-800">Deposit</h1>
-        </div>
-        <div class="bg-white p-5 rounded-3xl border-l-4 border-green-500 mb-8">
-            <h2 class="text-green-600 font-black text-lg mb-1">First Deposit Bonus!</h2>
-            <p class="text-slate-500 text-[11px] font-bold">Get 100% bonus on your first deposit up to ৳10,000</p>
-        </div>
-        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Select Payment Method</h3>
-        <div class="grid grid-cols-2 gap-4">
-            <div class="payment-card flex flex-col items-center"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/bkash.png" alt="bkash"><span class="text-[10px] font-black text-slate-600 uppercase">bKash Personal</span></div>
-            <div class="payment-card flex flex-col items-center"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/bkash.png" alt="bkash"><span class="text-[10px] font-black text-slate-600 uppercase">bKash Agent</span></div>
-            <div class="payment-card flex flex-col items-center"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/bkash.png" alt="bkash"><span class="text-[10px] font-black text-slate-600 uppercase">bKash Merchant</span></div>
-            <div class="payment-card flex flex-col items-center"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/nagad.png" alt="nagad"><span class="text-[10px] font-black text-slate-600 uppercase">Nagad Personal</span></div>
-            <div class="payment-card flex flex-col items-center"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/nagad.png" alt="nagad"><span class="text-[10px] font-black text-slate-600 uppercase">Nagad Agent</span></div>
-            <div class="payment-card flex flex-col items-center"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/rocket.png" alt="rocket"><span class="text-[10px] font-black text-slate-600 uppercase">Rocket</span></div>
-        </div>
-    </div>
-
-    <div id="webPanel">
-        <div class="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full z-[1001]" onclick="closeLink()"><i class="fa-solid fa-xmark px-2"></i></div>
-        <iframe id="linkFrame" src="" frameborder="0" style="width: 100%; height: 100%;"></iframe>
-    </div>
-
-    <div class="premium-balance-card">
-        <div class="flex justify-between items-center">
-            <div class="bg-white/15 p-2.5 rounded-lg backdrop-blur-md border border-white/10"><i class="fa-solid fa-crown text-yellow-400 text-md"></i></div>
-            <div class="text-right">
-                <p id="liveUserName" class="text-[10px] font-bold opacity-70 uppercase tracking-widest">LOADING...</p>
-                <h2 class="text-3xl font-black italic">৳ <span id="mainBalanceDisplay">0.00</span></h2>
-            </div>
-        </div>
-        <div class="mt-4 flex justify-between items-center">
-            <span id="userActiveInfo" class="text-[10px] font-black uppercase text-green-400 tracking-wider italic">LOADING STATUS...</span>
-            <button onclick="openDeposit()" class="bg-white text-indigo-900 text-[10px] px-6 py-2 rounded-full font-black uppercase shadow-lg">Add Balance</button>
-        </div>
-    </div>
-
-    <div class="p-4 space-y-4 -mt-3">
-        <div class="glass-card p-3.5 flex justify-between items-center border-l-4 border-indigo-500 relative z-10">
             <div>
-                <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Live Speed</p>
-                <div class="flex items-baseline gap-1"><h2 id="liveSpeed" class="text-xl font-black text-slate-800">20.8</h2><span class="text-[9px] font-bold text-indigo-500">MBPS</span></div>
-            </div>
-            <div class="flex gap-2">
-                <div class="bg-green-50 px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-green-100">
-                    <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                    <span class="text-[8px] font-black text-green-600 uppercase">Active</span>
-                </div>
-                <div class="bg-orange-50 px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-orange-100">
-                    <i class="fa-solid fa-calendar text-orange-500 text-[8px]"></i>
-                    <span class="text-[8px] font-black text-orange-600">১২ দিন</span>
+                <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Router Config</h3>
+                <div class="grid grid-cols-4 gap-y-5 justify-items-center w-full">
+                    <div class="flex flex-col items-center" onclick="openRouter('http://192.168.0.1')">
+                        <div class="menu-icon"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/tplogo.jpeg" alt="TP-Link"></div>
+                        <span class="text-[9px] font-bold text-slate-500 uppercase">TP-Link</span>
+                    </div>
+                    <div class="flex flex-col items-center" onclick="openRouter('http://192.168.0.1')">
+                        <div class="menu-icon"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/tenda.jpeg" alt="Tenda"></div>
+                        <span class="text-[9px] font-bold text-slate-500 uppercase">Tenda</span>
+                    </div>
+                    <div class="flex flex-col items-center" onclick="openRouter('http://192.168.1.1')">
+                        <div class="menu-icon"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/netislogo.jpeg" alt="Netis"></div>
+                        <span class="text-[9px] font-bold text-slate-500 uppercase">Netis</span>
+                    </div>
+                    <div class="flex flex-col items-center" onclick="openRouter('http://192.168.1.1')">
+                        <div class="menu-icon"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/marcus.jpeg" alt="Mercusys"></div>
+                        <span class="text-[9px] font-bold text-slate-500 uppercase">Mercusys</span>
+                    </div>
+                    <div class="flex flex-col items-center" onclick="openRouter('http://192.168.0.1')">
+                        <div class="menu-icon"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/toto.jpg" alt="Totolink"></div>
+                        <span class="text-[9px] font-bold text-slate-500 uppercase">Totolink</span>
+                    </div>
+                    <div class="flex flex-col items-center" onclick="openRouter('http://192.168.31.1')">
+                        <div class="menu-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/a/ae/Xiaomi_logo_%282021-%29.svg" alt="Mi"></div>
+                        <span class="text-[9px] font-bold text-slate-500 uppercase">Mi Router</span>
+                    </div>
+                    <div class="flex flex-col items-center" onclick="openRouter('http://192.168.0.1')">
+                        <div class="menu-icon"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/dlink.jpeg" alt="D-Link"></div>
+                        <span class="text-[9px] font-bold text-slate-500 uppercase">D-Link</span>
+                    </div>
+                    <div class="flex flex-col items-center" onclick="openRouter('http://192.168.1.1')">
+                        <div class="menu-icon text-indigo-600"><i class="fa-solid fa-microchip"></i></div>
+                        <span class="text-[9px] font-bold text-slate-500 uppercase">ONU</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div>
-            <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Special Offers</h3>
-            <div class="slider-container" id="offerSlider">
-                <div class="slide active"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/ups.png"></div>
-                <div class="slide"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/tp1.png"></div>
-                <div class="slide"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/stan.png"></div>
+        <div class="fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-slate-100 flex justify-around items-center z-50 max-w-md mx-auto">
+            <div class="flex flex-col items-center text-slate-400 cursor-pointer" onclick="location.reload()">
+                <i class="fa-solid fa-house-chimney text-md"></i>
+                <span class="text-[8px] font-black uppercase mt-1">Home</span>
+            </div>
+            <div onclick="openSupport()" class="flex flex-col items-center text-slate-400 cursor-pointer">
+                <i class="fa-solid fa-headset text-md"></i>
+                <span class="text-[8px] font-black uppercase mt-1">Support</span>
+            </div>
+            <div onclick="openServer()" class="flex flex-col items-center text-slate-400 cursor-pointer">
+                <i class="fa-solid fa-server text-md"></i>
+                <span class="text-[8px] font-black uppercase mt-1">Servers</span>
+            </div>
+            <div onclick="openBillForm()" class="flex flex-col items-center nav-active-bill cursor-pointer">
+                <i class="fa-solid fa-wallet text-md text-indigo-600"></i> 
+                <span class="text-[8px] font-black uppercase mt-1 text-indigo-600 bill-text-glow">বিল দিন</span> 
             </div>
         </div>
 
-        <div>
-            <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Router Config</h3>
-            <div class="grid grid-cols-4 gap-y-5">
-                <div class="flex flex-col items-center" onclick="openRouter('http://192.168.0.1')">
-                    <div class="menu-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e6/TP-Link_Logo.svg" alt="TP-Link"></div>
-                    <span class="text-[9px] font-bold text-slate-500 uppercase">TP-Link</span>
-                </div>
-                <div class="flex flex-col items-center" onclick="openRouter('http://192.168.0.1')">
-                    <div class="menu-icon"><img src="https://www.tendacn.com/images/logo.png" alt="Tenda"></div>
-                    <span class="text-[9px] font-bold text-slate-500 uppercase">Tenda</span>
-                </div>
-                <div class="flex flex-col items-center" onclick="openRouter('http://192.168.1.1')">
-                    <div class="menu-icon"><img src="https://www.netis-systems.com/static/images/logo.png" alt="Netis"></div>
-                    <span class="text-[9px] font-bold text-slate-500 uppercase">Netis</span>
-                </div>
-                <div class="flex flex-col items-center" onclick="openRouter('http://192.168.1.1')">
-                    <div class="menu-icon"><img src="https://www.mercusys.com/static/images/logo.svg" alt="Mercusys"></div>
-                    <span class="text-[9px] font-bold text-slate-500 uppercase">Mercusys</span>
-                </div>
-                <div class="flex flex-col items-center" onclick="openRouter('http://192.168.0.1')">
-                    <div class="menu-icon"><img src="https://www.totolink.net/static/images/logo.png" alt="Totolink"></div>
-                    <span class="text-[9px] font-bold text-slate-500 uppercase">Totolink</span>
-                </div>
-                <div class="flex flex-col items-center" onclick="openRouter('http://192.168.31.1')">
-                    <div class="menu-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/a/ae/Xiaomi_logo_%282021-%29.svg" alt="Mi"></div>
-                    <span class="text-[9px] font-bold text-slate-500 uppercase">Mi Router</span>
-                </div>
-                <div class="flex flex-col items-center" onclick="openRouter('http://192.168.0.1')">
-                    <div class="menu-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/b/bc/D-Link_logo.svg" alt="D-Link"></div>
-                    <span class="text-[9px] font-bold text-slate-500 uppercase">D-Link</span>
-                </div>
-                <div class="flex flex-col items-center" onclick="openRouter('http://192.168.1.1')">
-                    <div class="menu-icon text-indigo-600"><i class="fa-solid fa-microchip"></i></div>
-                    <span class="text-[9px] font-bold text-slate-500 uppercase">ONU</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-slate-100 flex justify-around items-center z-50">
-        <div class="flex flex-col items-center text-slate-400" onclick="location.reload()">
-            <i class="fa-solid fa-house-chimney text-md"></i>
-            <span class="text-[8px] font-black uppercase mt-1">Home</span>
-        </div>
-        <div onclick="openSupport()" class="flex flex-col items-center text-slate-400 cursor-pointer">
-            <i class="fa-solid fa-headset text-md"></i>
-            <span class="text-[8px] font-black uppercase mt-1">Support</span>
-        </div>
-        <div onclick="openServer()" class="flex flex-col items-center text-slate-400 cursor-pointer">
-            <i class="fa-solid fa-server text-md text-indigo-600"></i>
-            <span class="text-[8px] font-black uppercase mt-1 text-indigo-600">Servers</span>
-        </div>
-        <div onclick="openBillForm()" class="flex flex-col items-center nav-active-bill cursor-pointer">
-            <i class="fa-solid fa-wallet text-md"></i> 
-            <span class="text-[8px] font-black uppercase mt-1 bill-text-glow">বিল দিন</span> 
-        </div>
+        </div> 
     </div>
 
     <script>
         let currentBalance = 0.00;
         let notifications = [];
-
-        function updateFromConsole() {
-            try {
-                const userBalance = localStorage.getItem('balance') || "0.00";
-                const userName = localStorage.getItem('full_name') || "User";
-                const userPhone = localStorage.getItem('mobile') || "01XXXXXXXXX";
-
-                currentBalance = parseFloat(userBalance);
-                document.getElementById('mainBalanceDisplay').innerText = currentBalance.toFixed(2);
-                document.getElementById('liveUserName').innerText = userName.toUpperCase();
-                
-                // রিয়েল-টাইম স্ট্যাটাস আপডেট
-                document.getElementById('userActiveInfo').innerText = userName + " (" + userPhone + ")";
-            } catch (err) {
-                console.log("Sync Error");
-            }
-        }
-
-        setInterval(updateFromConsole, 2000);
-        window.onload = updateFromConsole;
+        let currentSelectedGateway = "";
 
         function openRouter(url) {
             const panel = document.getElementById('webPanel');
@@ -456,14 +776,120 @@
         function openServer() { document.getElementById('serverPanel').classList.add('open'); }
         function closeServer() { document.getElementById('serverPanel').classList.remove('open'); }
 
-        function submitBill() {
-            const ip = document.getElementById('ipName').value;
-            const amount = parseFloat(document.getElementById('billAmount').value);
-            
-            if(!ip || isNaN(amount)) {
-                Swal.fire({ icon: 'error', title: 'ভুল হয়েছে', text: 'সঠিক তথ্য দিন!', confirmButtonColor: '#4338ca' });
+        // গেটওয়ে প্যানেল ওপেন ও ক্লোজ লজিক
+        function openGatewayForm(gatewayName) {
+            currentSelectedGateway = gatewayName;
+            document.getElementById('gatewayTitle').innerText = gatewayName;
+            document.getElementById('gatewayFormPanel').classList.add('open');
+        }
+
+        function closeGatewayForm() {
+            document.getElementById('gatewayFormPanel').classList.remove('open');
+            document.getElementById('depositAmount').value = "";
+            document.getElementById('depositTrxId').value = "";
+        }
+
+        // নাম্বার ওয়ান-ক্লিক কপি ফাংশন (অ্যাড ব্যালেন্স)
+        function copyWalletNumber() {
+            const numText = document.getElementById('copyNumber').innerText;
+            navigator.clipboard.writeText(numText).then(() => {
+                const icon = document.getElementById('copyIcon');
+                icon.className = "fa-solid fa-check text-green-500";
+                setTimeout(() => {
+                    icon.className = "fa-regular fa-copy text-sm";
+                }, 2000);
+            });
+        }
+
+        // নতুন বিল মেথডের জন্য ওয়ান-ক্লিক কপি ফাংশন
+        function copyBillWalletNumber() {
+            const numText = document.getElementById('billCopyNumber').innerText;
+            navigator.clipboard.writeText(numText).then(() => {
+                const icon = document.getElementById('billCopyIcon');
+                icon.className = "fa-solid fa-check text-green-500";
+                setTimeout(() => {
+                    icon.className = "fa-regular fa-copy text-xs";
+                }, 2000);
+            });
+        }
+
+        // ডিপোজিট রিকোয়েস্ট সাবমিট ও কাউন্টডাউন টাইমার লজিক
+        function submitDepositRequest() {
+            const amount = document.getElementById('depositAmount').value.trim();
+            const trxId = document.getElementById('depositTrxId').value.trim();
+
+            if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+                Swal.fire({ icon: 'error', title: 'ভুল হয়েছে', text: 'সঠিক টাকার পরিমাণ দিন!', confirmButtonColor: '#4338ca' });
                 return;
             }
+            if (!trxId) {
+                Swal.fire({ icon: 'error', title: 'ভুল হয়েছে', text: 'সঠিক Transaction ID (TrxID) দিন!', confirmButtonColor: '#4338ca' });
+                return;
+            }
+
+            let timerInterval;
+            Swal.fire({
+                title: 'রিকোয়েস্ট প্রসেসিং হচ্ছে...',
+                html: 'অপেক্ষা করুন <b>5</b> সেকেন্ড।',
+                timer: 5000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                    const b = Swal.getHtmlContainer().querySelector('b');
+                    timerInterval = setInterval(() => { b.textContent = Math.ceil(Swal.getTimerLeft() / 1000); }, 100);
+                },
+                willClose: () => { clearInterval(timerInterval); }
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    if (window.sendDepositRequestToFirebase) {
+                        window.sendDepositRequestToFirebase(currentSelectedGateway, amount, trxId)
+                        .then(() => {
+                            Swal.fire({ 
+                                icon: 'success', 
+                                title: 'সফল হয়েছে!', 
+                                text: 'দয়া করে  কিছুক্ষণ অপেক্ষা করুন । ৫ থেকে ৩০ মিনিটের ভিতরে  ব্যালেন্স অ্যাড হবে ধন্যবাদ ।', 
+                                confirmButtonColor: '#10b981' 
+                            });
+                            closeGatewayForm();
+                            closeDeposit();
+                        })
+                        .catch((error) => {
+                            Swal.fire({ icon: 'error', title: 'Error', text: 'সার্ভার সমস্যা, আবার চেষ্টা করুন।' });
+                        });
+                    }
+                }
+            });
+        }
+
+        // ওয়াইফাই বিল সাবমিট ও ফায়ারবেস ট্র্যাকিং ইন্টিগ্রেশন (TrxID ও bKash ট্র্যাকিং সহ)
+        function submitBill() {
+            const ip = document.getElementById('ipName').value.trim();
+            const area = document.getElementById('userArea').value.trim();
+            const amount = parseFloat(document.getElementById('billAmount').value);
+            const trxId = document.getElementById('billTrxId').value.trim();
+            
+            if(!ip || !area || isNaN(amount) || amount <= 0) {
+                Swal.fire({ icon: 'error', title: 'ভুল হয়েছে', text: 'আইডি, এরিয়া এবং বিলের সঠিক তথ্য দিন!', confirmButtonColor: '#4338ca' });
+                return;
+            }
+
+            // ট্রানজেকশন আইডি চেক
+            if(!trxId) {
+                Swal.fire({ icon: 'error', title: 'ভুল হয়েছে', text: 'বিকাশ পেমেন্টের Transaction ID (TrxID) দিন!', confirmButtonColor: '#4338ca' });
+                return;
+            }
+
+            // নতুন মিনিমাম ৫২৫ টাকা চেক করার লজিক
+            if (amount < 525) {
+                Swal.fire({ 
+                    icon: 'error', 
+                    title: 'পেমেন্ট হবে না', 
+                    text: 'দুঃখিত, সর্বনিম্ন ৫২৫ টাকা বিল পে করতে হবে।', 
+                    confirmButtonColor: '#ef4444' 
+                });
+                return;
+            }
+
             if(amount > currentBalance) {
                 Swal.fire({ icon: 'warning', title: 'ব্যালেন্স নেই', text: 'পর্যাপ্ত ব্যালেন্স নেই!', confirmButtonColor: '#4338ca' });
                 return;
@@ -486,37 +912,46 @@
                     const newBalance = currentBalance - amount;
                     currentBalance = newBalance;
                     localStorage.setItem('balance', currentBalance.toFixed(2));
-                    document.getElementById('mainBalanceDisplay').innerText = currentBalance.toFixed(2);
+                    
+                    const balanceElements = document.querySelectorAll('#mainBalanceDisplay');
+                    balanceElements.forEach(el => el.innerText = currentBalance.toFixed(2));
                     
                     if (window.updateFirebaseBalance) {
                         window.updateFirebaseBalance(newBalance);
                     }
+
+                    // পেমেন্ট ডাটা অ্যাডমিন ট্র্যাকিং প্যানেলের জন্য ফায়ারবেসে পাঠানো (Area, TrxID, Method সহ)
+                    if (window.sendWifiPaymentToFirebase) {
+                        window.sendWifiPaymentToFirebase(ip, area, amount, trxId, "bKash");
+                    }
                     
                     const now = new Date();
                     const dateTime = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
-                    addNotification(ip, amount, dateTime);
+                    addNotification(ip, area, amount, dateTime, trxId);
                     
-                    Swal.fire({ icon: 'success', title: 'ধন্যবাদ!', text: 'আপনার পেমেন্ট সফল হয়েছে।', confirmButtonColor: '#10b981' });
-                    document.getElementById('ipName').value = "";
-                    document.getElementById('billAmount').value = "";
-                    closeBillForm();
+                    Swal.fire({ icon: 'success', title: 'ধন্যবাদ!', text: 'আপনার ওয়াইফাই বিল সাবমিট সফল হয়েছে। অ্যাডমিন ভেরিফাই করার পর রিসিট পেইড দেখাবে।', confirmButtonColor: '#10b981' });
+                    document.getElementById('billAmount').value = "525";
+                    document.getElementById('userArea').value = ""; // এরিয়া বক্স ফাকা করা
+                    document.getElementById('billTrxId').value = ""; // ট্রানজেকশন বক্স ফাকা করা
                 }
             });
         }
 
-        function addNotification(ip, amount, time) {
+        // নোটিফিকেশনে ট্রানজেকশন আইডি অ্যাড করার লজিক
+        function addNotification(ip, area, amount, time, trxId) {
             const noticeList = document.getElementById('noticeList');
             if(notifications.length === 0) noticeList.innerHTML = "";
-            const newNotice = { ip, amount, time, status: 'Success' };
+            const newNotice = { ip, area, amount, time, trxId, status: 'Pending' };
             notifications.unshift(newNotice);
             const html = `
-                <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-green-500 mb-3">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-amber-500 mb-3 w-full box-sizing-border-box">
                     <div class="flex justify-between items-start">
                         <div>
-                            <h4 class="font-bold text-slate-800">Bill Payment Success</h4>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">IP: ${ip}</p>
+                            <h4 class="font-bold text-slate-800">Bill Payment Requested (bKash)</h4>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">IP: ${ip} | Area: ${area}</p>
+                            <p class="text-[10px] text-indigo-500 font-semibold mt-0.5">TrxID: ${trxId || 'N/A'}</p>
                         </div>
-                        <span class="text-[10px] bg-green-100 text-green-600 px-2 py-1 rounded-md font-bold">SUCCESS</span>
+                        <span class="text-[10px] bg-amber-100 text-amber-600 px-2 py-1 rounded-md font-bold">PENDING</span>
                     </div>
                     <div class="mt-3 flex justify-between items-center border-t border-slate-50 pt-3">
                         <span class="text-indigo-600 font-black">৳ ${amount.toFixed(2)}</span>
@@ -526,9 +961,16 @@
             noticeList.insertAdjacentHTML('afterbegin', html);
         }
 
+        // লাইভ স্পিড জেনারেটর (যদি মেয়াদ ০ এর বেশি হয় তবেই স্পিড দেখাবে)
         setInterval(() => {
             const liveSpeedEl = document.getElementById('liveSpeed');
-            if(liveSpeedEl) liveSpeedEl.innerText = (Math.random() * (21.0 - 19.8) + 19.8).toFixed(1);
+            if(liveSpeedEl) {
+                if (window.userExpiryDays <= 0) {
+                    liveSpeedEl.innerText = "0.0";
+                } else {
+                    liveSpeedEl.innerText = (Math.random() * (21.0 - 19.8) + 19.8).toFixed(1);
+                }
+            }
         }, 3000);
 
         const slides = document.querySelectorAll('.slide');
