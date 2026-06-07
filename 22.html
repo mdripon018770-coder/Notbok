@@ -304,13 +304,13 @@
 
 window.onload = function(){
 
-let username =
+let savedUser =
 localStorage.getItem("username");
 
-if(username){
+if(savedUser){
 
 document.getElementById("profileName").innerText =
-username;
+"ID: " + savedUser;
 
 }
 
