@@ -167,7 +167,7 @@
         <div class="profile-section">
             <div class="avatar"><i class="fas fa-user"></i></div>
             <div class="profile-info">
-                <h4>HABIB SONAR MD</h4>
+                <h4 id="profileName">USER</h4>
                 <p>Personal profile</p>
             </div>
             <div class="profile-icons">
@@ -301,6 +301,21 @@
                 menuTab.classList.remove('active');
             }
         }
+
+window.onload = function(){
+
+let username =
+localStorage.getItem("username");
+
+if(username){
+
+document.getElementById("profileName").innerText =
+username;
+
+}
+
+}
+
     </script>
 
 </body>
