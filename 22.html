@@ -63,26 +63,178 @@
         .team { display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; margin-bottom: 5px; }
 
         /* --- Menu Page Content --- */
-        #menu-content { display: none; padding: 10px; }
-        .profile-section { display: flex; align-items: center; margin-bottom: 15px; padding: 5px; }
-        .avatar { width: 45px; height: 45px; background: #cfd8dc; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; }
-        .profile-info { margin-left: 12px; }
-        .profile-info h4 { font-size: 14px; text-transform: uppercase; }
-        .profile-info p { font-size: 11px; color: #28a745; font-weight: bold; }
+#menu-content { 
+    display: none; 
+    padding: 10px; 
+}
 
-        .profile-icons { margin-left: auto; display: flex; gap: 15px; align-items: center; }
-        .profile-icons .fa-envelope { font-size: 24px; color: #7a8a94; }
-        .profile-icons .fa-cog { font-size: 22px; color: #7a8a94; }
+/* ===== PROFILE ===== */
+.profile-section { 
+    display: flex; 
+    align-items: center; 
+    padding: 12px; 
+    margin: 0;
 
-        .menu-balance-box { background: #f0f4f7; border-radius: 12px; padding: 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-        .wallet-info { display: flex; align-items: center; gap: 8px; background: #fff; padding: 8px 12px; border-radius: 8px; flex: 1; margin-right: 10px; }
-        .dep-btn { background: #28a745; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; }
+    background: #fff; 
+    border-radius: 12px 12px 0 0;
+    box-shadow: none;
+    border: 1px solid #eef1f4;
+    border-bottom: none;
+}
 
-        .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
-        .quick-item { background: #f0f4f7; border-radius: 12px; padding: 12px 5px; text-align: center; }
-        .quick-item i { display: block; font-size: 22px; color: #28a745; margin-bottom: 6px; }
-        .quick-item span { font-size: 10px; font-weight: bold; color: #1a2b3c; }
+/* Avatar */
+.avatar { 
+    width: 45px; 
+    height: 45px; 
+    background: #cfd8dc; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: #fff; 
+    font-size: 22px; 
+}
 
+/* Profile text */
+.profile-info { 
+    margin-left: 12px; 
+}
+
+.profile-info h4 { 
+    font-size: 14px; 
+    text-transform: uppercase; 
+    color: #1a2b3c;
+}
+
+.profile-info p { 
+    font-size: 11px; 
+    color: #28a745; 
+    font-weight: bold; 
+}
+
+/* Icons container */
+.profile-icons { 
+    margin-left: auto; 
+    display: flex; 
+    gap: 18px; 
+    align-items: center; 
+}
+
+/* message icon (bigger + grey) */
+.profile-icons .fa-envelope { 
+    font-size: 30px; 
+    color: #7a8a94; 
+}
+
+/* settings wrapper */
+.settings-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* settings icon (bigger + grey) */
+.profile-icons .fa-cog { 
+    font-size: 30px; 
+    color: #7a8a94; 
+}
+
+/* red notification dot (!) */
+.settings-icon::after {
+    content: "!";
+    position: absolute;
+    top: -6px;
+    right: -6px;
+
+    width: 16px;
+    height: 16px;
+    background: red;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+}
+
+
+/* ===== BALANCE BOX ===== */
+.menu-balance-box { 
+    background: #fff; 
+    border-radius: 0;        /* 👈 attach with profile */
+    padding: 10px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    margin: 0;              /* 👈 no gap */
+
+    border-left: 1px solid #eef1f4;
+    border-right: 1px solid #eef1f4;
+}
+
+/* only grey middle */
+.wallet-info { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    background: #e9eef2; 
+    padding: 8px 12px; 
+    border-radius: 8px; 
+    flex: 1; 
+    margin-right: 10px;
+}
+
+/* deposit button */
+.dep-btn { 
+    background: #28a745; 
+    color: #fff; 
+    border: none; 
+    padding: 10px 18px; 
+    border-radius: 8px; 
+    font-weight: bold; 
+}
+
+
+/* ===== QUICK GRID (FULL WHITE, NO BOX GAP) ===== */
+.quick-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+
+    background: #fff;      /* 👈 pure white */
+    padding: 12px;
+    margin: 0;             /* 👈 no gap */
+
+    border-radius: 0 0 12px 12px; /* bottom rounded */
+    border: 1px solid #eef1f4;
+    border-top: none;
+
+    box-shadow: none;
+}
+
+/* items (no grey background) */
+.quick-item {
+    background: transparent;   /* 👈 remove grey boxes */
+    text-align: center;
+    padding: 10px 5px;
+}
+
+/* icons */
+.quick-item i {
+    display: block;
+    font-size: 22px;
+    color: #28a745;
+    margin-bottom: 6px;
+}
+
+.quick-item span {
+    font-size: 10px;
+    font-weight: bold;
+    color: #1a2b3c;
+}
         .menu-list-card { background: #fff; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .menu-icon { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #28a745; font-size: 16px; flex-shrink: 0; }
         .menu-text { flex: 1; }
@@ -154,17 +306,24 @@
 
 
     <div id="menu-content">
-        <div class="profile-section">
-            <div class="avatar"><i class="fas fa-user"></i></div>
-            <div class="profile-info">
-                <h4 id="profileName">USER</h4>
-                <p>Personal profile</p>
-            </div>
-            <div class="profile-icons">
-                <i class="fas fa-envelope"></i> 
-                <i class="fas fa-cog"></i>      
+    <div class="profile-section">
+        <div class="avatar">
+            <i class="fas fa-user"></i>
+        </div>
+
+        <div class="profile-info">
+            <h4 id="profileName">USER</h4>
+            <p>Personal profile</p>
+        </div>
+
+        <div class="profile-icons">
+            <i class="fas fa-envelope"></i>
+
+            <div class="settings-icon">
+                <i class="fas fa-cog"></i>
             </div>
         </div>
+    </div>
 
         <div class="menu-balance-box">
             <div class="wallet-info">
