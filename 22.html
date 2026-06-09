@@ -330,12 +330,55 @@
     font-weight: bold;
     color: #1a2b3c;
 }
-        .menu-list-card { background: #fff; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .menu-icon { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #28a745; font-size: 16px; flex-shrink: 0; }
-        .menu-text { flex: 1; }
-        .menu-text b { display: block; font-size: 14px; color: #1a2b3c; }
-        .menu-text span { font-size: 10px; color: #888; }
-        .arrow-right { color: #ccc; font-size: 12px; }
+        .menu-list-card { 
+    background: #ffffff; 
+    border-radius: 12px; 
+    padding: 12px 15px; 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+    margin-bottom: 8px; 
+    
+    /* আগের বর্ডার কোডটি পরিবর্তন করে এটি দিন */
+    border: 1.5px solid #dcdcdc; 
+    
+    /* শ্যাডো একটু বাড়িয়ে দেওয়া হলো যাতে বর্ডারটা ফুটে ওঠে */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08); 
+}
+
+
+.menu-icon { 
+    width: 34px; 
+    height: 34px; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: #28a745; 
+    font-size: 16px; 
+    flex-shrink: 0; 
+}
+
+.menu-text { 
+    flex: 1; 
+}
+
+.menu-text b { 
+    display: block; 
+    font-size: 14px; 
+    color: #1a2b3c; 
+}
+
+.menu-text span { 
+    font-size: 10px; 
+    color: #888; 
+}
+
+.arrow-right { 
+    color: #ccc; 
+    font-size: 12px; 
+}
+
 
         /* --- Bottom Navigation --- */
         .bottom-bar { position: fixed; bottom: 0; width: 100%; height: 65px; background: #fff; display: flex; align-items: center; z-index: 1000; }
