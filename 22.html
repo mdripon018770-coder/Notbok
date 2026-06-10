@@ -671,26 +671,34 @@
         }
     };
 
-    // পেজ লোড হওয়ার সময় আইডি এবং ব্যালেন্স সেট করা
+       // পেজ লোড হওয়ার সময় আইডি এবং ব্যালেন্স সেট করা
     window.onload = function() {
+        // ১. লোকাল স্টোরেজ থেকে আইডি নেওয়া
         let savedUser = localStorage.getItem("loggedInUserId");
         
+        // কনসোলে চেক করা (F12 চেপে দেখুন আইডি আসছে কি না)
+        console.log("Loaded User ID from storage: ", savedUser);
+
         if (savedUser) {
-            // ১. প্রোফাইল আইডি সেট করা
+            // প্রোফাইল নাম আপডেট
             const profileName = document.getElementById("profileName");
             if (profileName) {
                 profileName.innerText = savedUser;
-                profileName.style.textTransform = "none";
             }
 
             // ২. রিয়েল-টাইম ব্যালেন্স লোড করা
             const balanceRef = ref(db, 'users/' + savedUser + '/balance');
             onValue(balanceRef, (snapshot) => {
                 const balance = snapshot.val() || 0;
-                // সব ব্যালেন্স এরিয়া (Header + Menu) আপডেট করা
-                const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
-                balanceDisplays.forEach(el => el.innerText = balance + " ৳");
+                // হেডার এবং মেনুর ব্যালেন্স আপডেট
+                document.querySelectorAll('.wallet-info span, .balance-pill span').forEach(el => {
+                    el.innerText = balance + " ৳";
+                });
             });
+        } else {
+            console.log("No User ID found! Please login again.");
+            // আইডি না থাকলে লগইন পেজে পাঠানোর জন্য নিচের লাইনটি আন-কমেন্ট করতে পারেন
+            // window.location.href = "login.html"; 
         }
     };
 
