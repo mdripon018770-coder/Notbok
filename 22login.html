@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>22Bet Loading & Home</title>
+    <!-- Font Awesome Icons Link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #0c3e44; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; font-family: sans-serif; }
+        
+        /* --- Loading Screen --- */
+        #loading-screen { 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%; 
+            height: 100%; 
+            background-image: url('https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/l.jpg');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .progress-container { 
+            display: flex; 
+            gap: 16px; 
+            align-items: center; 
+            justify-content: center; 
+            position: absolute;
+            top: 62%; 
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            white-space: nowrap;
+        }
+
+        .ball { 
+            font-size: 14px; 
+            color: #ffffff;
+            opacity: 0.25; 
+            transition: opacity 0.4s ease, color 0.4s ease; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 16px;
+            height: 16px;
+        }
+
+        .eight-ball { 
+            font-weight: bold; 
+            font-size: 9px; 
+            border-radius: 50%; 
+            border: 1.5px solid rgba(255, 255, 255, 0.25); 
+            text-align: center; 
+            line-height: 13px; 
+            width: 16px;
+            height: 16px;
+        }
+        
+        .ball.revealed {
+            opacity: 0.85;
+        }
+        
+        .eight-ball.revealed {
+            border-color: rgba(255, 255, 255, 0.85);
+        }
+        
+        .active-spinning { 
+            opacity: 1 !important;
+            color: #ffffff !important; 
+            animation: rotateBall 0.7s linear infinite; 
+        }
+        
+        .eight-ball.active-spinning {
+            border-color: #ffffff !important;
+            color: #ffffff !important;
+        }
+
+        .stopping-style {
+            transition: transform 0.8s cubic-bezier(0.1, 1, 0.1, 1);
+        }
+
+        @keyframes rotateBall { 
+            0% { transform: scale(1.1) rotate(0deg); } 
+            100% { transform: scale(1.1) rotate(360deg); } 
+        }
+        
+        .version-info { 
+            position: absolute; 
+            bottom: 22px; 
+            right: 22px; 
+            color: #ffffff; 
+            font-size: 12px; 
+            opacity: 0.85; 
+        }
+
+        /* --- Home Screen --- */
+        #home-screen { display: none; width: 100%; height: 100%; background-color: #f4f7f9; flex-direction: column; position: relative; }
+        .content-area { flex: 1; overflow-y: auto; padding-bottom: 62px; position: relative; }
+        
+        .home-main-pic { width: 100%; position: relative; }
+        .home-main-pic img { width: 100%; height: auto; display: block; }
+
+        .home-reg-overlay { position: absolute; top: 17.2%; right: 4%; width: 45%; height: 5.2%; background-color: transparent; cursor: pointer; z-index: 10; }
+        .home-login-overlay { position: absolute; top: 17.2%; left: 4%; width: 45%; height: 5.2%; background-color: transparent; cursor: pointer; z-index: 10; }
+
+        /* --- Bottom Navigation --- */
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            background: #f7f9fa; 
+            display: flex; 
+            justify-content: space-around; 
+            align-items: flex-end; 
+            padding: 4px 0 6px 0; 
+            border-top: 1px solid #e6ecf0; 
+            z-index: 100; 
+            height: 64px; 
+        }
+        .nav-item { 
+            text-align: center; 
+            color: #728b93; 
+            font-size: 11px; 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: flex-end; 
+            text-decoration: none; 
+            font-weight: 600; 
+            height: 100%;
+            cursor: pointer;
+        }
+        .nav-item i { 
+            display: block; 
+            font-size: 23px; 
+            margin-bottom: 3px; 
+        }
+        .nav-item.active { 
+            color: #21b14c; 
+        }
+        
+        /* --- Bet Slip আইকন পজিশন ফিক্স (নিচে নামানো হয়েছে) --- */
+        .bet-slip-container { 
+            position: relative; 
+            overflow: visible; 
+        }
+        .bet-slip-circle { 
+            background: linear-gradient(135deg, #1ca643, #29be55); 
+            width: 50px; 
+            height: 50px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            box-shadow: 0 -1px 6px rgba(33,177,76,0.25), 0 3px 6px rgba(0,0,0,0.1); 
+            border: 3px solid #fff; 
+            position: absolute; 
+            top: -24px; /* অরিজিনাল স্ক্রিনশটের মতো পারফেক্টলি নিচে নামানো হয়েছে */
+            left: 50%; 
+            transform: translateX(-50%); 
+        }
+        
+        /* আসল অ্যাপের মতো সোজা ও চ্যাপ্টা জোড়া টিকিট */
+        .original-ticket-icon {
+            position: relative;
+            width: 24px;
+            height: 16px;
+        }
+        .original-ticket-icon::before {
+            content: '';
+            position: absolute;
+            left: 2px;
+            top: -2px;
+            width: 18px;
+            height: 13px;
+            background-color: rgba(255, 255, 255, 0.6);
+            border-radius: 2px;
+        }
+        .original-ticket-icon::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 24px;
+            height: 14px;
+            background-color: #ffffff;
+            border-radius: 2px;
+            background-image: radial-gradient(circle at center, #21b14c 1.5px, transparent 1.5px);
+            background-size: 6px 14px;
+            background-repeat: repeat-x;
+            background-position: center;
+        }
+        
+        .bet-slip-container span { 
+            margin-top: 2px; 
+            color: #728b93;
+        }
+
+        /* --- Menu আইকন (৪ ব্লকের rounded গ্রিড) --- */
+        .custom-menu-icon { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 3px; 
+            width: 18px; 
+            height: 18px; 
+            margin-bottom: 6px; 
+        }
+        .custom-menu-icon div { 
+            background-color: #728b93; 
+            border-radius: 2px; 
+        }
+        .nav-item.active .custom-menu-icon div { 
+            background-color: #21b14c; 
+        }
+
+        /* --- Registration Page --- */
+        #registration-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f0f4f7; z-index: 1000; overflow: hidden; }
+        .reg-image-container { position: relative; width: 100%; height: 100%; }
+        .reg-image-container img { width: 100%; height: 100%; object-fit: fill; display: block; }
+        
+        .reg-back-overlay { position: absolute; top: 15px; left: 15px; width: 50px; height: 50px; background-color: transparent; cursor: pointer; z-index: 1005; }
+        .reg-phone-overlay { position: absolute; top: 49%; left: 4.5%; width: 91%; height: 8.5%; background-color: transparent; cursor: pointer; z-index: 1005; }
+
+        /* --- Login Page --- */
+        #login-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f0f4f7; z-index: 1000; }
+        .login-top-bar { height: 35%; width: 100%; position: relative; background-image: url('https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/logi.jpg'); background-size: 100% 100%; background-repeat: no-repeat; background-position: center; }
+        .login-back-overlay { position: absolute; top: 10.5%; left: 3.5%; width: 13vw; height: 13vw; background-color: transparent; cursor: pointer; z-index: 1005; }
+
+        .login-card-container { height: 65%; width: 100%; background-color: #f0f4f7; border-top-left-radius: 30px; border-top-right-radius: 30px; padding: 30px 25px 20px 25px; display: flex; flex-direction: column; position: relative; overflow-y: auto; }
+        .login-title { font-size: 32px; font-weight: bold; color: #0b3238; margin-bottom: 35px; }
+        .login-input-group { margin-bottom: 30px; display: flex; flex-direction: column; }
+        .login-label { font-size: 16px; color: #79989c; margin-bottom: -4px; }
+        .login-input-row { display: flex; align-items: center; border-bottom: 1px solid #c2d1d4; padding-bottom: 6px; }
+        .login-input-row input { width: 100%; border: none; outline: none; background: transparent; font-size: 18px; color: #0b3238; padding-top: 4px; }
+        
+        .login-phone-box-icon { background-color: #00b03e; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; margin-left: 10px; }
+        .login-toggle-password { color: #79989c; font-size: 18px; cursor: pointer; margin-left: 10px; }
+        
+        .login-submit-btn { background-color: #00b03e; color: white; font-size: 16px; font-weight: bold; text-align: center; padding: 15px; border-radius: 10px; margin-top: 15px; cursor: pointer; }
+        .forgot-password-link { text-align: center; color: #00b03e; font-size: 15px; font-weight: bold; margin-top: 25px; cursor: pointer; }
+        .login-footer-register { width: 100%; text-align: center; font-size: 14px; color: #79989c; margin-top: auto; padding-top: 30px; }
+        .login-footer-register span { color: #00b03e; font-weight: bold; margin-left: 5px; cursor: pointer; }
+
+        /* --- Phone Registration Form Page --- */
+        #phone-registration-form {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f0f4f7;
+    z-index: 1100;
+    flex-direction: column;
+}
+
+.phone-reg-header {
+    background-color: #fff;
+    padding: 12px 15px 8px;
+    border-bottom: 1px solid #e0e0e0;
+    color: #5c8389;
+    position: relative;
+    text-align: center;
+}
+
+.phone-reg-header i {
+    position: absolute;
+    left: 15px;
+    top: 18px;
+    font-size: 18px;
+}
+
+.phone-reg-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.phone-reg-sub-title {
+    text-align: center;
+    color: #8a9ea0;
+    font-size: 12px;
+    margin-top: 2px;
+    margin-bottom: 0;
+}
+
+.phone-reg-content {
+    padding: 15px;
+    flex: 1;
+    overflow-y: auto;
+}
+        
+        /* রেজিস্ট্রেশন কার্ডের হাইট এবং প্যাডিং বাড়ানো হয়েছে */
+.form-card { 
+    background: #fff; 
+    border-radius: 15px; 
+    padding: 20px 15px; /* প্যাডিং বাড়িয়ে বক্সটিকে বড় করা হয়েছে */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+    margin-bottom: 20px; 
+}
+
+/* ইনপুট বক্সের হাইট এবং গ্যাপ বাড়ানো হয়েছে */
+.input-box { 
+    margin-bottom: 20px; 
+    position: relative; 
+    border-bottom: 1.5px solid #e0e0e0; /* বর্ডার সামান্য গাঢ় করা হয়েছে */
+    padding-bottom: 12px; /* নিচের দিকে জায়গা বাড়ানো হয়েছে */
+}
+
+/* ইনপুট এবং সিলেক্ট এলিমেন্টের সাইজ বড় করা হয়েছে */
+.input-row input, .input-row select { 
+    border: none; 
+    outline: none; 
+    width: 100%; 
+    font-size: 16px; /* ফন্ট সাইজ বড় করা হয়েছে */
+    color: #333; 
+    background: transparent;
+    padding: 5px 0; /* ইনপুট ফিল্ডের হাইট বাড়াতে প্যাডিং */
+}
+
+/* প্রোমো কোড বক্সটি আলাদাভাবে বড় করার জন্য */
+.input-box:last-child {
+    padding-bottom: 15px;
+}
+
+        
+        .legal-link { display: flex; align-items: center; gap: 10px; color: #24b24a; font-size: 14px; margin-bottom: 15px; font-weight: 500; }
+        .legal-link i { font-size: 18px; }
+        .checkbox-group { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; }
+        .checkbox-group input { width: 20px; height: 20px; accent-color: #24b24a; margin-top: 2px; }
+        .checkbox-group label { font-size: 12px; color: #4a6669; line-height: 1.4; }
+        
+        /* --- Registration Button --- */
+.register-footer-btn {
+    position: fixed;
+    left: 15px;
+    right: 15px;
+    bottom: 20px;
+    background-color: #24b24a;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    border-radius: 14px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 1200;
+}
+
+/* --- Legal & Checkbox --- */
+.checkbox-group { 
+    display: flex; 
+    align-items: flex-start; 
+    gap: 12px; 
+    margin-bottom: 15px; 
+    padding: 0 15px; 
+}
+
+.legal-link { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    color: #24b24a; 
+    font-size: 14px; 
+    margin-bottom: 15px; 
+    font-weight: 500; 
+    padding: 0 15px; 
+}
+
+/* --- Country Popup (Fixed/Scroll Layout) --- */
+.country-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.3);
+    z-index: 9999;
+}
+
+.country-sheet {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 85%; /* পপআপের উচ্চতা */
+    background: #fff;
+    border-radius: 30px 30px 0 0;
+    
+    /* নিশ্চিত করার জন্য ফ্লেক্স ব্যবহার */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* পপআপের বাইরের স্ক্রল বন্ধ */
+}
+
+#country-list-container {
+    flex: 1; 
+    overflow-y: auto; /* শুধু এই অংশটিই স্ক্রল হবে */
+    padding-bottom: 20px;
+    -webkit-overflow-scrolling: touch; /* মোবাইলে স্মুথ স্ক্রলিং */
+}
+
+/* স্থির এলিমেন্টগুলোর জন্য */
+.sheet-line, .country-sheet h2, .country-search {
+    flex-shrink: 0;
+}
+
+.country-search {
+    padding: 0 15px 15px;
+}
+
+.country-search input {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    outline: none;
+    background: #eef3fa;
+    border-radius: 15px;
+    font-size: 18px;
+}
+
+/* --- Row & Radio Styles --- */
+.country-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px;
+    border-bottom: 1px solid #eee;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.radio-circle {
+    width: 26px;
+    height: 26px;
+    border: 3px solid #b8c7d5;
+    border-radius: 50%;
+}
+
+.radio-circle.active {
+    border-color: #3f8cff;
+    position: relative;
+}
+
+.radio-circle.active:after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: #3f8cff;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+@keyframes popupUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+/* --- Success Popup Styling --- */
+#successPopup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.4);
+    z-index: 99999;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.popup-content {
+    width: 95%;
+    max-width: 450px;
+    background: #ffffff;
+    border-radius: 25px 25px 0 0;
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+    animation: popupUp 0.4s ease-out; /* এখানে আপনার তৈরি করা অ্যানিমেশনটি যোগ করা হলো */
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="progress-container">
+            <div id="b1" class="ball"><i class="fas fa-volleyball"></i></div>
+            <div id="b2" class="ball"><i class="fas fa-basketball-ball"></i></div>
+            <div id="b3" class="ball"><i class="fas fa-baseball"></i></div> 
+            <div id="b4" class="ball"><i class="fas fa-baseball-ball"></i></div>
+            <div id="b5" class="ball"><i class="fas fa-volleyball-ball"></i></div>
+            <div id="b6" class="ball eight-ball">8</div>
+            <div id="b7" class="ball"><i class="fas fa-baseball-ball"></i></div>
+            <div id="b8" class="ball"><i class="fas fa-volleyball-ball"></i></div>
+        </div>
+        <div class="version-info">22Bet v.253.0.2</div>
+    </div>
+
+    <!-- Home Screen -->
+    <div id="home-screen">
+        <div class="content-area">
+            <div class="home-main-pic">
+                <div class="home-login-overlay" onclick="showLogin()"></div>
+                <div class="home-reg-overlay" onclick="showReg()"></div>
+                <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/hom.jpg" alt="Home Content">
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active"><i class="fas fa-fire"></i><span>Popular</span></div>
+            <div class="nav-item"><i class="fas fa-star"></i><span>Favorites</span></div>
+            
+            <!-- Bet slip: পজিশন পারফেক্টলি নিচে নামানো হয়েছে -->
+            <div class="nav-item bet-slip-container">
+                <div class="bet-slip-circle">
+                    <div class="original-ticket-icon"></div>
+                </div>
+                <span>Bet slip</span>
+            </div>
+            
+            <div class="nav-item"><i class="fas fa-clock"></i><span>History</span></div>
+            
+            <!-- Menu: ৪ ব্লকের কাস্টম গ্রিড আইকন -->
+            <div class="nav-item">
+                <div class="custom-menu-icon">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <span>Menu</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Selection Page -->
+    <div id="registration-page">
+        <div class="reg-image-container">
+            <div class="reg-back-overlay" onclick="hideReg()"></div>
+            <div class="reg-phone-overlay" onclick="showPhoneReg()"></div>
+            <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/rejis.jpg" alt="Registration Selection">
+        </div>
+    </div>
+
+        <!-- Login Page View -->
+    <div id="login-page">
+        <div class="login-top-bar">
+            <div class="login-back-overlay" onclick="hideLogin()"></div>
+        </div>
+        <div class="login-card-container">
+            <div class="login-title">Log in</div>
+            
+            <div class="login-input-group">
+                <p class="login-label">Email or ID</p>
+                <div class="login-input-row">
+                    <input type="text" id="login-id">
+                    <div class="login-phone-box-icon"><i class="fas fa-mobile-alt"></i></div>
+                </div>
+            </div>
+
+            <div class="login-input-group">
+                <p class="login-label">Password</p>
+                <div class="login-input-row">
+                    <input type="password" id="login-password">
+                    <i class="far fa-eye-slash login-toggle-password" onclick="togglePasswordVisibility()"></i>
+                </div>
+            </div>
+
+            <div class="login-submit-btn" onclick="processLogin()">Log in</div>
+            
+            <!-- এখানে এরর মেসেজ দেখানোর ডিভটি যুক্ত করা হয়েছে -->
+            <div id="login-error-message" style="color: red; display: none; margin-top: 15px; text-align: center; font-weight: bold; font-size: 14px;"></div>
+
+            <div class="forgot-password-link">Forgot your password?</div>
+            <div class="login-footer-register">Don't have an account? <span onclick="switchLoginToReg()">Register</span></div>
+        </div>
+    </div>
+
+
+    <!-- Phone Registration Form Page -->
+    <div id="phone-registration-form">
+        <div class="phone-reg-header">
+    <i class="fas fa-arrow-left" onclick="hidePhoneReg()"></i>
+    <h3>Registration</h3>
+    <p class="phone-reg-sub-title">By phone</p>
+</div>
+
+<div class="phone-reg-content">
+    <div class="form-card">
+        <!-- Country -->
+        <div class="input-box">
+            <p class="input-label">Country *</p>
+            <div class="input-row" onclick="showCountryPopup()" style="cursor:pointer;">
+                <input type="text" id="country-name" value="Bangladesh" readonly style="cursor:pointer;">
+                <i class="fas fa-chevron-down" style="font-size:12px;color:#8a9ea0;"></i>
+            </div>
+        </div>
+
+        <!-- Currency -->
+        <div class="input-box">
+            <p class="input-label">Currency *</p>
+            <div class="input-row">
+                <select id="currency-select">
+                    <option>Bangladeshi taka (BDT)</option>
+                </select>
+                <i class="fas fa-chevron-down" style="font-size:12px;color:#8a9ea0;"></i>
+            </div>
+        </div>
+
+        <!-- Bonus -->
+        <div class="input-box">
+            <p class="input-label">Bonus</p>
+            <div class="input-row">
+                <select>
+                    <option>Bonus for sports</option>
+                    <option>Reject bonuses</option>
+                    <option>Casino Bonus</option>
+                </select>
+                <i class="fas fa-chevron-down" style="font-size:12px;color:#8a9ea0;"></i>
+            </div>
+        </div>
+
+        <!-- Promo -->
+        <div class="input-box" style="border-bottom:none;">
+            <div class="input-row">
+                <input type="text" placeholder="Promo code (optional)">
+            </div>
+        </div>
+    </div>
+
+    <!-- Legal Links -->
+    <div class="legal-link"><i class="fas fa-file-alt"></i> Terms and Conditions</div>
+    <div class="legal-link"><i class="fas fa-file-alt"></i> Privacy Policy</div>
+
+    <!-- Checkbox -->
+    <div class="checkbox-group" style="padding: 0 15px; margin-top: 10px;">
+        <input type="checkbox" id="c1">
+        <label for="c1">I am over 18 years of age and I confirm that I have read and agree to the company's terms and conditions and privacy policy.</label>
+    </div>
+</div>
+
+<div class="register-footer-btn" onclick="hidePhoneReg()">Register</div>
+
+<div id="country-popup" class="country-popup">
+    <div class="country-sheet">
+        <div class="sheet-line"></div>
+        <h2>Select country</h2>
+        
+        <div class="country-search">
+            <input type="text" id="countrySearch" placeholder="Search country" onkeyup="filterCountries()">
+        </div>
+
+        <!-- এই ডিভটির ভেতরেই জাভাস্ক্রিপ্ট দিয়ে ৫০টি দেশ চলে আসবে -->
+        <div id="country-list-container"></div>
+    </div>
+</div>
+
+
+<div id="successPopup" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.4);
+    z-index: 99999;
+    justify-content: center;
+    align-items: flex-end;">
+
+    <div class="popup-content" style="
+        width: 95%;
+        max-width: 450px;
+        background: #ffffff;
+        border-radius: 25px 25px 0 0;
+        padding: 30px 20px;
+        text-align: center;
+        box-shadow: 0 -5px 15px rgba(0,0,0,0.1);">
+
+        <!-- Success Icon -->
+        <div style="
+            width: 80px;
+            height: 80px;
+            background: #e8f5ec;
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;">
+            <div style="
+                width: 50px;
+                height: 50px;
+                background: #53bc67;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 28px;
+                color: #fff;">
+                ✓
+            </div>
+        </div>
+
+        <!-- Title -->
+        <h2 style="margin: 0 0 20px 0; font-size: 24px; color: #06335d; font-weight: 700;">
+            Registration successful!
+        </h2>
+
+        <!-- Credentials Box -->
+        <div style="
+            background: #f2f5f7;
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span style="color: #6f8796; font-size: 17px;">Username:</span>
+                <b id="popupUser" style="color: #06335d; font-size: 18px;"></b>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: #6f8796; font-size: 17px;">Password:</span>
+                <b id="popupPass" style="color: #06335d; font-size: 18px;"></b>
+            </div>
+        </div>
+
+        <!-- Copy & Share Buttons -->
+        <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+            <button onclick="copyInfo()" style="
+                flex: 1;
+                height: 55px;
+                border: none;
+                background: #e7eff3;
+                border-radius: 14px;
+                font-size: 16px;
+                font-weight: 600;
+                color: #597385;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;">
+                <i class='far fa-copy'></i> Copy
+            </button>
+            <button onclick="shareInfo()" style="
+                flex: 1;
+                height: 55px;
+                border: none;
+                background: #e7eff3;
+                border-radius: 14px;
+                font-size: 16px;
+                font-weight: 600;
+                color: #597385;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;">
+                <i class='fas fa-share'></i> Share
+            </button>
+        </div>
+
+        <!-- Next Button -->
+        <button onclick="nextRegistration()" style="
+            width: 100%;
+            height: 55px;
+            background: #53bc67;
+            border: none;
+            border-radius: 14px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;">
+            Next
+        </button>
+
+    </div>
+</div>
+
+
+
+<script type="module">
+    // --- Firebase Configuration (Line 2-15) ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCpwfTWOsU6Gb3rLvMjcKnewLMnlkq5plg",
+      authDomain: "amar-bazar-d99b4.firebaseapp.com",
+      databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com",
+      projectId: "amar-bazar-d99b4",
+      storageBucket: "amar-bazar-d99b4.firebasestorage.app",
+      messagingSenderId: "1000008221916",
+      appId: "1:1000008221916:web:6bd19561f4b64e2002e019",
+      measurementId: "G-NHCVXFW0E4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    console.log("Firebase initialized successfully");
+
+    // --- Loading & Navigation Logic (Line 18-42) ---
+    window.startLoadingSequence = function() {
+        const totalBalls = 8;
+        const ballActiveTime = 2200; 
+        function runSequence(idx) {
+            if (idx > totalBalls) {
+                setTimeout(() => {
+                    document.getElementById('loading-screen').style.display = 'none';
+                    document.getElementById('home-screen').style.display = 'flex';
+                    document.body.style.backgroundColor = "#f0f4f7";
+                }, 800);
+                return;
+            }
+            const currentBall = document.getElementById(`b${idx}`);
+            if (currentBall) currentBall.classList.add('revealed', 'active-spinning');
+            setTimeout(() => {
+                runSequence(idx + 1);
+                setTimeout(() => {
+                    if (currentBall) {
+                        currentBall.classList.remove('active-spinning');
+                        currentBall.classList.add('stopping-style');
+                    }
+                }, 150); 
+            }, ballActiveTime);
+        }
+        runSequence(1);
+    }
+
+    // --- UI Toggle Functions (Line 44-59) ---
+    window.showReg = () => document.getElementById('registration-page').style.display = 'block';
+    window.hideReg = () => document.getElementById('registration-page').style.display = 'none';
+    window.showPhoneReg = () => document.getElementById('phone-registration-form').style.display = 'flex';
+    window.hidePhoneReg = () => document.getElementById('phone-registration-form').style.display = 'none';
+    window.showLogin = () => document.getElementById('login-page').style.display = 'block';
+    window.hideLogin = () => document.getElementById('login-page').style.display = 'none';
+    window.switchLoginToReg = () => { window.hideLogin(); window.showReg(); };
+
+    window.togglePasswordVisibility = function() {
+        const passwordInput = document.getElementById('login-password');
+        const toggleIcon = document.querySelector('.login-toggle-password');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+        }
+    }
+
+    window.processLogin = function() {
+    const inputId = document.getElementById('login-id').value;
+    const inputPass = document.getElementById('login-password').value;
+    
+    const savedUser = localStorage.getItem("username");
+    const savedPass = localStorage.getItem("password");
+    
+    if (inputId === savedUser && inputPass === savedPass) {
+        window.location.href = "https://mdripon018770-coder.github.io/Notbok/22.html";
+    } else {
+        // এখানে এরর মেসেজ দেখাবে (কোনো পপআপ আসবে না)
+        document.getElementById('login-error-message').innerText = "Invalid ID or Password!";
+        document.getElementById('login-error-message').style.display = "block";
+    }
+};
+
+
+    // --- Country Data (Line 61-112) ---
+    const countries = [
+        { name: "Afghanistan", code: "+93", flag: "🇦🇫", currency: "Afghani (AFN)" }, { name: "Albania", code: "+355", flag: "🇦🇱", currency: "Lek (ALL)" },
+        { name: "Algeria", code: "+213", flag: "🇩🇿", currency: "Dinar (DZD)" }, { name: "Andorra", code: "+376", flag: "🇦🇩", currency: "Euro (EUR)" },
+        { name: "Angola", code: "+244", flag: "🇦🇴", currency: "Kwanza (AOA)" }, { name: "Argentina", code: "+54", flag: "🇦🇷", currency: "Peso (ARS)" },
+        { name: "Armenia", code: "+374", flag: "🇦🇲", currency: "Dram (AMD)" }, { name: "Australia", code: "+61", flag: "🇦🇺", currency: "Australian Dollar (AUD)" },
+        { name: "Azerbaijan", code: "+994", flag: "🇦🇿", currency: "Manat (AZN)" }, { name: "Bahrain", code: "+973", flag: "🇧🇭", currency: "Dinar (BHD)" },
+        { name: "Bangladesh", code: "+880", flag: "🇧🇩", currency: "Bangladeshi taka (BDT)" }, { name: "Barbados", code: "+1", flag: "🇧🇧", currency: "Barbados Dollar (BBD)" },
+        { name: "Belize", code: "+501", flag: "🇧🇿", currency: "Belize Dollar (BZD)" }, { name: "Benin", code: "+229", flag: "🇧🇯", currency: "CFA Franc (XOF)" },
+        { name: "Bermuda", code: "+1", flag: "🇧🇲", currency: "Bermudian Dollar (BMD)" }, { name: "Bhutan", code: "+975", flag: "🇧🇹", currency: "Ngultrum (BTN)" },
+        { name: "Bolivia", code: "+591", flag: "🇧🇴", currency: "Boliviano (BOB)" }, { name: "Brazil", code: "+55", flag: "🇧🇷", currency: "Real (BRL)" },
+        { name: "Canada", code: "+1", flag: "🇨🇦", currency: "Canadian Dollar (CAD)" }, { name: "China", code: "+86", flag: "🇨🇳", currency: "Chinese Yuan (CNY)" },
+        { name: "Denmark", code: "+45", flag: "🇩🇰", currency: "Krone (DKK)" }, { name: "Egypt", code: "+20", flag: "🇪🇬", currency: "Egyptian Pound (EGP)" },
+        { name: "France", code: "+33", flag: "🇫🇷", currency: "Euro (EUR)" }, { name: "Germany", code: "+49", flag: "🇩🇪", currency: "Euro (EUR)" },
+        { name: "India", code: "+91", flag: "🇮🇳", currency: "Indian Rupee (INR)" }, { name: "Indonesia", code: "+62", flag: "🇮🇩", currency: "Rupiah (IDR)" },
+        { name: "Italy", code: "+39", flag: "🇮🇹", currency: "Euro (EUR)" }, { name: "Japan", code: "+81", flag: "🇯🇵", currency: "Japanese Yen (JPY)" },
+        { name: "Malaysia", code: "+60", flag: "🇲🇾", currency: "Ringgit (MYR)" }, { name: "Netherlands", code: "+31", flag: "🇳🇱", currency: "Euro (EUR)" },
+        { name: "Nigeria", code: "+234", flag: "🇳🇬", currency: "Naira (NGN)" }, { name: "Norway", code: "+47", flag: "🇳🇴", currency: "Krone (NOK)" },
+        { name: "Pakistan", code: "+92", flag: "🇵🇰", currency: "Pakistani Rupee (PKR)" }, { name: "Poland", code: "+48", flag: "🇵🇱", currency: "Zloty (PLN)" },
+        { name: "Portugal", code: "+351", flag: "🇵🇹", currency: "Euro (EUR)" }, { name: "Russia", code: "+7", flag: "🇷🇺", currency: "Ruble (RUB)" },
+        { name: "Saudi Arabia", code: "+966", flag: "🇸🇦", currency: "Riyal (SAR)" }, { name: "Singapore", code: "+65", flag: "🇸🇬", currency: "Singapore Dollar (SGD)" },
+        { name: "South Africa", code: "+27", flag: "🇿🇦", currency: "Rand (ZAR)" }, { name: "South Korea", code: "+82", flag: "🇰🇷", currency: "Won (KRW)" },
+        { name: "Spain", code: "+34", flag: "🇪🇸", currency: "Euro (EUR)" }, { name: "Sweden", code: "+46", flag: "🇸🇪", currency: "Krona (SEK)" },
+        { name: "Switzerland", code: "+41", flag: "🇨🇭", currency: "Franc (CHF)" }, { name: "Thailand", code: "+66", flag: "🇹🇭", currency: "Baht (THB)" },
+        { name: "Turkey", code: "+90", flag: "🇹🇷", currency: "Lira (TRY)" }, { name: "Ukraine", code: "+380", flag: "🇺🇦", currency: "Hryvnia (UAH)" },
+        { name: "United Arab Emirates", code: "+971", flag: "🇦🇪", currency: "Dirham (AED)" }, { name: "United Kingdom", code: "+44", flag: "🇬🇧", currency: "British Pound (GBP)" },
+        { name: "United States", code: "+1", flag: "🇺🇸", currency: "US Dollar (USD)" }, { name: "Vietnam", code: "+84", flag: "🇻🇳", currency: "Dong (VND)" }
+    ];
+
+    window.loadCountries = function() {
+        const container = document.getElementById('country-list-container');
+        container.innerHTML = '';
+        countries.forEach((country) => {
+            const row = document.createElement('div');
+            row.className = 'country-row';
+            row.onclick = () => window.selectCountry(country.name, country.code, country.flag, country.currency, row);
+            row.innerHTML = `<span>${country.flag} ${country.name}</span> <div class="radio-circle"></div>`;
+            container.appendChild(row);
+        });
+    }
+
+    window.selectCountry = function(name, code, flag, currency, row) {
+        document.querySelectorAll('.radio-circle').forEach(r => r.classList.remove('active'));
+        row.querySelector('.radio-circle').classList.add('active');
+        document.getElementById("country-name").value = `${flag} ${name} (${code})`;
+        document.getElementById("currency-select").innerHTML = `<option>${currency}</option>`;
+        document.getElementById("country-popup").style.display = "none";
+    }
+
+    window.showCountryPopup = () => document.getElementById("country-popup").style.display = "block";
+    window.filterCountries = function() {
+        const value = document.getElementById("countrySearch").value.toLowerCase();
+        document.querySelectorAll(".country-row").forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(value) ? "flex" : "none";
+        });
+    }
+
+        // --- Registration & Login Logic with Firebase ---
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    const db = getDatabase(); // Firebase Realtime Database ব্যবহার করা হচ্ছে
+
+    window.generateUsername = () => Math.floor(1000000000 + Math.random() * 9000000000).toString();
+    window.generatePassword = function() {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let pass = "";
+        for (let i = 0; i < 8; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
+        return pass;
+    }
+
+    // রেজিস্ট্রেশন বাটনে ক্লিক করলে Firebase-এ সেভ হবে
+    document.querySelector(".register-footer-btn").onclick = function() {
+        let username = window.generateUsername();
+        let password = window.generatePassword();
+        
+        // Firebase-এ ডাটা সেভ
+        set(ref(db, 'users/' + username), {
+            id: username,
+            password: password
+        }).then(() => {
+            document.getElementById("popupUser").innerText = username;
+            document.getElementById("popupPass").innerText = password;
+            document.getElementById("successPopup").style.display = "flex";
+        });
+    };
+
+    // Next বাটনে ক্লিক করলে লগইন পেজে অটো-ফিল হবে
+        // --- Registration & Login Logic with Firebase ---
+    
+    // Next বাটনে ক্লিক করলে লগইন পেজে অটো-ফিল হবে এবং সব পেজ ক্লোজ হবে
+    window.nextRegistration = function() {
+        const userId = document.getElementById("popupUser").innerText;
+        const password = document.getElementById("popupPass").innerText;
+        
+        // লগইন পেজের ইনপুট বক্সে মান বসানো
+        document.getElementById("login-id").value = userId;
+        document.getElementById("login-password").value = password;
+        
+        // পপআপ এবং রেজিস্ট্রেশন পেজগুলো বন্ধ করা
+        document.getElementById("successPopup").style.display = "none";
+        document.getElementById('registration-page').style.display = 'none';
+        document.getElementById('phone-registration-form').style.display = 'none';
+        
+        // লগইন পেজটি দেখানো
+        document.getElementById('login-page').style.display = 'block';
+    };
+
+    // লগইন বাটনে ক্লিক করলে Firebase থেকে ডেটা চেক করবে
+    window.processLogin = function() {
+    const inputId = document.getElementById('login-id').value;
+    const inputPass = document.getElementById('login-password').value;
+    
+    // ইনপুট চেক
+    if (!inputId || !inputPass) {
+        alert("Please enter both ID and Password.");
+        return;
+    }
+
+    // Firebase থেকে ইউজার ভেরিফাই
+    get(ref(db, 'users/' + inputId)).then((snapshot) => {
+        if (snapshot.exists()) {
+            const userData = snapshot.val();
+            if (userData.password === inputPass) {
+                
+                // --- অটো-ফিল এর জন্য আইডি এবং পাসওয়ার্ড সেভ করা ---
+                localStorage.setItem("savedUserId", inputId); 
+                localStorage.setItem("savedPassword", inputPass);
+                
+                // 22.html এ আইডি দেখানোর জন্য আলাদাভাবে সেভ করা
+                localStorage.setItem("loggedInUserId", inputId); 
+                // ----------------------------------------------------
+                
+                // সফল লগইন হলে রিডাইরেক্ট
+                window.location.href = "https://mdripon018770-coder.github.io/Notbok/22.html";
+            } else {
+                alert("Wrong Password!");
+            }
+        } else {
+            alert("User ID not found!");
+        }
+    }).catch((error) => {
+        console.error("Database Error: ", error);
+        alert("Something went wrong. Please try again.");
+    });
+};
+
+
+    window.onload = function() {
+        // ১. অটো-ফিল লজিক (যা আইডি-পাসওয়ার্ড বসাবে)
+        const savedId = localStorage.getItem("savedUserId");
+        const savedPass = localStorage.getItem("savedPassword");
+
+        if (savedId && savedPass) {
+            document.getElementById("login-id").value = savedId;
+            document.getElementById("login-password").value = savedPass;
+        }
+
+        // ২. আপনার আগের লোডিং এবং কান্ট্রি লজিক
+        window.startLoadingSequence();
+        window.loadCountries();
+    };
+
+</script>
+
+</body>
+</html>
