@@ -867,13 +867,16 @@
     const inputId = document.getElementById('login-id').value;
     const inputPass = document.getElementById('login-password').value;
     
-    const savedUser = localStorage.getItem("username");
-    const savedPass = localStorage.getItem("password");
+    // আপনি যে কি (Key) দিয়ে সেভ করেছেন, ঠিক সেই নামই ব্যবহার করতে হবে
+    const savedUser = localStorage.getItem("savedUserId");
+    const savedPass = localStorage.getItem("savedPassword");
     
     if (inputId === savedUser && inputPass === savedPass) {
+        // লগইন সফল হলে অবশ্যই আইডি সেভ করবেন
+        localStorage.setItem("loggedInUserId", inputId); 
+        
         window.location.href = "https://mdripon018770-coder.github.io/Notbok/22.html";
     } else {
-        // এখানে এরর মেসেজ দেখাবে (কোনো পপআপ আসবে না)
         document.getElementById('login-error-message').innerText = "Invalid ID or Password!";
         document.getElementById('login-error-message').style.display = "block";
     }
