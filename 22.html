@@ -671,22 +671,32 @@
     };
 
     document.addEventListener('DOMContentLoaded', () => {
-        let savedUser = localStorage.getItem("loggedInUserId");
-        
-        const profileName = document.getElementById("profileName");
-        if (profileName) {
-            profileName.innerText = savedUser ? savedUser : "USER";
-        }
 
-        if (savedUser) {
-            const balanceRef = ref(db, 'users/' + savedUser + '/balance');
-            onValue(balanceRef, (snapshot) => {
-                const balance = snapshot.val() || 0;
-                const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
-                balanceDisplays.forEach(el => el.innerText = balance + " ৳");
-            });
-        }
-    });
+    // শুধু ONE key ব্যবহার করো
+    const userId = localStorage.getItem("loggedInUserId");
+
+    const profileName = document.getElementById("profileName");
+
+    // profile name set
+    if (profileName) {
+        profileName.innerText = userId ? userId : "USER";
+    }
+
+    // balance update only if user exists
+    if (userId) {
+        const balanceRef = ref(db, 'users/' + userId + '/balance');
+
+        onValue(balanceRef, (snapshot) => {
+            const balance = snapshot.val() || 0;
+
+            document
+                .querySelectorAll('.wallet-info span, .balance-pill span')
+                .forEach(el => {
+                    el.innerText = balance + " ৳";
+                });
+        });
+    }
+});
 
 </script>
 
