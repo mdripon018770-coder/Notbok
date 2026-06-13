@@ -614,19 +614,22 @@
 
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
+    // নতুন প্রজেক্টের কনফিগারেশন
     const firebaseConfig = {
-        apiKey: "AIzaSyCpwfTWOsU6Gb3rLvMjcKnewLMnlkq5plg",
-        databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com",
-        projectId: "amar-bazar-d99b4",
-        storageBucket: "amar-bazar-d99b4.firebasestorage.app",
-        messagingSenderId: "1000008221916",
-        appId: "1:1000008221916:web:6bd19561f4b64e2002e019"
+        apiKey: "AIzaSyAsKOo6nJPZWT-DwdmnBR35J0U_feLiYGM",
+        authDomain: "betapp-c96eb.firebaseapp.com",
+        projectId: "betapp-c96eb",
+        storageBucket: "betapp-c96eb.firebasestorage.app",
+        messagingSenderId: "1028599491642",
+        appId: "1:1028599491642:web:1b14aea9673b49eb215903"
     };
 
     const app = initializeApp(firebaseConfig);
-    const db = getDatabase();
+    const db = getDatabase(app); // এখানে নতুন প্রজেক্টের ডাটাবেস সেট হলো
+
+    // --- আপনার আগের ফাংশনগুলো এখানে থাকবে ---
 
     // Deposit Logic
     window.openDeposit = function() {
@@ -667,29 +670,26 @@
         }
     };
 
-    // ID এবং ব্যালেন্স লোড করার ফিক্সড ফাংশন
     document.addEventListener('DOMContentLoaded', () => {
-        // localStorage থেকে আইডি সংগ্রহ
         let savedUser = localStorage.getItem("loggedInUserId");
         
-        // লগইন করা থাকলে আইডি বসাবে, না থাকলে ডিফল্ট 'USER' দেখাবে
         const profileName = document.getElementById("profileName");
         if (profileName) {
             profileName.innerText = savedUser ? savedUser : "USER";
         }
 
-        // যদি ইউজার লগইন করা থাকে তবেই Firebase থেকে ব্যালেন্স আনবে
         if (savedUser) {
             const balanceRef = ref(db, 'users/' + savedUser + '/balance');
             onValue(balanceRef, (snapshot) => {
                 const balance = snapshot.val() || 0;
-                // ব্যালেন্স আপডেট করা
                 const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
                 balanceDisplays.forEach(el => el.innerText = balance + " ৳");
             });
         }
     });
+
 </script>
+
 
 </body>
 </html>
