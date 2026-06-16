@@ -799,6 +799,13 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
 
+    import {
+        getDatabase,
+        ref,
+        set,
+        get
+    } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
     // নতুন কনসোল প্রজেক্টের কনফিগারেশন
     const firebaseConfig = {
       apiKey: "AIzaSyAsKOo6nJPZWT-DwdmnBR35J0U_feLiYGM",
@@ -813,7 +820,12 @@
     // Firebase ইনিশিয়েলাইজেশন
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
+
+    // Database Connection
+    const db = getDatabase(app);
+
     console.log("Firebase initialized successfully with new console");
+
 
     // --- Loading & Navigation Logic (Line 18-42) ---
     window.startLoadingSequence = function() {
@@ -863,25 +875,6 @@
             toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
         }
     }
-
-    window.processLogin = function() {
-    const inputId = document.getElementById('login-id').value;
-    const inputPass = document.getElementById('login-password').value;
-    
-    // আপনি যে কি (Key) দিয়ে সেভ করেছেন, ঠিক সেই নামই ব্যবহার করতে হবে
-    const savedUser = localStorage.getItem("savedUserId");
-    const savedPass = localStorage.getItem("savedPassword");
-    
-    if (inputId === savedUser && inputPass === savedPass) {
-        // লগইন সফল হলে অবশ্যই আইডি সেভ করবেন
-        localStorage.setItem("loggedInUserId", inputId); 
-        
-        window.location.href = "https://mdripon018770-coder.github.io/Notbok/22.html";
-    } else {
-        document.getElementById('login-error-message').innerText = "Invalid ID or Password!";
-        document.getElementById('login-error-message').style.display = "block";
-    }
-};
 
 
     // --- Country Data (Line 61-112) ---
@@ -941,10 +934,6 @@
         });
     }
 
-        // --- Registration & Login Logic with Firebase ---
-    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-    const db = getDatabase(); // Firebase Realtime Database ব্যবহার করা হচ্ছে
-
     window.generateUsername = () => Math.floor(1000000000 + Math.random() * 9000000000).toString();
     window.generatePassword = function() {
         const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -953,42 +942,50 @@
         return pass;
     }
 
-    // রেজিস্ট্রেশন বাটনে ক্লিক করলে Firebase-এ সেভ হবে
-    document.querySelector(".register-footer-btn").onclick = function() {
-        let username = window.generateUsername();
-        let password = window.generatePassword();
-        
-        // Firebase-এ ডাটা সেভ
-        set(ref(db, 'users/' + username), {
-            id: username,
-            password: password
-        }).then(() => {
-            document.getElementById("popupUser").innerText = username;
-            document.getElementById("popupPass").innerText = password;
-            document.getElementById("successPopup").style.display = "flex";
-        });
-    };
+   // রেজিস্ট্রেশন বাটনে ক্লিক করলে Firebase-এ সেভ হবে
+document.querySelector(".register-footer-btn").onclick = function () {
 
-    // Next বাটনে ক্লিক করলে লগইন পেজে অটো-ফিল হবে
-        // --- Registration & Login Logic with Firebase ---
-    
-    // Next বাটনে ক্লিক করলে লগইন পেজে অটো-ফিল হবে এবং সব পেজ ক্লোজ হবে
-    window.nextRegistration = function() {
-        const userId = document.getElementById("popupUser").innerText;
-        const password = document.getElementById("popupPass").innerText;
-        
-        // লগইন পেজের ইনপুট বক্সে মান বসানো
-        document.getElementById("login-id").value = userId;
-        document.getElementById("login-password").value = password;
-        
-        // পপআপ এবং রেজিস্ট্রেশন পেজগুলো বন্ধ করা
-        document.getElementById("successPopup").style.display = "none";
-        document.getElementById('registration-page').style.display = 'none';
-        document.getElementById('phone-registration-form').style.display = 'none';
-        
-        // লগইন পেজটি দেখানো
-        document.getElementById('login-page').style.display = 'block';
-    };
+    let username = window.generateUsername();
+    let password = window.generatePassword();
+
+    // Firebase-এ ডাটা সেভ
+    set(ref(db, 'users/' + username), {
+        id: username,
+        password: password,
+        balance: 0
+    })
+    .then(() => {
+
+        document.getElementById("popupUser").innerText = username;
+        document.getElementById("popupPass").innerText = password;
+        document.getElementById("successPopup").style.display = "flex";
+
+    })
+    .catch((error) => {
+        console.error(error);
+        alert("Registration Failed!");
+    });
+};
+
+
+// Next বাটনে ক্লিক করলে লগইন পেজে অটো-ফিল হবে
+window.nextRegistration = function () {
+
+    const userId = document.getElementById("popupUser").innerText;
+    const password = document.getElementById("popupPass").innerText;
+
+    // লগইন পেজের ইনপুট বক্সে মান বসানো
+    document.getElementById("login-id").value = userId;
+    document.getElementById("login-password").value = password;
+
+    // পপআপ এবং রেজিস্ট্রেশন পেজগুলো বন্ধ করা
+    document.getElementById("successPopup").style.display = "none";
+    document.getElementById("registration-page").style.display = "none";
+    document.getElementById("phone-registration-form").style.display = "none";
+
+    // লগইন পেজ দেখানো
+    document.getElementById("login-page").style.display = "block";
+};
 
     // লগইন বাটনে ক্লিক করলে Firebase থেকে ডেটা চেক করবে
     window.processLogin = function() {
