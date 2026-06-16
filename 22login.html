@@ -987,8 +987,8 @@ window.nextRegistration = function () {
     document.getElementById("login-page").style.display = "block";
 };
 
-    // লগইন বাটনে ক্লিক করলে Firebase থেকে ডেটা চেক করবে
-    window.processLogin = function() {
+   // লগইন বাটনে ক্লিক করলে Firebase থেকে ডেটা চেক করবে
+window.processLogin = function() {
     const inputId = document.getElementById('login-id').value;
     const inputPass = document.getElementById('login-password').value;
     
@@ -1002,21 +1002,29 @@ window.nextRegistration = function () {
     get(ref(db, 'users/' + inputId)).then((snapshot) => {
         if (snapshot.exists()) {
             const userData = snapshot.val();
+
             if (userData.password === inputPass) {
                 
-                // --- অটো-ফিল এর জন্য আইডি এবং পাসওয়ার্ড সেভ করা ---
+                // ✅ Session save (login info)
                 localStorage.setItem("savedUserId", inputId); 
                 localStorage.setItem("savedPassword", inputPass);
-                
-                // 22.html এ আইডি দেখানোর জন্য আলাদাভাবে সেভ করা
-                localStorage.setItem("loggedInUserId", inputId); 
-                // ----------------------------------------------------
-                
-                // সফল লগইন হলে রিডাইরেক্ট
-                window.location.href = "https://mdripon018770-coder.github.io/Notbok/22.html";
+
+                // ✅ 22.html এ দেখানোর জন্য
+                localStorage.setItem("loggedInUserId", inputId);
+
+                // (Optional) Firebase active user tracking
+                set(ref(db, 'activeUser/'), {
+                    id: inputId,
+                    time: Date.now()
+                });
+
+                // 🔥 Redirect to home page
+                window.location.href = "22.html";
+
             } else {
                 alert("Wrong Password!");
             }
+
         } else {
             alert("User ID not found!");
         }
