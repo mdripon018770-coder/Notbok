@@ -500,9 +500,10 @@
         </div>
 
         <div class="profile-info">
-            <h4 id="profileName">USER</h4>
-            <p>Personal profile</p>
-        </div>
+    <h4 id="profileName"></h4>
+    <span id="user-id"></span>
+    <p>Personal profile</p>
+</div>
 
         <div class="profile-icons">
             <i class="fas fa-envelope"></i>
@@ -671,22 +672,25 @@
     };
 
     document.addEventListener('DOMContentLoaded', () => {
-        let savedUser = localStorage.getItem("loggedInUserId");
-        
-        const profileName = document.getElementById("profileName");
-        if (profileName) {
-            profileName.innerText = savedUser ? savedUser : "USER";
-        }
+    let savedUser = localStorage.getItem("loggedInUserId");
 
-        if (savedUser) {
-            const balanceRef = ref(db, 'users/' + savedUser + '/balance');
-            onValue(balanceRef, (snapshot) => {
-                const balance = snapshot.val() || 0;
-                const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
-                balanceDisplays.forEach(el => el.innerText = balance + " ৳");
-            });
-        }
-    });
+    const profileName = document.getElementById("profileName");
+    const userIdBox = document.getElementById("user-id");
+
+    if (profileName) profileName.innerText = savedUser || "USER";
+    if (userIdBox) userIdBox.innerText = savedUser || "USER";
+
+    if (savedUser) {
+        const balanceRef = ref(db, 'users/' + savedUser + '/balance');
+
+        onValue(balanceRef, (snapshot) => {
+            const balance = snapshot.val() || 0;
+
+            document.querySelectorAll('.wallet-info span, .balance-pill span')
+                .forEach(el => el.innerText = balance + " ৳");
+        });
+    }
+});
 
 </script>
 
