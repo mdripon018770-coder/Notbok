@@ -74,15 +74,17 @@
         <div class="icon-btn" onclick="location.reload()"><svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path></svg></div>
     </div>
 
-    <div class="account-info">
+                <div class="account-info">
         <div class="account-display">
-            ACCOUNT 1593064585
+            ACCOUNT <span id="display-id">Loading...</span> 
             <button class="copy-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             </button>
         </div>
         <button class="btn-types">Types of payment systems</button>
     </div>
+
+
 
     <div class="banner-container">
         <div class="info-box">
@@ -245,10 +247,36 @@
         </div>
     </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAsKOo6nJPZWT-DwdmnBR35J0U_feLiYGM",
+            authDomain: "betapp-c96eb.firebaseapp.com",
+            projectId: "betapp-c96eb",
+            storageBucket: "betapp-c96eb.firebasestorage.app",
+            messagingSenderId: "1028599491642",
+            appId: "1:1028599491642:web:1b14aea9673b49eb215903",
+            measurementId: "G-GYPL0LQPSG"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const activeUserRef = ref(db, 'activeUser/id');
+        onValue(activeUserRef, (snapshot) => {
+            const userId = snapshot.val();
+            const displayId = document.getElementById('display-id');
+            
+            if (userId && displayId) {
+                displayId.innerText = userId;
+            }
+        });
+    </script>
+
     <script>
-        // ১. এটি আপনার আগের লোডার ফাংশন - এটি মুছে ফেলবেন না
-        function runLoader() {
+        window.runLoader = function() {
             const loader = document.getElementById('loader');
             loader.style.display = 'flex';
             setTimeout(() => {
@@ -259,17 +287,8 @@
                     confirmButtonColor: '#00897b'
                 });
             }, 1500);
-        }
-
-        // ২. এটি আমার দেয়া নতুন কোড - এটি যোগ করুন
-        window.onload = function() {
-            const userId = localStorage.getItem("loggedInUserId");
-            const accountDisplay = document.querySelector('.account-display');
-            
-            if (userId) {
-                accountDisplay.innerHTML = `ACCOUNT ${userId} <button class="copy-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>`;
-            }
         };
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
