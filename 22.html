@@ -73,7 +73,7 @@
 }
 
 .logo img{
-    height:40px;
+    height:60px;
 }
 
 .search-icon{
@@ -226,7 +226,7 @@
 .avatar { 
     width: 35px; 
     height: 35px; 
-    background: #cfd8dc; 
+    background: #7a8a94; 
     border-radius: 50%; 
     display: flex; 
     align-items: center; 
@@ -507,7 +507,7 @@
 }
 
 .logo img{
-    height:30px;
+    height:50px;
 }
 
 /* --- Top Navigation - সবগুলো আইকন সমান করার জন্য --- */
@@ -555,6 +555,30 @@
     border-radius:0;
 }
 
+.game-slider{
+    width:100%;
+    overflow:hidden;
+    margin:10px 0;
+}
+
+.game-track{
+    display:flex;
+    gap:12px;
+    animation:slide 20s linear infinite;
+}
+
+.game-track img{
+    width:260px;
+    height:140px;
+    border-radius:20px;
+    object-fit:cover;
+    flex-shrink:0;
+}
+
+@keyframes slide{
+    0%{transform:translateX(100%);}
+    100%{transform:translateX(-1100px);}
+}
 
     </style>
 </head>
@@ -704,10 +728,19 @@
     <div id="home-content">
 
     <div style="margin:0;padding:0;">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/home.jpg"
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/home2.jpg"
              style="display:block;width:100%;height:auto;">
     </div>
 
+    <div class="game-slider">
+    <div class="game-track">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/fru.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/royal.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/burning.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/scratch.jpg">
+    </div>
+</div>
+</div>
 </div>
 
     <div id="menu-content">
