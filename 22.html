@@ -30,11 +30,56 @@
         }
 
         /* --- Header Section --- */
-        .header { display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; height: 55px; position: sticky; top: 0; background: #ffffff; z-index: 100; }
-        .balance-pill { display: flex; align-items: center; background: #fff; border-radius: 25px; padding: 3px 12px 3px 3px; gap: 8px; cursor: pointer; }
-        .plus-circle { background: #28a745; color: #fff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
-        .logo img { height: 30px; }
-        .search-icon { color: #7a8a94; font-size: 20px; }
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:8px 15px;
+    height:55px;
+    position:sticky;
+    top:0;
+    background:#ffffff;
+    z-index:100;
+}
+
+.balance-pill{
+    display:flex;
+    align-items:center;
+    background:#f3f5f7;
+    border-radius:18px;
+    height:34px;
+    padding:0 10px 0 3px;
+    gap:6px;
+    cursor:pointer;
+}
+
+.plus-circle{
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    background:#28a745;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+    flex-shrink:0;
+}
+
+.balance-pill span{
+    font-size:15px;
+    font-weight:700;
+    color:#1a2b3c;
+}
+
+.logo img{
+    height:40px;
+}
+
+.search-icon{
+    color:#7a8a94;
+    font-size:20px;
+}
 
         /* --- Top Categories --- */
         .top-nav { display: flex; background: #fff; }
@@ -179,15 +224,15 @@
 
 /* Avatar */
 .avatar { 
-    width: 45px; 
-    height: 45px; 
+    width: 35px; 
+    height: 35px; 
     background: #cfd8dc; 
     border-radius: 50%; 
     display: flex; 
     align-items: center; 
     justify-content: center; 
     color: #fff; 
-    font-size: 22px; 
+    font-size: 20px; 
 }
 
 /* Profile text */
@@ -217,7 +262,7 @@
 
 /* message icon (bigger + grey) */
 .profile-icons .fa-envelope { 
-    font-size: 30px; 
+    font-size: 23px; 
     color: #7a8a94; 
 }
 
@@ -231,7 +276,7 @@
 
 /* settings icon (bigger + grey) */
 .profile-icons .fa-cog { 
-    font-size: 30px; 
+    font-size: 23px; 
     color: #7a8a94; 
 }
 
@@ -294,69 +339,67 @@
 }
 
 
-/* ===== QUICK GRID (FULL WHITE, NO BOX GAP) ===== */
+/* ===== QUICK GRID (আইকন সাইজ বড় করার জন্য আপডেট) ===== */
 .quick-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-
-    background: #fff;      /* 👈 pure white */
-    padding: 12px;
-    margin: 0;             /* 👈 no gap */
-
-    border-radius: 0 0 12px 12px; /* bottom rounded */
+    grid-template-columns: repeat(5, 1fr);
+    background: #fff;
+    padding: 15px 5px; /* প্যাডিং একটু বাড়িয়ে দিলাম */
+    margin: 0;
+    border-radius: 0 0 12px 12px;
     border: 1px solid #eef1f4;
     border-top: none;
-
     box-shadow: none;
 }
 
-/* items (no grey background) */
 .quick-item {
-    background: transparent;   /* 👈 remove grey boxes */
+    background: transparent;
     text-align: center;
-    padding: 10px 5px;
+    padding: 5px 2px;
+    cursor: pointer;
 }
 
-/* icons */
-.quick-item i {
-    display: block;
-    font-size: 22px;
-    color: #28a745;
-    margin-bottom: 6px;
+/* আইকন সাইজ বড় করা হলো */
+.quick-item img {
+    width: 60px;  /* আগে ৩০ ছিল, এখন ৪৪ করা হলো */
+    height: 60px; /* আগে ৩০ ছিল, এখন ৪৪ করা হলো */
+    display: block; 
+    margin: 0 auto 8px; /* আইকন ও লেখার মাঝের গ্যাপ একটু বাড়ানো হলো */
+    object-fit: contain;
 }
 
+/* টেক্সট সাইজ একটু বড় ও বোল্ড করা হলো */
 .quick-item span {
-    font-size: 10px;
-    font-weight: bold;
+    font-size: 11px;
+    font-weight: 700;
     color: #1a2b3c;
-}
-        .menu-list-card { 
-    background: #ffffff; 
-    border-radius: 12px; 
-    padding: 12px 15px; 
-    display: flex; 
-    align-items: center; 
-    gap: 15px; 
-    margin-bottom: 8px; 
-    
-    /* আগের বর্ডার কোডটি পরিবর্তন করে এটি দিন */
-    border: 1.5px solid #dcdcdc; 
-    
-    /* শ্যাডো একটু বাড়িয়ে দেওয়া হলো যাতে বর্ডারটা ফুটে ওঠে */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.08); 
+    display: block;
 }
 
 
-.menu-icon { 
-    width: 34px; 
-    height: 34px; 
-    border-radius: 50%; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    color: #28a745; 
-    font-size: 16px; 
-    flex-shrink: 0; 
+        .menu-list-card{
+    background:#f5f7f9;
+    border-radius:16px;
+    padding:16px 20px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-bottom:10px;
+    border:1px solid #eef2f5;
+    box-shadow:none;
+}
+
+.menu-icon{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:#eef2f5;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#28a745;
+    font-size:20px;
+    flex-shrink:0;
 }
 
 .menu-text { 
@@ -365,14 +408,16 @@
 
 .menu-text b { 
     display: block; 
-    font-size: 14px; 
+    font-size: 15px;          /* টেক্সট সাইজ বাড়ানো হলো */
     color: #1a2b3c; 
+    margin-bottom: 2px;
 }
 
 .menu-text span { 
-    font-size: 10px; 
+    font-size: 12px;          /* সাব-টেক্সট সাইজ বাড়ানো হলো */
     color: #888; 
 }
+
 
 .arrow-right { 
     color: #ccc; 
@@ -440,6 +485,77 @@
     background:#28a745;
 }
 
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 15px;
+    height:55px;
+    position:sticky;
+    top:0;
+    background:#fff;
+    z-index:100;
+
+    position:relative; /* এটা থাকতে হবে */
+}
+
+.logo{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%) translateX(0px);
+    /* শেষের 0px পরিবর্তন করবে */
+}
+
+.logo img{
+    height:30px;
+}
+
+/* --- Top Navigation - সবগুলো আইকন সমান করার জন্য --- */
+.top-nav { 
+    display: flex; 
+    background: #ffffff; 
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0; 
+}
+
+.nav-item { 
+    flex: 1; 
+    text-align: center; 
+    color: #7a8a94; 
+    font-size: 11px; 
+    font-weight: 600; 
+    cursor: pointer;
+    
+    /* সবগুলো আইকনের ব্যাকগ্রাউন্ড একই রকম স্বচ্ছ করা হলো */
+    background: transparent !important; 
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.nav-item img {
+    width: 36px;
+    height: 36px;
+    display: block;
+    margin: 0 auto 4px;
+    object-fit: contain;
+    
+    /* নিশ্চিত করা হলো যেন কোনো ব্যাকগ্রাউন্ড কালার না থাকে */
+    background: transparent !important; 
+    border: none !important;
+}
+
+.nav-item.active { 
+    color: #28a745; 
+    border-bottom: 3px solid #28a745 !important; 
+    background: transparent !important;
+}
+
+.menu-balance-box{
+    margin:0;
+    border-radius:0;
+}
+
+
     </style>
 </head>
 <body>
@@ -448,137 +564,246 @@
         <iframe id="deposit-frame" src=""></iframe>
     </div>
 
-    <div class="header">
-        <div class="balance-pill" onclick="openDeposit()">
-            <div class="plus-circle"><i class="fas fa-plus"></i></div>
-            <span style="font-weight: bold; font-size: 14px;">0 ৳</span>
-        </div>
-        <div class="logo">
-            <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/22.png" alt="22BET">
-        </div>
-        <div class="search-icon"><i class="fas fa-search"></i></div>
+<div id="settings-page-overlay" style="position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #eef2f5; z-index: 3000; transition: right 0.4s ease; overflow-y: auto;">
+    
+    <div style="padding: 15px; display: flex; align-items: center; background: #fff; border-bottom: 1px solid #ddd; height: 55px; color: #7a8a94;">
+        <i class="fas fa-arrow-left" onclick="closeSettings()" style="font-size: 20px; cursor: pointer; color: #7a8a94;"></i>
+        <h3 style="flex: 1; text-align: center; font-size: 18px; color: #1a2b3c;">Settings</h3>
+        <i class="fas fa-info-circle" style="margin-right: 15px; font-size: 18px; color: #7a8a94;"></i>
+        <i class="fas fa-user" style="font-size: 18px; color: #7a8a94;"></i>
     </div>
 
-    <div class="top-nav">
-        <div class="nav-item active"><i class="fas fa-certificate"></i>Top</div>
-        <div class="nav-item"><i class="fas fa-futbol"></i>Sports</div>
-        <div class="nav-item"><i class="fas fa-gamepad"></i>Esports</div>
-        <div class="nav-item"><i class="fas fa-clone"></i>Casino</div>
-        <div class="nav-item"><i class="fas fa-dice"></i>22Games</div>
+    <div style="width: 100%;">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting3.jpg" alt="Settings Banner" style="width: 100%; display: block; margin-top: 0;">
     </div>
+
+    <div style="padding: 5px 15px;">
+        <h4 style="color: #7a8a94; margin: 10px 5px 5px 5px; font-size: 13px;">Account management</h4>
+        <div style="background: #fff; border-radius: 15px; padding: 0 20px; border: 1px solid #e8edf0;">
+            <div onclick="openDepositPage()" style="display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid #f0f4f7; cursor: pointer;">
+                <div style="background: #eef7ef; padding: 8px; border-radius: 50%; margin-right: 15px;"><i class="fas fa-plus-square" style="color: #28a745; font-size: 16px;"></i></div> 
+                <b style="font-size: 15px; color: #1a2b3c;">Make a deposit</b>
+            </div>
+            <div style="display: flex; align-items: center; padding: 15px 0;">
+                <div style="background: #eef7ef; padding: 8px; border-radius: 50%; margin-right: 15px;"><i class="fas fa-minus-square" style="color: #28a745; font-size: 16px;"></i></div> 
+                <b style="font-size: 15px; color: #1a2b3c;">Withdraw</b>
+            </div>
+        </div>
+
+        <div style="width: calc(100% + 30px); margin-left: -15px; margin-top: 15px; margin-bottom: 20px;">
+            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting2.jpg" alt="Settings Footer" style="width: 100%; display: block;">
+        </div>
+    </div>
+</div>
+
+<!-- Personal Profile Page Overlay -->
+<div id="personal-profile-overlay" style="position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #eef2f5; z-index: 4000; transition: right 0.4s ease; overflow-y: auto;">
+    
+    <!-- Header -->
+    <div style="padding: 15px; display: flex; align-items: center; background: #fff; border-bottom: 1px solid #ddd; height: 55px;">
+        <i class="fas fa-arrow-left" onclick="closeProfilePage()" style="font-size: 20px; cursor: pointer; color: #7a8a94; margin-right: 20px;"></i>
+        <h3 style="flex: 1; text-align: center; font-size: 18px; color: #7a8a94;">Personal profile</h3>
+        <div style="width: 20px;"></div> <!-- Alignment fix -->
+    </div>
+
+    <div style="padding: 15px;">
+    <!-- Enter Details Button -->
+    <div onclick="openCompleteProfile()" style="background: #fff; padding: 15px; border-radius: 12px; display: flex; align-items: center; margin-bottom: 20px; cursor: pointer;">
+        <div style="background: #e0f2e9; color: #28a745; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+            <i class="fas fa-pen"></i>
+        </div>
+        <b style="font-size: 16px;">Enter details</b>
+    </div>
+</div>
+
+
+
+        
+        <!-- Account Section -->
+<h4 style="color: #7a8a94; margin: 15px 10px 10px 10px; font-size: 13px;">Account</h4>
+<div style="background: #fff; border-radius: 12px; padding: 0 15px; margin-bottom: 20px;">
+    
+    <!-- Account Number -->
+    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">Account number</span>
+        <span style="color: #1a2b3c; font-weight: bold;" class="account-id-display">id: Loading...</span>
+    </div>
+
+    <!-- Email -->
+    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">Email</span>
+        <span style="color: #28a745; font-weight: bold; cursor: pointer;">Activate</span>
+    </div>
+
+    <!-- Phone Number -->
+    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">Phone number</span>
+        <span style="color: #28a745; font-weight: bold; cursor: pointer;">Link</span>
+    </div>
+
+    <!-- Password -->
+    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">Password</span>
+        <span style="color: #28a745; font-weight: bold; cursor: pointer;">Change</span>
+    </div>
+
+    <!-- Registration Date -->
+    <div style="padding: 15px 0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">Registration date</span>
+        <span style="color: #1a2b3c;">21/06/2026</span>
+    </div>
+</div>
+
+<!-- Personal Information Section -->
+<h4 style="color: #7a8a94; margin: 15px 10px 10px 10px; font-size: 13px;">Personal information</h4>
+<div style="background: #fff; border-radius: 12px; padding: 0 15px;">
+    
+    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">Name</span>
+        <span style="color: #1a2b3c;">Not filled in</span>
+    </div>
+
+    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">Surname</span>
+        <span style="color: #1a2b3c;">Not filled in</span>
+    </div>
+
+    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">Country</span>
+        <span style="color: #1a2b3c;">Bangladesh</span>
+    </div>
+
+    <div style="padding: 15px 0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">City</span>
+        <span style="color: #1a2b3c;">Not filled in</span>
+     </div>
+   </div>
+ </div>
+</div>
+
+
+    <div class="header">
+    
+    <div class="balance-pill" onclick="openDeposit()">
+        <div class="plus-circle">
+            <i class="fas fa-plus"></i>
+        </div>
+        <span>0 ৳</span>
+    </div>
+
+    <div class="logo">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/22.jpg" alt="22BET">
+    </div>
+
+    <div class="search-icon">
+        <i class="fas fa-search"></i>
+    </div>
+
+</div>
 
     <div id="home-content">
-        <div class="sub-cats">
-            <div class="sub-cat-card"><div class="icon-bg"><i class="fas fa-check-circle"></i></div><span>All</span></div>
-            <div class="sub-cat-card"><div class="icon-bg"><i class="fas fa-futbol"></i></div><span>Football</span></div>
-            <div class="sub-cat-card"><div class="icon-bg"><i class="fas fa-baseball-ball"></i></div><span>Tennis</span></div>
-            <div class="sub-cat-card"><div class="icon-bg"><i class="fas fa-basketball-ball"></i></div><span>Basketball</span></div>
-            <div class="sub-cat-card"><div class="icon-bg"><i class="fas fa-hockey-puck"></i></div><span>Ice Hockey</span></div>
-        </div>
 
-        <div class="banners">
-            <div class="banner-card">
-                <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/welcome.png">
-                <span>Welcome Sports Bonus</span>
-            </div>
-            <div class="banner-card">
-                <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/package.png">
-                <span>WELCOME PACKAGE</span>
-            </div>
-            <div class="banner-card">
-                <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/vip.png">
-                <span>Exclusive VIP Cashback</span>
-            </div>
-        </div>
-     </div>
+    <div style="margin:0;padding:0;">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/home.jpg"
+             style="display:block;width:100%;height:auto;">
+    </div>
 
+</div>
 
     <div id="menu-content">
-    <div class="profile-section">
-        <div class="avatar">
+    <div class="profile-section" style="padding: 15px; cursor: pointer; display: flex; align-items: center;" onclick="openProfilePage()">
+        <div class="avatar" style="width: 35px; height: 35px; background: #cfd8dc; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px;">
             <i class="fas fa-user"></i>
         </div>
-
-        <div class="profile-info">
-            <h4 id="profileName">USER</h4>
-            <p>Personal profile</p>
+        
+        <div class="profile-info" style="margin-left: 12px;">
+            <h4 id="profileName" style="font-size: 14px; text-transform: uppercase; color: #1a2b3c;">USER</h4>
+            <p style="font-size: 11px; color: #28a745; font-weight: bold;">Personal profile</p>
         </div>
 
-        <div class="profile-icons">
-            <i class="fas fa-envelope"></i>
-
-            <div class="settings-icon">
-                <i class="fas fa-cog"></i>
+        <div class="profile-icons" style="margin-left: auto; display: flex; gap: 18px; align-items: center;">
+            <i class="fas fa-envelope" style="font-size: 23px; color: #7a8a94;"></i>
+            <div class="settings-icon" onclick="event.stopPropagation(); openSettings()" style="cursor: pointer;">
+                <i class="fas fa-cog" style="font-size: 23px; color: #7a8a94;"></i>
             </div>
+        </div>
+    </div> 
+
+    <div class="menu-balance-box">
+        <div class="wallet-info">
+            <i class="fas fa-wallet" style="color: #28a745;"></i>
+            <span style="font-weight: bold; font-size: 14px;">0 ৳</span>
+            <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: auto; color: #ccc;"></i>
+        </div>
+        <button class="dep-btn" onclick="openDeposit()">+ Deposit</button>
+    </div>
+
+    <div style="margin:0; padding:0;">
+    <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/menu.jpg"
+         style="
+            display:block;
+            width:100%;
+            height:auto;
+            margin:0;
+            border-radius:0;
+            object-fit:cover;
+         ">
+</div>
+
+<div style="margin:0;padding:0;">
+    <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/menu2.jpg"
+         style="display:block;width:100%;height:auto;border-radius:0;object-fit:cover;">
+</div>
+
+</div> <div id="complete-profile-form" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef2f5; z-index: 9999; overflow-y: auto;">
+    <!-- Header -->
+    <div style="padding: 15px; display: flex; align-items: center; background: #fff; height: 55px; position: sticky; top: 0; z-index: 10;">
+        <i class="fas fa-arrow-left" onclick="closeForm()" style="font-size: 20px; cursor: pointer; color: #7a8a94; margin-right: 20px;"></i>
+        <h3 style="flex: 1; text-align: center; font-size: 18px; color: #7a8a94; margin: 0;">Complete profile</h3>
+        <div style="width: 20px;"></div>
+    </div>
+
+    <div style="padding: 15px;">
+        <!-- Input Style (Card) -->
+        <style>
+            .input-card { background: #fff; padding: 0 15px; border-radius: 12px; margin-bottom: 20px; }
+            .input-card input { width: 100%; padding: 15px 0; border: none; border-bottom: 1px solid #eef1f4; font-size: 16px; color: #333; outline: none; }
+            .input-label { color: #7a8a94; margin: 15px 0 10px 5px; font-size: 13px; }
+        </style>
+
+        <div class="input-label">Main details</div>
+        <div class="input-card">
+            <input type="text" placeholder="Patronymic (if any)">
+            <input type="text" placeholder="Date of birth" onfocus="(this.type='date')">
+            <input type="text" placeholder="Place of birth" style="border: none;">
+        </div>
+
+        <div class="input-label">Residence</div>
+        <div class="input-card">
+            <input type="text" placeholder="Region">
+            <input type="text" placeholder="City">
+            <input type="text" placeholder="Residence address" style="border: none;">
+        </div>
+
+        <div class="input-label">ID document</div>
+        <div class="input-card">
+            <input type="text" placeholder="Document type">
+            <input type="text" placeholder="Series (if have)">
+            <input type="text" placeholder="Document number">
+            <input type="text" placeholder="Date of issue" onfocus="(this.type='date')">
+            <input type="text" placeholder="Issued by" style="border: none;">
         </div>
     </div>
 
-        <div class="menu-balance-box">
-            <div class="wallet-info">
-                <i class="fas fa-wallet" style="color: #28a745;"></i>
-                <span style="font-weight: bold; font-size: 14px;">0 ৳</span>
-                <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: auto; color: #ccc;"></i>
-            </div>
-            <button class="dep-btn" onclick="openDeposit()">+ Deposit</button>
-        </div>
+    <!-- আপডেট করা সবুজ বাটন -->
+<div style="padding: 15px; position: sticky; bottom: 0; background: #eef2f5;">
+    <button id="saveBtn" onclick="saveProfile()" style="width: 100%; padding: 15px; background: #28a745; color: #fff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">Save</button>
+</div>
+</div>
 
-        <div class="quick-grid">
-            <div class="quick-item"><i class="fas fa-certificate"></i><span>Top</span></div>
-            <div class="quick-item"><i class="fas fa-futbol"></i><span>Sports</span></div>
-            <div class="quick-item"><i class="fas fa-clone"></i><span>Casino</span></div>
-            <div class="quick-item"><i class="fas fa-dice"></i><span>22Games</span></div>
-        </div>
 
-        <div class="menu-list-card">
-            <div class="menu-icon"><i class="fas fa-stopwatch"></i></div>
-            <div class="menu-text"><b>LIVE</b><span>Bet on live events</span></div>
-            <i class="fas fa-chevron-right arrow-right"></i>
-        </div>
 
-        <div class="menu-list-card">
-            <div class="menu-icon"><i class="far fa-calendar-alt"></i></div>
-            <div class="menu-text"><b>Pre-match</b><span>Bet on upcoming events</span></div>
-            <i class="fas fa-chevron-right arrow-right"></i>
-        </div>
-
-        <div class="menu-list-card">
-            <div class="menu-icon"><i class="fas fa-gem"></i></div>
-            <div class="menu-text"><b>Slot</b><span>Top slot games</span></div>
-            <i class="fas fa-chevron-right arrow-right"></i>
-        </div>
-
-        <div class="menu-list-card">
-            <div class="menu-icon"><i class="fas fa-video"></i></div>
-            <div class="menu-text"><b>Live Casino</b><span>Play with live dealers</span></div>
-            <i class="fas fa-chevron-right arrow-right"></i>
-        </div>
-
-        <div class="menu-list-card">
-            <div class="menu-icon"><i class="fas fa-dice"></i></div>
-            <div class="menu-text"><b>22Games</b><span>Play and win prizes</span></div>
-            <i class="fas fa-chevron-right arrow-right"></i>
-        </div>
-
-        <div class="menu-list-card">
-            <div class="menu-icon"><i class="fas fa-percentage"></i></div>
-            <div class="menu-text"><b>Promo</b><span>Bonuses and special offers</span></div>
-            <i class="fas fa-chevron-right arrow-right"></i>
-        </div>
-
-        <div class="menu-list-card">
-            <div class="menu-icon"><i class="fas fa-headset"></i></div>
-            <div class="menu-text"><b>Customer Support</b><span>Get help 24/7</span></div>
-            <i class="fas fa-chevron-right arrow-right"></i>
-        </div>
-
-        <div class="menu-list-card">
-            <div class="menu-icon"><i class="fas fa-info-circle"></i></div>
-            <div class="menu-text"><b>Information</b><span>Rules and licensing</span></div>
-            <i class="fas fa-chevron-right arrow-right"></i>
-        </div>
-    </div>
-
-    <div class="bottom-bar">
+<div class="bottom-bar">
     <div class="bottom-item active" id="pop-tab" onclick="switchTab('home')">
         <i class="fas fa-fire"></i>
         <span>Popular</span>
@@ -612,6 +837,7 @@
     </div>
 </div>
 
+
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
@@ -632,38 +858,41 @@
 
     // আপনার কাঙ্ক্ষিত কোডটি এখানে বসানো হলো
     // নতুন আপডেটেড কোড
-document.addEventListener('DOMContentLoaded', () => {
-    const activeUserRef = ref(db, 'activeUser/id');
-    
-    onValue(activeUserRef, (snapshot) => {
-        const savedUser = snapshot.val(); 
+    // নতুন আপডেটেড কোড (এটি আপনার আগের onValue ব্লকের জায়গায় রিপ্লেস করুন)
+        // আপনার আগের কোডের এই অংশটি পরিবর্তন করে এটি দিন:
+    document.addEventListener('DOMContentLoaded', () => {
+        const activeUserRef = ref(db, 'activeUser/id');
         
-        if (savedUser) {
-            console.log("Active User ID found:", savedUser);
+        onValue(activeUserRef, (snapshot) => {
+            const savedUser = snapshot.val(); 
             
-            const userRef = ref(db, 'users/' + savedUser);
-            
-            onValue(userRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    const balance = data.balance !== undefined ? data.balance : 0;
-                    const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
-                    balanceDisplays.forEach(el => el.innerText = balance + " ৳");
-                    
-                    const nameDisplay = document.getElementById('profileName');
-                    if (nameDisplay) {
-                        // পরিবর্তন এখানে: "USER " অংশটি সরিয়ে দেওয়া হয়েছে
-                        nameDisplay.innerText = data.username ? data.username : savedUser;
-                    }
-                } else {
-                    console.error("User data not found for ID:", savedUser);
+            if (savedUser) {
+                // ১. প্রোফাইলে ইউজার আইডি দেখানোর লজিক
+                const nameDisplay = document.getElementById('profileName');
+                if (nameDisplay) {
+                    nameDisplay.innerText = savedUser; 
                 }
-            });
-        } else {
-            console.warn("No Active User set in database (activeUser/id path is empty).");
-        }
+
+                // ২. নতুন লজিক: একাউন্ট সেকশনে আইডি অটোমেটিক বসানো
+                const idDisplay = document.querySelector('.account-id-display');
+                if (idDisplay) {
+                    idDisplay.innerText = 'id: ' + savedUser;
+                }
+                
+                // ৩. ইউজারের ব্যালেন্স ফেচ করার লজিক
+                const userRef = ref(db, 'users/' + savedUser);
+                onValue(userRef, (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        const balance = data.balance !== undefined ? data.balance : 0;
+                        const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
+                        balanceDisplays.forEach(el => el.innerText = balance + " ৳");
+                    }
+                });
+            }
+        });
     });
-});
+
 
 
     // Deposit Logic
@@ -705,6 +934,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    window.openSettings = function() { document.getElementById('settings-page-overlay').style.right = '0'; };
+    window.closeSettings = function() { document.getElementById('settings-page-overlay').style.right = '-100%'; };
+
+    window.openProfilePage = function() { document.getElementById('personal-profile-overlay').style.right = '0'; };
+    window.closeProfilePage = function() { document.getElementById('personal-profile-overlay').style.right = '-100%'; };
+
+    // --- আপনার সমস্যার সমাধান (Form Functions) ---
+    window.openCompleteProfile = function() {
+        document.getElementById('complete-profile-form').style.display = 'block';
+    };
+
+    window.closeForm = function() {
+        document.getElementById('complete-profile-form').style.display = 'none';
+    };
+
+    window.saveProfile = function() {
+        alert("Profile saved successfully!");
+        window.closeForm();
+    };
+
+window.saveProfile = function() {
+    const saveBtn = document.getElementById('saveBtn');
+    saveBtn.innerText = "Save complete"; // ক্লিক করলে লেখা বদলে যাবে
+    
+    setTimeout(() => {
+        document.getElementById('complete-profile-form').style.display = 'none';
+        saveBtn.innerText = "Save"; // ২ সেকেন্ড পর আবার আগের মতো হবে
+    }, 2000);
+};
 
 </script>
 
