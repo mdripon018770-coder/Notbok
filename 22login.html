@@ -10,7 +10,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: #0c3e44; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; font-family: sans-serif; }
         
-        /* --- Loading Screen --- */
+                /* --- Loading Screen --- */
         #loading-screen { 
             position: fixed;
             top: 0;
@@ -55,13 +55,19 @@
 
         .eight-ball { 
             font-weight: bold; 
-            font-size: 9px; 
+            font-size: 10px; 
             border-radius: 50%; 
-            border: 1.5px solid rgba(255, 255, 255, 0.25); 
+            background-color: #ffffff; /* ব্যাকগ্রাউন্ড সাদা */
+            color: #000000;            /* লেখা কালো */
             text-align: center; 
-            line-height: 13px; 
+            line-height: 16px;         /* বলের মাঝখানে টেক্সট এলাইন করার জন্য */
             width: 16px;
             height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            transition: all 0.3s ease;
         }
         
         .ball.revealed {
@@ -79,8 +85,10 @@
         }
         
         .eight-ball.active-spinning {
+            background-color: #ffffff !important;
+            color: #000000 !important;
             border-color: #ffffff !important;
-            color: #ffffff !important;
+            box-shadow: 0 0 8px rgba(255,255,255,0.8); /* হালকা সাদা গ্লো ইফেক্ট */
         }
 
         .stopping-style {
@@ -535,31 +543,31 @@
     animation: popupUp 0.4s ease-out; /* এখানে আপনার তৈরি করা অ্যানিমেশনটি যোগ করা হলো */
 }
 
-.game-slider {
-    width: 100%;
-    overflow: hidden;
-    margin: 15px 0 25px 0; /* লগইন শিরোনামের নিচে গ্যাপ */
+/* --- Updated Banner Slider --- */
+.game-slider{
+    width:100%;
+    overflow:hidden;
+    margin:10px 0;
 }
 
-.game-track {
-    display: flex;
-    gap: 12px;
-    animation: slide 20s linear infinite;
+.game-track{
+    display:flex;
+    gap:12px;
+    animation:slide 20s linear infinite;
 }
 
-.game-track img {
-    width: 200px; /* ছোট স্ক্রিনের জন্য সাইজ */
-    height: 110px;
-    border-radius: 15px;
-    object-fit: cover;
-    flex-shrink: 0;
+.game-track img{
+    width:260px;
+    height:140px;
+    border-radius:20px;
+    object-fit:cover;
+    flex-shrink:0;
 }
 
-@keyframes slide {
-    0% { transform: translateX(0%); }
-    100% { transform: translateX(-880px); }
+@keyframes slide{
+    0%{transform:translateX(100%);}
+    100%{transform:translateX(-1100px);}
 }
-
 
     </style>
 </head>
@@ -571,8 +579,8 @@
             <div id="b1" class="ball"><i class="fas fa-volleyball"></i></div>
             <div id="b2" class="ball"><i class="fas fa-basketball-ball"></i></div>
             <div id="b3" class="ball"><i class="fas fa-baseball"></i></div> 
-            <div id="b4" class="ball"><i class="fas fa-baseball-ball"></i></div>
-            <div id="b5" class="ball"><i class="fas fa-volleyball-ball"></i></div>
+            <div id="b4" class="ball"><i class="fas fa-volleyball"></i></div>
+            <div id="b5" class="ball"><i class="fas fa-baseball"></i></div>
             <div id="b6" class="ball eight-ball">8</div>
             <div id="b7" class="ball"><i class="fas fa-baseball-ball"></i></div>
             <div id="b8" class="ball"><i class="fas fa-volleyball-ball"></i></div>
@@ -828,38 +836,41 @@
         </div>
 
         <!-- Copy & Share Buttons -->
-        <div style="display: flex; gap: 15px; margin-bottom: 20px;">
-            <button onclick="copyInfo()" style="
-                flex: 1;
-                height: 55px;
-                border: none;
-                background: #e7eff3;
-                border-radius: 14px;
-                font-size: 16px;
-                font-weight: 600;
-                color: #597385;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;">
-                <i class='far fa-copy'></i> Copy
-            </button>
-            <button onclick="shareInfo()" style="
-                flex: 1;
-                height: 55px;
-                border: none;
-                background: #e7eff3;
-                border-radius: 14px;
-                font-size: 16px;
-                font-weight: 600;
-                color: #597385;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;">
-                <i class='fas fa-share'></i> Share
-            </button>
-        </div>
+<div style="display: flex; gap: 15px; margin-bottom: 20px;">
+    <!-- আপডেট করা Copy বাটন -->
+    <button id="copyBtn" onclick="copyInfo()" style="
+        flex: 1;
+        height: 55px;
+        border: none;
+        background: #e7eff3;
+        border-radius: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #597385;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;">
+        <i class='far fa-copy'></i> <span id="copyText">Copy</span>
+    </button>
+    
+    <!-- Share বাটন একই থাকবে -->
+    <button onclick="shareInfo()" style="
+        flex: 1;
+        height: 55px;
+        border: none;
+        background: #e7eff3;
+        border-radius: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #597385;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;">
+        <i class='fas fa-share'></i> Share
+    </button>
+</div>
 
         <!-- Next Button -->
         <button onclick="nextRegistration()" style="
@@ -968,17 +979,22 @@
 window.copyInfo = function() {
     const user = document.getElementById("popupUser").innerText;
     const pass = document.getElementById("popupPass").innerText;
+    const copyTextSpan = document.getElementById("copyText");
+    const copyBtn = document.getElementById("copyBtn");
+    
     navigator.clipboard.writeText(`Username: ${user}\nPassword: ${pass}`);
-    alert("Copied to clipboard!");
+    
+    // বাটন টেক্সট এবং কালার পরিবর্তন
+    copyTextSpan.innerText = "Copied";
+    copyBtn.style.color = "#24b24a"; 
+    
+    // ২ সেকেন্ড পর আবার আগের অবস্থায় ফিরে আসা
+    setTimeout(() => {
+        copyTextSpan.innerText = "Copy";
+        copyBtn.style.color = "#597385";
+    }, 2000);
 };
 
-window.shareInfo = function() {
-    const user = document.getElementById("popupUser").innerText;
-    const pass = document.getElementById("popupPass").innerText;
-    if (navigator.share) {
-        navigator.share({ text: `My Account: ID: ${user}, Pass: ${pass}` });
-    }
-};
 
     // --- Next Button ---
     window.nextRegistration = function() {
