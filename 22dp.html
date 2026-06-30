@@ -280,14 +280,13 @@
     <div id="loader" class="loader-overlay"><div class="dot-loader"><div></div><div></div><div></div><div></div></div></div>
 
     <div class="header">
-    <!-- ব্যাক বাটন আপডেট করা হয়েছে -->
+    <!-- নতুন goBackToHome ফাংশনটি কল করা হচ্ছে -->
     <div class="icon-btn" onclick="goBackToHome()" style="cursor: pointer;">
         <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>
     </div>
     
     <h2>Account deposits</h2>
     
-    <!-- রিলোড বাটন -->
     <div class="icon-btn" onclick="location.reload()" style="cursor: pointer;">
         <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path></svg>
     </div>
@@ -905,11 +904,17 @@ function copyAccount() {
 
 // ডিপোজিট পেজের ব্যাক বাটনে এই ফাংশনটি বসান:
 function goBackToHome() {
-    // মেইন পেজের ফাংশন কল করবে
-    if (window.parent && window.parent.closeDeposit) {
+    // যদি অ্যাপটি iframe-এর ভেতরে থাকে, তবে closeDeposit() কল করবে
+    if (window.parent && typeof window.parent.closeDeposit === 'function') {
         window.parent.closeDeposit();
+    } 
+    // যদি iframe না থাকে, তবে সরাসরি পেজে রিডাইরেক্ট করবে
+    else {
+        window.location.href = 'https://mdripon018770-coder.github.io/Notbok/22.html';
     }
 }
+
+
 
   </script>
 </body>
