@@ -535,30 +535,40 @@
     animation: popupUp 0.4s ease-out; /* এখানে আপনার তৈরি করা অ্যানিমেশনটি যোগ করা হলো */
 }
 
+/* --- Updated Banner Slider --- */
 .game-slider {
     width: 100%;
     overflow: hidden;
-    margin: 15px 0 25px 0; /* লগইন শিরোনামের নিচে গ্যাপ */
+    margin-top: 10px; /* মেইন ছবির সাথে গ্যাপ কমানোর জন্য */
+    margin-bottom: 20px;
+    position: relative;
+    height: 130px; /* হাইট সামান্য বাড়িয়েছি যাতে দেখতে প্রফেশনাল লাগে */
 }
+
 
 .game-track {
     display: flex;
-    gap: 12px;
-    animation: slide 20s linear infinite;
+    gap: 10px;
+    width: max-content; /* সব ব্যানার পাশাপাশি রাখার জন্য */
+    animation: slideAnimation 12s linear infinite; /* সময় কমিয়ে দিয়েছি যাতে দ্রুত কাজ করে */
 }
 
 .game-track img {
-    width: 200px; /* ছোট স্ক্রিনের জন্য সাইজ */
+    width: 320px; /* প্রতিটি ব্যানারের সাইজ */
     height: 110px;
-    border-radius: 15px;
+    border-radius: 12px;
     object-fit: cover;
     flex-shrink: 0;
 }
 
-@keyframes slide {
-    0% { transform: translateX(0%); }
-    100% { transform: translateX(-880px); }
+@keyframes slideAnimation {
+    0% { transform: translateX(100%); } /* ডানে থেকে শুরু */
+    15% { transform: translateX(0%); }  /* স্ক্রিনের মাঝে এসে থামা */
+    30% { transform: translateX(0%); }  /* ২-৩ সেকেন্ড স্থির থাকা */
+    40% { transform: translateX(-100%); } /* বাম দিকে চলে যাওয়া */
+    100% { transform: translateX(-100%); } /* বাকি সময় অপেক্ষা */
 }
+
 
     </style>
 </head>
@@ -580,14 +590,24 @@
     </div>
 
     <!-- Home Screen -->
-    <div id="home-screen">
-        <div class="content-area">
-            <div class="home-main-pic">
-                <div class="home-login-overlay" onclick="showLogin()"></div>
-                <div class="home-reg-overlay" onclick="showReg()"></div>
-                <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/hom.jpg" alt="Home Content">
+<div id="home-screen">
+    <div class="content-area">
+        <div class="home-main-pic">
+            <div class="home-login-overlay" onclick="showLogin()"></div>
+            <div class="home-reg-overlay" onclick="showReg()"></div>
+            <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/hom.jpg" alt="Home Content">
+        </div>
+
+        <!-- Banner Slider Area (সঠিক পজিশনে আনা হয়েছে) -->
+        <div class="game-slider">
+            <div class="game-track">
+                <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/fru.jpg">
+                <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/royal.jpg">
+                <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/burning.jpg">
+                <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/scratch.jpg">
             </div>
         </div>
+    </div>
         
         <!-- Bottom Navigation -->
         <div class="bottom-nav">
@@ -659,17 +679,6 @@
             <div class="login-footer-register">Don't have an account? <span onclick="switchLoginToReg()">Register</span></div>
         </div>
     </div>
-
-<!-- Banner Slider Area -->
-<div class="game-slider">
-    <div class="game-track">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/fru.jpg">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/royal.jpg">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/burning.jpg">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/scratch.jpg">
-    </div>
-</div>
-
 
 
     <!-- Phone Registration Form Page -->
