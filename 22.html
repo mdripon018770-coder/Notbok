@@ -580,6 +580,27 @@
     100%{transform:translateX(-1100px);}
 }
 
+#deposit-page-overlay{
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    z-index: 5000;
+    transition: right .4s ease;
+}
+
+#deposit-page-overlay.active{
+    right: 0;
+}
+
+#deposit-frame{
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
     </style>
 </head>
 <body>
@@ -597,28 +618,21 @@
         <i class="fas fa-user" style="font-size: 18px; color: #7a8a94;"></i>
     </div>
 
-    <div style="width: 100%;">
+    <!-- ব্যানার এবং ক্লিক এরিয়া -->
+    <div style="position: relative; width: 100%;">
         <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting3.jpg" alt="Settings Banner" style="width: 100%; display: block; margin-top: 0;">
+        <!-- এখানে Make a deposit এরিয়ার জন্য অদৃশ্য বক্স -->
+        <div onclick="openDeposit()" style="position: absolute; top: 0; left: 0; width: 100%; height: 30%; cursor: pointer; z-index: 3001;"></div>
     </div>
 
-    <div style="padding: 5px 15px;">
-        <h4 style="color: #7a8a94; margin: 10px 5px 5px 5px; font-size: 13px;">Account management</h4>
-        <div style="background: #fff; border-radius: 15px; padding: 0 20px; border: 1px solid #e8edf0;">
-            <div onclick="openDepositPage()" style="display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid #f0f4f7; cursor: pointer;">
-                <div style="background: #eef7ef; padding: 8px; border-radius: 50%; margin-right: 15px;"><i class="fas fa-plus-square" style="color: #28a745; font-size: 16px;"></i></div> 
-                <b style="font-size: 15px; color: #1a2b3c;">Make a deposit</b>
-            </div>
-            <div style="display: flex; align-items: center; padding: 15px 0;">
-                <div style="background: #eef7ef; padding: 8px; border-radius: 50%; margin-right: 15px;"><i class="fas fa-minus-square" style="color: #28a745; font-size: 16px;"></i></div> 
-                <b style="font-size: 15px; color: #1a2b3c;">Withdraw</b>
-            </div>
-        </div>
-
-        <div style="width: calc(100% + 30px); margin-left: -15px; margin-top: 15px; margin-bottom: 20px;">
-            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting2.jpg" alt="Settings Footer" style="width: 100%; display: block;">
-        </div>
+    <div id="logout-trigger" style="width: calc(100% + 10px); margin-left: -5px; margin-top: 15px; margin-bottom: 20px; cursor: pointer;">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting2.jpg" alt="Settings Footer" style="width: 100%; display: block;">
     </div>
+    
 </div>
+
+</div>
+
 
 <!-- Personal Profile Page Overlay -->
 <div id="personal-profile-overlay" style="position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #eef2f5; z-index: 4000; transition: right 0.4s ease; overflow-y: auto;">
@@ -647,49 +661,43 @@
 <h4 style="color: #7a8a94; margin: 15px 10px 10px 10px; font-size: 13px;">Account</h4>
 <div style="background: #fff; border-radius: 12px; padding: 0 15px; margin-bottom: 20px;">
     
-    <!-- Account Number -->
     <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
         <span style="color: #7a8a94;">Account number</span>
         <span style="color: #1a2b3c; font-weight: bold;" class="account-id-display">id: Loading...</span>
     </div>
 
-    <!-- Email -->
     <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
         <span style="color: #7a8a94;">Email</span>
-        <span style="color: #28a745; font-weight: bold; cursor: pointer;">Activate</span>
+        <span id="display-email" style="color: #28a745; font-weight: bold;">Not filled in</span>
     </div>
 
-    <!-- Phone Number -->
     <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
         <span style="color: #7a8a94;">Phone number</span>
-        <span style="color: #28a745; font-weight: bold; cursor: pointer;">Link</span>
+        <span id="display-phone" style="color: #28a745; font-weight: bold;">Not filled in</span>
     </div>
 
-    <!-- Password -->
     <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
         <span style="color: #7a8a94;">Password</span>
         <span style="color: #28a745; font-weight: bold; cursor: pointer;">Change</span>
     </div>
 
-    <!-- Registration Date -->
     <div style="padding: 15px 0; display: flex; justify-content: space-between;">
         <span style="color: #7a8a94;">Registration date</span>
-        <span style="color: #1a2b3c;">21/06/2026</span>
+        <span id="display-reg-date" style="color: #1a2b3c;">--/--/----</span>
     </div>
 </div>
 
-<!-- Personal Information Section -->
 <h4 style="color: #7a8a94; margin: 15px 10px 10px 10px; font-size: 13px;">Personal information</h4>
 <div style="background: #fff; border-radius: 12px; padding: 0 15px;">
     
     <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
         <span style="color: #7a8a94;">Name</span>
-        <span style="color: #1a2b3c;">Not filled in</span>
+        <span id="display-name" style="color: #1a2b3c;">Not filled in</span>
     </div>
 
     <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">Surname</span>
-        <span style="color: #1a2b3c;">Not filled in</span>
+        <span style="color: #7a8a94;">Username</span>
+        <span id="display-username" style="color: #1a2b3c;">Not filled in</span>
     </div>
 
     <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
@@ -699,9 +707,9 @@
 
     <div style="padding: 15px 0; display: flex; justify-content: space-between;">
         <span style="color: #7a8a94;">City</span>
-        <span style="color: #1a2b3c;">Not filled in</span>
+        <span id="display-city" style="color: #1a2b3c;">Not filled in</span>
      </div>
-   </div>
+</div>
  </div>
 </div>
 
@@ -788,7 +796,7 @@
          style="display:block;width:100%;height:auto;border-radius:0;object-fit:cover;">
 </div>
 
-</div> <div id="complete-profile-form" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef2f5; z-index: 9999; overflow-y: auto;">
+<div id="complete-profile-form" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef2f5; z-index: 9999; overflow-y: auto;">
     <!-- Header -->
     <div style="padding: 15px; display: flex; align-items: center; background: #fff; height: 55px; position: sticky; top: 0; z-index: 10;">
         <i class="fas fa-arrow-left" onclick="closeForm()" style="font-size: 20px; cursor: pointer; color: #7a8a94; margin-right: 20px;"></i>
@@ -797,40 +805,45 @@
     </div>
 
     <div style="padding: 15px;">
-        <!-- Input Style (Card) -->
         <style>
             .input-card { background: #fff; padding: 0 15px; border-radius: 12px; margin-bottom: 20px; }
             .input-card input { width: 100%; padding: 15px 0; border: none; border-bottom: 1px solid #eef1f4; font-size: 16px; color: #333; outline: none; }
             .input-label { color: #7a8a94; margin: 15px 0 10px 5px; font-size: 13px; }
         </style>
 
+        <!-- Main details section -->
         <div class="input-label">Main details</div>
         <div class="input-card">
-            <input type="text" placeholder="Patronymic (if any)">
-            <input type="text" placeholder="Date of birth" onfocus="(this.type='date')">
-            <input type="text" placeholder="Place of birth" style="border: none;">
+            <input type="text" id="reg-name" class="profile-input" placeholder="Name">
+            <input type="text" id="reg-username" class="profile-input" placeholder="Username">
+            <input type="email" id="reg-email" class="profile-input" placeholder="Email">
+            <input type="tel" id="reg-phone" class="profile-input" placeholder="Phone number">
+            <input type="text" id="reg-patronymic" class="profile-input" placeholder="Patronymic (if any)">
+            <input type="text" id="reg-dob" class="profile-input" placeholder="Date of birth" onfocus="(this.type='date')">
+            <input type="text" id="reg-pob" class="profile-input" placeholder="Place of birth" style="border: none;">
         </div>
 
         <div class="input-label">Residence</div>
         <div class="input-card">
-            <input type="text" placeholder="Region">
-            <input type="text" placeholder="City">
-            <input type="text" placeholder="Residence address" style="border: none;">
+            <input type="text" id="reg-region" class="profile-input" placeholder="Region">
+            <input type="text" id="reg-city" class="profile-input" placeholder="City">
+            <input type="text" id="reg-address" class="profile-input" placeholder="Residence address" style="border: none;">
         </div>
 
         <div class="input-label">ID document</div>
         <div class="input-card">
-            <input type="text" placeholder="Document type">
-            <input type="text" placeholder="Series (if have)">
-            <input type="text" placeholder="Document number">
-            <input type="text" placeholder="Date of issue" onfocus="(this.type='date')">
-            <input type="text" placeholder="Issued by" style="border: none;">
+            <input type="text" id="reg-doc-type" class="profile-input" placeholder="Document type">
+            <input type="text" id="reg-series" class="profile-input" placeholder="Series (if have)">
+            <input type="text" id="reg-doc-num" class="profile-input" placeholder="Document number">
+            <input type="text" id="reg-doc-date" class="profile-input" placeholder="Date of issue" onfocus="(this.type='date')">
+            <input type="text" id="reg-issued-by" class="profile-input" placeholder="Issued by" style="border: none;">
         </div>
     </div>
 
-    <!-- আপডেট করা সবুজ বাটন -->
-<div style="padding: 15px; position: sticky; bottom: 0; background: #eef2f5;">
-    <button id="saveBtn" onclick="saveProfile()" style="width: 100%; padding: 15px; background: #28a745; color: #fff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">Save</button>
+    <div style="padding: 15px; position: sticky; bottom: 0; background: #eef2f5;">
+        <button id="saveBtn" onclick="saveProfile()" style="width: 100%; padding: 15px; background: #28a745; color: #fff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">Save</button>
+    </div>
+</div>
 </div>
 </div>
 
@@ -928,18 +941,38 @@
 
 
 
-    // Deposit Logic
-    window.openDeposit = function() {
-        const overlay = document.getElementById('deposit-page-overlay');
-        const frame = document.getElementById('deposit-frame');
-        frame.src = 'https://mdripon018770-coder.github.io/Notbok/22dp.html'; 
-        overlay.classList.add('active');
-    };
+              // --- Deposit Logic Updated ---
+window.openDeposit = function () {
+    const settings = document.getElementById("settings-page-overlay");
+    const overlay = document.getElementById("deposit-page-overlay");
+    const frame = document.getElementById("deposit-frame");
 
-    window.closeDeposit = function() {
-        const overlay = document.getElementById('deposit-page-overlay');
-        overlay.classList.remove('active');
-    };
+    // Deposit overlay সবসময় Settings-এর উপরে থাকবে
+    overlay.style.zIndex = "5000";
+
+    // iframe reset
+    frame.src = "";
+
+    // Slide in
+    setTimeout(() => {
+        frame.src = "https://mdripon018770-coder.github.io/Notbok/22dp.html";
+        overlay.classList.add("active");
+    }, 50);
+};
+
+// Back Button
+window.closeDeposit = function () {
+    const overlay = document.getElementById("deposit-page-overlay");
+    const frame = document.getElementById("deposit-frame");
+
+    // Slide out
+    overlay.classList.remove("active");
+
+    // iframe clear
+    setTimeout(() => {
+        frame.src = "";
+    }, 400);
+};
 
     // Tab Switch Logic
     window.switchTab = function(tab) {
@@ -983,19 +1016,105 @@
     };
 
     window.saveProfile = function() {
-        alert("Profile saved successfully!");
-        window.closeForm();
-    };
-
-window.saveProfile = function() {
     const saveBtn = document.getElementById('saveBtn');
-    saveBtn.innerText = "Save complete"; // ক্লিক করলে লেখা বদলে যাবে
     
+    saveBtn.innerText = "Loading...";
+    saveBtn.style.opacity = "0.7";
+    saveBtn.disabled = true;
+
     setTimeout(() => {
-        document.getElementById('complete-profile-form').style.display = 'none';
-        saveBtn.innerText = "Save"; // ২ সেকেন্ড পর আবার আগের মতো হবে
-    }, 2000);
+        // সব ইনপুট ফিল্ড থেকে ডাটা নেওয়া
+        const inputs = document.querySelectorAll('.profile-input');
+        const savedData = JSON.parse(localStorage.getItem('userProfileData')) || {};
+
+        inputs.forEach(input => {
+            if (input.value.trim() !== "") {
+                savedData[input.id] = input.value;
+            }
+        });
+
+        localStorage.setItem('userProfileData', JSON.stringify(savedData));
+        
+        // প্রোফাইল ভিউ আপডেট এবং ফর্ম ক্লোজ
+        loadProfileData(); 
+        
+        saveBtn.innerText = "Save";
+        saveBtn.style.opacity = "1";
+        saveBtn.disabled = false;
+        
+        closeForm();
+    }, 2000); 
 };
+
+
+// এই ফাংশনটি ফিল্ডগুলো হাইড করার জন্য
+function checkAndHideFields() {
+    const savedData = JSON.parse(localStorage.getItem('userProfileData')) || {};
+    const inputs = document.querySelectorAll('.profile-input');
+
+    inputs.forEach(input => {
+        if (savedData[input.id] && savedData[input.id].trim() !== "") {
+            input.parentElement.style.display = 'none'; // ফিল্ডটি হাইড করে দিবে
+        }
+    });
+}
+
+
+function loadProfileData() {
+    // ১. রেজিস্ট্রেশন ডেট ম্যানেজমেন্ট
+    let regDate = localStorage.getItem('userRegDate');
+    if (!regDate) {
+        regDate = new Date().toLocaleDateString('en-GB');
+        localStorage.setItem('userRegDate', regDate);
+    }
+    document.getElementById('display-reg-date').innerText = regDate;
+
+    // ২. ইউজার প্রোফাইল ডাটা লোড
+    const savedData = localStorage.getItem('userProfileData');
+    if (savedData) {
+        const data = JSON.parse(savedData);
+        
+        // এখানে data['ID'] ব্যবহার করতে হবে
+        if(document.getElementById('display-name')) 
+            document.getElementById('display-name').innerText = data['reg-name'] || "Not filled in";
+            
+        if(document.getElementById('display-username')) {
+            document.getElementById('display-username').innerText = data['reg-username'] || "Not filled in";
+            const menuName = document.getElementById('profileName');
+            if(menuName) menuName.innerText = data['reg-username'] || "USER";
+        }
+        
+        if(document.getElementById('display-email')) 
+            document.getElementById('display-email').innerText = data['reg-email'] || "Not filled in";
+            
+        if(document.getElementById('display-phone')) 
+            document.getElementById('display-phone').innerText = data['reg-phone'] || "Not filled in";
+            
+        if(document.getElementById('display-city')) 
+            document.getElementById('display-city').innerText = data['reg-city'] || "Not filled in";
+    }
+}
+
+
+
+// Logout Functionality (Updated for Cross-App Redirect)
+document.getElementById('logout-trigger').addEventListener('click', function() {
+    // ১. লোকাল স্টোরেজ থেকে সব তথ্য মুছে ফেলা
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('savedUserID');
+    localStorage.removeItem('savedPassword');
+
+    // ২. নতুন করে রিডাইরেক্ট করা এবং বর্তমান ট্যাব/হিস্ট্রি ক্লিন রাখা
+    window.location.replace("https://mdripon018770-coder.github.io/Notbok/22login.html");
+});
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Firebase-এর কোডগুলো এখানে থাকবে...
+        
+        // সব শেষে এটি বসিয়ে দিন:
+        loadProfileData(); 
+    });
+
 
 </script>
 
