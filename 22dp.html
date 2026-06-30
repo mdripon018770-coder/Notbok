@@ -896,6 +896,14 @@ function copyAccount() {
     });
 }
 
+// ডিপোজিট পেজের ব্যাক বাটনে এই ফাংশনটি বসান:
+function goBackToHome() {
+    // মেইন পেজের ফাংশন কল করবে
+    if (window.parent && window.parent.closeDeposit) {
+        window.parent.closeDeposit();
+    }
+}
+
   </script>
 </body>
 </html>
