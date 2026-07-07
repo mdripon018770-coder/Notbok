@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; margin: 0; padding: 20px; }
         .search-container { margin-bottom: 20px; }
@@ -22,70 +24,158 @@
 </head>
 <body>
 
+<!-- ব্যালেন্স কার্ড -->
+<div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+    <div style="background: #ffffff; padding: 8px 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #ddd; font-weight: bold; color: #5a189a;">
+        ৳ <span id="balance-display">0.00</span>
+    </div>
+</div>
+
+
     <div class="search-container">
         <input type="text" class="search-box" placeholder="সার্চ করুন পছন্দের পণ্য...">
     </div>
 
     <div class="product-grid">
-        <!-- প্রোডাক্ট ১ -->
-        <div class="product-card">
-            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/tenda.jpg" class="product-img">
-            <p><b>Tenda Router</b></p>
-            <div class="price">৳ 1,200</div>
-            <div class="cashback">Cashback: ৳ 50</div>
-            <button class="order-btn" onclick="openModal('Tenda Router')">Order Now</button>
-        </div>
-        <!-- প্রোডাক্ট ২ -->
-        <div class="product-card">
-            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/tenda2.jpeg" class="product-img">
-            <p><b>Tenda Router 2</b></p>
-            <div class="price">৳ 1,400</div>
-            <div class="cashback">Cashback: ৳ 70</div>
-            <button class="order-btn" onclick="openModal('Tenda Router 2')">Order Now</button>
-        </div>
-        <!-- প্রোডাক্ট ৩ -->
-        <div class="product-card">
-            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/wgp.jpeg" class="product-img">
-            <p><b>WGP UPS</b></p>
-            <div class="price">৳ 2,500</div>
-            <div class="cashback">Cashback: ৳ 100</div>
-            <button class="order-btn" onclick="openModal('WGP UPS')">Order Now</button>
-        </div>
-        <!-- প্রোডাক্ট ৪ -->
-        <div class="product-card">
-            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/wgp2.jpeg" class="product-img">
-            <p><b>WGP UPS 2</b></p>
-            <div class="price">৳ 2,800</div>
-            <div class="cashback">Cashback: ৳ 120</div>
-            <button class="order-btn" onclick="openModal('WGP UPS 2')">Order Now</button>
-        </div>
+    <!-- প্রোডাক্ট ১ -->
+    <div class="product-card">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/tenda.jpg" class="product-img">
+        <p><b>Tenda Router</b></p>
+        <div class="price">৳ 1,200</div>
+        <div class="cashback">Cashback: ৳ 50</div>
+        <button class="order-btn" onclick="openModal('Tenda Router', 50)">Order Now</button>
     </div>
-
-    <!-- পপআপ ফর্ম -->
-    <div id="orderModal" class="modal">
-        <div class="modal-content">
-            <h3>অর্ডার ফর্ম</h3>
-            <input type="text" id="userName" placeholder="আপনার নাম">
-            <input type="text" id="userPhone" placeholder="আপনার ফোন নম্বর">
-            <input type="text" id="userAddress" placeholder="আপনার ঠিকানা">
-            <button class="order-btn" onclick="sendToWhatsApp()">Confirm Order</button>
-            <button class="order-btn" style="background:#ff4757" onclick="closeModal()">Cancel</button>
-        </div>
+    <!-- প্রোডাক্ট ২ -->
+    <div class="product-card">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/tenda2.jpeg" class="product-img">
+        <p><b>Tenda Router 2</b></p>
+        <div class="price">৳ 1,400</div>
+        <div class="cashback">Cashback: ৳ 70</div>
+        <button class="order-btn" onclick="openModal('Tenda Router 2', 70)">Order Now</button>
     </div>
+    <!-- প্রোডাক্ট ৩ -->
+    <div class="product-card">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/wgp.jpeg" class="product-img">
+        <p><b>WGP UPS</b></p>
+        <div class="price">৳ 2,500</div>
+        <div class="cashback">Cashback: ৳ 100</div>
+        <button class="order-btn" onclick="openModal('WGP UPS', 100)">Order Now</button>
+    </div>
+    <!-- প্রোডাক্ট ৪ -->
+    <div class="product-card">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/wgp2.jpeg" class="product-img">
+        <p><b>WGP UPS 2</b></p>
+        <div class="price">৳ 2,800</div>
+        <div class="cashback">Cashback: ৳ 120</div>
+        <button class="order-btn" onclick="openModal('WGP UPS 2', 120)">Order Now</button>
+    </div>
+</div>
 
-    <script>
-        let currentProduct = "";
-        function openModal(prod) { currentProduct = prod; document.getElementById('orderModal').style.display = 'flex'; }
-        function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
-        
-        function sendToWhatsApp() {
-            let name = document.getElementById('userName').value;
-            let phone = document.getElementById('userPhone').value;
-            let address = document.getElementById('userAddress').value;
-            let msg = `অর্ডার কনফার্ম করুন:\nপণ্য: ${currentProduct}\nনাম: ${name}\nফোন: ${phone}\nঠিকানা: ${address}`;
-            let url = "https://wa.me/8801877059049?text=" + encodeURIComponent(msg);
-            window.open(url, '_blank');
+<!-- পপআপ ফর্ম -->
+<div id="orderModal" class="modal">
+    <div class="modal-content">
+        <h3>অর্ডার ফর্ম</h3>
+        <input type="text" id="userName" placeholder="আপনার নাম">
+        <input type="text" id="userPhone" placeholder="আপনার ফোন নম্বর">
+        <input type="text" id="userAddress" placeholder="আপনার ঠিকানা">
+        <!-- এখানে sendToWhatsApp এর বদলে নতুন ডাটাবেস ফাংশনটি কাজ করবে -->
+        <button class="order-btn" onclick="sendToWhatsApp()">Confirm Order</button>
+        <button class="order-btn" style="background:#ff4757" onclick="closeModal()">Cancel</button>
+    </div>
+</div>
+
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getDatabase, ref, push, update, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+    const firebaseConfig = { databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com" };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // ব্যালেন্স লাইভ আপডেট
+    onValue(ref(db, 'users/balance'), (snapshot) => {
+        const balance = snapshot.val() || 0;
+        document.getElementById('balance-display').innerText = parseFloat(balance).toLocaleString();
+    });
+
+    let currentProduct = "";
+    let currentCashback = 0;
+
+    window.openModal = (prod, cb) => { 
+        currentProduct = prod; 
+        currentCashback = cb; 
+        document.getElementById('orderModal').style.display = 'flex'; 
+    };
+
+    window.closeModal = () => { 
+        document.getElementById('orderModal').style.display = 'none'; 
+    };
+    
+        window.sendToWhatsApp = async () => {
+        let name = document.getElementById('userName').value;
+        let phone = document.getElementById('userPhone').value;
+        let address = document.getElementById('userAddress').value;
+
+        // ভ্যালিডেশন
+        if (!name || !phone || !address) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'তথ্য ভুল!',
+                text: 'দয়া করে সব তথ্য পূরণ করুন!',
+                confirmButtonColor: '#7b2cbf'
+            });
+            return;
         }
+
+        // বর্তমান সময় এবং তারিখ
+        const now = new Date();
+        const dateTime = now.toLocaleString('bn-BD'); // বাংলাদেশী ফরম্যাটে তারিখ ও সময়
+
+        // লোডিং পপআপ
+        Swal.fire({
+            title: 'অর্ডার প্রসেস হচ্ছে...',
+            text: 'অনুগ্রহ করে অপেক্ষা করুন',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        try {
+            // Firebase-এ ডেটা পাঠানো
+            const newOrderRef = push(ref(db, 'orders'));
+            await update(newOrderRef, {
+                product: currentProduct,
+                userName: name,
+                userPhone: phone,
+                userAddress: address,
+                cashback: currentCashback,
+                status: 'pending',
+                orderTime: dateTime // সময় ও তারিখ এখানে সেভ হচ্ছে
+            });
+
+            // সাকসেস মেসেজ
+            Swal.fire({
+                icon: 'success',
+                title: 'অর্ডার সফল!',
+                text: 'আপনার অর্ডারটি জমা হয়েছে। অ্যাডমিন অ্যাপ্রুভ করার পর ব্যালেন্স যোগ হবে।',
+                confirmButtonColor: '#7b2cbf'
+            });
+            
+            closeModal();
+            // ইনপুট ফিল্ড ক্লিয়ার করা
+            document.getElementById('userName').value = '';
+            document.getElementById('userPhone').value = '';
+            document.getElementById('userAddress').value = '';
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'ভুল হয়েছে!',
+                text: 'অর্ডারটি জমা দিতে সমস্যা হচ্ছে, আবার চেষ্টা করুন।'
+            });
+        }
+    };
+
+
+
     </script>
 </body>
 </html>
