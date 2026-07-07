@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; color: #333; padding: 20px; padding-bottom: 80px; }
+        .balance-card { background: linear-gradient(135deg, #7b2cbf, #5a189a); padding: 30px 25px; border-radius: 25px; margin-bottom: 20px; color: white; text-align: center; box-shadow: 0 10px 15px rgba(123, 44, 191, 0.3); }
+        .task-item { background: #ffffff; padding: 12px; border-radius: 20px; margin-bottom: 12px; display: flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); cursor: pointer; }
+        .task-img { width: 45px; height: 45px; border-radius: 15px; margin-right: 15px; object-fit: cover; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #ddd; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: #7f8c8d; font-size: 11px; }
+        .nav-item.active { color: #27ae60; }
+        .icon-box { width: 22px; height: 22px; position: relative; }
+        .icon-popular { border: 2px solid currentColor; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); }
+        .icon-fav { clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); background: currentColor; }
+        .icon-history { border: 2px solid currentColor; border-radius: 50%; }
+        .icon-history::after { content: ''; position: absolute; top: 4px; left: 9px; width: 2px; height: 7px; background: currentColor; }
+        .icon-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+        .icon-menu div { background: currentColor; border-radius: 2px; }
+    </style>
+</head>
+<body>
+
+    <div class="balance-card">
+        <div style="opacity: 0.9;">Your Balance</div>
+        <h1 id="balance-display" style="margin: 10px 0; font-size: 32px;">৳ 0.00</h1>
+    </div>
+
+    <h3 style="margin-top: 20px;">Popular Tasks</h3>
+    <!-- সব স্ট্যাটিক ডিভ মুছে ফেলেছি, এখানে শুধু ডায়নামিক কন্টেইনার থাকবে -->
+    <div id="task-container">
+        <p style="text-align:center;">Loading tasks...</p>
+    </div>
+
+    <!-- ভিডিও প্লেয়ারের পপআপ -->
+    <!-- নতুন পপআপ স্ট্রাকচার -->
+<div id="video-player-container" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; padding:20px; box-sizing:border-box; overflow-y:auto;">
+    <div id="player" style="width:100%; height:250px; margin-top:50px;"></div>
+    
+    <!-- টাইমার এবং ক্লোজ বাটন ভিডিওর নিচে -->
+    <div id="live-timer" style="color: white; text-align: center; font-size: 18px; margin: 20px 0;">০ সেকেন্ড / ২৪০ সেকেন্ড</div>
+    
+    <button id="close-btn" disabled onclick="closePlayer()" style="padding:15px; background:gray; color:white; border:none; border-radius:10px; width:100%; font-weight:bold;">
+        CLOSE
+    </button>
+</div>
+
+
+    <div class="bottom-nav">
+        <div class="nav-item active"><div class="icon-box icon-popular"></div><span>Popular</span></div>
+        <div class="nav-item"><div class="icon-box icon-fav"></div><span>Favorites</span></div>
+        <div class="nav-item"><div class="icon-box icon-history"></div><span>History</span></div>
+        <div class="nav-item"><div class="icon-box icon-menu"><div></div><div></div><div></div><div></div></div><span>Menu</span></div>
+    </div>
+
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getDatabase, ref, onValue, update, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCpwfTWOsU6Gb3rLvMjcKnewLMnlkq5plg",
+        authDomain: "amar-bazar-d99b4.firebaseapp.com",
+        databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com",
+        projectId: "amar-bazar-d99b4",
+        storageBucket: "amar-bazar-d99b4.firebasestorage.app",
+        messagingSenderId: "1000008221916",
+        appId: "1:1000008221916:web:6bd19561f4b64e2002e019",
+        measurementId: "G-NHCVXFW0E4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const container = document.getElementById('task-container');
+    const balanceDisplay = document.getElementById('balance-display');
+
+    // ইউটিউব এপিআই লোড
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(tag);
+
+    let player;
+    let watchTimer;
+    let seconds = 0;
+
+    onValue(ref(db, 'users/balance'), (snapshot) => {
+        balanceDisplay.innerText = `৳ ${parseFloat(snapshot.val() || 0).toFixed(2)}`;
+    });
+
+    onValue(ref(db, 'tasks/'), (snapshot) => {
+        const data = snapshot.val();
+        container.innerHTML = '';
+        if (data) {
+            Object.keys(data).forEach(key => {
+                const task = data[key];
+                // যদি title বা amount না থাকে তবে তা দেখাবে না
+                if (!task.title || !task.amount) return; 
+
+                const div = document.createElement('div');
+                div.className = 'task-item';
+                div.onclick = () => openPlayer(task);
+                div.innerHTML = `<img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/youtube.jpg" class="task-img">
+                                 <div style="flex:1;"><b>${task.title}</b><br><small>Earn money</small></div>
+                                 <div style="color:#2e7d32; font-weight:bold;">${task.amount}</div>`;
+                container.appendChild(div);
+            });
+        }
+    });
+
+    window.openPlayer = (task) => {
+    document.getElementById('video-player-container').style.display = 'block';
+    const closeBtn = document.getElementById('close-btn');
+    const timerEl = document.getElementById('live-timer');
+    
+    // বাটন লক করা
+    closeBtn.disabled = true;
+    closeBtn.style.background = "gray";
+    closeBtn.innerText = "CLOSE (Wait 4 min)";
+    
+    seconds = 0;
+    timerEl.innerText = "০ সেকেন্ড / ২৪০ সেকেন্ড";
+
+    const videoId = task.link.split(/(?:v=|\/embed\/|\/youtu\.be\/|\/shorts\/)([^"&?/\s]{11})/)[1] || task.link.split('/').pop();
+    
+    if (player) {
+        player.loadVideoById(videoId);
+    } else {
+        player = new YT.Player('player', {
+            videoId: videoId,
+            events: {
+                'onStateChange': (event) => {
+                    if (event.data == YT.PlayerState.PLAYING) {
+                        watchTimer = setInterval(async () => {
+                            seconds++;
+                            timerEl.innerText = `${seconds} সেকেন্ড / ২৪০ সেকেন্ড`;
+                            
+                            if (seconds >= 240) {
+                                clearInterval(watchTimer);
+                                // বাটন আনলক করা
+                                closeBtn.disabled = false;
+                                closeBtn.style.background = "red";
+                                closeBtn.innerText = "CLOSE";
+                                
+                                // ব্যালেন্স যোগ করা
+                                const snap = await get(ref(db, 'users/balance'));
+                                const amount = parseFloat(task.amount.replace(/[^0-9.]/g, '')) || 0;
+                                await update(ref(db, 'users'), { balance: (parseFloat(snap.val() || 0) + amount) });
+                            }
+                        }, 1000);
+                    } else {
+                        clearInterval(watchTimer);
+                    }
+                }
+            }
+        });
+    }
+};
+
+    window.closePlayer = () => {
+        document.getElementById('video-player-container').style.display = 'none';
+        if(player) player.stopVideo();
+        clearInterval(watchTimer);
+        const timerEl = document.getElementById('live-timer');
+        if(timerEl) timerEl.innerText = "";
+    };
+</script>
+
+</body>
+</html>
