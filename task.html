@@ -192,8 +192,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    // এখানে update এবং get যোগ করা হয়েছে
-    import { getDatabase, ref, onValue, update, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    import { getDatabase, ref, onValue, update, get, set } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
     const firebaseConfig = {
         databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com"
@@ -203,9 +202,22 @@
     const db = getDatabase(app);
     const balanceDisplay = document.getElementById('balance-display');
 
-    // Firebase থেকে ব্যালেন্স লাইভ আপডেট
-    onValue(ref(db, 'users/balance'), (snapshot) => {
-        const balance = snapshot.val() || 0;
+    // লগইন পেজ থেকে সেভ করা ফোন নম্বরটি নিচ্ছি
+    const userPhone = localStorage.getItem('userPhone');
+
+    // যদি ইউজার লগইন না থাকে, তবে লগইন পেজে পাঠিয়ে দিন
+    if (!userPhone) {
+        window.location.href = 'index.html';
+    }
+
+    // নির্দিষ্ট ইউজারের রেফারেন্স
+    const userRef = ref(db, 'users/' + userPhone);
+
+    // Firebase থেকে ওই নির্দিষ্ট ইউজারের ব্যালেন্স লাইভ আপডেট
+    onValue(userRef, (snapshot) => {
+        const data = snapshot.val();
+        // যদি ব্যালেন্স না থাকে, তাহলে ০ ধরবে
+        const balance = data ? (data.balance || 0) : 0;
         balanceDisplay.innerText = `৳ ${parseFloat(balance).toLocaleString('en-BD', {minimumFractionDigits: 2})}`;
     });
 
@@ -236,46 +248,41 @@
         levelContainer.appendChild(div);
     });
 
-    // লেভেল কেনার লজিক (যা গ্লোবালি অ্যাক্সেসযোগ্য)
+    // লেভেল কেনার লজিক
     window.buyLevel = async (cost, levelId) => {
-    const snap = await get(ref(db, 'users/balance'));
-    const currentBalance = parseFloat(snap.val() || 0);
+        const snap = await get(userRef);
+        const userData = snap.val() || { balance: 0 };
+        const currentBalance = parseFloat(userData.balance || 0);
 
-    if (currentBalance >= cost) {
-        await update(ref(db, 'users'), { 
-            balance: currentBalance - cost,
-            currentLevel: levelId 
-        });
-        
-        // সাকসেসফুল সুইট অ্যালার্ট
-        Swal.fire({
-            icon: 'success',
-            title: 'অভিনন্দন!',
-            text: `আপনি সফলভাবে লেভেল ${levelId} কিনেছেন।`,
-            confirmButtonColor: '#7b2cbf'
-        });
-    } else {
-        // এরর সুইট অ্যালার্ট
-        Swal.fire({
-            icon: 'error',
-            title: 'দুঃখিত!',
-            text: 'আপনার ব্যালেন্স পর্যাপ্ত নয়।',
-            confirmButtonColor: '#d33'
-        });
-    }
-};
+        if (currentBalance >= cost) {
+            await update(userRef, { 
+                balance: currentBalance - cost,
+                currentLevel: levelId 
+            });
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'অভিনন্দন!',
+                text: `আপনি সফলভাবে লেভেল ${levelId} কিনেছেন।`,
+                confirmButtonColor: '#7b2cbf'
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'দুঃখিত!',
+                text: 'আপনার ব্যালেন্স পর্যাপ্ত নয়।',
+                confirmButtonColor: '#d33'
+            });
+        }
+    };
 
-// নেভ আইটেম ক্লিক করলে অ্যাক্টিভ ক্লাস চেঞ্জ হবে
-window.setActive = (element) => {
-    // সব আইটেম থেকে 'active' ক্লাস রিমুভ করো
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    // ক্লিক করা আইটেমে 'active' ক্লাস যোগ করো
-    element.classList.add('active');
-};
-
-</script>task.html
+    window.setActive = (element) => {
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        element.classList.add('active');
+    };
+</script>
 
 </body>
 </html>
