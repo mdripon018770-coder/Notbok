@@ -273,6 +273,34 @@
     outline:none !important;
 }
 
+/* USDT Popup Style */
+.usdt-popup {
+    padding: 0 !important;
+    border-radius: 4px !important;
+}
+
+.usdt-popup .swal2-html-container {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.usdt-popup .swal2-actions {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.usdt-popup .swal2-close {
+    color: #bdbdbd !important;
+    font-size: 48px !important;
+    font-weight: 300 !important;
+    right: 14px !important;
+    top: 8px !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
     </style>
 </head>
 <body>
@@ -573,6 +601,7 @@ function openBtcModal() {
 // ২. বিটকয়েন কিউআর কোড মডাল (দ্বিতীয় পপআপ - বাটন ছাড়া)
 function showBtcQr() {
     const btcAddress = "bc1qxew2x3xj4lmxdqwfatuhehc4seudcw0fw3xjpc";
+    const coinName = "btc"; // প্রতিটি ফাংশনের জন্য ইউনিক নাম
 
     Swal.fire({
         html: `
@@ -593,13 +622,17 @@ function showBtcQr() {
                 padding:10px; margin-bottom:18px;
             ">
                 <span style="font-size:11px; word-break:break-all; text-align:left; flex:1;">${btcAddress}</span>
+                
+                <span id="msg-${coinName}" style="color:#00897b; font-size:10px; font-weight:bold; margin-right:5px; display:none;">Copied</span>
+                
                 <img src="https://cdn-icons-png.flaticon.com/512/1621/1621635.png"
                      width="20" style="cursor:pointer; margin-left:8px;"
-                     onclick="copyTxt('${btcAddress}')">
+                     onclick="copyAddress('${btcAddress}', 'msg-${coinName}')">
             </div>
 
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${btcAddress}"
-     width="180" style="margin-bottom:20px;">
+                 width="180" style="margin-bottom:20px;">
+            
             <div style="
                 background:#00897b; color:#fff; padding:16px;
                 font-size:12px; line-height:1.5; text-align:left;
@@ -619,10 +652,6 @@ function showBtcQr() {
     });
 }
 
-
-
-        // ইথেরিয়াম মডাল (প্রথম পপআপ)
-// ইথেরিয়াম মডাল (প্রথম পপআপ)
 function openEthModal() {
     loader.style.display = 'flex';
     setTimeout(() => {
@@ -651,78 +680,50 @@ function openEthModal() {
 // কিউআর কোড এবং তথ্য সম্বলিত মডাল (দ্বিতীয় পপআপ)
 function showEthQr() {
     const ethAddress = "0xd5b3b4eabd8b332b6a4d89eb3ecd182371604b76";
+    const coinName = "eth"; // প্রতিটি ফাংশনের জন্য ইউনিক নাম
 
     Swal.fire({
         html: `
-        <div style="text-align:center;padding:20px 15px;">
+        <div style="text-align:center; padding:20px 15px;">
+            <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" width="42" style="margin-bottom:12px;">
 
-            <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png"
-                 width="42"
-                 style="margin-bottom:12px;">
-
-            <div style="font-size:14px;color:#555;margin-bottom:18px;">
+            <div style="font-size:14px; color:#555; margin-bottom:18px;">
                 1 mETH = 199.6090754 BDT
             </div>
 
-            <div style="font-size:12px;text-align:left;margin-bottom:6px;">
+            <div style="font-size:12px; text-align:left; margin-bottom:6px;">
                 Copy the address or scan the QR code:
             </div>
 
-            <div style="
-                display:flex;
-                align-items:center;
-                justify-content:space-between;
-                background:#f7f7f7;
-                border:1px solid #d8d8d8;
-                border-radius:4px;
-                padding:10px;
-                margin-bottom:18px;
-            ">
-                <span style="
-                    font-size:11px;
-                    word-break:break-all;
-                    text-align:left;
-                    flex:1;
-                ">${ethAddress}</span>
-
+            <div style="display:flex; align-items:center; justify-content:space-between; background:#f7f7f7; border:1px solid #d8d8d8; border-radius:4px; padding:10px; margin-bottom:18px;">
+                <span style="font-size:11px; word-break:break-all; text-align:left; flex:1;">${ethAddress}</span>
+                
+                <span id="msg-${coinName}" style="color:#00897b; font-size:10px; font-weight:bold; margin-right:5px; display:none;">Copied</span>
+                
                 <img src="https://cdn-icons-png.flaticon.com/512/1621/1621635.png"
-                     width="20"
-                     style="cursor:pointer;margin-left:8px;"
-                     onclick="copyTxt('${ethAddress}')">
+                     width="20" style="cursor:pointer; margin-left:8px;"
+                     onclick="copyAddress('${ethAddress}', 'msg-${coinName}')">
             </div>
 
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${ethAddress}"
-                 width="180"
-                 style="margin-bottom:20px;">
+                 width="180" style="margin-bottom:20px;">
 
-            <div style="
-                background:#00897b;
-                color:#fff;
-                padding:16px;
-                font-size:12px;
-                line-height:1.5;
-                text-align:left;
-            ">
+            <div style="background:#00897b; color:#fff; padding:16px; font-size:12px; line-height:1.5; text-align:left;">
                 Minimum deposit amount 5.00 mETH. If you transfer a deposit amount below the specified limit, your funds will be lost.<br><br>
-
                 Please note that the exchange rate at the completion of the transaction may differ slightly from the above.
             </div>
-
         </div>
         `,
-
         showConfirmButton: false,
         showCancelButton: false,
         showCloseButton: true,
         buttonsStyling: false,
         padding: 0,
         width: 640,
-
-        customClass: {
-            popup: "eth-popup"
-        }
+        customClass: { popup: "eth-popup" }
     });
 }
+
 
 // ১. ট্রন ওয়ার্নিং মডাল (প্রথম পপআপ)
 function openTronModal() {
@@ -751,7 +752,8 @@ function openTronModal() {
 
 // ২. ট্রন কিউআর কোড মডাল (দ্বিতীয় পপআপ - বাটন ছাড়া)
 function showTronQr() {
-    const tronAddress = "TXe7dfuGbAdp5Ju7pdhWZNBGRcWwjEecZ"; // আপনার ট্রন অ্যাড্রেস
+    const tronAddress = "TXe7dfuGbAdp5Ju7pdhWZNBGRcWwjEecZ";
+    const coinName = "tron"; // ইউনিক নাম
 
     Swal.fire({
         html: `
@@ -772,9 +774,12 @@ function showTronQr() {
                 padding:10px; margin-bottom:18px;
             ">
                 <span style="font-size:11px; word-break:break-all; text-align:left; flex:1;">${tronAddress}</span>
+                
+                <span id="msg-${coinName}" style="color:#00897b; font-size:10px; font-weight:bold; margin-right:5px; display:none;">Copied</span>
+                
                 <img src="https://cdn-icons-png.flaticon.com/512/1621/1621635.png"
                      width="20" style="cursor:pointer; margin-left:8px;"
-                     onclick="copyTxt('${tronAddress}')">
+                     onclick="copyAddress('${tronAddress}', 'msg-${coinName}')">
             </div>
 
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${tronAddress}"
@@ -827,7 +832,8 @@ function openDogeModal() {
 
 // ২. ডজকয়েন কিউআর কোড মডাল (দ্বিতীয় পপআপ - বাটন ছাড়া)
 function showDogeQr() {
-    const dogeAddress = "D5n21DQF5ENDCymV3EtK7jQwfXKWMxzYA"; // আপনার ডজকয়েন অ্যাড্রেস
+    const dogeAddress = "D5n21DQF5ENDCymV3EtK7jQwfXKWMxzYA"; 
+    const coinName = "doge"; // ইউনিক নাম
 
     Swal.fire({
         html: `
@@ -848,9 +854,12 @@ function showDogeQr() {
                 padding:10px; margin-bottom:18px;
             ">
                 <span style="font-size:11px; word-break:break-all; text-align:left; flex:1;">${dogeAddress}</span>
+                
+                <span id="msg-${coinName}" style="color:#00897b; font-size:10px; font-weight:bold; margin-right:5px; display:none;">Copied</span>
+                
                 <img src="https://cdn-icons-png.flaticon.com/512/1621/1621635.png"
                      width="20" style="cursor:pointer; margin-left:8px;"
-                     onclick="copyTxt('${dogeAddress}')">
+                     onclick="copyAddress('${dogeAddress}', 'msg-${coinName}')">
             </div>
 
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${dogeAddress}"
@@ -875,32 +884,137 @@ function showDogeQr() {
     });
 }
 
+// ১. USDT (Ethereum) ওয়ার্নিং মডাল
+function openUsdtEthModal() {
+    loader.style.display = 'flex';
+    setTimeout(() => {
+        loader.style.display = 'none';
+        Swal.fire({
+            html: `
+                <div class="btc-modal-content" style="padding:20px;">
+                    <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" width="50" style="margin-bottom:15px;">
+                    <p class="btc-warning" style="color:#d32f2f; font-weight:bold; font-size:14px; margin-bottom:10px;">ONLY send Tether (USDT) via Ethereum (ERC20) network.</p>
+                    <p style="font-size:12px; color:#666; margin-bottom:20px;">Do NOT use TRON, BEP20 or other network standards. ONLY use Ethereum network.</p>
+                </div>
+            `,
+            confirmButtonText: 'CONFIRM',
+            confirmButtonColor: '#00897b',
+            showCloseButton: true,
+            width: '90%'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                showUsdtEthQr(); 
+            }
+        });
+    }, 1000);
+}
 
-function copyTxt(text) {
-    navigator.clipboard.writeText(text);
+// ২. USDT (Ethereum) কিউআর কোড মডাল
+function showUsdtEthQr() {
+    const usdtEthAddress = "TLgFBXZxnEdwfALqCkLmQjn5LqurUjqdaG"; 
+    const coinName = "usdt-eth"; // প্রতিটি ফাংশনের জন্য আলাদা ইউনিক নাম
+
     Swal.fire({
-        icon: "success",
-        title: "Copied!",
-        text: "Address copied successfully.",
-        timer: 1200,
-        showConfirmButton: false
+        html: `
+        <div style="text-align:center; padding:20px 15px;">
+            <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" width="42" style="margin-bottom:12px;">
+            <div style="font-size:14px; color:#555; margin-bottom:18px;">1 USDT = 200.00 BDT</div>
+            
+            <div style="font-size:12px; text-align:left; margin-bottom:6px;">Copy the address or scan the QR code:</div>
+            
+            <div style="display:flex; align-items:center; justify-content:space-between; background:#f7f7f7; border:1px solid #d8d8d8; border-radius:4px; padding:10px; margin-bottom:18px;">
+                <span style="font-size:11px; word-break:break-all; text-align:left; flex:1;">${usdtEthAddress}</span>
+                
+                <span id="msg-${coinName}" style="color:#00897b; font-size:10px; font-weight:bold; margin-right:5px; display:none;">Copied</span>
+                
+                <img src="https://cdn-icons-png.flaticon.com/512/1621/1621635.png" 
+                     width="20" style="cursor:pointer; margin-left:8px;" 
+                     onclick="copyAddress('${usdtEthAddress}', 'msg-${coinName}')">
+            </div>
+            
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${usdtEthAddress}" width="180" style="margin-bottom:20px;">
+            <div style="background:#00897b; color:#fff; padding:16px; font-size:12px; line-height:1.5; text-align:left;">
+                Minimum deposit amount 5.00 USDT. If you transfer below the limit, your funds will be lost.
+            </div>
+        </div>
+        `,
+        showConfirmButton: false,
+        showCloseButton: true,
+        buttonsStyling: false, // এটি যোগ করা ভালো
+        padding: 0,
+        width: 640,
+        customClass: { popup: "btc-popup" }
     });
 }
 
-function copyAccount() {
-    const id = document.getElementById("display-id").innerText;
-    const text = document.getElementById("copy-text");
 
-    if (!id || id === "Loading...") return;
+// ১. USDT (Tron) ওয়ার্নিং মডাল (প্রথম পপআপ)
+function openUsdtTronModal() {
+    loader.style.display = 'flex';
+    setTimeout(() => {
+        loader.style.display = 'none';
+        Swal.fire({
+            html: `
+                <div class="btc-modal-content" style="padding:20px;">
+                    <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" width="50" style="margin-bottom:15px;">
+                    <p class="btc-warning" style="color:#d32f2f; font-weight:bold; font-size:14px; margin-bottom:10px;">ONLY send Tether (USDT) via Tron (TRC20) network.</p>
+                    <p style="font-size:12px; color:#666; margin-bottom:20px;">Do NOT use ERC20, BEP20 or other network standards. ONLY use TRON network. Sending to a non-TRC20 address will result in permanent loss of funds.</p>
+                </div>
+            `,
+            confirmButtonText: 'CONFIRM',
+            confirmButtonColor: '#00897b',
+            showCloseButton: true,
+            width: '90%'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                showUsdtTronQr(); 
+            }
+        });
+    }, 1000);
+}
 
-    navigator.clipboard.writeText(id).then(() => {
-        text.innerText = "Copied";
+// ২. USDT (Tron) কিউআর কোড মডাল (দ্বিতীয় পপআপ)
+function showUsdtTronQr() {
+    const usdtAddress = "TLgFBXZxnEdwfALqCkLmQjn5LqurUjqdaG"; 
+    const coinName = "usdt-tron"; // প্রতিটি ফাংশনে এটি আলাদা দিবেন
 
-        setTimeout(() => {
-            text.innerText = "";
-        }, 1500);
+    Swal.fire({
+        html: `
+        <div style="text-align:center; padding:20px 15px;">
+            <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" width="42" style="margin-bottom:12px;">
+            <div style="font-size:14px; color:#555; margin-bottom:18px;">1 USDT = 120.50 BDT</div>
+            
+            <div style="font-size:12px; text-align:left; margin-bottom:6px;">Copy the address or scan the QR code:</div>
+            
+            <div style="display:flex; align-items:center; justify-content:space-between; background:#f7f7f7; border:1px solid #d8d8d8; border-radius:4px; padding:10px; margin-bottom:18px;">
+                <span style="font-size:11px; word-break:break-all; text-align:left; flex:1;">${usdtAddress}</span>
+                
+                <span id="msg-${coinName}" style="color:#00897b; font-size:10px; font-weight:bold; margin-right:5px; display:none;">Copied</span>
+                
+                <img src="https://cdn-icons-png.flaticon.com/512/1621/1621635.png" 
+                     width="20" style="cursor:pointer; margin-left:8px;" 
+                     onclick="copyAddress('${usdtAddress}', 'msg-${coinName}')">
+            </div>
+            
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${usdtAddress}" width="180" style="margin-bottom:20px;">
+            
+            <div style="background:#00897b; color:#fff; padding:16px; font-size:12px; line-height:1.5; text-align:left;">
+                Minimum deposit amount 10.00 USDT. If you transfer a deposit amount below the specified limit, your funds will be lost.<br><br>
+                Please note that the exchange rate at the completion of the transaction may differ slightly from the above.
+            </div>
+        </div>
+        `,
+        showConfirmButton: false, 
+        showCancelButton: false,
+        showCloseButton: true,
+        buttonsStyling: false,
+        padding: 0,
+        width: 640,
+        customClass: { popup: "usdt-popup" }
     });
 }
+
+
 
 // ডিপোজিট পেজের ব্যাক বাটনে এই ফাংশনটি বসান:
 function goBackToHome() {
@@ -914,6 +1028,17 @@ function goBackToHome() {
     }
 }
 
+// সব কয়েনের জন্য একটি মাত্র ফাংশন
+function copyAddress(address, msgId) {
+    navigator.clipboard.writeText(address);
+    
+    // মেসেজটি দেখানোর জন্য
+    const msg = document.getElementById(msgId);
+    if(msg) {
+        msg.style.display = 'inline';
+        setTimeout(() => { msg.style.display = 'none'; }, 1000);
+    }
+}
 
 
   </script>
