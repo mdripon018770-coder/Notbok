@@ -1040,6 +1040,24 @@ function copyAddress(address, msgId) {
     }
 }
 
+// অ্যাকাউন্টের আইডি কপি করার ফাংশন
+function copyAccount() {
+    const idElement = document.getElementById("display-id");
+    const textElement = document.getElementById("copy-text");
+
+    if (!idElement) return;
+    
+    const id = idElement.innerText;
+    if (!id || id === "Loading...") return;
+
+    navigator.clipboard.writeText(id).then(() => {
+        textElement.innerText = "Copied";
+
+        setTimeout(() => {
+            textElement.innerText = "";
+        }, 1500); // ১.৫ সেকেন্ড পর "Copied" লেখাটি চলে যাবে
+    });
+}
 
   </script>
 </body>
