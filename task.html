@@ -119,10 +119,14 @@
 <body>
 
     <div class="balance-card">
+    <!-- নাম এবং ফোন নম্বর দেখানোর জন্য নতুন কোড -->
+    <div id="user-info" style="text-align: left; margin-bottom: 15px; font-size: 13px; color: rgba(255,255,255,0.8); border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 5px;">
+        <!-- এখানে স্ক্রিপ্ট থেকে ডাটা আসবে -->
+    </div>
+
     <div style="opacity: 0.9; margin-bottom: 5px;">Your Balance</div>
     <h1 id="balance-display" style="margin: 0 0 15px 0; font-size: 32px;">৳ 0.00</h1>
     
-    <!-- উইথড্র এবং অ্যাড ব্যালেন্স বাটন পাশাপাশি -->
     <div style="display: flex; justify-content: center; gap: 10px;">
         <button onclick="window.location.href='withdraw.html'" style="background: white; color: #7b2cbf; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 13px;">
             Withdrawn →
@@ -132,6 +136,7 @@
         </button>
     </div>
 </div>
+
 
 
     <h3 style="padding: 0 20px;">VIP Levels</h3>
@@ -200,14 +205,27 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    
+    // এলিমেন্টসমূহ
     const balanceDisplay = document.getElementById('balance-display');
+    const userInfoDisplay = document.getElementById('user-info');
 
-    // লগইন পেজ থেকে সেভ করা ফোন নম্বরটি নিচ্ছি
+    // লোকাল স্টোরেজ থেকে ডাটা নিচ্ছি
     const userPhone = localStorage.getItem('userPhone');
+    const userName = localStorage.getItem('userName');
 
     // যদি ইউজার লগইন না থাকে, তবে লগইন পেজে পাঠিয়ে দিন
     if (!userPhone) {
         window.location.href = 'index.html';
+    }
+
+    // ব্যালেন্স কার্ডে নাম ও ফোন নম্বর প্রদর্শন
+    if (userInfoDisplay) {
+        if (userName && userPhone) {
+            userInfoDisplay.innerHTML = `👤 ${userName} <br> 📞 ${userPhone}`;
+        } else {
+            userInfoDisplay.innerText = `📞 ${userPhone || 'N/A'}`;
+        }
     }
 
     // নির্দিষ্ট ইউজারের রেফারেন্স
@@ -216,7 +234,6 @@
     // Firebase থেকে ওই নির্দিষ্ট ইউজারের ব্যালেন্স লাইভ আপডেট
     onValue(userRef, (snapshot) => {
         const data = snapshot.val();
-        // যদি ব্যালেন্স না থাকে, তাহলে ০ ধরবে
         const balance = data ? (data.balance || 0) : 0;
         balanceDisplay.innerText = `৳ ${parseFloat(balance).toLocaleString('en-BD', {minimumFractionDigits: 2})}`;
     });
@@ -283,6 +300,7 @@
         element.classList.add('active');
     };
 </script>
+
 
 </body>
 </html>
