@@ -118,34 +118,37 @@ window.register = async () => {
 // Login
 window.login = async () => {
 
-    const phone = document.getElementById("phone").value.trim();
-    const pass = document.getElementById("password").value;
+    const phone = document.getElementById('phone').value.trim();
+    const pass = document.getElementById('password').value;
 
-    if (!phone || !pass) {
-        Swal.fire("Error", "Phone ও Password দিন", "error");
+    const snapshot = await get(ref(db, "users/" + phone));
+
+    if (!snapshot.exists()) {
+        Swal.fire({
+            icon: "error",
+            title: "Failed",
+            text: "Account not found!"
+        });
         return;
     }
 
-    const snap = await get(ref(db, "users/" + phone));
-
-    if (!snap.exists()) {
-        Swal.fire("Error", "Account not found!", "error");
-        return;
-    }
-
-    const user = snap.val();
+    const user = snapshot.val();
 
     if (user.password !== pass) {
-        Swal.fire("Error", "Wrong Password!", "error");
+        Swal.fire({
+            icon: "error",
+            title: "Failed",
+            text: "Wrong password!"
+        });
         return;
     }
 
-    localStorage.setItem("userName", user.name);
     localStorage.setItem("userPhone", phone);
+    localStorage.setItem("userName", user.name);
     localStorage.setItem("userPass", pass);
 
-    window.location.href = "https://mdripon018770-coder.github.io/Notbok/task.html";
-
+    window.location.href =
+    "https://mdripon018770-coder.github.io/Notbok/task.html";
 };
 </script>
 
