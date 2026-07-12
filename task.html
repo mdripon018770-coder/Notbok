@@ -342,8 +342,10 @@
         <div class="menu-card">About</div>
         
         <div style="margin-top: 20px;">
-            <button onclick="localStorage.clear(); window.location.reload();" style="width: 100%; padding: 12px; border: none; border-radius: 12px; background: #27ae60; color: white; font-weight: bold; font-size: 15px; cursor: pointer;">Log Out</button>
-        </div>
+    <button onclick="logout()" style="width: 100%; padding: 12px; border: none; border-radius: 12px; background: #27ae60; color: white; font-weight: bold; font-size: 15px; cursor: pointer;">
+        Log Out
+    </button>
+</div>
     </div>
 </div>
 
@@ -575,6 +577,14 @@
             }
         }
     });
+
+window.logout = () => {
+    localStorage.removeItem("userPhone");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userPass");
+
+    window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
+};
 </script>
 
 
