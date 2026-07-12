@@ -419,32 +419,54 @@
 
     const balanceDisplay = document.getElementById('balance-display');
     const userInfoDisplay = document.getElementById('user-info');
+
     const userPhone = localStorage.getItem('userPhone');
-    const userName = localStorage.getItem('userName');
 
-    // Login page-এ আর যাবে না
+    // Login না থাকলে শুধু খালি দেখাবে
+    if (!userPhone) {
+        balanceDisplay.innerText = "৳ 0.00";
+        if (userInfoDisplay) {
+            userInfoDisplay.innerHTML = "📞 N/A";
+        }
+    } else {
 
-    if (userInfoDisplay) {
-        userInfoDisplay.innerHTML = userName && userPhone
-            ? `👤 ${userName} <br> 📞 ${userPhone}`
-            : `📞 ${userPhone || 'N/A'}`;
-    }
-
-    if (userPhone) {
-        const userRef = ref(db, 'users/' + userPhone);
+        const userRef = ref(db, "users/" + userPhone);
 
         onValue(userRef, (snapshot) => {
-            const data = snapshot.val();
-            const balance = data ? (data.balance || 0) : 0;
 
-            balanceDisplay.innerText = `৳ ${parseFloat(balance).toLocaleString('en-BD', {
-                minimumFractionDigits: 2
-            })}`;
+            if (snapshot.exists()) {
+
+                const data = snapshot.val();
+
+                // Balance
+                balanceDisplay.innerText =
+                    `৳ ${parseFloat(data.balance || 0).toLocaleString('en-BD', {
+                        minimumFractionDigits: 2
+                    })}`;
+
+                // Name + Phone
+                if (userInfoDisplay) {
+                    userInfoDisplay.innerHTML =
+                        `👤 ${data.name || "No Name"}<br>📞 ${userPhone}`;
+                }
+
+                // LocalStorage Update
+                localStorage.setItem("userName", data.name || "");
+                localStorage.setItem("userPhone", userPhone);
+
+            } else {
+
+                balanceDisplay.innerText = "৳ 0.00";
+
+                if (userInfoDisplay) {
+                    userInfoDisplay.innerHTML = `📞 ${userPhone}`;
+                }
+
+            }
+
         });
-    } else {
-        balanceDisplay.innerText = "৳ 0.00";
-    }
 
+    }
 
 
     // লেভেল রেন্ডারিং
