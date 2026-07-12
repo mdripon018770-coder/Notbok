@@ -407,66 +407,74 @@
 
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getDatabase, ref, onValue, update, get, push } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getDatabase, ref, onValue, update, get, push } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-    const firebaseConfig = {
-        databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com"
-    };
+const firebaseConfig = {
+    databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-    const balanceDisplay = document.getElementById('balance-display');
-    const userInfoDisplay = document.getElementById('user-info');
+const balanceDisplay = document.getElementById("balance-display");
+const userInfoDisplay = document.getElementById("user-info");
 
-    const userPhone = localStorage.getItem('userPhone');
+const userPhone = localStorage.getItem("userPhone");
+const userName = localStorage.getItem("userName");
 
-    // Login না থাকলে শুধু খালি দেখাবে
-    if (!userPhone) {
+// সব জায়গা থেকে ব্যবহার করার জন্য
+const userRef = userPhone ? ref(db, "users/" + userPhone) : null;
+
+if (!userPhone) {
+
+    if (balanceDisplay) {
         balanceDisplay.innerText = "৳ 0.00";
-        if (userInfoDisplay) {
-            userInfoDisplay.innerHTML = "📞 N/A";
-        }
-    } else {
+    }
 
-        const userRef = ref(db, "users/" + userPhone);
+    if (userInfoDisplay) {
+        userInfoDisplay.innerHTML = "📞 N/A";
+    }
 
-        onValue(userRef, (snapshot) => {
+} else {
 
-            if (snapshot.exists()) {
+    onValue(userRef, (snapshot) => {
 
-                const data = snapshot.val();
+        if (snapshot.exists()) {
 
-                // Balance
+            const data = snapshot.val();
+
+            if (balanceDisplay) {
                 balanceDisplay.innerText =
-                    `৳ ${parseFloat(data.balance || 0).toLocaleString('en-BD', {
+                    `৳ ${parseFloat(data.balance || 0).toLocaleString("en-BD", {
                         minimumFractionDigits: 2
                     })}`;
-
-                // Name + Phone
-                if (userInfoDisplay) {
-                    userInfoDisplay.innerHTML =
-                        `👤 ${data.name || "No Name"}<br>📞 ${userPhone}`;
-                }
-
-                // LocalStorage Update
-                localStorage.setItem("userName", data.name || "");
-                localStorage.setItem("userPhone", userPhone);
-
-            } else {
-
-                balanceDisplay.innerText = "৳ 0.00";
-
-                if (userInfoDisplay) {
-                    userInfoDisplay.innerHTML = `📞 ${userPhone}`;
-                }
-
             }
 
-        });
+            if (userInfoDisplay) {
+                userInfoDisplay.innerHTML =
+                    `👤 ${data.name || "No Name"}<br>📞 ${userPhone}`;
+            }
 
-    }
+            // LocalStorage Update
+            localStorage.setItem("userName", data.name || "");
+            localStorage.setItem("userPhone", userPhone);
+
+        } else {
+
+            if (balanceDisplay) {
+                balanceDisplay.innerText = "৳ 0.00";
+            }
+
+            if (userInfoDisplay) {
+                userInfoDisplay.innerHTML = `📞 ${userPhone}`;
+            }
+
+        }
+
+    });
+
+}
 
 
     // লেভেল রেন্ডারিং
