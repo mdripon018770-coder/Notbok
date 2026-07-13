@@ -546,31 +546,73 @@ window.openPaymentForm = (m, i) => {
     document.getElementById('payment-form-popup').style.display = 'flex'; 
 };
 
-// Live Support Button Logic
+// Live Support Button Logic (Fixed)
 const whatsappBtn = document.getElementById('whatsapp-btn');
+let isDragging = false;
+let startX, startY;
+let moved = false;
 
-whatsappBtn.addEventListener('click', () => {
-    window.open('https://wa.me/8801877059049?text=হ্যালো, আমার সাহায্য প্রয়োজন।', '_blank');
+whatsappBtn.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    moved = false;
+    startX = e.clientX;
+    startY = e.clientY;
 });
 
-let isDragging = false;
-const moveElement = (e) => {
+whatsappBtn.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    moved = false;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+});
+
+document.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    
-    whatsappBtn.style.left = (clientX - 30) + 'px';
-    whatsappBtn.style.top = (clientY - 30) + 'px';
+    moved = true; // মুভ করছে
+    whatsappBtn.style.left = (e.clientX - 30) + 'px';
+    whatsappBtn.style.top = (e.clientY - 30) + 'px';
     whatsappBtn.style.right = 'auto';
     whatsappBtn.style.bottom = 'auto';
-};
+});
 
-whatsappBtn.addEventListener('mousedown', () => { isDragging = true; });
-whatsappBtn.addEventListener('touchstart', () => { isDragging = true; });
-document.addEventListener('mousemove', moveElement);
-document.addEventListener('touchmove', moveElement);
+document.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    moved = true;
+    whatsappBtn.style.left = (e.touches[0].clientX - 30) + 'px';
+    whatsappBtn.style.top = (e.touches[0].clientY - 30) + 'px';
+    whatsappBtn.style.right = 'auto';
+    whatsappBtn.style.bottom = 'auto';
+});
+
 document.addEventListener('mouseup', () => { isDragging = false; });
-document.addEventListener('touchend', () => { isDragging = false; });
+document.addEventListener('touchend', () => { 
+    isDragging = false; 
+});
+
+// ক্লিক ইভেন্টটি আলাদাভাবে কাজ করবে
+whatsappBtn.addEventListener('click', () => {
+    if (!moved) {
+        window.open('https://wa.me/8801877059049?text=হ্যালো, আমার সাহায্য প্রয়োজন।', '_blank');
+    }
+});
+
+// ব্যানার স্লাইড শো ফাংশন
+let currentIndex = 0;
+const slides = document.querySelectorAll('#slider-container img');
+const totalSlides = slides.length;
+
+function showNextSlide() {
+    currentIndex++;
+    if (currentIndex >= totalSlides) {
+        currentIndex = 0; // আবার শুরুতে ফিরে আসবে
+    }
+    const offset = -currentIndex * 100; // ১০০% করে স্লাইড হবে
+    document.getElementById('slider-container').style.transform = `translateX(${offset}%)`;
+}
+
+// প্রতি ৩ সেকেন্ড (৩০০০ মিলি-সেকেন্ড) পর পর স্লাইড হবে
+setInterval(showNextSlide, 3000);
+
 
 </script>
 
