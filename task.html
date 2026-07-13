@@ -594,10 +594,11 @@ if (userPhone) {
         }
     });
 
-window.logout = () => {
-    localStorage.clear(); // সব ডাটা একসাথে মুছে ফেলবে
+// লগআউট ফাংশন (task.html এ এই কোডটি রাখবেন)
+function logout() {
+    localStorage.clear(); // অথবা localStorage.removeItem("isLoggedIn");
     window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
-};
+}
 
 </script>
 
