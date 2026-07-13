@@ -417,47 +417,48 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// --- সিকিউরিটি চেক (নিরাপত্তার জন্য) ---
-const userPhone = localStorage.getItem("userPhone");
-if (!userPhone) {
-    // যদি লগইন না থাকে, সরাসরি লগইন পেজে পাঠিয়ে দাও
-    window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
+// সিকিউরিটি গার্ড ফাংশন
+function checkLogin() {
+    const userPhone = localStorage.getItem("userPhone");
+    if (!userPhone) {
+        window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
+        return null;
+    }
+    return userPhone;
 }
-// -------------------------------------
 
-const balanceDisplay = document.getElementById("balance-display");
-const userInfoDisplay = document.getElementById("user-info");
+const userPhone = checkLogin();
 
-const userName = localStorage.getItem("userName");
-
-// সব জায়গা থেকে ব্যবহার করার জন্য
-const userRef = userPhone ? ref(db, "users/" + userPhone) : null;
-
-// যেহেতু উপরেই চেক করা হয়েছে, তাই এখন আর 'else' এর প্রয়োজন নেই (তবে কোড ঠিক রাখার জন্য রাখা হলো)
 if (userPhone) {
+    const balanceDisplay = document.getElementById("balance-display");
+    const userInfoDisplay = document.getElementById("user-info");
+    const userRef = ref(db, "users/" + userPhone);
+
     onValue(userRef, (snapshot) => {
         if (snapshot.exists()) {
             const data = snapshot.val();
 
             if (balanceDisplay) {
-                balanceDisplay.innerText =
-                    `৳ ${parseFloat(data.balance || 0).toLocaleString("en-BD", {
-                        minimumFractionDigits: 2
-                    })}`;
+                balanceDisplay.innerText = `৳ ${parseFloat(data.balance || 0).toLocaleString("en-BD", { minimumFractionDigits: 2 })}`;
             }
 
             if (userInfoDisplay) {
-                userInfoDisplay.innerHTML =
-                    `👤 ${data.name || "No Name"}<br>📞 ${userPhone}`;
+                userInfoDisplay.innerHTML = `👤 ${data.name || "No Name"}<br>📞 ${userPhone}`;
             }
 
-            // LocalStorage Update
-            localStorage.setItem("userName", data.name || "");
-            localStorage.setItem("userPhone", userPhone);
+            // ডেটা আপডেট করুন শুধুমাত্র যদি লোকালস্টোরেজে অমিল থাকে
+            if (localStorage.getItem("userName") !== data.name) {
+                localStorage.setItem("userName", data.name || "");
+            }
+        } else {
+            // যদি ডাটাবেজে ইউজার না থাকে, তাহলে জোর করে লগআউট
+            localStorage.clear();
+            window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
         }
     });
 }
 </script>
+
 
 <script>
 
@@ -594,14 +595,10 @@ if (userPhone) {
     });
 
 window.logout = () => {
-
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("userPhone");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userPass");
-
+    localStorage.clear(); // সব ডাটা একসাথে মুছে ফেলবে
     window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
 };
+
 </script>
 
 
