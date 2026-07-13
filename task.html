@@ -416,68 +416,53 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+window.db = db;
 
-// সিকিউরিটি গার্ড ফাংশন
-function checkLogin() {
-    const userPhone = localStorage.getItem("userPhone");
-    if (!userPhone) {
-        window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
-        return null;
-    }
-    return userPhone;
+// ১. সিকিউরিটি চেক: লগইন না থাকলে সরাসরি লগইন পেজে রিডাইরেক্ট হবে
+const userPhone = localStorage.getItem("userPhone");
+if (!userPhone) {
+    window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
 }
 
-const userPhone = checkLogin();
+window.userPhone = userPhone;
+const userRef = ref(db, "users/" + userPhone);
+window.userRef = userRef;
 
-if (userPhone) {
+// ২. রিয়েল-টাইম ব্যালেন্স, নাম ও ফোন আপডেট
+onValue(userRef, (snapshot) => {
+    const data = snapshot.val() || {};
+    
+    // ব্যালেন্স আপডেট
     const balanceDisplay = document.getElementById("balance-display");
-    const userInfoDisplay = document.getElementById("user-info");
-    const userRef = ref(db, "users/" + userPhone);
+    if (balanceDisplay) balanceDisplay.innerText = `৳ ${parseFloat(data.balance || 0).toLocaleString("en-BD", { minimumFractionDigits: 2 })}`;
+    
+    // মেনু পপআপে নাম ও ফোন আপডেট
+    const pName = document.getElementById("popup-name");
+    const pPhone = document.getElementById("popup-phone");
+    if(pName) pName.innerText = data.name || "User";
+    if(pPhone) pPhone.innerText = userPhone;
+    
+    // মেইন স্ক্রিনে ইউজার নাম আপডেট
+    const userInfo = document.getElementById("user-info");
+    if(userInfo) userInfo.innerHTML = `<b>Welcome, ${data.name || "User"}</b>`;
+});
 
-    onValue(userRef, (snapshot) => {
-        if (snapshot.exists()) {
-            const data = snapshot.val();
+// ৩. লেভেল রেন্ডারিং
+const levels = [
+    { id: 1, name: "Level 1", cost: 1500, daily: 50, color: "linear-gradient(135deg, #667eea, #764ba2)" },
+    { id: 2, name: "Level 2", cost: 5000, daily: 180, color: "linear-gradient(135deg, #00c6fb, #005bea)" },
+    { id: 3, name: "Level 3", cost: 8000, daily: 300, color: "linear-gradient(135deg, #f093fb, #f5576c)" },
+    { id: 4, name: "Level 4", cost: 10000, daily: 400, color: "linear-gradient(135deg, #5ee7df, #b490ca)" },
+    { id: 5, name: "Level 5", cost: 15000, daily: 650, color: "linear-gradient(135deg, #ff9a9e, #fecfef)" },
+    { id: 6, name: "Level 6", cost: 20000, daily: 900, color: "linear-gradient(135deg, #a8c0ff, #3f2b96)" },
+    { id: 7, name: "Level 7", cost: 30000, daily: 1400, color: "linear-gradient(135deg, #f83600, #f9d423)" },
+    { id: 8, name: "Level 8", cost: 40000, daily: 2000, color: "linear-gradient(135deg, #43e97b, #38f9d7)" },
+    { id: 9, name: "Level 9", cost: 50000, daily: 2600, color: "linear-gradient(135deg, #fa709a, #fee140)" },
+    { id: 10, name: "Level 10", cost: 100000, daily: 5500, color: "linear-gradient(135deg, #09203f, #537895)" }
+];
 
-            if (balanceDisplay) {
-                balanceDisplay.innerText = `৳ ${parseFloat(data.balance || 0).toLocaleString("en-BD", { minimumFractionDigits: 2 })}`;
-            }
-
-            if (userInfoDisplay) {
-                userInfoDisplay.innerHTML = `👤 ${data.name || "No Name"}<br>📞 ${userPhone}`;
-            }
-
-            // ডেটা আপডেট করুন শুধুমাত্র যদি লোকালস্টোরেজে অমিল থাকে
-            if (localStorage.getItem("userName") !== data.name) {
-                localStorage.setItem("userName", data.name || "");
-            }
-        } else {
-            // যদি ডাটাবেজে ইউজার না থাকে, তাহলে জোর করে লগআউট
-            localStorage.clear();
-            window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
-        }
-    });
-}
-</script>
-
-
-<script>
-
-
-    // লেভেল রেন্ডারিং
-    const levels = [
-        { id: 1, name: "Level 1", cost: 1500, daily: 50, color: "linear-gradient(135deg, #667eea, #764ba2)" },
-        { id: 2, name: "Level 2", cost: 5000, daily: 180, color: "linear-gradient(135deg, #00c6fb, #005bea)" },
-        { id: 3, name: "Level 3", cost: 8000, daily: 300, color: "linear-gradient(135deg, #f093fb, #f5576c)" },
-        { id: 4, name: "Level 4", cost: 10000, daily: 400, color: "linear-gradient(135deg, #5ee7df, #b490ca)" },
-        { id: 5, name: "Level 5", cost: 15000, daily: 650, color: "linear-gradient(135deg, #ff9a9e, #fecfef)" },
-        { id: 6, name: "Level 6", cost: 20000, daily: 900, color: "linear-gradient(135deg, #a8c0ff, #3f2b96)" },
-        { id: 7, name: "Level 7", cost: 30000, daily: 1400, color: "linear-gradient(135deg, #f83600, #f9d423)" },
-        { id: 8, name: "Level 8", cost: 40000, daily: 2000, color: "linear-gradient(135deg, #43e97b, #38f9d7)" },
-        { id: 9, name: "Level 9", cost: 50000, daily: 2600, color: "linear-gradient(135deg, #fa709a, #fee140)" },
-        { id: 10, name: "Level 10", cost: 100000, daily: 5500, color: "linear-gradient(135deg, #09203f, #537895)" }
-    ];
-
-    const levelContainer = document.getElementById('level-container');
+const levelContainer = document.getElementById('level-container');
+if(levelContainer) {
     levels.forEach(lvl => {
         const div = document.createElement('div');
         div.className = "level-box";
@@ -485,124 +470,45 @@ if (userPhone) {
         div.innerHTML = `<h4>${lvl.name}</h4><p>Buy: ৳${lvl.cost}</p><p style="font-weight:bold;">Daily: ৳${lvl.daily}</p><button class="buy-btn" onclick="buyLevel(${lvl.cost}, ${lvl.id})">BUY</button>`;
         levelContainer.appendChild(div);
     });
-
-    window.buyLevel = async (cost, levelId) => {
-        const snap = await get(userRef);
-        const userData = snap.val() || { balance: 0 };
-        if (parseFloat(userData.balance || 0) >= cost) {
-            await update(userRef, { balance: parseFloat(userData.balance) - cost, currentLevel: levelId });
-            Swal.fire({ icon: 'success', title: 'অভিনন্দন!', text: `আপনি সফলভাবে লেভেল ${levelId} কিনেছেন।`, confirmButtonColor: '#7b2cbf' });
-        } else {
-            Swal.fire({ icon: 'error', title: 'দুঃখিত!', text: 'আপনার ব্যালেন্স পর্যাপ্ত নয়।', confirmButtonColor: '#d33' });
-        }
-    };
-
-    window.openPopup = (id) => {
-        const popup = document.getElementById(id);
-        if (id === 'custom-menu-popup') {
-            document.getElementById('popup-name').innerText = userName || 'Roki';
-            document.getElementById('popup-phone').innerText = userPhone || '01952383082';
-            popup.style.display = 'block';
-        } else if (id === 'add-balance-popup') {
-            popup.style.display = 'block';
-            setTimeout(() => { popup.style.right = '0'; }, 10);
-        } else {
-            popup.style.display = 'block';
-        }
-        document.getElementById('overlay').style.display = 'block';
-    };
-
-    window.closeAllPopups = () => {
-        const addBalancePopup = document.getElementById('add-balance-popup');
-        if (addBalancePopup && addBalancePopup.style.display === 'block') {
-            addBalancePopup.style.right = '-100%';
-            setTimeout(() => { addBalancePopup.style.display = 'none'; }, 400);
-        }
-        document.querySelectorAll('.side-popup').forEach(p => {
-            if(p.id !== 'add-balance-popup') p.style.display = 'none';
-        });
-        document.getElementById('overlay').style.display = 'none';
-    };
-
-    window.openPaymentForm = (methodName, iconUrl) => {
-        document.getElementById('payment-title').innerText = methodName + " Deposit";
-        document.getElementById('method-icon').src = iconUrl;
-        document.getElementById('payment-form-popup').style.display = 'flex';
-    };
-
-    window.confirmDeposit = async () => {
-        const amount = document.getElementById('amount').value;
-        const sender = document.getElementById('sender-number').value;
-        const trx = document.getElementById('trx-id').value;
-        const method = document.getElementById('payment-title').innerText;
-        
-        if(amount && sender && trx) {
-            const depositRef = ref(db, 'depositRequests');
-            const newRequestRef = push(depositRef);
-            
-            await update(newRequestRef, {
-                userId: userPhone,
-                amount: amount,
-                senderNumber: sender,
-                trx: trx,
-                method: method,
-                status: 'pending',
-                timestamp: Date.now()
-            });
-
-            Swal.fire('Success', 'আপনার রিকোয়েস্টটি পেন্ডিং আছে।', 'success');
-            closeAllPopups();
-        } else {
-            Swal.fire('Error', 'সবগুলো তথ্য সঠিকভাবে পূরণ করুন।', 'error');
-        }
-    };
-
-    let currentIndex = 0;
-    const container = document.getElementById('slider-container');
-    if (container) {
-        const images = container.getElementsByTagName('img');
-        setInterval(() => {
-            currentIndex = (currentIndex + 1) % images.length;
-            container.style.transition = currentIndex === 0 ? 'none' : 'transform 0.8s ease-in-out';
-            container.style.transform = `translateX(-${currentIndex * 100}%)`;
-        }, 3000);
-    }
-
-    // [নতুন সংযোজন] হিস্ট্রি লোড করার লজিক
-    onValue(ref(db, 'depositRequests'), (snapshot) => {
-        const data = snapshot.val();
-        const historyContainer = document.getElementById('history-list');
-        if (!historyContainer) return; 
-        if (!data) {
-            historyContainer.innerHTML = '<p style="text-align:center;">কোনো হিস্ট্রি পাওয়া যায়নি।</p>';
-            return;
-        }
-        historyContainer.innerHTML = '';
-        for(let key in data) {
-            if(data[key].userId === userPhone) { 
-                const statusColor = data[key].status === 'approved' ? '#27ae60' : 
-                                   (data[key].status === 'rejected' ? '#e74c3c' : '#f39c12');
-                historyContainer.innerHTML += `
-                <div style="border-bottom: 1px solid #ddd; padding: 10px 0; font-size: 14px;">
-                    <div style="display: flex; justify-content: space-between;">
-                        <span><b>${data[key].method}</b></span>
-                        <span style="color: ${statusColor}; font-weight: bold;">${data[key].status.toUpperCase()}</span>
-                    </div>
-                    <p style="margin: 5px 0 0 0;">Amount: <b>${data[key].amount} TK</b> | TRX: ${data[key].trx}</p>
-                </div>`;
-            }
-        }
-    });
-
-// লগআউট ফাংশন (task.html এ এই কোডটি রাখবেন)
-function logout() {
-    localStorage.clear(); // অথবা localStorage.removeItem("isLoggedIn");
-    window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
 }
 
+// ৪. ফাংশনসমূহ
+window.buyLevel = async (cost, levelId) => {
+    const snap = await get(userRef);
+    const userData = snap.val() || { balance: 0 };
+    if (parseFloat(userData.balance || 0) >= cost) {
+        await update(userRef, { balance: parseFloat(userData.balance) - cost, currentLevel: levelId });
+        Swal.fire({ icon: 'success', title: 'অভিনন্দন!', text: `আপনি সফলভাবে লেভেল ${levelId} কিনেছেন।` });
+    } else {
+        Swal.fire({ icon: 'error', title: 'দুঃখিত!', text: 'আপনার ব্যালেন্স পর্যাপ্ত নয়।' });
+    }
+};
+
+window.confirmDeposit = async () => {
+    const amount = document.getElementById('amount').value;
+    const sender = document.getElementById('sender-number').value;
+    const trx = document.getElementById('trx-id').value;
+    const method = document.getElementById('payment-title').innerText;
+    if(amount && sender && trx) {
+        const depositRef = ref(db, 'depositRequests');
+        await push(depositRef, { userId: userPhone, amount, senderNumber: sender, trx, method, status: 'pending', timestamp: Date.now() });
+        Swal.fire('Success', 'রিকোয়েস্টটি পেন্ডিং আছে।', 'success');
+        window.closeAllPopups();
+    } else {
+        Swal.fire('Error', 'সবগুলো তথ্য পূরণ করুন।', 'error');
+    }
+};
+
+window.logout = () => { 
+    localStorage.clear(); 
+    window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html"); 
+};
+
+// পপআপ লজিক
+window.openPopup = (id) => { document.getElementById(id).style.display = 'block'; document.getElementById('overlay').style.display = 'block'; };
+window.closeAllPopups = () => { document.querySelectorAll('.side-popup').forEach(p => p.style.display = 'none'); document.getElementById('overlay').style.display = 'none'; };
+window.openPaymentForm = (m, i) => { document.getElementById('payment-title').innerText = m; document.getElementById('method-icon').src = i; document.getElementById('payment-form-popup').style.display = 'flex'; };
 </script>
-
-
 
 </body>
 </html>
