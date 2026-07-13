@@ -417,31 +417,26 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// --- সিকিউরিটি চেক (নিরাপত্তার জন্য) ---
+const userPhone = localStorage.getItem("userPhone");
+if (!userPhone) {
+    // যদি লগইন না থাকে, সরাসরি লগইন পেজে পাঠিয়ে দাও
+    window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
+}
+// -------------------------------------
+
 const balanceDisplay = document.getElementById("balance-display");
 const userInfoDisplay = document.getElementById("user-info");
 
-const userPhone = localStorage.getItem("userPhone");
 const userName = localStorage.getItem("userName");
 
 // সব জায়গা থেকে ব্যবহার করার জন্য
 const userRef = userPhone ? ref(db, "users/" + userPhone) : null;
 
-if (!userPhone) {
-
-    if (balanceDisplay) {
-        balanceDisplay.innerText = "৳ 0.00";
-    }
-
-    if (userInfoDisplay) {
-        userInfoDisplay.innerHTML = "📞 N/A";
-    }
-
-} else {
-
+// যেহেতু উপরেই চেক করা হয়েছে, তাই এখন আর 'else' এর প্রয়োজন নেই (তবে কোড ঠিক রাখার জন্য রাখা হলো)
+if (userPhone) {
     onValue(userRef, (snapshot) => {
-
         if (snapshot.exists()) {
-
             const data = snapshot.val();
 
             if (balanceDisplay) {
@@ -459,22 +454,12 @@ if (!userPhone) {
             // LocalStorage Update
             localStorage.setItem("userName", data.name || "");
             localStorage.setItem("userPhone", userPhone);
-
-        } else {
-
-            if (balanceDisplay) {
-                balanceDisplay.innerText = "৳ 0.00";
-            }
-
-            if (userInfoDisplay) {
-                userInfoDisplay.innerHTML = `📞 ${userPhone}`;
-            }
-
         }
-
     });
-
 }
+</script>
+
+<script>
 
 
     // লেভেল রেন্ডারিং
