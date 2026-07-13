@@ -5,21 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; margin: 0; padding: 20px; }
-        .search-container { margin-bottom: 20px; }
-        .search-box { width: 100%; padding: 15px; border: none; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); outline: none; }
-        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .product-card { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .product-img { width: 100%; height: 100px; object-fit: contain; border-radius: 15px; }
-        .price { color: #5a189a; font-weight: bold; font-size: 18px; margin: 8px 0; }
-        .cashback { color: #27ae60; font-size: 13px; font-weight: bold; margin-bottom: 10px; }
-        .order-btn { background: #7b2cbf; color: white; border: none; padding: 10px; border-radius: 20px; width: 100%; cursor: pointer; font-weight: bold; }
+    
+        <style>
+    body { font-family: sans-serif; background: #f8d7da; margin: 0; padding: 20px; }
+    
+    .search-box { 
+        width: 90%; display: block; margin: 0 auto 20px auto; padding: 12px; 
+        border: none; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+    }
 
-        /* পপআপ ডিজাইন */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 20px; border-radius: 20px; width: 80%; }
-        input { width: 90%; padding: 10px; margin: 5px 0; border-radius: 10px; border: 1px solid #ddd; }
+    /* প্রোডাক্ট গ্রিড */
+    .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    
+    .product-card { 
+        background: #d3dce6; padding: 12px; border-radius: 20px; 
+        text-align: center; display: flex; flex-direction: column;
+    }
+    
+    /* ইমেজ লম্বা করার জন্য height বাড়ানো হয়েছে */
+    .product-img { width: 100%; height: 160px; object-fit: cover; border-radius: 15px; margin-bottom: 10px; }
+    
+    .product-title { font-size: 14px; font-weight: bold; margin: 5px 0; }
+    .price-text { font-size: 14px; color: #1a2a6c; margin: 2px 0; }
+    .cashback-text { font-size: 12px; color: #27ae60; font-weight: bold; margin-bottom: 8px; }
+    
+    /* বাটন ডিজাইন */
+    .order-btn-custom { 
+        background: #5a189a; color: white; border: none; padding: 8px; 
+        border-radius: 15px; cursor: pointer; font-size: 13px; font-weight: bold;
+    }
+
+    /* কার্ডের ভেতরের টেক্সট এবং বাটনের স্টাইল */
+    .product-title { 
+        font-size: 16px; 
+        font-weight: 700; 
+        color: #2d3436; 
+        margin-bottom: 8px; 
+        display: block;
+    }
+
+    .price-text { 
+        font-size: 15px; 
+        color: #636e72; 
+        margin: 2px 0; 
+    }
+
+    .cashback-text { 
+        font-size: 14px; 
+        color: #00b894; 
+        font-weight: 600; 
+        margin-bottom: 12px; 
+        background: #e0f2f1; /* হালকা ব্যাকগ্রাউন্ড কালার */
+        padding: 4px 8px;
+        border-radius: 6px;
+        display: inline-block;
+    }
+
+    .order-btn-custom { 
+        background: linear-gradient(135deg, #6c5ce7, #a29bfe); /* প্রিমিয়াম গ্রেডিয়েন্ট বাটন */
+        color: white; 
+        border: none; 
+        padding: 10px 20px; 
+        border-radius: 12px; 
+        cursor: pointer; 
+        font-size: 14px; 
+        font-weight: bold;
+        transition: transform 0.2s;
+        box-shadow: 0 4px 6px rgba(108, 92, 231, 0.3);
+    }
+
+    .order-btn-custom:active { transform: scale(0.95); } /* ক্লিক করলে বাটনটি একটু ছোট হবে */
+</style>
+
+
     </style>
 </head>
 <body>
@@ -30,59 +88,25 @@
         ৳ <span id="balance-display">0.00</span>
     </div>
 </div>
+    <input type="text" class="search-box" placeholder="Search for a shop">
 
-
-    <div class="search-container">
-        <input type="text" class="search-box" placeholder="সার্চ করুন পছন্দের পণ্য...">
-    </div>
-
-    <div class="product-grid">
-    <!-- প্রোডাক্ট ১ -->
-    <div class="product-card">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/tenda.jpg" class="product-img">
-        <p><b>Tenda Router</b></p>
-        <div class="price">৳ 1,200</div>
-        <div class="cashback">Cashback: ৳ 50</div>
-        <button class="order-btn" onclick="openModal('Tenda Router', 50)">Order Now</button>
-    </div>
-    <!-- প্রোডাক্ট ২ -->
-    <div class="product-card">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/tenda2.jpeg" class="product-img">
-        <p><b>Tenda Router 2</b></p>
-        <div class="price">৳ 1,400</div>
-        <div class="cashback">Cashback: ৳ 70</div>
-        <button class="order-btn" onclick="openModal('Tenda Router 2', 70)">Order Now</button>
-    </div>
-    <!-- প্রোডাক্ট ৩ -->
-    <div class="product-card">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/wgp.jpeg" class="product-img">
-        <p><b>WGP UPS</b></p>
-        <div class="price">৳ 2,500</div>
-        <div class="cashback">Cashback: ৳ 100</div>
-        <button class="order-btn" onclick="openModal('WGP UPS', 100)">Order Now</button>
-    </div>
-    <!-- প্রোডাক্ট ৪ -->
-    <div class="product-card">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/wgp2.jpeg" class="product-img">
-        <p><b>WGP UPS 2</b></p>
-        <div class="price">৳ 2,800</div>
-        <div class="cashback">Cashback: ৳ 120</div>
-        <button class="order-btn" onclick="openModal('WGP UPS 2', 120)">Order Now</button>
-    </div>
+    <div class="product-grid" id="product-container">
+    <!-- এখানে ডাইনামিকলি প্রোডাক্ট আসবে -->
 </div>
 
-<!-- পপআপ ফর্ম -->
-<div id="orderModal" class="modal">
-    <div class="modal-content">
+
+<div id="orderModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
+    <div class="modal-content" style="background:white; padding:20px; border-radius:20px; width:80%;">
         <h3>অর্ডার ফর্ম</h3>
-        <input type="text" id="userName" placeholder="আপনার নাম">
-        <input type="text" id="userPhone" placeholder="আপনার ফোন নম্বর">
-        <input type="text" id="userAddress" placeholder="আপনার ঠিকানা">
-        <!-- এখানে sendToWhatsApp এর বদলে নতুন ডাটাবেস ফাংশনটি কাজ করবে -->
-        <button class="order-btn" onclick="sendToWhatsApp()">Confirm Order</button>
-        <button class="order-btn" style="background:#ff4757" onclick="closeModal()">Cancel</button>
+        <input type="text" id="userName" placeholder="আপনার নাম" style="width:100%; margin-bottom:10px;">
+        <input type="text" id="userPhone" placeholder="আপনার ফোন নম্বর" style="width:100%; margin-bottom:10px;">
+        <input type="text" id="userAddress" placeholder="আপনার এলাকা বা গ্রাম" style="width:100%; margin-bottom:10px;">
+        
+        <button class="order-btn-custom" onclick="sendToWhatsApp()" style="width:100%; margin-bottom:10px;">Confirm Order</button>
+        <button class="order-btn-custom" style="background:#ff4757; width:100%;" onclick="closeModal()">Cancel</button>
     </div>
 </div>
+
 
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -92,12 +116,33 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // ব্যালেন্স লাইভ আপডেট
+    // ১. ব্যালেন্স লাইভ আপডেট (আগের লজিক)
     onValue(ref(db, 'users/balance'), (snapshot) => {
         const balance = snapshot.val() || 0;
         document.getElementById('balance-display').innerText = parseFloat(balance).toLocaleString();
     });
 
+    // ২. ডেটাবেস থেকে প্রোডাক্ট অটোমেটিক লোড করা (নতুন লজিক)
+    onValue(ref(db, 'products'), (snapshot) => {
+        const container = document.querySelector('.product-grid');
+        container.innerHTML = ''; // আগের সব কার্ড মুছে নতুনগুলো আনবে
+
+        snapshot.forEach((childSnapshot) => {
+            const data = childSnapshot.val();
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <img src="${data.imageUrl}" class="product-img">
+                <span class="product-title">${data.name}</span>
+                <div class="price-text">Price: ৳ ${data.price}</div>
+                <div class="cashback-text">Cashback: ৳ ${data.cashback}</div>
+                <button class="order-btn-custom" onclick="openModal('${data.name}', ${data.cashback})">Order Now</button>
+            `;
+            container.appendChild(card);
+        });
+    });
+
+    // ৩. মোডাল লজিক (আগের লজিক ঠিক আছে)
     let currentProduct = "";
     let currentCashback = 0;
 
@@ -111,68 +156,47 @@
         document.getElementById('orderModal').style.display = 'none'; 
     };
     
-        window.sendToWhatsApp = async () => {
+    // ৪. হোয়াটসঅ্যাপ ও অর্ডার লজিক (আগের লজিক ঠিক আছে)
+    window.sendToWhatsApp = async () => {
         let name = document.getElementById('userName').value;
         let phone = document.getElementById('userPhone').value;
         let address = document.getElementById('userAddress').value;
 
-        // ভ্যালিডেশন
         if (!name || !phone || !address) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'তথ্য ভুল!',
-                text: 'দয়া করে সব তথ্য পূরণ করুন!',
-                confirmButtonColor: '#7b2cbf'
-            });
+            Swal.fire({ icon: 'warning', title: 'তথ্য ভুল!', text: 'দয়া করে সব তথ্য পূরণ করুন!' });
             return;
         }
 
-        // বর্তমান সময় এবং তারিখ
         const now = new Date();
-        const dateTime = now.toLocaleString('bn-BD'); // বাংলাদেশী ফরম্যাটে তারিখ ও সময়
+        const dateTime = now.toLocaleString('bn-BD');
 
-        // লোডিং পপআপ
-        Swal.fire({
-            title: 'অর্ডার প্রসেস হচ্ছে...',
-            text: 'অনুগ্রহ করে অপেক্ষা করুন',
-            allowOutsideClick: false,
-            didOpen: () => { Swal.showLoading(); }
-        });
+        Swal.fire({ title: 'অর্ডার প্রসেস হচ্ছে...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
         try {
-            // Firebase-এ ডেটা পাঠানো
-            const newOrderRef = push(ref(db, 'orders'));
-            await update(newOrderRef, {
+            await update(push(ref(db, 'orders')), {
                 product: currentProduct,
                 userName: name,
                 userPhone: phone,
                 userAddress: address,
                 cashback: currentCashback,
                 status: 'pending',
-                orderTime: dateTime // সময় ও তারিখ এখানে সেভ হচ্ছে
+                orderTime: dateTime
             });
 
-            // সাকসেস মেসেজ
-            Swal.fire({
-                icon: 'success',
-                title: 'অর্ডার সফল!',
-                text: 'আপনার অর্ডারটি জমা হয়েছে। অ্যাডমিন অ্যাপ্রুভ করার পর ব্যালেন্স যোগ হবে।',
-                confirmButtonColor: '#7b2cbf'
-            });
-            
+            // হোয়াটসঅ্যাপে মেসেজ পাঠানো
+            let msg = `নতুন অর্ডার: ${currentProduct}%0Aনাম: ${name}%0Aফোন: ${phone}%0Aঠিকানা: ${address}`;
+            window.open(`https://wa.me/8801877059049?text=${msg}`, '_blank');
+
+            Swal.fire({ icon: 'success', title: 'অর্ডার সফল!', text: 'অর্ডারটি জমা হয়েছে।' });
             closeModal();
-            // ইনপুট ফিল্ড ক্লিয়ার করা
             document.getElementById('userName').value = '';
             document.getElementById('userPhone').value = '';
             document.getElementById('userAddress').value = '';
         } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'ভুল হয়েছে!',
-                text: 'অর্ডারটি জমা দিতে সমস্যা হচ্ছে, আবার চেষ্টা করুন।'
-            });
+            Swal.fire({ icon: 'error', title: 'ভুল হয়েছে!', text: 'আবার চেষ্টা করুন।' });
         }
     };
+
 
 
 
