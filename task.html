@@ -609,6 +609,8 @@ if (!userPhone) {
     });
 
 window.logout = () => {
+
+    localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("userPhone");
     localStorage.removeItem("userName");
     localStorage.removeItem("userPass");
