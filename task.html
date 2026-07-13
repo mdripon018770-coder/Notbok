@@ -631,21 +631,47 @@ whatsappBtn.addEventListener('click', () => {
 });
 
 // ব্যানার স্লাইড শো ফাংশন
-let currentIndex = 0;
-const slides = document.querySelectorAll('#slider-container img');
-const totalSlides = slides.length;
-
-function showNextSlide() {
-    currentIndex++;
-    if (currentIndex >= totalSlides) {
-        currentIndex = 0; // আবার শুরুতে ফিরে আসবে
+// Firebase থেকে ব্যানার লোড এবং স্লাইডার কন্ট্রোল
+onValue(ref(db, 'banners'), (snapshot) => {
+    const banners = snapshot.val();
+    const sliderContainer = document.getElementById('slider-container');
+    sliderContainer.innerHTML = ''; // আগের সব ইমেজ মুছে ফেলা
+    
+    if (banners) {
+        Object.values(banners).forEach(banner => {
+            const img = document.createElement('img');
+            img.src = banner.imageUrl;
+            img.style.minWidth = "100%";
+            img.style.height = "100%";
+            img.style.objectFit = "cover";
+            sliderContainer.appendChild(img);
+        });
     }
-    const offset = -currentIndex * 100; // ১০০% করে স্লাইড হবে
-    document.getElementById('slider-container').style.transform = `translateX(${offset}%)`;
+
+    // ইমেজ লোড হওয়ার পর স্লাইডার লজিক শুরু করা
+    let currentIndex = 0;
+    const slides = sliderContainer.querySelectorAll('img');
+    const totalSlides = slides.length;
+
+    // স্লাইডারের ওই অংশটি আপডেট করুন
+function showNextSlide() {
+    const slides = sliderContainer.querySelectorAll('img'); // নতুন করে ইমেজ কাউন্ট করুন
+    if (slides.length === 0) return; 
+    
+    currentIndex++;
+    if (currentIndex >= slides.length) {
+        currentIndex = 0;
+    }
+    const offset = -currentIndex * 100;
+    sliderContainer.style.transform = `translateX(${offset}%)`;
 }
 
-// প্রতি ৩ সেকেন্ড (৩০০০ মিলি-সেকেন্ড) পর পর স্লাইড হবে
-setInterval(showNextSlide, 3000);
+
+    // আগের কোনো ইন্টারভ্যাল থাকলে তা ক্লিয়ার করা (যদি প্রয়োজন হয়)
+    if (window.bannerInterval) clearInterval(window.bannerInterval);
+    window.bannerInterval = setInterval(showNextSlide, 3000);
+});
+
 
 // টাস্ক লক চেক ফাংশন
 window.handleTaskClick = async (taskId, url) => {
@@ -673,6 +699,33 @@ onValue(ref(db, 'tasks'), (snapshot) => {
             lockIcon.style.display = tasks[taskId].locked ? 'inline' : 'none';
         }
     });
+});
+
+// হিস্ট্রি লোড করার জন্য (ডিপোজিট হিস্ট্রি)
+// হিস্ট্রি লোড করার জন্য আপডেট লজিক
+onValue(ref(db, 'depositRequests'), (snapshot) => {
+    const data = snapshot.val();
+    const historyList = document.getElementById('history-list');
+    historyList.innerHTML = '';
+    
+    if (!data) { historyList.innerHTML = "No history found."; return; }
+
+    // ডাটাগুলোকে রিভার্স অর্ডারে দেখানোর জন্য
+    const entries = Object.entries(data).reverse(); 
+    let found = false;
+
+    for (let [key, val] of entries) {
+        if (val.userId === userPhone) {
+            found = true;
+            const div = document.createElement('div');
+            div.className = 'content-box';
+            div.innerHTML = `<div><b>${val.method}</b> - ৳${val.amount}</div>
+                             <div style="font-size:12px; color:${val.status === 'approved' ? 'green' : (val.status === 'pending' ? 'orange' : 'red')}">
+                             Status: ${val.status}</div>`;
+            historyList.appendChild(div);
+        }
+    }
+    if(!found) historyList.innerHTML = "No history found.";
 });
 
 
