@@ -238,21 +238,55 @@
 
     <h3 style="margin-top: 20px;">Popular Tasks</h3>
 
-    <div class="task-item" onclick="window.open('https://mdripon018770-coder.github.io/Notbok/ponno.html', '_blank')">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/ponno.jpeg" class="task-img">
-        <div style="flex: 1;"><b>পণ্য ক্রয় করুন</b><br><small>সেরা দামে কিনুন</small></div>
-        <div style="color: #2e7d32; font-weight: bold;">৳ 10.00</div>
+<!-- প্রতিটি টাস্কে এখন handleTaskClick ফাংশন কাজ করবে -->
+<div class="task-item" onclick="handleTaskClick('ponno', 'https://mdripon018770-coder.github.io/Notbok/ponno.html')">
+    <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/ponno.jpeg" class="task-img">
+    <div style="flex: 1;">
+        <b>পণ্য ক্রয় করুন</b> <span id="lock-ponno" style="display:none; color:red;">🔒</span><br><small>সেরা দামে কিনুন</small>
     </div>
-    <div class="task-item" onclick="window.open('https://mdripon018770-coder.github.io/Notbok/youtube.html', '_blank')">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/youtube.jpg" class="task-img">
-        <div style="flex: 1;"><b>Watch YouTube Videos</b><br><small>Earn money</small></div>
-        <div style="color: #2e7d32; font-weight: bold;">৳ 50.00</div>
-    </div>
-    <div class="task-item"><img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/fb.jpeg" class="task-img"><div style="flex: 1;"><b>Facebook Like & Follow</b><br><small>Earn money</small></div><div style="color: #2e7d32; font-weight: bold;">৳ 3.00</div></div>
-    <div class="task-item"><div class="icon-square" style="background: #e1306c;">IG</div><div style="flex: 1;"><b>Instagram Follow</b><br><small>Earn money</small></div><div style="color: #2e7d32; font-weight: bold;">৳ 4.00</div></div>
-    <div class="task-item"><div class="icon-square" style="background: #000000;">TT</div><div style="flex: 1;"><b>TikTok Video Like</b><br><small>Earn money</small></div><div style="color: #2e7d32; font-weight: bold;">৳ 3.50</div></div>
-    <div class="task-item"><div class="icon-square" style="background: #0088cc;">TG</div><div style="flex: 1;"><b>Join Telegram Channel</b><br><small>Earn money</small></div><div style="color: #2e7d32; font-weight: bold;">৳ 2.00</div></div>
+    <div style="color: #2e7d32; font-weight: bold;">৳ 10.00</div>
 </div>
+
+<div class="task-item" onclick="handleTaskClick('youtube', 'https://mdripon018770-coder.github.io/Notbok/youtube.html')">
+    <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/youtube.jpg" class="task-img">
+    <div style="flex: 1;">
+        <b>Watch YouTube Videos</b> <span id="lock-youtube" style="display:none; color:red;">🔒</span><br><small>Earn money</small>
+    </div>
+    <div style="color: #2e7d32; font-weight: bold;">৳ 50.00</div>
+</div>
+
+<div class="task-item" onclick="handleTaskClick('facebook', '#')">
+    <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/fb.jpeg" class="task-img">
+    <div style="flex: 1;">
+        <b>Facebook Like & Follow</b> <span id="lock-facebook" style="display:none; color:red;">🔒</span><br><small>Earn money</small>
+    </div>
+    <div style="color: #2e7d32; font-weight: bold;">৳ 3.00</div>
+</div>
+
+<div class="task-item" onclick="handleTaskClick('instagram', '#')">
+    <div class="icon-square" style="background: #e1306c;">IG</div>
+    <div style="flex: 1;">
+        <b>Instagram Follow</b> <span id="lock-instagram" style="display:none; color:red;">🔒</span><br><small>Earn money</small>
+    </div>
+    <div style="color: #2e7d32; font-weight: bold;">৳ 4.00</div>
+</div>
+
+<div class="task-item" onclick="handleTaskClick('tiktok', '#')">
+    <div class="icon-square" style="background: #000000;">TT</div>
+    <div style="flex: 1;">
+        <b>TikTok Video Like</b> <span id="lock-tiktok" style="display:none; color:red;">🔒</span><br><small>Earn money</small>
+    </div>
+    <div style="color: #2e7d32; font-weight: bold;">৳ 3.50</div>
+</div>
+
+<div class="task-item" onclick="handleTaskClick('telegram', '#')">
+    <div class="icon-square" style="background: #0088cc;">TG</div>
+    <div style="flex: 1;">
+        <b>Join Telegram Channel</b> <span id="lock-telegram" style="display:none; color:red;">🔒</span><br><small>Earn money</small>
+    </div>
+    <div style="color: #2e7d32; font-weight: bold;">৳ 2.00</div>
+</div>
+
 
 <!-- বটম নেভিগেশন বার -->
 <div class="bottom-nav">
@@ -612,6 +646,34 @@ function showNextSlide() {
 
 // প্রতি ৩ সেকেন্ড (৩০০০ মিলি-সেকেন্ড) পর পর স্লাইড হবে
 setInterval(showNextSlide, 3000);
+
+// টাস্ক লক চেক ফাংশন
+window.handleTaskClick = async (taskId, url) => {
+    const taskSnapshot = await get(ref(db, 'tasks/' + taskId));
+    const taskData = taskSnapshot.val() || { locked: false };
+
+    if (taskData.locked) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'মেনটেন্যান্স চলছে!',
+            text: 'এই টাস্কটিতে বর্তমানে কাজ চলছে, সমাধান হতে কিছু সময় লাগতে পারে।',
+            confirmButtonColor: '#7b2cbf'
+        });
+    } else {
+        if(url !== '#') window.open(url, '_blank');
+    }
+};
+
+// অটোমেটিক লক আইকন আপডেট করার জন্য লিসেনার
+onValue(ref(db, 'tasks'), (snapshot) => {
+    const tasks = snapshot.val() || {};
+    Object.keys(tasks).forEach(taskId => {
+        const lockIcon = document.getElementById('lock-' + taskId);
+        if (lockIcon) {
+            lockIcon.style.display = tasks[taskId].locked ? 'inline' : 'none';
+        }
+    });
+});
 
 
 </script>
