@@ -375,16 +375,16 @@
 
 
     <div style="display: flex; flex-direction: column; gap: 10px;">
-    <div class="menu-card" onclick="openPopup('add-balance-popup'); closeAllPopups()">Add Balance</div>
-    
-    <div class="menu-card" onclick="openPopup('withdraw-popup')">Withdraw Funds</div>
-    <div class="menu-card" onclick="openPopup('send-money-popup')">Send Money</div>
-    <div class="menu-card" onclick="openPopup('coming-soon-popup')">Balance Transfer</div>
-    <div class="menu-card" onclick="openPopup('coming-soon-popup')">Mobile Recharge</div>
-    <div class="menu-card" onclick="openPopup('coming-soon-popup')">Refer</div>
-    <div class="menu-card" onclick="openPopup('coming-soon-popup')">Setting</div>
-    <div class="menu-card" onclick="openPopup('coming-soon-popup')">Privacy Policy</div>
-    <div class="menu-card" onclick="openPopup('coming-soon-popup')">About</div>
+    <!-- প্রতিটি মেনুতে closeAllPopups() যোগ করা হয়েছে -->
+    <div class="menu-card" onclick="closeAllPopups(); openPopup('add-balance-popup')">Add Balance</div>
+    <div class="menu-card" onclick="closeAllPopups(); openPopup('withdraw-popup')">Withdraw Funds</div>
+    <div class="menu-card" onclick="closeAllPopups(); openPopup('send-money-popup')">Send Money</div>
+    <div class="menu-card" onclick="closeAllPopups(); openPopup('coming-soon-popup')">Balance Transfer</div>
+    <div class="menu-card" onclick="closeAllPopups(); openPopup('coming-soon-popup')">Mobile Recharge</div>
+    <div class="menu-card" onclick="closeAllPopups(); openPopup('coming-soon-popup')">Refer</div>
+    <div class="menu-card" onclick="closeAllPopups(); openPopup('coming-soon-popup')">Setting</div>
+    <div class="menu-card" onclick="closeAllPopups(); openPopup('coming-soon-popup')">Privacy Policy</div>
+    <div class="menu-card" onclick="closeAllPopups(); openPopup('coming-soon-popup')">About</div>
 
     <div style="margin-top: 20px;">
         <button onclick="logout()" style="width: 100%; padding: 12px; border: none; border-radius: 12px; background: #27ae60; color: white; font-weight: bold; font-size: 15px; cursor: pointer;">
@@ -486,14 +486,15 @@
     </div>
 </div>
 
-<div id="send-money-popup" class="side-popup" style="display:none;">
+<div id="send-money-popup" class="side-popup" style="display:none; position: fixed; bottom: 0; left: 0; width: 100%; height: auto; z-index: 9999; border-radius: 25px 25px 0 0; padding: 20px; box-sizing: border-box; background: white;">
     <h3>Send Money</h3>
     <input type="number" id="sm-number" placeholder="Receiver Phone Number">
     <input type="number" id="sm-amount" placeholder="Amount">
     <input type="password" id="sm-pass" placeholder="Password">
-    <button onclick="window.confirmSendMoney()">Send Now</button>
-    <button onclick="document.getElementById('send-money-popup').style.display='none'">Close</button>
+    <button onclick="confirmSendMoney(event)" style="width: 100%; padding: 12px; border: none; border-radius: 10px; background: #7b2cbf; color: white; cursor: pointer;">Send Now</button>
+    <button onclick="closeAllPopups()" style="width: 100%; padding: 12px; border: none; border-radius: 10px; background: #e74c3c; color: white; margin-top: 10px; cursor: pointer;">Close</button>
 </div>
+
 
 
 <script type="module">
@@ -595,13 +596,18 @@ window.confirmWithdraw = async () => {
 window.logout = () => { localStorage.clear(); window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html"); };
 
 window.openPopup = (popupId) => {
+    // 1. Add Balance এর জন্য লজিক
     if (popupId === 'add-balance-popup') {
-        document.getElementById('add-balance-popup').style.right = '0';
+        const popup = document.getElementById('add-balance-popup');
+        popup.style.display = 'block';
+        setTimeout(() => { popup.style.right = '0'; }, 10);
         document.getElementById('overlay').style.display = 'block';
-    } else {
+    } 
+    // 2. Send Money বা অন্য পপআপের জন্য লজিক
+    else {
         const popup = document.getElementById(popupId);
         if (popup) {
-            popup.style.display = 'block';
+            popup.style.display = 'block'; // এখানে এটি থাকা জরুরি
             document.getElementById('overlay').style.display = 'block';
             popup.style.animation = 'slideUp 0.3s forwards';
         } else if (popupId === 'coming-soon-popup') {
@@ -610,11 +616,20 @@ window.openPopup = (popupId) => {
     }
 };
 
+
 window.closeAllPopups = () => {
     document.querySelectorAll('.side-popup, #payment-form-popup, #withdraw-popup').forEach(p => p.style.display = 'none');
-    document.getElementById('add-balance-popup').style.right = '-100%';
+    
+    // Add Balance এর জন্য আলাদা হ্যান্ডেল
+    const addBalPopup = document.getElementById('add-balance-popup');
+    addBalPopup.style.right = '-100%';
+    setTimeout(() => {
+        addBalPopup.style.display = 'none';
+    }, 400); // অ্যানিমেশনের সময় অনুযায়ী
+    
     document.getElementById('overlay').style.display = 'none';
 };
+
 
 window.openPaymentForm = (m, i) => { 
     document.getElementById('payment-title').innerText = m; 
@@ -628,25 +643,67 @@ window.confirmSendMoney = async (event) => {
     const amount = parseFloat(document.getElementById('sm-amount').value);
     const password = document.getElementById('sm-pass').value;
 
-    if (!receiverPhone || isNaN(amount) || !password) { Swal.fire('Error', 'সব তথ্য পূরণ করুন!', 'error'); return; }
-    btn.disabled = true; btn.innerText = "Processing...";
-
-    const senderData = (await get(userRef)).val();
-    if (senderData.password !== password) { Swal.fire('Error', 'পাসওয়ার্ড ভুল!', 'error'); btn.disabled = false; btn.innerText = "Send Now"; return; }
-    if (amount > parseFloat(senderData.balance)) { Swal.fire('Error', 'ব্যালেন্স নেই!', 'error'); btn.disabled = false; btn.innerText = "Send Now"; return; }
-
-    const rRef = ref(db, 'users/' + receiverPhone);
-    const rSnap = await get(rRef);
-    if (!rSnap.exists()) { Swal.fire('Error', 'ইউজার নেই!', 'error'); btn.disabled = false; btn.innerText = "Send Now"; return; }
-
-    await update(userRef, { balance: parseFloat(senderData.balance) - amount });
-    await update(rRef, { balance: parseFloat(rSnap.val().balance) + amount });
-    await push(ref(db, 'history/' + userPhone), { type: 'Sent', to: receiverPhone, amount, timestamp: Date.now() });
+    if (!receiverPhone || isNaN(amount) || !password) { 
+        Swal.fire('Error', 'সব তথ্য পূরণ করুন!', 'error'); 
+        return; 
+    }
     
-    Swal.fire('Success', 'টাকা পাঠানো হয়েছে!', 'success');
-    document.getElementById('send-money-popup').style.display = 'none';
-    btn.disabled = false; btn.innerText = "Send Now";
+    // নিজের নাম্বারে টাকা পাঠানো রোধ করা (ঐচ্ছিক)
+    if (receiverPhone === window.userPhone) {
+        Swal.fire('Error', 'আপনি নিজের নাম্বারে টাকা পাঠাতে পারবেন না!', 'error');
+        return;
+    }
+
+    btn.disabled = true; 
+    btn.innerText = "Processing...";
+
+    try {
+        const senderData = (await get(userRef)).val();
+        
+        if (senderData.password !== password) { 
+            Swal.fire('Error', 'পাসওয়ার্ড ভুল!', 'error'); 
+            btn.disabled = false; btn.innerText = "Send Now"; return; 
+        }
+        
+        if (amount > parseFloat(senderData.balance)) { 
+            Swal.fire('Error', 'পর্যাপ্ত ব্যালেন্স নেই!', 'error'); 
+            btn.disabled = false; btn.innerText = "Send Now"; return; 
+        }
+
+        const rRef = ref(db, 'users/' + receiverPhone);
+        const rSnap = await get(rRef);
+        
+        if (!rSnap.exists()) { 
+            Swal.fire('Error', 'এই নাম্বারে কোনো ইউজার নেই!', 'error'); 
+            btn.disabled = false; btn.innerText = "Send Now"; return; 
+        }
+
+        // ব্যালেন্স আপডেট
+        await update(userRef, { balance: parseFloat(senderData.balance) - amount });
+        await update(rRef, { balance: parseFloat(rSnap.val().balance) + amount });
+        
+        // হিস্ট্রি যোগ করা
+        await push(ref(db, 'history/' + userPhone), { type: 'Sent', to: receiverPhone, amount, timestamp: Date.now() });
+        await push(ref(db, 'history/' + receiverPhone), { type: 'Received', from: userPhone, amount, timestamp: Date.now() });
+        
+        Swal.fire('Success', 'টাকা সফলভাবে পাঠানো হয়েছে!', 'success');
+        
+        // পপআপ বন্ধ করা
+        closeAllPopups();
+        
+        // ইনপুট ফিল্ড ক্লিয়ার করা
+        document.getElementById('sm-number').value = '';
+        document.getElementById('sm-amount').value = '';
+        document.getElementById('sm-pass').value = '';
+        
+    } catch (error) {
+        Swal.fire('Error', 'কিছু ভুল হয়েছে, আবার চেষ্টা করুন!', 'error');
+    }
+    
+    btn.disabled = false; 
+    btn.innerText = "Send Now";
 };
+
 
 const updateHistory = async () => {
     const historyList = document.getElementById('history-list');
