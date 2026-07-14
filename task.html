@@ -385,7 +385,9 @@
 <div class="menu-card" onclick="document.getElementById('transfer-popup').style.display='flex'; document.getElementById('custom-menu-popup').style.display='none'">Balance Transfer</div>
 
 <div class="menu-card">Mobile Recharge</div>
-<div class="menu-card">Refer</div>
+
+<div class="menu-card" onclick="openPopup('refer-popup')">Refer & Earn</div>
+
 <div class="menu-card">Setting</div>
 <div class="menu-card">Privacy Policy</div>
 <div class="menu-card">About</div>
@@ -525,6 +527,21 @@
             <input type="number" id="tf-amount" placeholder="Enter amount" style="width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
         </div>
         <button onclick="confirmTransfer()" style="width: 100%; padding: 15px; background: #5a189a; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">TRANSFER NOW</button>
+    </div>
+</div>
+
+<div id="refer-popup" class="side-popup" style="display:none; position: fixed; bottom: 0; left: 0; width: 100%; height: auto; z-index: 10000; background: white; border-radius: 25px 25px 0 0; padding: 20px;">
+    <div style="text-align: center;">
+        <h3>রেফার করুন</h3>
+        
+        <!-- এই লাইনটি আপডেট করা হলো -->
+        <p id="refer-reward-text">অফার লোড হচ্ছে...</p>
+        
+        <div style="margin: 20px 0; display: flex; justify-content: center; gap: 15px;">
+            <button onclick="shareApp()" class="pay-card" style="padding: 10px 20px;">Share Now</button>
+        </div>
+        
+        <button onclick="closeAllPopups()" style="width: 100%; padding: 12px; background: #7b2cbf; color: white; border-radius: 10px; border: none;">বন্ধ করুন</button>
     </div>
 </div>
 
@@ -751,6 +768,68 @@ window.confirmTransfer = async () => {
     Swal.fire('Success', 'ট্রান্সফার রিকোয়েস্ট সফল!', 'success');
     document.getElementById('transfer-popup').style.display = 'none';
 };
+
+
+// ডাটাবেজে শেয়ার কনফিগ সেট করার ফাংশন
+window.initShareConfig = async () => {
+    const configRef = ref(db, 'shareConfig');
+    await update(configRef, {
+        reward: "50",
+        shareMessage: "আমাদের অ্যাপটি ব্যবহার করুন এবং ৫০ টাকা ক্যাশব্যাক পান!",
+        appLink: "https://mdripon018770-coder.github.io/Notbok/", // এই লাইনটি যোগ করে দিন
+        platforms: {
+            whatsapp: true,
+            facebook: true,
+            imo: true,
+            telegram: true
+        }
+    });
+    console.log("Share Config successfully initialized with Link!");
+};
+
+
+window.shareApp = async () => {
+    // ১. ফায়ারবেস থেকে লেটেস্ট কনফিগ নিয়ে আসা
+    const snapshot = await get(ref(db, 'shareConfig'));
+    const config = snapshot.val();
+    
+    // যদি ডাটাবেজে লিংক না থাকে তবে ডিফল্ট লিংক ব্যবহার হবে
+    const finalUrl = config.appLink || 'https://mdripon018770-coder.github.io/Notbok/';
+    const message = config.shareMessage || 'আমাদের অ্যাপ ব্যবহার করুন!';
+
+    const shareData = {
+        title: 'Amar Bazar App',
+        text: message + ' আপনার রেফারেল কোড: ' + userPhone,
+        url: finalUrl + '?ref=' + userPhone
+    };
+
+    try {
+        if (navigator.share) {
+            await navigator.share(shareData);
+        } else {
+            // যদি ব্রাউজারে শেয়ার অপশন কাজ না করে, লিংকটি কপি করার অপশন দিন
+            navigator.clipboard.writeText(shareData.url);
+            Swal.fire('লিংক কপি হয়েছে!', 'বন্ধুদের সাথে শেয়ার করুন।', 'success');
+        }
+    } catch (err) {
+        console.log('Share failed', err);
+    }
+};
+
+// ১. ফাংশনটি স্ক্রিপ্টের নিচের দিকে বসান
+window.loadReferDetails = async () => {
+    const snap = await get(ref(db, 'shareConfig'));
+    const config = snap.val();
+    if(config) {
+        const el = document.getElementById('refer-reward-text');
+        if(el) el.innerHTML = `প্রতি রেফারে পান <b>৳${config.reward} ক্যাশব্যাক!</b>`;
+    }
+};
+
+// ২. অ্যাপ লোড হওয়ার সময় ডাটা চেক করার জন্য এটি ব্যবহার করুন
+onValue(ref(db, 'shareConfig'), (snapshot) => {
+    loadReferDetails();
+});
 
 
 window.confirmSendMoney = async () => {
