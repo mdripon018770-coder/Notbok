@@ -56,102 +56,110 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Auto Fill
+// =======================
+// AUTO LOGIN
+// =======================
 window.onload = function () {
-    if (localStorage.getItem("userPhone")) {
-        document.getElementById("phone").value = localStorage.getItem("userPhone");
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    if (isLoggedIn === "true") {
+        window.location.replace("https://mdripon018770-coder.github.io/Notbok/task.html");
+        return;
     }
+    document.getElementById("phone").value = localStorage.getItem("userPhone") || "";
 };
 
-window.openRegister = () => {
-    document.getElementById("regModal").style.display = "flex";
-};
+// =======================
+// REGISTER POPUP
+// =======================
+window.openRegister = () => { document.getElementById("regModal").style.display = "flex"; };
+window.closeRegister = () => { document.getElementById("regModal").style.display = "none"; };
 
-window.closeRegister = () => {
-    document.getElementById("regModal").style.display = "none";
-};
-
-// Register
+// =======================
+// REGISTER (Updated with regTime)
+// =======================
 window.register = async () => {
-
     const name = document.getElementById("regName").value.trim();
     const phone = document.getElementById("regPhone").value.trim();
     const pass = document.getElementById("regPass").value;
     const confirm = document.getElementById("regConfirm").value;
 
     if (!name || !phone || !pass || !confirm) {
-        Swal.fire("Error", "সব তথ্য পূরণ করুন", "error");
+        Swal.fire("Error","সব তথ্য পূরণ করুন","error");
         return;
     }
 
-    if (pass !== confirm) {
-        Swal.fire("Error", "Passwords do not match!", "error");
+    if(pass !== confirm){
+        Swal.fire("Error","Passwords do not match!","error");
         return;
     }
 
-    const userRef = ref(db, "users/" + phone);
+    const userRef = ref(db,"users/"+phone);
     const snap = await get(userRef);
 
-    if (snap.exists()) {
-        Swal.fire("Error", "এই নম্বরে ইতোমধ্যে অ্যাকাউন্ট আছে!", "error");
+    if(snap.exists()){
+        Swal.fire("Error","এই নম্বরে ইতোমধ্যে অ্যাকাউন্ট আছে!","error");
         return;
     }
 
-    await set(userRef, {
+    // regTime যোগ করা হয়েছে
+    await set(userRef,{
         name: name,
         balance: 0,
-        password: pass
+        password: pass,
+        regTime: Date.now() 
     });
 
-    localStorage.setItem("userName", name);
     localStorage.setItem("userPhone", phone);
+    localStorage.setItem("userName", name);
     localStorage.setItem("userPass", pass);
+    localStorage.setItem("isLoggedIn", "true");
 
-    Swal.fire("Success", "Registration Successful!", "success").then(() => {
-        closeRegister();
-        document.getElementById("phone").value = phone;
-        document.getElementById("password").value = pass;
+    Swal.fire("Success","Registration Successful!","success").then(()=>{
+        window.location.replace("https://mdripon018770-coder.github.io/Notbok/task.html");
     });
-
 };
 
-// Login
+// =======================
+// LOGIN (Updated)
+// =======================
 window.login = async () => {
+    const phone = document.getElementById("phone").value.trim();
+    const pass = document.getElementById("password").value;
 
-    const phone = document.getElementById('phone').value.trim();
-    const pass = document.getElementById('password').value;
-
-    const snapshot = await get(ref(db, "users/" + phone));
-
-    if (!snapshot.exists()) {
-        Swal.fire({
-            icon: "error",
-            title: "Failed",
-            text: "Account not found!"
-        });
+    if (!phone || !pass) {
+        Swal.fire("Error", "Phone এবং Password দিন", "error");
         return;
     }
 
-    const user = snapshot.val();
+    const snap = await get(ref(db, "users/" + phone));
+
+    if (!snap.exists()) {
+        Swal.fire({ icon: "error", title: "Failed", text: "Account not found!" });
+        return;
+    }
+
+    const user = snap.val();
 
     if (user.password !== pass) {
-        Swal.fire({
-            icon: "error",
-            title: "Failed",
-            text: "Wrong password!"
-        });
+        Swal.fire({ icon: "error", title: "Failed", text: "Wrong password!" });
         return;
     }
 
     localStorage.setItem("userPhone", phone);
     localStorage.setItem("userName", user.name);
     localStorage.setItem("userPass", pass);
+    localStorage.setItem("isLoggedIn", "true");
 
-    window.location.href =
-    "https://mdripon018770-coder.github.io/Notbok/task.html";
+    Swal.fire({
+        icon: "success",
+        title: "Login Successful",
+        timer: 800,
+        showConfirmButton: false
+    }).then(() => {
+        window.location.replace("https://mdripon018770-coder.github.io/Notbok/task.html");
+    });
 };
 </script>
-
 
 </body>
 </html>
