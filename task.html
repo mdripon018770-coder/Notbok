@@ -197,6 +197,10 @@
     }
     .pay-card:active { transform: scale(0.95); }
 
+#history-list {
+    max-height: 400px; /* উচ্চতা ফিক্স করে দিলে স্ক্রল করতে সুবিধা হবে */
+    overflow-y: auto;
+}
 
     </style>
 </head>
@@ -447,6 +451,32 @@
         <span style="background: rgba(0,0,0,0.7); color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: bold;">Live Support</span>
     </div>
 
+<!-- Withdraw Popup -->
+<div id="withdraw-popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
+    <div style="background: white; width: 100%; max-width: 400px; padding: 20px; border-radius: 20px; position: relative;">
+        <span onclick="closeWithdrawPopup()" style="position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 24px; color: #555;">×</span>
+        <h3 style="text-align: center;">Withdraw Request</h3>
+        
+        <div style="margin-bottom: 15px;">
+            <label style="font-size: 14px;">Select Method</label>
+            <select id="wd-method" style="width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px;">
+                <option value="bKash">bKash</option>
+                <option value="Nagad">Nagad</option>
+                <option value="Rocket">Rocket</option>
+                <option value="Upay">Upay</option>
+            </select>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="font-size: 14px;">Amount</label>
+            <input type="number" id="wd-amount" placeholder="Enter amount" style="width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+        </div>
+        <div style="margin-bottom: 20px;">
+            <label style="font-size: 14px;">Your Account Number</label>
+            <input type="text" id="wd-number" placeholder="01XXXXXXXXX" style="width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+        </div>
+        <button onclick="confirmWithdraw()" style="width: 100%; padding: 15px; background: #7b2cbf; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">CONFIRM WITHDRAW</button>
+    </div>
+</div>
 
 
 <script type="module">
@@ -540,6 +570,52 @@ window.confirmDeposit = async () => {
     } else {
         Swal.fire('Error', 'সবগুলো তথ্য পূরণ করুন।', 'error');
     }
+};
+
+// উইথড্র পপআপ ওপেন ও ক্লোজ
+window.openWithdrawPopup = () => {
+    document.getElementById('withdraw-popup').style.display = 'flex';
+    document.getElementById('custom-menu-popup').style.display = 'none'; // মেনু পপআপ বন্ধ করা
+};
+
+window.closeWithdrawPopup = () => {
+    document.getElementById('withdraw-popup').style.display = 'none';
+};
+
+// উইথড্র কনফার্ম লজিক
+window.confirmWithdraw = async () => {
+    const amount = parseFloat(document.getElementById('wd-amount').value);
+    const number = document.getElementById('wd-number').value;
+    const method = document.getElementById('wd-method').value;
+
+    const snap = await get(userRef);
+    const userData = snap.val();
+
+    if (!amount || !number) {
+        Swal.fire('Error', 'সবগুলো তথ্য পূরণ করুন!', 'error');
+        return;
+    }
+
+    if (amount > parseFloat(userData.balance)) {
+        Swal.fire('Error', 'আপনার পর্যাপ্ত ব্যালেন্স নেই!', 'error');
+        return;
+    }
+
+    // ব্যালেন্স কেটে নেওয়া এবং অ্যাডমিনকে রিকোয়েস্ট পাঠানো
+    await update(userRef, { balance: parseFloat(userData.balance) - amount });
+    
+    const withdrawRef = ref(db, 'withdrawRequests');
+    await push(withdrawRef, {
+        userId: userPhone,
+        amount: amount,
+        accountNumber: number,
+        method: method,
+        status: 'pending',
+        timestamp: Date.now()
+    });
+
+    Swal.fire('Success', 'আপনার উইথড্র রিকোয়েস্টটি পাঠানো হয়েছে!', 'success');
+    closeWithdrawPopup();
 };
 
 window.logout = () => { 
@@ -701,32 +777,52 @@ onValue(ref(db, 'tasks'), (snapshot) => {
     });
 });
 
-// হিস্ট্রি লোড করার জন্য (ডিপোজিট হিস্ট্রি)
-// হিস্ট্রি লোড করার জন্য আপডেট লজিক
-onValue(ref(db, 'depositRequests'), (snapshot) => {
-    const data = snapshot.val();
+// হিস্ট্রি আপডেট লজিক
+const updateHistory = async () => {
     const historyList = document.getElementById('history-list');
-    historyList.innerHTML = '';
+    historyList.innerHTML = 'Loading...';
+
+    const depSnap = await get(ref(db, 'depositRequests'));
+    const wdSnap = await get(ref(db, 'withdrawRequests'));
     
-    if (!data) { historyList.innerHTML = "No history found."; return; }
+    const depData = depSnap.val() || {};
+    const wdData = wdSnap.val() || {};
 
-    // ডাটাগুলোকে রিভার্স অর্ডারে দেখানোর জন্য
-    const entries = Object.entries(data).reverse(); 
-    let found = false;
+    let allHistory = [];
 
-    for (let [key, val] of entries) {
-        if (val.userId === userPhone) {
-            found = true;
-            const div = document.createElement('div');
-            div.className = 'content-box';
-            div.innerHTML = `<div><b>${val.method}</b> - ৳${val.amount}</div>
-                             <div style="font-size:12px; color:${val.status === 'approved' ? 'green' : (val.status === 'pending' ? 'orange' : 'red')}">
-                             Status: ${val.status}</div>`;
-            historyList.appendChild(div);
-        }
+    // ডিপোজিট ডাটা যোগ করা
+    Object.entries(depData).forEach(([key, val]) => {
+        if (val.userId === userPhone) allHistory.push({ ...val, type: 'Deposit' });
+    });
+
+    // উইথড্র ডাটা যোগ করা
+    Object.entries(wdData).forEach(([key, val]) => {
+        if (val.userId === userPhone) allHistory.push({ ...val, type: 'Withdraw' });
+    });
+
+    // সময় অনুযায়ী সাজানো (লেটেস্টটা সবার উপরে)
+    allHistory.sort((a, b) => b.timestamp - a.timestamp);
+
+    historyList.innerHTML = '';
+    if (allHistory.length === 0) {
+        historyList.innerHTML = "No history found.";
+        return;
     }
-    if(!found) historyList.innerHTML = "No history found.";
-});
+
+    allHistory.forEach(val => {
+        const div = document.createElement('div');
+        div.className = 'content-box';
+        div.innerHTML = `<div><b>${val.type}: ${val.method}</b> - ৳${val.amount}</div>
+                         <div style="font-size:12px; color:${val.status === 'approved' ? 'green' : (val.status === 'pending' ? 'orange' : 'red')}">
+                         Status: ${val.status}</div>`;
+        historyList.appendChild(div);
+    });
+};
+
+// ডাটাবেজে পরিবর্তন হলে হিস্ট্রি অটো আপডেট হবে
+onValue(ref(db, 'depositRequests'), () => updateHistory());
+onValue(ref(db, 'withdrawRequests'), () => updateHistory());
+
 
 
 </script>
