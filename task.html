@@ -375,24 +375,25 @@
 
 
     <div style="display: flex; flex-direction: column; gap: 10px;">
-        <!-- মেনু কার্ডগুলো সুন্দরভাবে সাজানো -->
-<div class="menu-card" onclick="openPopup('add-balance-popup')">Add Balance</div>
-<div class="menu-card" onclick="openPopup('withdraw-popup')">Withdraw Funds</div>
-<div class="menu-card" onclick="openPopup('send-money-popup')">Send Money</div>
-<div class="menu-card" onclick="openPopup('coming-soon-popup')">Balance Transfer</div>
-<div class="menu-card" onclick="openPopup('coming-soon-popup')">Mobile Recharge</div>
-<div class="menu-card" onclick="openPopup('coming-soon-popup')">Refer</div>
-<div class="menu-card" onclick="openPopup('coming-soon-popup')">Setting</div>
-<div class="menu-card" onclick="openPopup('coming-soon-popup')">Privacy Policy</div>
-<div class="menu-card" onclick="openPopup('coming-soon-popup')">About</div>
+    <div class="menu-card" onclick="openPopup('add-balance-popup'); closeAllPopups()">Add Balance</div>
+    
+    <div class="menu-card" onclick="openPopup('withdraw-popup')">Withdraw Funds</div>
+    <div class="menu-card" onclick="openPopup('send-money-popup')">Send Money</div>
+    <div class="menu-card" onclick="openPopup('coming-soon-popup')">Balance Transfer</div>
+    <div class="menu-card" onclick="openPopup('coming-soon-popup')">Mobile Recharge</div>
+    <div class="menu-card" onclick="openPopup('coming-soon-popup')">Refer</div>
+    <div class="menu-card" onclick="openPopup('coming-soon-popup')">Setting</div>
+    <div class="menu-card" onclick="openPopup('coming-soon-popup')">Privacy Policy</div>
+    <div class="menu-card" onclick="openPopup('coming-soon-popup')">About</div>
 
-        <div style="margin-top: 20px;">
-    <button onclick="logout()" style="width: 100%; padding: 12px; border: none; border-radius: 12px; background: #27ae60; color: white; font-weight: bold; font-size: 15px; cursor: pointer;">
-        Log Out
-    </button>
-</div>
+    <div style="margin-top: 20px;">
+        <button onclick="logout()" style="width: 100%; padding: 12px; border: none; border-radius: 12px; background: #27ae60; color: white; font-weight: bold; font-size: 15px; cursor: pointer;">
+            Log Out
+        </button>
     </div>
 </div>
+
+
 
 <!-- Add Balance Popup (Full Screen & Slide Effect) -->
 <div id="add-balance-popup" style="display: none; position: fixed; top: 0; right: -100%; width: 100%; height: 100%; z-index: 9999; background: #f4f6f8; overflow-y: auto; transition: right 0.4s ease-in-out;">
@@ -499,45 +500,31 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getDatabase, ref, onValue, update, get, push } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-const firebaseConfig = {
-    databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com"
-};
-
+const firebaseConfig = { databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com" };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 window.db = db;
 
-// ১. সিকিউরিটি চেক ও ইউজার লোড
 const userPhone = localStorage.getItem("userPhone");
-if (!userPhone) {
-    window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
-}
+if (!userPhone) window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
 
-// ইউজার যখন অ্যাপে আসবে, তখন তার লাস্ট অ্যাক্টিভিটি আপডেট হবে
-update(ref(db, 'users/' + userPhone), {
-    lastSeen: Date.now()
-});
-
+update(ref(db, 'users/' + userPhone), { lastSeen: Date.now() });
 window.userPhone = userPhone;
 const userRef = ref(db, "users/" + userPhone);
 window.userRef = userRef;
 
-// ২. রিয়েল-টাইম ব্যালেন্স, নাম ও ফোন আপডেট
 onValue(userRef, (snapshot) => {
     const data = snapshot.val() || {};
     const balanceDisplay = document.getElementById("balance-display");
     if (balanceDisplay) balanceDisplay.innerText = `৳ ${parseFloat(data.balance || 0).toLocaleString("en-BD", { minimumFractionDigits: 2 })}`;
-    
     const pName = document.getElementById("popup-name");
     const pPhone = document.getElementById("popup-phone");
     if(pName) pName.innerText = data.name || "User";
     if(pPhone) pPhone.innerText = userPhone;
-    
     const userInfo = document.getElementById("user-info");
     if(userInfo) userInfo.innerHTML = `<b>Welcome, ${data.name || "User"}</b>`;
 });
 
-// ৩. লেভেল রেন্ডারিং
 const levels = [
     { id: 1, name: "Level 1", cost: 1500, daily: 50, color: "linear-gradient(135deg, #667eea, #764ba2)" },
     { id: 2, name: "Level 2", cost: 5000, daily: 180, color: "linear-gradient(135deg, #00c6fb, #005bea)" },
@@ -562,7 +549,6 @@ if(levelContainer) {
     });
 }
 
-// ৪. সকল ফাংশন (Buy, Deposit, Withdraw, Logout, Popups)
 window.buyLevel = async (cost, levelId) => {
     const snap = await get(userRef);
     const userData = snap.val() || { balance: 0 };
@@ -583,16 +569,13 @@ window.confirmDeposit = async () => {
         await push(ref(db, 'depositRequests'), { userId: userPhone, amount, senderNumber: sender, trx, method, status: 'pending', timestamp: Date.now() });
         Swal.fire('Success', 'রিকোয়েস্টটি পেন্ডিং আছে।', 'success');
         window.closeAllPopups();
-    } else {
-        Swal.fire('Error', 'সবগুলো তথ্য পূরণ করুন।', 'error');
-    }
+    } else { Swal.fire('Error', 'সবগুলো তথ্য পূরণ করুন।', 'error'); }
 };
 
 window.openWithdrawPopup = () => {
     document.getElementById('withdraw-popup').style.display = 'flex';
     document.getElementById('custom-menu-popup').style.display = 'none';
 };
-
 window.closeWithdrawPopup = () => { document.getElementById('withdraw-popup').style.display = 'none'; };
 
 window.confirmWithdraw = async () => {
@@ -611,36 +594,27 @@ window.confirmWithdraw = async () => {
 
 window.logout = () => { localStorage.clear(); window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html"); };
 
-// পপআপ ওপেন করার ফাংশন
 window.openPopup = (popupId) => {
-    const popup = document.getElementById(popupId);
-    if (popup) {
-        popup.style.display = 'block';
-        document.getElementById('overlay').style.display = 'block'; // Overlay চালু হবে
-        popup.style.animation = 'slideUp 0.3s forwards';
-    } else if (popupId === 'coming-soon-popup') {
-        Swal.fire({
-            icon: 'info',
-            title: 'Coming Soon!',
-            text: 'Stay tuned for more updates.',
-            confirmButtonColor: '#7b2cbf'
-        });
+    if (popupId === 'add-balance-popup') {
+        document.getElementById('add-balance-popup').style.right = '0';
+        document.getElementById('overlay').style.display = 'block';
+    } else {
+        const popup = document.getElementById(popupId);
+        if (popup) {
+            popup.style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+            popup.style.animation = 'slideUp 0.3s forwards';
+        } else if (popupId === 'coming-soon-popup') {
+            Swal.fire({ icon: 'info', title: 'Coming Soon!', text: 'Stay tuned.', confirmButtonColor: '#7b2cbf' });
+        }
     }
 };
 
-// পপআপ বন্ধ করার জন্য কমন ফাংশন
 window.closeAllPopups = () => {
-    // সব পপআপ সিলেক্ট করা
-    const popups = document.querySelectorAll('.side-popup, #payment-form-popup, #withdraw-popup');
-    popups.forEach(p => p.style.display = 'none');
-    
-    // সব অ্যাড-ব্যালেন্স পপআপ (যেগুলো রাইট সাইড থেকে আসে) বন্ধ করা
+    document.querySelectorAll('.side-popup, #payment-form-popup, #withdraw-popup').forEach(p => p.style.display = 'none');
     document.getElementById('add-balance-popup').style.right = '-100%';
-    
-    // Overlay বন্ধ করা
     document.getElementById('overlay').style.display = 'none';
 };
-
 
 window.openPaymentForm = (m, i) => { 
     document.getElementById('payment-title').innerText = m; 
@@ -648,151 +622,52 @@ window.openPaymentForm = (m, i) => {
     document.getElementById('payment-form-popup').style.display = 'flex'; 
 };
 
-// লাইভ সাপোর্ট এবং স্লাইডার ফাংশনসমূহ এখানে আগের মতোই থাকবে...
-// (আমি আপনার আগের কোডের ব্যানার স্লাইডার, হোয়াটসঅ্যাপ এবং টাস্ক লক লজিক অপরিবর্তিত রেখেছি)
-
-onValue(ref(db, 'banners'), (snapshot) => {
-    const banners = snapshot.val();
-    const sliderContainer = document.getElementById('slider-container');
-    sliderContainer.innerHTML = ''; 
-    if (banners) {
-        Object.values(banners).forEach(banner => {
-            const img = document.createElement('img');
-            img.src = banner.imageUrl;
-            img.style.minWidth = "100%"; img.style.height = "100%"; img.style.objectFit = "cover";
-            sliderContainer.appendChild(img);
-        });
-    }
-    let currentIndex = 0;
-    function showNextSlide() {
-        const slides = sliderContainer.querySelectorAll('img');
-        if (slides.length === 0) return; 
-        currentIndex = (currentIndex + 1) % slides.length;
-        sliderContainer.style.transform = `translateX(${-currentIndex * 100}%)`;
-    }
-    if (window.bannerInterval) clearInterval(window.bannerInterval);
-    window.bannerInterval = setInterval(showNextSlide, 3000);
-});
-
-window.handleTaskClick = async (taskId, url) => {
-    const taskSnapshot = await get(ref(db, 'tasks/' + taskId));
-    const taskData = taskSnapshot.val() || { locked: false };
-    if (taskData.locked) {
-        Swal.fire({ icon: 'warning', title: 'মেনটেন্যান্স চলছে!', text: 'এই টাস্কটিতে বর্তমানে কাজ চলছে।', confirmButtonColor: '#7b2cbf' });
-    } else {
-        if(url !== '#') window.open(url, '_blank');
-    }
-};
-
-onValue(ref(db, 'tasks'), (snapshot) => {
-    const tasks = snapshot.val() || {};
-    Object.keys(tasks).forEach(taskId => {
-        const lockIcon = document.getElementById('lock-' + taskId);
-        if (lockIcon) lockIcon.style.display = tasks[taskId].locked ? 'inline' : 'none';
-    });
-});
-
-// ১. সেন্ড মানি ফাংশন - বাটন ডিজেবল এবং সিকিউরিটি সহ
-window.confirmSendMoney = async () => {
+window.confirmSendMoney = async (event) => {
     const btn = event.target;
     const receiverPhone = document.getElementById('sm-number').value.trim();
     const amount = parseFloat(document.getElementById('sm-amount').value);
     const password = document.getElementById('sm-pass').value;
 
-    if (!receiverPhone || isNaN(amount) || !password) {
-        Swal.fire('Error', 'সব তথ্য সঠিকভাবে পূরণ করুন!', 'error');
-        return;
-    }
+    if (!receiverPhone || isNaN(amount) || !password) { Swal.fire('Error', 'সব তথ্য পূরণ করুন!', 'error'); return; }
+    btn.disabled = true; btn.innerText = "Processing...";
 
-    // বাটন ডিজেবল করা যাতে ডাবল ক্লিক না হয়
-    btn.disabled = true;
-    btn.innerText = "Processing...";
+    const senderData = (await get(userRef)).val();
+    if (senderData.password !== password) { Swal.fire('Error', 'পাসওয়ার্ড ভুল!', 'error'); btn.disabled = false; btn.innerText = "Send Now"; return; }
+    if (amount > parseFloat(senderData.balance)) { Swal.fire('Error', 'ব্যালেন্স নেই!', 'error'); btn.disabled = false; btn.innerText = "Send Now"; return; }
 
-    const senderSnap = await get(userRef);
-    const senderData = senderSnap.val();
+    const rRef = ref(db, 'users/' + receiverPhone);
+    const rSnap = await get(rRef);
+    if (!rSnap.exists()) { Swal.fire('Error', 'ইউজার নেই!', 'error'); btn.disabled = false; btn.innerText = "Send Now"; return; }
 
-    if (senderData.password !== password) {
-        Swal.fire('Error', 'পাসওয়ার্ড ভুল!', 'error');
-        btn.disabled = false;
-        btn.innerText = "Send Now";
-        return;
-    }
-    if (amount > parseFloat(senderData.balance)) {
-        Swal.fire('Error', 'আপনার পর্যাপ্ত ব্যালেন্স নেই!', 'error');
-        btn.disabled = false;
-        btn.innerText = "Send Now";
-        return;
-    }
-
-    const receiverRef = ref(db, 'users/' + receiverPhone);
-    const receiverSnap = await get(receiverRef);
-
-    if (!receiverSnap.exists()) {
-        Swal.fire('Error', 'এই নম্বরে কোনো ইউজার নেই!', 'error');
-        btn.disabled = false;
-        btn.innerText = "Send Now";
-        return;
-    }
-
-    const receiverData = receiverSnap.val();
-
-    // ট্রানজেকশন আপডেট
     await update(userRef, { balance: parseFloat(senderData.balance) - amount });
-    await update(receiverRef, { balance: parseFloat(receiverData.balance) + amount });
-
-    const timestamp = Date.now();
-    await push(ref(db, 'history/' + userPhone), { type: 'Sent', to: receiverPhone, amount, timestamp });
-    await push(ref(db, 'history/' + receiverPhone), { type: 'Received', from: userPhone, amount, timestamp });
-
-    Swal.fire('Success', 'টাকা সফলভাবে পাঠানো হয়েছে!', 'success');
+    await update(rRef, { balance: parseFloat(rSnap.val().balance) + amount });
+    await push(ref(db, 'history/' + userPhone), { type: 'Sent', to: receiverPhone, amount, timestamp: Date.now() });
+    
+    Swal.fire('Success', 'টাকা পাঠানো হয়েছে!', 'success');
     document.getElementById('send-money-popup').style.display = 'none';
-    btn.disabled = false;
-    btn.innerText = "Send Now";
+    btn.disabled = false; btn.innerText = "Send Now";
 };
 
-// ২. হিস্ট্রি আপডেট ফাংশন - ক্লিনার লজিক
 const updateHistory = async () => {
     const historyList = document.getElementById('history-list');
     if (!historyList) return;
-    
-    // প্রমিজ অল ব্যবহার করে ডাটা আনা
-    const [depSnap, wdSnap, historySnap] = await Promise.all([
-        get(ref(db, 'depositRequests')), 
-        get(ref(db, 'withdrawRequests')),
-        get(ref(db, 'history/' + userPhone))
-    ]);
-    
+    const [depSnap, wdSnap, historySnap] = await Promise.all([get(ref(db, 'depositRequests')), get(ref(db, 'withdrawRequests')), get(ref(db, 'history/' + userPhone))]);
     const allHistory = [];
-    
-    // ডাটা ফরম্যাটিং
     if(depSnap.exists()) Object.values(depSnap.val()).forEach(v => v.userId === userPhone && allHistory.push({ ...v, type: 'Deposit' }));
     if(wdSnap.exists()) Object.values(wdSnap.val()).forEach(v => v.userId === userPhone && allHistory.push({ ...v, type: 'Withdraw' }));
     if(historySnap.exists()) Object.values(historySnap.val()).forEach(v => allHistory.push({ ...v, type: v.type }));
-
-    // সর্টিং
     allHistory.sort((a, b) => b.timestamp - a.timestamp);
-
     historyList.innerHTML = allHistory.length ? '' : "No history found.";
-    
     allHistory.forEach(val => {
         const div = document.createElement('div');
         div.className = 'content-box';
-        div.innerHTML = `
-            <div><b>${val.type}</b>: ${val.method || (val.to ? 'To: '+val.to : 'From: '+val.from)}</div>
-            <div style="font-size:14px; font-weight:bold;">৳${val.amount}</div>
-            <div style="font-size:12px; color:${val.status === 'pending' ? 'orange' : 'green'}">Status: ${val.status || 'Success'}</div>
-            <div style="font-size:10px; color:#888;">${new Date(val.timestamp).toLocaleString()}</div>
-        `;
+        div.innerHTML = `<div><b>${val.type}</b>: ${val.method || (val.to ? 'To: '+val.to : 'From: '+val.from)}</div><div style="font-size:14px; font-weight:bold;">৳${val.amount}</div><div style="font-size:12px; color:${val.status === 'pending' ? 'orange' : 'green'}">Status: ${val.status || 'Success'}</div><div style="font-size:10px; color:#888;">${new Date(val.timestamp).toLocaleString()}</div>`;
         historyList.appendChild(div);
     });
 };
-
-
-// ডাটাবেজে যেকোনো পরিবর্তন হলে হিস্ট্রি অটো আপডেট হবে
 onValue(ref(db, 'depositRequests'), updateHistory);
 onValue(ref(db, 'withdrawRequests'), updateHistory);
 onValue(ref(db, 'history/' + userPhone), updateHistory);
-
 </script>
 
 </body>
