@@ -218,9 +218,10 @@
         <div style="text-align: right;">
             <div style="opacity: 0.9; font-size: 12px; margin-bottom: 2px;">Your Balance</div>
             <h1 id="balance-display" style="margin: 0 0 8px 0; font-size: 22px;">৳ 0.00</h1>
-            <button onclick="window.location.href='withdraw.html'" style="background: white; color: #7b2cbf; border: none; padding: 4px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 11px;">
-                Withdraw →
-            </button>
+            <button onclick="openWithdrawPopup()" style="background: white; color: #7b2cbf; border: none; padding: 4px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 11px;">
+    Withdraw →
+</button>
+
         </div>
     </div>
 </div>
@@ -370,15 +371,15 @@
         <!-- এটি আপডেট করে নিন -->
 <div class="menu-card" onclick="openPopup('add-balance-popup')">Add Balance</div>
 
-        <div class="menu-card">Withdraw Funds</div>
-        <div class="menu-card">Send Money</div>
-        <div class="menu-card">Balance Transfer</div>
-        <div class="menu-card">Mobile Recharge</div>
-        <div class="menu-card">Refer</div>
-        <div class="menu-card">Setting</div>
-        <div class="menu-card">Privacy Policy</div>
-        <div class="menu-card">About</div>
-        
+        <div class="menu-card" onclick="openWithdrawPopup()">Withdraw Funds</div>
+<div class="menu-card">Send Money</div>
+<div class="menu-card">Balance Transfer</div>
+<div class="menu-card">Mobile Recharge</div>
+<div class="menu-card">Refer</div>
+<div class="menu-card">Setting</div>
+<div class="menu-card">Privacy Policy</div>
+<div class="menu-card">About</div>
+
         <div style="margin-top: 20px;">
     <button onclick="logout()" style="width: 100%; padding: 12px; border: none; border-radius: 12px; background: #27ae60; color: white; font-weight: bold; font-size: 15px; cursor: pointer;">
         Log Out
