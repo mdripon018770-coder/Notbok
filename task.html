@@ -372,7 +372,10 @@
 <div class="menu-card" onclick="openPopup('add-balance-popup')">Add Balance</div>
 
         <div class="menu-card" onclick="openWithdrawPopup()">Withdraw Funds</div>
-<div class="menu-card" onclick="document.getElementById('send-money-popup').style.display='block'">Send Money</div>
+
+<!-- আপডেট করা Send Money লাইন -->
+<div class="menu-card" onclick="document.getElementById('send-money-popup').style.display='block'; document.getElementById('custom-menu-popup').style.display='none'">Send Money</div>
+
 <div class="menu-card">Balance Transfer</div>
 <div class="menu-card">Mobile Recharge</div>
 <div class="menu-card">Refer</div>
@@ -479,13 +482,16 @@
     </div>
 </div>
 
-<div id="send-money-popup" class="side-popup" style="display:none;">
-    <h3>Send Money</h3>
-    <input type="number" id="sm-number" placeholder="Receiver Phone Number">
-    <input type="number" id="sm-amount" placeholder="Amount">
-    <input type="password" id="sm-pass" placeholder="Password">
-    <button onclick="window.confirmSendMoney()">Send Now</button>
-    <button onclick="document.getElementById('send-money-popup').style.display='none'">Close</button>
+<!-- Send Money Popup -->
+<div id="send-money-popup" class="side-popup" style="display:none; position: fixed; bottom: 0; left: 0; width: 100%; height: auto; z-index: 10000; background: white; border-radius: 25px 25px 0 0; padding: 20px; box-sizing: border-box;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 style="margin: 0; font-size: 20px;">Send Money</h3>
+        <span onclick="document.getElementById('send-money-popup').style.display='none'" style="cursor: pointer; font-size: 20px; font-weight: bold; color: #555; background: #f0f0f0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">×</span>
+    </div>
+    <input type="number" id="sm-number" placeholder="Receiver Phone Number" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box;">
+    <input type="number" id="sm-amount" placeholder="Amount" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box;">
+    <input type="password" id="sm-pass" placeholder="Password" style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box;">
+    <button onclick="window.confirmSendMoney()" style="width: 100%; padding: 15px; background: #7b2cbf; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Send Now</button>
 </div>
 
 
