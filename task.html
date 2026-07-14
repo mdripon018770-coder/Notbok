@@ -596,40 +596,45 @@ window.confirmWithdraw = async () => {
 window.logout = () => { localStorage.clear(); window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html"); };
 
 window.openPopup = (popupId) => {
-    // 1. Add Balance এর জন্য লজিক
+    const overlay = document.getElementById('overlay');
+    const popup = document.getElementById(popupId);
+
+    // 1. Add Balance এর জন্য আলাদা স্লাইড লজিক
     if (popupId === 'add-balance-popup') {
-        const popup = document.getElementById('add-balance-popup');
         popup.style.display = 'block';
+        overlay.style.display = 'block';
         setTimeout(() => { popup.style.right = '0'; }, 10);
-        document.getElementById('overlay').style.display = 'block';
     } 
-    // 2. Send Money বা অন্য পপআপের জন্য লজিক
-    else {
-        const popup = document.getElementById(popupId);
-        if (popup) {
-            popup.style.display = 'block'; // এখানে এটি থাকা জরুরি
-            document.getElementById('overlay').style.display = 'block';
-            popup.style.animation = 'slideUp 0.3s forwards';
-        } else if (popupId === 'coming-soon-popup') {
-            Swal.fire({ icon: 'info', title: 'Coming Soon!', text: 'Stay tuned.', confirmButtonColor: '#7b2cbf' });
-        }
+    // 2. অন্যান্য পপআপের জন্য
+    else if (popup) {
+        popup.style.display = 'block';
+        overlay.style.display = 'block';
+        popup.style.animation = 'slideUp 0.3s forwards';
+    } 
+    // 3. Coming soon
+    else if (popupId === 'coming-soon-popup') {
+        Swal.fire({ icon: 'info', title: 'Coming Soon!', text: 'Stay tuned.', confirmButtonColor: '#7b2cbf' });
     }
 };
 
-
 window.closeAllPopups = () => {
-    document.querySelectorAll('.side-popup, #payment-form-popup, #withdraw-popup').forEach(p => p.style.display = 'none');
+    // সব পপআপ সিলেক্ট করা (Withdraw, Send Money, Notice, History, VIP ইত্যাদি)
+    const popups = document.querySelectorAll('.side-popup, #withdraw-popup, #send-money-popup, #payment-form-popup');
+    popups.forEach(p => {
+        p.style.display = 'none';
+        p.style.animation = ''; // এনিমেশন রিসেট
+    });
     
-    // Add Balance এর জন্য আলাদা হ্যান্ডেল
+    // Add Balance এর স্লাইড রিসেট করা
     const addBalPopup = document.getElementById('add-balance-popup');
-    addBalPopup.style.right = '-100%';
-    setTimeout(() => {
-        addBalPopup.style.display = 'none';
-    }, 400); // অ্যানিমেশনের সময় অনুযায়ী
+    if (addBalPopup) {
+        addBalPopup.style.right = '-100%';
+        setTimeout(() => { addBalPopup.style.display = 'none'; }, 400);
+    }
     
+    // ওভারলে বন্ধ করা
     document.getElementById('overlay').style.display = 'none';
 };
-
 
 window.openPaymentForm = (m, i) => { 
     document.getElementById('payment-title').innerText = m; 
@@ -648,7 +653,6 @@ window.confirmSendMoney = async (event) => {
         return; 
     }
     
-    // নিজের নাম্বারে টাকা পাঠানো রোধ করা (ঐচ্ছিক)
     if (receiverPhone === window.userPhone) {
         Swal.fire('Error', 'আপনি নিজের নাম্বারে টাকা পাঠাতে পারবেন না!', 'error');
         return;
@@ -658,7 +662,7 @@ window.confirmSendMoney = async (event) => {
     btn.innerText = "Processing...";
 
     try {
-        const senderData = (await get(userRef)).val();
+        const senderData = (await get(window.userRef)).val();
         
         if (senderData.password !== password) { 
             Swal.fire('Error', 'পাসওয়ার্ড ভুল!', 'error'); 
@@ -670,7 +674,7 @@ window.confirmSendMoney = async (event) => {
             btn.disabled = false; btn.innerText = "Send Now"; return; 
         }
 
-        const rRef = ref(db, 'users/' + receiverPhone);
+        const rRef = ref(window.db, 'users/' + receiverPhone);
         const rSnap = await get(rRef);
         
         if (!rSnap.exists()) { 
@@ -678,20 +682,15 @@ window.confirmSendMoney = async (event) => {
             btn.disabled = false; btn.innerText = "Send Now"; return; 
         }
 
-        // ব্যালেন্স আপডেট
-        await update(userRef, { balance: parseFloat(senderData.balance) - amount });
+        await update(window.userRef, { balance: parseFloat(senderData.balance) - amount });
         await update(rRef, { balance: parseFloat(rSnap.val().balance) + amount });
         
-        // হিস্ট্রি যোগ করা
-        await push(ref(db, 'history/' + userPhone), { type: 'Sent', to: receiverPhone, amount, timestamp: Date.now() });
-        await push(ref(db, 'history/' + receiverPhone), { type: 'Received', from: userPhone, amount, timestamp: Date.now() });
+        await push(ref(window.db, 'history/' + window.userPhone), { type: 'Sent', to: receiverPhone, amount, timestamp: Date.now() });
+        await push(ref(window.db, 'history/' + receiverPhone), { type: 'Received', from: window.userPhone, amount, timestamp: Date.now() });
         
         Swal.fire('Success', 'টাকা সফলভাবে পাঠানো হয়েছে!', 'success');
+        window.closeAllPopups();
         
-        // পপআপ বন্ধ করা
-        closeAllPopups();
-        
-        // ইনপুট ফিল্ড ক্লিয়ার করা
         document.getElementById('sm-number').value = '';
         document.getElementById('sm-amount').value = '';
         document.getElementById('sm-pass').value = '';
@@ -699,7 +698,6 @@ window.confirmSendMoney = async (event) => {
     } catch (error) {
         Swal.fire('Error', 'কিছু ভুল হয়েছে, আবার চেষ্টা করুন!', 'error');
     }
-    
     btn.disabled = false; 
     btn.innerText = "Send Now";
 };
