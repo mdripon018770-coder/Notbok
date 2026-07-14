@@ -198,9 +198,15 @@
     .pay-card:active { transform: scale(0.95); }
 
 #history-list {
-    max-height: 400px; /* উচ্চতা ফিক্স করে দিলে স্ক্রল করতে সুবিধা হবে */
+    max-height: 400px; 
     overflow-y: auto;
+    padding: 15px;
+    border-radius: 15px;
+    background: #f8f8f8;
+    scrollbar-width: thin; 
+    border: 1px solid #eee; /* হালকা বর্ডার যোগ করলাম যাতে আরও সুন্দর দেখায় */
 }
+
 
     </style>
 </head>
@@ -376,7 +382,8 @@
 <!-- আপডেট করা Send Money লাইন -->
 <div class="menu-card" onclick="document.getElementById('send-money-popup').style.display='block'; document.getElementById('custom-menu-popup').style.display='none'">Send Money</div>
 
-<div class="menu-card">Balance Transfer</div>
+<div class="menu-card" onclick="document.getElementById('transfer-popup').style.display='flex'; document.getElementById('custom-menu-popup').style.display='none'">Balance Transfer</div>
+
 <div class="menu-card">Mobile Recharge</div>
 <div class="menu-card">Refer</div>
 <div class="menu-card">Setting</div>
@@ -493,6 +500,34 @@
     <input type="password" id="sm-pass" placeholder="Password" style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box;">
     <button onclick="window.confirmSendMoney()" style="width: 100%; padding: 15px; background: #7b2cbf; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Send Now</button>
 </div>
+
+
+<div id="transfer-popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
+    <div style="background: white; width: 100%; max-width: 400px; padding: 20px; border-radius: 20px; position: relative;">
+        <span onclick="document.getElementById('transfer-popup').style.display='none'" style="position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 24px; color: #555;">×</span>
+        <h3 style="text-align: center;">Balance Transfer</h3>
+        <p style="font-size: 13px; color: #666; text-align: center;">আপনার ব্যালেন্স বিকাশ, নগদ বা রকেটে ট্রান্সফার করুন।</p>
+        
+        <div style="margin-bottom: 15px;">
+            <label style="font-size: 14px;">Select Method</label>
+            <select id="tf-method" style="width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px;">
+                <option value="bKash">bKash</option>
+                <option value="Nagad">Nagad</option>
+                <option value="Rocket">Rocket</option>
+            </select>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="font-size: 14px;">Account Number</label>
+            <input type="text" id="tf-number" placeholder="01XXXXXXXXX" style="width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+        </div>
+        <div style="margin-bottom: 20px;">
+            <label style="font-size: 14px;">Amount</label>
+            <input type="number" id="tf-amount" placeholder="Enter amount" style="width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+        </div>
+        <button onclick="confirmTransfer()" style="width: 100%; padding: 15px; background: #5a189a; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">TRANSFER NOW</button>
+    </div>
+</div>
+
 
 
 <script type="module">
@@ -681,6 +716,43 @@ onValue(ref(db, 'tasks'), (snapshot) => {
     });
 });
 
+
+window.confirmTransfer = async () => {
+    const method = document.getElementById('tf-method').value;
+    const number = document.getElementById('tf-number').value;
+    const amount = parseFloat(document.getElementById('tf-amount').value);
+    
+    if(!number || !amount) {
+        Swal.fire('Error', 'সবগুলো ঘর পূরণ করুন!', 'error');
+        return;
+    }
+
+    const snap = await get(userRef);
+    const balance = parseFloat(snap.val().balance || 0);
+
+    if(amount > balance) {
+        Swal.fire('Error', 'পর্যাপ্ত ব্যালেন্স নেই!', 'error');
+        return;
+    }
+
+    // ব্যালেন্স কেটে নেওয়া
+    await update(userRef, { balance: balance - amount });
+
+    // এডমিনের জন্য রিকোয়েস্ট পাঠানো
+    await push(ref(db, 'transferRequests'), { 
+        userId: userPhone, 
+        method, 
+        number, 
+        amount, 
+        status: 'pending', 
+        timestamp: Date.now() 
+    });
+
+    Swal.fire('Success', 'ট্রান্সফার রিকোয়েস্ট সফল!', 'success');
+    document.getElementById('transfer-popup').style.display = 'none';
+};
+
+
 window.confirmSendMoney = async () => {
     const receiverPhone = document.getElementById('sm-number').value.trim();
     const amount = parseFloat(document.getElementById('sm-amount').value);
@@ -738,14 +810,16 @@ const updateHistory = async () => {
     historyList.innerHTML = 'Loading...';
 
     // Firebase থেকে সব ধরণের ট্রানজেকশন একসাথে নিয়ে আসা
-    const [depSnap, wdSnap, historySnap] = await Promise.all([
+    const [depSnap, wdSnap, tfSnap, historySnap] = await Promise.all([
         get(ref(db, 'depositRequests')), 
         get(ref(db, 'withdrawRequests')),
+        get(ref(db, 'transferRequests')), // নতুন লাইন
         get(ref(db, 'history/' + userPhone))
     ]);
     
     const depData = depSnap.val() || {};
     const wdData = wdSnap.val() || {};
+    const tfData = tfSnap.val() || {}; // নতুন লাইন
     const myHistory = historySnap.val() || {};
 
     let allHistory = [];
@@ -760,19 +834,24 @@ const updateHistory = async () => {
         if (v.userId === userPhone) allHistory.push({ ...v, type: 'Withdraw', method: v.method, amount: v.amount, status: v.status, timestamp: v.timestamp });
     });
 
-    // ৩. নতুন সেন্ড মানি হিস্ট্রি যোগ করা
+    // ৩. ট্রান্সফার ডাটা যোগ করা (নতুন অংশ)
+    Object.entries(tfData).forEach(([k, v]) => {
+        if (v.userId === userPhone) allHistory.push({ ...v, type: 'Transfer', method: v.method + ': ' + v.number, amount: v.amount, status: v.status, timestamp: v.timestamp });
+    });
+
+    // ৪. সেন্ড মানি হিস্ট্রি যোগ করা
     Object.entries(myHistory).forEach(([k, v]) => {
         allHistory.push({ 
             ...v, 
-            type: v.type, // Sent অথবা Received
+            type: v.type,
             method: v.type === 'Sent' ? 'To: ' + v.to : 'From: ' + v.from, 
-            status: 'success', // সেন্ড মানি সবসময় সফল
+            status: 'success', 
             amount: v.amount, 
             timestamp: v.timestamp 
         });
     });
 
-    // সময় অনুযায়ী সাজানো (লেটেস্টটা সবার উপরে)
+    // সময় অনুযায়ী সাজানো
     allHistory.sort((a, b) => b.timestamp - a.timestamp);
 
     historyList.innerHTML = '';
@@ -786,7 +865,6 @@ const updateHistory = async () => {
         const div = document.createElement('div');
         div.className = 'content-box';
         
-        // স্ট্যাটাস কালার লজিক
         let color = 'green';
         if (val.status === 'pending') color = 'orange';
         else if (val.status === 'rejected') color = 'red';
@@ -801,9 +879,10 @@ const updateHistory = async () => {
     });
 };
 
-// ডাটাবেজে যেকোনো পরিবর্তন হলে হিস্ট্রি অটো আপডেট হবে
+// ডাটাবেজে যেকোনো পরিবর্তন হলে হিস্ট্রি অটো আপডেট হবে (নিচের লাইনে transferRequests যোগ করলাম)
 onValue(ref(db, 'depositRequests'), updateHistory);
 onValue(ref(db, 'withdrawRequests'), updateHistory);
+onValue(ref(db, 'transferRequests'), updateHistory);
 onValue(ref(db, 'history/' + userPhone), updateHistory);
 
 </script>
