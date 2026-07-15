@@ -113,6 +113,48 @@
     max-width: 150px;
 }
 
+.product-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding: 10px;
+    /* এখানে এনিমেশন স্লাইড করার জন্য নিচে কোড দেওয়া হলো */
+    animation: slideProduct 15s linear infinite;
+}
+
+@keyframes slideProduct {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(-50px); }
+    100% { transform: translateX(0); }
+}
+
+/* মাউস নিলে এনিমেশন থেমে যাবে */
+.product-container:hover {
+    animation-play-state: paused;
+}
+
+/* কার্ডের ভেতর ছবির ওপর হালকা শ্যাডো */
+.product-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* স্ক্রলবার পুরোপুরি অদৃশ্য করা */
+.product-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.product-card { 
+    flex-shrink: 0; /* এটি যোগ করুন */
+    min-width: 160px;
+    max-width: 160px;
+    ...
+}
+
 
     </style>
 </head>
@@ -133,9 +175,12 @@
 
     <h3 style="margin-top: 20px;">আমাদের পণ্যসমূহ</h3>
 <!-- নতুন ক্লাস ব্যবহার করা হয়েছে -->
-<div class="product-slider-container" id="product-container">
-    <!-- এখানে ডাইনামিকলি প্রোডাক্ট আসবে -->
+<!-- ID যোগ করা হয়েছে যাতে জাভাস্ক্রিপ্ট খুঁজে পায় -->
+<div class="product-container" id="product-container">
+    <!-- এখানে জাভাস্ক্রিপ্ট থেকে কার্ডগুলো আসবে -->
 </div>
+
+
 
 
 
@@ -152,38 +197,33 @@
 </div>
 
 
-    <script type="module">
+<script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getDatabase, ref, push, update, onValue, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
     const firebaseConfig = { databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com" };
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // ১. ইউজার ভেরিফিকেশন এবং ব্যালেন্স সিঙ্ক
     const userPhone = localStorage.getItem("userPhone");
     if (!userPhone) {
         window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
     }
 
-    // নির্দিষ্ট ইউজারের ব্যালেন্স দেখার জন্য সঠিক পাথ (users/ফোন নাম্বার/balance)
+    // ব্যালেন্স সিঙ্ক
     onValue(ref(db, 'users/' + userPhone + '/balance'), (snapshot) => {
         const balance = snapshot.val() || 0;
         document.getElementById('balance-display').innerText = parseFloat(balance).toLocaleString("en-BD", { minimumFractionDigits: 2 });
     });
 
-    // ২. ডেটাবেস থেকে প্রোডাক্ট লোড করা (এটি ঠিক আছে)
-        // ২. ডেটাবেস থেকে প্রোডাক্ট লোড করা (সার্চের জন্য ডাটা-অ্যাট্রিবিউটসহ)
+    // প্রোডাক্ট লোড করা
     onValue(ref(db, 'products'), (snapshot) => {
-        const container = document.getElementById('product-container'); // অথবা document.querySelector('.product-grid')
+        const container = document.getElementById('product-container');
         container.innerHTML = ''; 
-
         snapshot.forEach((childSnapshot) => {
             const data = childSnapshot.val();
             const card = document.createElement('div');
             card.className = 'product-card';
-            
-            // সার্চ লজিকের জন্য এই দুটি লাইন খুবই গুরুত্বপূর্ণ
             card.setAttribute('data-name', data.name || "");
             card.setAttribute('data-tags', data.tags || "");
 
@@ -192,48 +232,36 @@
                 <span class="product-title">${data.name}</span>
                 <div class="price-text">Price: ৳ ${data.price}</div>
                 <div class="cashback-text">Cashback: ৳ ${data.cashback}</div>
-                <button class="order-btn-custom" onclick="openModal('${data.name}', ${data.cashback})">Order Now</button>
+                <button class="order-btn-custom btn-order" data-name="${data.name}" data-cashback="${data.cashback}">Order Now</button>
             `;
             container.appendChild(card);
         });
     });
 
-    // ৩. সার্চ লজিক (এটি এর নিচেই থাকবে)
-    const searchBox = document.querySelector('.search-box');
-    searchBox.addEventListener('input', function() {
-        const searchTerm = searchBox.value.toLowerCase();
-        const productCards = document.querySelectorAll('.product-card');
-
-        productCards.forEach(card => {
-            const title = card.getAttribute('data-name').toLowerCase();
-            const tags = card.getAttribute('data-tags').toLowerCase();
-            
-            if (title.includes(searchTerm) || tags.includes(searchTerm)) {
-                card.style.display = 'flex';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    });
-
-
-    // ৩. মোডাল লজিক
+    // মোডাল এবং অর্ডার লজিক হ্যান্ডল করার জন্য ইভেন্ট ডেলিগেশন
     let currentProduct = "";
     let currentCashback = 0;
 
-    window.openModal = (prod, cb) => { 
-        currentProduct = prod; 
-        currentCashback = cb; 
-        document.getElementById('orderModal').style.display = 'flex'; 
-    };
+    document.addEventListener('click', async function(e) {
+        // অর্ডার বাটন ক্লিক চেক
+        if (e.target.classList.contains('btn-order')) {
+            currentProduct = e.target.getAttribute('data-name');
+            currentCashback = e.target.getAttribute('data-cashback');
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+        
+        // ক্লোজ বাটন ক্লিক চেক
+        if (e.target.innerText === 'Cancel') {
+            document.getElementById('orderModal').style.display = 'none';
+        }
 
-    window.closeModal = () => { 
-        document.getElementById('orderModal').style.display = 'none'; 
-    };
-    
-    // ৪. অর্ডার লজিক (এখানে userId যুক্ত করা হয়েছে যাতে এডমিন বুঝতে পারে কার অর্ডার)
-        // ৪. হোয়াটসঅ্যাপ ও অর্ডার লজিক
-        window.sendToWhatsApp = async () => {
+        // কনফার্ম অর্ডার ক্লিক চেক
+        if (e.target.innerText === 'Confirm Order') {
+            await sendOrderProcess();
+        }
+    });
+
+    async function sendOrderProcess() {
         let name = document.getElementById('userName').value;
         let phone = document.getElementById('userPhone').value;
         let address = document.getElementById('userAddress').value;
@@ -246,40 +274,45 @@
         Swal.fire({ title: 'অর্ডার প্রসেস হচ্ছে...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
         try {
-            // অর্ডারের ডাটা তৈরি
             const orderData = {
-                userId: userPhone, // ইউজারের ফোন নম্বর
+                userId: userPhone,
                 product: currentProduct,
                 userName: name,
                 userPhone: phone,
                 userAddress: address,
                 cashback: currentCashback,
-                status: 'Pending', // শুরুর স্ট্যাটাস
+                status: 'Pending',
                 timestamp: new Date().toLocaleString('bn-BD')
             };
 
-            // ১. মূল orders পাথে সেভ করুন (এডমিন দেখার জন্য)
             await push(ref(db, 'orders'), orderData);
-
-            // ২. ইউজারের নিজের হিস্ট্রি পাথে সেভ করুন (ইউজার অ্যাপের হিস্ট্রিতে দেখার জন্য)
             await push(ref(db, 'users/' + userPhone + '/history'), orderData);
 
-            // হোয়াটসঅ্যাপে মেসেজ পাঠানো
             let msg = `নতুন অর্ডার: ${currentProduct}%0Aনাম: ${name}%0Aফোন: ${phone}%0Aঠিকানা: ${address}`;
             window.open(`https://wa.me/8801877059049?text=${msg}`, '_blank');
 
             Swal.fire({ icon: 'success', title: 'অর্ডার সফল!', text: 'অর্ডারটি জমা হয়েছে।' });
             
-            // ইনপুট বক্স খালি করা
             document.getElementById('userName').value = '';
             document.getElementById('userPhone').value = '';
             document.getElementById('userAddress').value = '';
-            
-            closeModal();
+            document.getElementById('orderModal').style.display = 'none';
         } catch (error) {
             Swal.fire({ icon: 'error', title: 'ভুল হয়েছে!', text: 'আবার চেষ্টা করুন।' });
         }
-    };
+    }
+
+    // সার্চ লজিক
+    const searchBox = document.querySelector('.search-box');
+    searchBox.addEventListener('input', function() {
+        const searchTerm = searchBox.value.toLowerCase();
+        document.querySelectorAll('.product-card').forEach(card => {
+            const title = card.getAttribute('data-name').toLowerCase();
+            const tags = card.getAttribute('data-tags').toLowerCase();
+            card.style.display = (title.includes(searchTerm) || tags.includes(searchTerm)) ? 'flex' : 'none';
+        });
+    });
+
 
 
     </script>
