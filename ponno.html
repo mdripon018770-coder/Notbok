@@ -143,17 +143,24 @@
 }
 
 /* স্ক্রলবার পুরোপুরি অদৃশ্য করা */
+/* প্রোডাক্ট কন্টেইনারকে গ্রিড বা ফ্লেক্স র‍্যাপ দিয়ে সাজান */
 .product-container {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+    display: flex;
+    flex-wrap: wrap; /* এটি কার্ডগুলোকে নিচে নামতে সাহায্য করবে */
+    gap: 15px;
+    padding: 10px;
+    justify-content: center; /* কার্ডগুলো মাঝখানে থাকবে */
 }
 
 .product-card { 
-    flex-shrink: 0; /* এটি যোগ করুন */
-    min-width: 160px;
-    max-width: 160px;
-    ...
+    flex: 0 0 calc(50% - 15px); /* প্রতিটি কার্ড স্ক্রিনের অর্ধেক জায়গা নেবে */
+    background: #d3dce6; 
+    padding: 12px; 
+    border-radius: 20px; 
+    text-align: center;
+    box-sizing: border-box;
 }
+
 
 
     </style>
