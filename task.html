@@ -379,6 +379,7 @@ body {
         <span onclick="closeAllPopups()" style="cursor: pointer; font-size: 24px; color: #555;">×</span>
     </div>
 
+    <!-- প্রোফাইল সেকশন -->
     <div style="display: flex; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #f0f0f0; padding-bottom: 20px;">
         <div style="width: 50px; height: 50px; background: #7b2cbf; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-right: 15px; font-size: 20px;">👤</div>
         <div>
@@ -387,36 +388,33 @@ body {
         </div>
     </div>
 
+    <!-- রেফার কোড সেকশন (নতুন যোগ করা হয়েছে) -->
+    <div style="background: #f8f8f8; padding: 15px; border-radius: 15px; margin-bottom: 20px; text-align: center; border: 1px dashed #7b2cbf;">
+        <div style="font-size: 13px; color: #666;">আপনার রেফার কোড:</div>
+        <div id="myReferCode" style="font-size: 20px; font-weight: bold; color: #7b2cbf; margin: 5px 0;">Loading...</div>
+        <button onclick="copyReferCode()" style="background: #7b2cbf; color: white; border: none; padding: 5px 15px; border-radius: 10px; cursor: pointer; font-size: 12px;">Copy Code</button>
+    </div>
 
+    <!-- মেনু কার্ডস -->
     <div style="display: flex; flex-direction: column; gap: 10px;">
-        <!-- এটি আপডেট করে নিন -->
-<div class="menu-card" onclick="openPopup('add-balance-popup')">Add Balance</div>
-
+        <div class="menu-card" onclick="openPopup('add-balance-popup')">Add Balance</div>
         <div class="menu-card" onclick="openWithdrawPopup()">Withdraw Funds</div>
-
-<!-- আপডেট করা Send Money লাইন -->
-<div class="menu-card" onclick="document.getElementById('send-money-popup').style.display='block'; document.getElementById('custom-menu-popup').style.display='none'">Send Money</div>
-
-<div class="menu-card" onclick="document.getElementById('transfer-popup').style.display='flex'; document.getElementById('custom-menu-popup').style.display='none'">Balance Transfer</div>
-
-<div class="menu-card">Mobile Recharge</div>
-
-<div class="menu-card" onclick="openPopup('refer-popup')">Refer & Earn</div>
-
-<div class="menu-card" onclick="openSettings()">Settings</div>
-
-
-
-<div class="menu-card">Privacy Policy</div>
-<div class="menu-card">About</div>
+        <div class="menu-card" onclick="document.getElementById('send-money-popup').style.display='block'; document.getElementById('custom-menu-popup').style.display='none'">Send Money</div>
+        <div class="menu-card" onclick="document.getElementById('transfer-popup').style.display='flex'; document.getElementById('custom-menu-popup').style.display='none'">Balance Transfer</div>
+        <div class="menu-card">Mobile Recharge</div>
+        <div class="menu-card" onclick="openPopup('refer-popup')">Refer & Earn</div>
+        <div class="menu-card" onclick="openSettings()">Settings</div>
+        <div class="menu-card">Privacy Policy</div>
+        <div class="menu-card">About</div>
 
         <div style="margin-top: 20px;">
-    <button onclick="logout()" style="width: 100%; padding: 12px; border: none; border-radius: 12px; background: #27ae60; color: white; font-weight: bold; font-size: 15px; cursor: pointer;">
-        Log Out
-    </button>
-</div>
+            <button onclick="logout()" style="width: 100%; padding: 12px; border: none; border-radius: 12px; background: #27ae60; color: white; font-weight: bold; font-size: 15px; cursor: pointer;">
+                Log Out
+            </button>
+        </div>
     </div>
 </div>
+
 
 <!-- Add Balance Popup (Full Screen & Slide Effect) -->
 <div id="add-balance-popup" style="display: none; position: fixed; top: 0; right: -100%; width: 100%; height: 100%; z-index: 9999; background: #f4f6f8; overflow-y: auto; transition: right 0.4s ease-in-out;">
@@ -1189,6 +1187,19 @@ window.claimDailyBonus = async () => {
         });
     }
 };
+
+// এটি আপনার task.html এর স্ক্রিপ্টের ভেতরে বসান
+const phone = localStorage.getItem("userPhone");
+if(phone) {
+    const userRef = ref(db, "users/" + phone);
+    onValue(userRef, (snapshot) => {
+        const data = snapshot.val();
+        const referDisplay = document.getElementById("myReferCode");
+        if(referDisplay && data) {
+            referDisplay.innerText = data.referCode || "N/A";
+        }
+    });
+}
 
 </script>
 
