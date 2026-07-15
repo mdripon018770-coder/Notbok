@@ -243,11 +243,24 @@ body {
     </div>
 </div>
 
-<!-- ডেইলি বোনাস সেকশন -->
-<div class="bonus-section" style="text-align:center; padding: 10px 20px;">
-    <button id="dailyBonusBtn" onclick="claimDailyBonus()" style="background: #27ae60; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">Claim Daily Bonus</button>
-    <p id="bonusStatus" style="font-size: 12px; margin-top: 8px; color: #555;"></p>
+<!-- ডেইলি বোনাস সেকশন (আপডেট করা) -->
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; gap: 10px;">
+    
+    <!-- বাম পাশে: লোন নিন কার্ড -->
+    <div onclick="openLoanPopup()" style="background: #e67e22; color: white; padding: 10px; border-radius: 15px; text-align: center; flex: 1; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <div style="font-size: 12px; font-weight: bold;">লোন নিন</div>
+    </div>
+
+    <!-- মাঝখানে: ডেইলি বোনাস বাটন -->
+    <button id="dailyBonusBtn" onclick="claimDailyBonus()" style="background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex: 1.5;">Daily Bonus</button>
+
+    <!-- ডান পাশে: সঞ্চয় জমা করুন কার্ড -->
+    <div onclick="openSavingsPopup()" style="background: #2980b9; color: white; padding: 10px; border-radius: 15px; text-align: center; flex: 1; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <div style="font-size: 12px; font-weight: bold;">সঞ্চয় জমা</div>
+    </div>
 </div>
+<p id="bonusStatus" style="text-align:center; font-size: 12px; margin-top: 5px; color: #555;"></p>
+
 
 <!-- ব্যানার স্লাইডার -->
 <!-- ইমেজ স্টাইল আপডেট করা হয়েছে -->
@@ -620,6 +633,26 @@ body {
     </div>
 </div>
 
+<!-- Savings Popup -->
+<div id="savings-popup" class="side-popup" style="display:none; position: fixed; bottom: 0; left: 0; width: 100%; height: 85%; z-index: 9999; background: white; border-radius: 25px 25px 0 0; padding: 20px; box-sizing: border-box; overflow-y: auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="margin: 0;">Savings</h3>
+        <span onclick="closeAllPopups()" style="cursor: pointer; font-size: 24px;">×</span>
+    </div>
+
+    <!-- এখানে থাকবে সেই কার্ডটি -->
+    <div class="stat-item" style="background: #2980b9; color: white; margin-bottom: 20px; padding: 20px; border-radius: 20px;">
+        <div style="font-size: 14px; opacity: 0.9;">Savings Balance</div>
+        <div id="savings-balance-display" style="font-size: 24px; font-weight: bold;">৳ 0.00</div>
+    </div>
+
+    <!-- সেভিংস প্ল্যান বাটন -->
+    <button onclick="openSavingsForm()" style="width: 100%; padding: 15px; background: #2980b9; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;">
+        সঞ্চয় প্ল্যান শুরু করুন
+    </button>
+    
+    <!-- এখানে হয়তো সেভিংস হিস্ট্রি দেখাবেন -->
+</div>
 
 
 
@@ -1292,6 +1325,98 @@ window.copyReferCode = () => {
         Swal.fire('কপি হয়েছে!', 'রেফার কোডটি কপি করা হয়েছে: ' + code, 'success');
     });
 };
+
+
+
+window.openLoanPopup = () => {
+    Swal.fire({
+        title: 'লোন নিন',
+        html: `
+            <div style="text-align: left;">
+                <p style="font-size: 14px; margin-bottom: 5px;">লোনের পরিমাণ (৫০ - ৫০০ টাকা):</p>
+                <input type="number" id="loanAmount" class="swal2-input" placeholder="টাকার পরিমাণ লিখুন">
+                
+                <p style="font-size: 14px; margin-top: 15px;">আপনার ফোন নম্বর:</p>
+                <input type="text" id="loanPhone" class="swal2-input" value="${userPhone}" readonly>
+                
+                <p style="font-size: 12px; color: #e74c3c; margin-top: 10px;">* লোন নেওয়ার পর নির্দিষ্ট সময়ে ফেরত দিতে হবে।</p>
+            </div>
+        `,
+        confirmButtonText: 'লোন আবেদন করুন',
+        confirmButtonColor: '#e67e22',
+        showCancelButton: true,
+        cancelButtonText: 'বন্ধ করুন',
+        preConfirm: () => {
+            const amount = document.getElementById('loanAmount').value;
+            if (!amount || amount < 50 || amount > 500) {
+                Swal.showValidationMessage('অনুগ্রহ করে ৫০ থেকে ৫০০ টাকার মধ্যে অ্যামাউন্ট লিখুন');
+            }
+            return { amount: amount };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const amount = result.value.amount;
+            
+            // ডাটাবেজে লোন রিকোয়েস্ট পুশ করা
+            push(ref(db, 'loanRequests'), {
+                userId: userPhone,
+                amount: amount,
+                status: 'pending',
+                timestamp: Date.now()
+            }).then(() => {
+                Swal.fire('আবেদন সফল!', 'আপনার লোন আবেদনটি রিভিউতে আছে।', 'success');
+            }).catch((error) => {
+                Swal.fire('Error', 'কিছু সমস্যা হয়েছে, আবার চেষ্টা করুন।', 'error');
+            });
+        }
+    });
+};
+
+
+// ১. সেভিংস ড্যাশবোর্ড খোলার ফাংশন (যেখানে ব্যালেন্স কার্ডটি দেখা যাবে)
+window.openSavingsPopup = () => {
+    document.getElementById('savings-popup').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+    
+    // ব্যালেন্স কার্ড আপডেট করার ফাংশন কল করা
+    updateSavingsDisplay(); 
+};
+
+// ২. ডাটাবেজ থেকে ব্যালেন্স এনে দেখানোর ফাংশন
+const updateSavingsDisplay = () => {
+    onValue(ref(db, 'users/' + userPhone + '/savingsBalance'), (snapshot) => {
+        const val = snapshot.val() || 0;
+        const display = document.getElementById('savings-balance-display');
+        if(display) display.innerText = `৳ ${parseFloat(val).toLocaleString("en-BD", { minimumFractionDigits: 2 })}`;
+    });
+};
+
+// ৩. সঞ্চয় প্ল্যান চালু করার ফরম
+window.openSavingsForm = () => {
+    Swal.fire({
+        title: 'সঞ্চয় প্ল্যান',
+        html: `
+            <select id="dailyAmount" class="swal2-input">
+                <option value="10">প্রতিদিন ১০ টাকা</option>
+                <option value="20">প্রতিদিন ২০ টাকা</option>
+                <option value="50">প্রতিদিন ৫০ টাকা</option>
+            </select>
+            <p style="font-size:12px; color:#555;">আপনার ব্যালেন্স থেকে প্রতিদিন এই টাকা স্বয়ংক্রিয়ভাবে সঞ্চয়ে জমা হবে।</p>
+        `,
+        confirmButtonText: 'সঞ্চয় শুরু করুন',
+        preConfirm: () => {
+            const amount = document.getElementById('dailyAmount').value;
+            // ডাটাবেজে ইউজারকে 'activeSavings' মোডে অন করা
+            update(ref(db, 'users/' + userPhone + '/savingsPlan'), {
+                dailyAmount: amount,
+                status: 'active',
+                startDate: Date.now()
+            });
+            Swal.fire('সফল!', 'আপনার সঞ্চয় প্ল্যান চালু হয়েছে।', 'success');
+        }
+    });
+};
+
 
 </script>
 
