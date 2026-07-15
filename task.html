@@ -395,6 +395,8 @@ body {
         <button onclick="copyReferCode()" style="background: #7b2cbf; color: white; border: none; padding: 5px 15px; border-radius: 10px; cursor: pointer; font-size: 12px;">Copy Code</button>
     </div>
 
+<div class="menu-card" onclick="openPopup('leaderboard-popup')">Leaderboard</div>
+
     <!-- মেনু কার্ডস -->
     <div style="display: flex; flex-direction: column; gap: 10px;">
         <div class="menu-card" onclick="openPopup('add-balance-popup')">Add Balance</div>
@@ -604,12 +606,24 @@ body {
     </div>
 </div>
 
+<!-- Leaderboard Popup -->
+<div id="leaderboard-popup" class="side-popup" style="display:none; position: fixed; bottom: 0; left: 0; width: 100%; height: 85%; z-index: 9999; background: white; border-radius: 25px 25px 0 0; padding: 20px; box-sizing: border-box; overflow-y: auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="margin: 0;">🏆 Top 10 Earners</h3>
+        <span onclick="closeAllPopups()" style="cursor: pointer; font-size: 24px;">×</span>
+    </div>
+    <div id="leaderboard-list">
+        <!-- এখানে নামগুলো ডাটাবেস থেকে আসবে -->
+        <p>Loading leaderboard...</p>
+    </div>
+</div>
+
 
 
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getDatabase, ref, onValue, update, get, push } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+import { getDatabase, ref, onValue, update, get, push, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
 const firebaseConfig = {
     databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com"
@@ -1201,7 +1215,41 @@ if(phone) {
     });
 }
 
+// ... আগের সব ফাংশন ...
+
+window.updateLeaderboard = () => {
+    const list = document.getElementById('leaderboard-list');
+    const usersRef = ref(db, 'users');
+    const topUsersQuery = query(usersRef, orderByChild('balance'), limitToLast(10));
+    
+    onValue(topUsersQuery, (snapshot) => {
+        let usersArray = [];
+        snapshot.forEach((child) => { usersArray.push(child.val()); });
+        usersArray.reverse();
+        list.innerHTML = '';
+        if(usersArray.length === 0) { list.innerHTML = '<p style="text-align:center;">No users found</p>'; return; }
+        usersArray.forEach((data, index) => {
+            const div = document.createElement('div');
+            div.style.padding = "10px"; div.style.borderBottom = "1px solid #eee";
+            div.style.display = "flex"; div.style.justifyContent = "space-between";
+            div.innerHTML = `<span>${index + 1}. ${data.name || "User"}</span> <b style="color: #27ae60;">৳${parseFloat(data.balance || 0).toLocaleString()}</b>`;
+            list.appendChild(div);
+        });
+    });
+};
+
+// এই লাইনটি অবশ্যই দিবে:
+updateLeaderboard(); 
+
+window.copyReferCode = () => {
+    const code = document.getElementById("myReferCode").innerText;
+    navigator.clipboard.writeText(code).then(() => {
+        Swal.fire('কপি হয়েছে!', 'রেফার কোডটি কপি করা হয়েছে: ' + code, 'success');
+    });
+};
+
 </script>
+
 
 </body>
 </html>
