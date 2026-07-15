@@ -75,24 +75,68 @@
     }
 
     .order-btn-custom:active { transform: scale(0.95); } /* ক্লিক করলে বাটনটি একটু ছোট হবে */
-</style>
+
+
+.notice-board {
+    background: #ffffff;
+    color: #d63031; /* নোটিশের কালার */
+    padding: 10px;
+    margin: 10px 0 20px 0;
+    border-radius: 15px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border: 1px solid #fab1a0;
+}
+
+/* প্রোডাক্ট কন্টেইনারকে স্লাইডার হিসেবে তৈরি করা */
+.product-slider-container {
+    display: flex;
+    overflow-x: auto; /* এটিই ডান-বামে স্ক্রল করার সুবিধা দেবে */
+    gap: 15px;
+    padding: 10px 0;
+    -webkit-overflow-scrolling: touch; /* মোবাইলে স্মুথ স্ক্রলিংয়ের জন্য */
+    scrollbar-width: none; /* স্ক্রলবার লুকানোর জন্য */
+}
+
+/* স্ক্রলবার হাইড করা */
+.product-slider-container::-webkit-scrollbar { display: none; }
+
+.product-card { 
+    background: #d3dce6; 
+    padding: 12px; 
+    border-radius: 20px; 
+    text-align: center; 
+    display: flex; 
+    flex-direction: column;
+    min-width: 150px; /* প্রতিটি কার্ডের সাইজ নির্দিষ্ট করা */
+    max-width: 150px;
+}
 
 
     </style>
 </head>
 <body>
 
-<!-- ব্যালেন্স কার্ড -->
-<div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
-    <div style="background: #ffffff; padding: 8px 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #ddd; font-weight: bold; color: #5a189a;">
-        ৳ <span id="balance-display">0.00</span>
-    </div>
+<!-- ব্যালেন্স ডিসপ্লে (এটি হিডেন থাকবে অথবা আপনি আপনার ডিজাইনের কোথাও ছোট করে রাখতে পারেন) -->
+<div style="display:none;">
+    ৳ <span id="balance-display">0.00</span>
 </div>
+
+<div class="notice-board">
+    <marquee behavior="scroll" direction="left" scrollamount="5">
+        📢 বিশেষ অফার: প্রোডাক্ট অর্ডারে পাবেন সর্বোচ্চ ক্যাশব্যাক! | প্রতিদিন নতুন নতুন টাস্ক সম্পন্ন করুন এবং আয় করুন! | কোনো সমস্যা হলে এডমিনের সাথে যোগাযোগ করুন।
+    </marquee>
+</div>
+
     <input type="text" class="search-box" placeholder="Search for a shop">
 
-    <div class="product-grid" id="product-container">
+    <h3 style="margin-top: 20px;">আমাদের পণ্যসমূহ</h3>
+<!-- নতুন ক্লাস ব্যবহার করা হয়েছে -->
+<div class="product-slider-container" id="product-container">
     <!-- এখানে ডাইনামিকলি প্রোডাক্ট আসবে -->
 </div>
+
 
 
 <div id="orderModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
@@ -129,14 +173,20 @@
     });
 
     // ২. ডেটাবেস থেকে প্রোডাক্ট লোড করা (এটি ঠিক আছে)
+        // ২. ডেটাবেস থেকে প্রোডাক্ট লোড করা (সার্চের জন্য ডাটা-অ্যাট্রিবিউটসহ)
     onValue(ref(db, 'products'), (snapshot) => {
-        const container = document.querySelector('.product-grid');
+        const container = document.getElementById('product-container'); // অথবা document.querySelector('.product-grid')
         container.innerHTML = ''; 
 
         snapshot.forEach((childSnapshot) => {
             const data = childSnapshot.val();
             const card = document.createElement('div');
             card.className = 'product-card';
+            
+            // সার্চ লজিকের জন্য এই দুটি লাইন খুবই গুরুত্বপূর্ণ
+            card.setAttribute('data-name', data.name || "");
+            card.setAttribute('data-tags', data.tags || "");
+
             card.innerHTML = `
                 <img src="${data.imageUrl}" class="product-img">
                 <span class="product-title">${data.name}</span>
@@ -147,6 +197,25 @@
             container.appendChild(card);
         });
     });
+
+    // ৩. সার্চ লজিক (এটি এর নিচেই থাকবে)
+    const searchBox = document.querySelector('.search-box');
+    searchBox.addEventListener('input', function() {
+        const searchTerm = searchBox.value.toLowerCase();
+        const productCards = document.querySelectorAll('.product-card');
+
+        productCards.forEach(card => {
+            const title = card.getAttribute('data-name').toLowerCase();
+            const tags = card.getAttribute('data-tags').toLowerCase();
+            
+            if (title.includes(searchTerm) || tags.includes(searchTerm)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+
 
     // ৩. মোডাল লজিক
     let currentProduct = "";
@@ -164,7 +233,7 @@
     
     // ৪. অর্ডার লজিক (এখানে userId যুক্ত করা হয়েছে যাতে এডমিন বুঝতে পারে কার অর্ডার)
         // ৪. হোয়াটসঅ্যাপ ও অর্ডার লজিক
-    window.sendToWhatsApp = async () => {
+        window.sendToWhatsApp = async () => {
         let name = document.getElementById('userName').value;
         let phone = document.getElementById('userPhone').value;
         let address = document.getElementById('userAddress').value;
@@ -177,17 +246,23 @@
         Swal.fire({ title: 'অর্ডার প্রসেস হচ্ছে...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
         try {
-            // অর্ডারের সাথে ইউজার ফোন নাম্বার এবং সময় সেভ করুন
-            await push(ref(db, 'orders'), {
-                userId: userPhone, 
+            // অর্ডারের ডাটা তৈরি
+            const orderData = {
+                userId: userPhone, // ইউজারের ফোন নম্বর
                 product: currentProduct,
                 userName: name,
                 userPhone: phone,
                 userAddress: address,
                 cashback: currentCashback,
-                status: 'pending',
-                timestamp: new Date().toLocaleString('bn-BD') // সুন্দর ফরম্যাটে সময় সেভ হবে
-            });
+                status: 'Pending', // শুরুর স্ট্যাটাস
+                timestamp: new Date().toLocaleString('bn-BD')
+            };
+
+            // ১. মূল orders পাথে সেভ করুন (এডমিন দেখার জন্য)
+            await push(ref(db, 'orders'), orderData);
+
+            // ২. ইউজারের নিজের হিস্ট্রি পাথে সেভ করুন (ইউজার অ্যাপের হিস্ট্রিতে দেখার জন্য)
+            await push(ref(db, 'users/' + userPhone + '/history'), orderData);
 
             // হোয়াটসঅ্যাপে মেসেজ পাঠানো
             let msg = `নতুন অর্ডার: ${currentProduct}%0Aনাম: ${name}%0Aফোন: ${phone}%0Aঠিকানা: ${address}`;
