@@ -110,22 +110,28 @@
 
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getDatabase, ref, push, update, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    import { getDatabase, ref, push, update, onValue, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
     const firebaseConfig = { databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com" };
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // ১. ব্যালেন্স লাইভ আপডেট (আগের লজিক)
-    onValue(ref(db, 'users/balance'), (snapshot) => {
+    // ১. ইউজার ভেরিফিকেশন এবং ব্যালেন্স সিঙ্ক
+    const userPhone = localStorage.getItem("userPhone");
+    if (!userPhone) {
+        window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
+    }
+
+    // নির্দিষ্ট ইউজারের ব্যালেন্স দেখার জন্য সঠিক পাথ (users/ফোন নাম্বার/balance)
+    onValue(ref(db, 'users/' + userPhone + '/balance'), (snapshot) => {
         const balance = snapshot.val() || 0;
-        document.getElementById('balance-display').innerText = parseFloat(balance).toLocaleString();
+        document.getElementById('balance-display').innerText = parseFloat(balance).toLocaleString("en-BD", { minimumFractionDigits: 2 });
     });
 
-    // ২. ডেটাবেস থেকে প্রোডাক্ট অটোমেটিক লোড করা (নতুন লজিক)
+    // ২. ডেটাবেস থেকে প্রোডাক্ট লোড করা (এটি ঠিক আছে)
     onValue(ref(db, 'products'), (snapshot) => {
         const container = document.querySelector('.product-grid');
-        container.innerHTML = ''; // আগের সব কার্ড মুছে নতুনগুলো আনবে
+        container.innerHTML = ''; 
 
         snapshot.forEach((childSnapshot) => {
             const data = childSnapshot.val();
@@ -142,7 +148,7 @@
         });
     });
 
-    // ৩. মোডাল লজিক (আগের লজিক ঠিক আছে)
+    // ৩. মোডাল লজিক
     let currentProduct = "";
     let currentCashback = 0;
 
@@ -156,7 +162,8 @@
         document.getElementById('orderModal').style.display = 'none'; 
     };
     
-    // ৪. হোয়াটসঅ্যাপ ও অর্ডার লজিক (আগের লজিক ঠিক আছে)
+    // ৪. অর্ডার লজিক (এখানে userId যুক্ত করা হয়েছে যাতে এডমিন বুঝতে পারে কার অর্ডার)
+        // ৪. হোয়াটসঅ্যাপ ও অর্ডার লজিক
     window.sendToWhatsApp = async () => {
         let name = document.getElementById('userName').value;
         let phone = document.getElementById('userPhone').value;
@@ -167,20 +174,19 @@
             return;
         }
 
-        const now = new Date();
-        const dateTime = now.toLocaleString('bn-BD');
-
         Swal.fire({ title: 'অর্ডার প্রসেস হচ্ছে...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
         try {
-            await update(push(ref(db, 'orders')), {
+            // অর্ডারের সাথে ইউজার ফোন নাম্বার এবং সময় সেভ করুন
+            await push(ref(db, 'orders'), {
+                userId: userPhone, 
                 product: currentProduct,
                 userName: name,
                 userPhone: phone,
                 userAddress: address,
                 cashback: currentCashback,
                 status: 'pending',
-                orderTime: dateTime
+                timestamp: new Date().toLocaleString('bn-BD') // সুন্দর ফরম্যাটে সময় সেভ হবে
             });
 
             // হোয়াটসঅ্যাপে মেসেজ পাঠানো
@@ -188,16 +194,17 @@
             window.open(`https://wa.me/8801877059049?text=${msg}`, '_blank');
 
             Swal.fire({ icon: 'success', title: 'অর্ডার সফল!', text: 'অর্ডারটি জমা হয়েছে।' });
-            closeModal();
+            
+            // ইনপুট বক্স খালি করা
             document.getElementById('userName').value = '';
             document.getElementById('userPhone').value = '';
             document.getElementById('userAddress').value = '';
+            
+            closeModal();
         } catch (error) {
             Swal.fire({ icon: 'error', title: 'ভুল হয়েছে!', text: 'আবার চেষ্টা করুন।' });
         }
     };
-
-
 
 
     </script>
