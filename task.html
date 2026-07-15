@@ -241,6 +241,12 @@ body {
     </div>
 </div>
 
+<!-- ডেইলি বোনাস সেকশন -->
+<div class="bonus-section" style="text-align:center; padding: 10px 20px;">
+    <button id="dailyBonusBtn" onclick="claimDailyBonus()" style="background: #27ae60; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">Claim Daily Bonus</button>
+    <p id="bonusStatus" style="font-size: 12px; margin-top: 8px; color: #555;"></p>
+</div>
+
 <!-- ব্যানার স্লাইডার -->
 <!-- ইমেজ স্টাইল আপডেট করা হয়েছে -->
 <div id="banner-slider" style="width: 100%; overflow: hidden; margin: 15px 0; border-radius: 15px; height: 200px; position: relative; background: #f8f8f8;">
@@ -1146,6 +1152,41 @@ window.processSettingsChange = async () => {
         hideInputForm();
     } catch (error) {
         Swal.fire('Error', 'ডাটা আপডেট করতে সমস্যা হয়েছে।', 'error');
+    }
+};
+
+window.claimDailyBonus = async () => {
+    const statusEl = document.getElementById('bonusStatus');
+    const btn = document.getElementById('dailyBonusBtn');
+    
+    // আজকের তারিখ বের করা
+    const today = new Date().toISOString().slice(0, 10);
+    
+    // ইউজার ডাটা চেক করা
+    const snap = await get(userRef);
+    const userData = snap.val() || {};
+    
+    if (userData.lastClaimDate === today) {
+        Swal.fire({
+            icon: 'info',
+            title: 'ইতিমধ্যেই নিয়েছেন!',
+            text: 'আপনি আজ ডেইলি বোনাস নিয়ে ফেলেছেন। আগামীকাল আবার চেষ্টা করুন।'
+        });
+    } else {
+        const bonusAmount = 10; // বোনাসের পরিমাণ
+        const currentBalance = parseFloat(userData.balance || 0);
+        
+        // ব্যালেন্স আপডেট এবং লাস্ট ক্লেইম ডেট সেভ
+        await update(userRef, {
+            balance: currentBalance + bonusAmount,
+            lastClaimDate: today
+        });
+        
+        Swal.fire({
+            icon: 'success',
+            title: 'অভিনন্দন!',
+            text: `আপনি সফলভাবে ${bonusAmount} টাকা ডেইলি বোনাস পেয়েছেন!`
+        });
     }
 };
 
