@@ -983,51 +983,63 @@ window.confirmSendMoney = async () => {
 };
 
 
+// ==========================================
+// হিস্ট্রি সিস্টেম: ডিপোজিট, উইথড্র, ট্রান্সফার এবং সেন্ড মানি
+// ==========================================
+
+
 const updateHistory = async () => {
-    const historyList = document.getElementById('history-list');
+    const historyList = document.getElementById('history-list'); // আপনার মূল হিস্ট্রি কন্টেইনারের আইডি
     if (!historyList) return;
     
     historyList.innerHTML = 'Loading...';
 
-    // Firebase থেকে সব ধরণের ট্রানজেকশন একসাথে নিয়ে আসা
-    const [depSnap, wdSnap, tfSnap, historySnap] = await Promise.all([
+    // ৫টি ডাটাবেস পাথ থেকে ডাটা একসাথে আনা
+    const [depSnap, wdSnap, tfSnap, moneySnap, orderSnap] = await Promise.all([
         get(ref(db, 'depositRequests')), 
         get(ref(db, 'withdrawRequests')),
-        get(ref(db, 'transferRequests')), // নতুন লাইন
-        get(ref(db, 'history/' + userPhone))
+        get(ref(db, 'transferRequests')),
+        get(ref(db, 'history/' + userPhone)),
+        get(ref(db, 'users/' + userPhone + '/history')) // এটি প্রোডাক্ট অর্ডারের ডাটা
     ]);
     
     const depData = depSnap.val() || {};
     const wdData = wdSnap.val() || {};
-    const tfData = tfSnap.val() || {}; // নতুন লাইন
-    const myHistory = historySnap.val() || {};
+    const tfData = tfSnap.val() || {};
+    const moneyData = moneySnap.val() || {};
+    const orderData = orderSnap.val() || {};
 
     let allHistory = [];
 
-    // ১. ডিপোজিট ডাটা যোগ করা
+    // ১. ডিপোজিট
     Object.entries(depData).forEach(([k, v]) => {
         if (v.userId === userPhone) allHistory.push({ ...v, type: 'Deposit', method: v.method, amount: v.amount, status: v.status, timestamp: v.timestamp });
     });
 
-    // ২. উইথড্র ডাটা যোগ করা
+    // ২. উইথড্র
     Object.entries(wdData).forEach(([k, v]) => {
         if (v.userId === userPhone) allHistory.push({ ...v, type: 'Withdraw', method: v.method, amount: v.amount, status: v.status, timestamp: v.timestamp });
     });
 
-    // ৩. ট্রান্সফার ডাটা যোগ করা (নতুন অংশ)
+    // ৩. ট্রান্সফার
     Object.entries(tfData).forEach(([k, v]) => {
         if (v.userId === userPhone) allHistory.push({ ...v, type: 'Transfer', method: v.method + ': ' + v.number, amount: v.amount, status: v.status, timestamp: v.timestamp });
     });
 
-    // ৪. সেন্ড মানি হিস্ট্রি যোগ করা
-    Object.entries(myHistory).forEach(([k, v]) => {
+    // ৪. সেন্ড মানি
+    Object.entries(moneyData).forEach(([k, v]) => {
+        allHistory.push({ ...v, type: v.type, method: v.type === 'Sent' ? 'To: ' + v.to : 'From: ' + v.from, status: 'Success', amount: v.amount, timestamp: v.timestamp });
+    });
+
+    // ৫. প্রোডাক্ট অর্ডার (নতুন যোগ করা হলো)
+    Object.entries(orderData).forEach(([k, v]) => {
         allHistory.push({ 
             ...v, 
-            type: v.type,
-            method: v.type === 'Sent' ? 'To: ' + v.to : 'From: ' + v.from, 
-            status: 'success', 
-            amount: v.amount, 
-            timestamp: v.timestamp 
+            type: 'Product Order', 
+            method: v.product, 
+            amount: v.cashback, // অর্ডারের ক্ষেত্রে ক্যাশব্যাক দেখাচ্ছি
+            status: v.status, 
+            timestamp: new Date(v.timestamp).getTime() // সময়কে নাম্বারে কনভার্ট করা হয়েছে সর্টিংয়ের জন্য
         });
     });
 
@@ -1036,7 +1048,7 @@ const updateHistory = async () => {
 
     historyList.innerHTML = '';
     if (allHistory.length === 0) {
-        historyList.innerHTML = "No history found.";
+        historyList.innerHTML = "<p style='text-align:center;'>কোনো ট্রানজেকশন হিস্ট্রি পাওয়া যায়নি।</p>";
         return;
     }
 
@@ -1045,25 +1057,32 @@ const updateHistory = async () => {
         const div = document.createElement('div');
         div.className = 'content-box';
         
+        // কালার লজিক
         let color = 'green';
-        if (val.status === 'pending') color = 'orange';
+        if (val.status === 'pending' || val.status === 'Pending') color = 'orange';
         else if (val.status === 'rejected') color = 'red';
 
         div.innerHTML = `
-            <div><b>${val.type}</b>: ${val.method}</div>
-            <div style="font-size:14px; font-weight:bold;">৳${val.amount}</div>
-            <div style="font-size:12px; color:${color}">Status: ${val.status || 'Success'}</div>
-            <div style="font-size:10px; color:#888;">${new Date(val.timestamp).toLocaleString()}</div>
+            <div style="display: flex; justify-content: space-between;">
+                <b>${val.type}</b>
+                <span style="font-weight:bold; color:#7b2cbf;">৳${val.amount}</span>
+            </div>
+            <div style="font-size:13px;">ডিটেইলস: ${val.method}</div>
+            <div style="font-size:12px; color:${color}">স্ট্যাটাস: ${val.status || 'Success'}</div>
+            <div style="font-size:10px; color:#888;">${new Date(val.timestamp).toLocaleString('bn-BD')}</div>
         `;
         historyList.appendChild(div);
     });
 };
 
-// ডাটাবেজে যেকোনো পরিবর্তন হলে হিস্ট্রি অটো আপডেট হবে (নিচের লাইনে transferRequests যোগ করলাম)
+// ডাটাবেজে পরিবর্তন হলে আপডেট করার জন্য
 onValue(ref(db, 'depositRequests'), updateHistory);
 onValue(ref(db, 'withdrawRequests'), updateHistory);
 onValue(ref(db, 'transferRequests'), updateHistory);
 onValue(ref(db, 'history/' + userPhone), updateHistory);
+onValue(ref(db, 'users/' + userPhone + '/history'), updateHistory);
+
+
 
 // WhatsApp button drag logic
 const dragBtn = document.getElementById('whatsapp-btn');
