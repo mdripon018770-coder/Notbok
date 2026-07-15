@@ -633,26 +633,34 @@ body {
     </div>
 </div>
 
-<!-- Savings Popup -->
-<!-- পপআপের নতুন ডিজাইন আইডিয়া -->
-<div class="savings-container">
-    <div class="header-icon">
-        <img src="savings-icon.svg" alt="Savings"> <!-- এখানে SVG ব্যবহার করুন -->
+<div id="savings-popup" class="side-popup" style="display:none; position: fixed; bottom: 0; left: 0; width: 100%; height: auto; z-index: 10000; background: white; border-radius: 25px 25px 0 0; padding: 20px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1);">
+    <div style="text-align: right;">
+        <span onclick="closeAllPopups()" style="cursor: pointer; font-size: 24px; font-weight: bold;">×</span>
     </div>
-    <p class="instructions">৩০ দিন নিয়ম মেনে সঞ্চয় করুন এবং ভবিষ্যতের জন্য বড় অংকের তহবিল তৈরি করুন।</p>
-    
-    <input type="number" id="savingsAmount" placeholder="জমার পরিমাণ (টাকা)">
-    
-    <select id="savingsDuration">
-        <option value="30">৩০ দিন</option>
-        <option value="60">৬০ দিন</option>
-        <option value="90">৯০ দিন</option>
-    </select>
-    
-    <button class="confirm-btn">
-        <img src="check-icon.svg" alt="Confirm"> <!-- আইকন বাটন -->
-    </button>
+    <div style="text-align: center;">
+        <img src="https://cdn-icons-png.flaticon.com/128/3063/3063189.png" style="width: 80px;"> 
+        <h3>সঞ্চয় করুন</h3>
+        
+        <!-- বর্তমান সঞ্চয় দেখানোর জায়গা -->
+        <div style="margin: 15px 0; padding: 10px; background: #f4f4f4; border-radius: 10px; font-weight: bold; color: #2980b9;">
+            আপনার বর্তমান সঞ্চয়: <span id="savings-balance-display">৳ 0.00</span>
+        </div>
+
+        <p>৩০ বা ৬০ দিন নিয়ম মেনে সঞ্চয় করুন।</p>
+        
+        <input type="number" id="savingsAmount" placeholder="জমার পরিমাণ (টাকা)" style="width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box;">
+        
+        <select id="savingsDuration" style="width: 90%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box;">
+            <option value="30">৩০ দিন</option>
+            <option value="60">৬০ দিন</option>
+        </select>
+        
+        <button onclick="saveSavings()" style="width: 90%; padding: 12px; background: #2980b9; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">
+            জমা দিন
+        </button>
+    </div>
 </div>
+
 
 
 
@@ -1392,31 +1400,41 @@ const updateSavingsDisplay = () => {
 };
 
 // ৩. সঞ্চয় প্ল্যান চালু করার ফরম
-window.openSavingsForm = () => {
-    Swal.fire({
-        title: 'সঞ্চয় প্ল্যান',
-        html: `
-            <select id="dailyAmount" class="swal2-input">
-                <option value="10">প্রতিদিন ১০ টাকা</option>
-                <option value="20">প্রতিদিন ২০ টাকা</option>
-                <option value="50">প্রতিদিন ৫০ টাকা</option>
-            </select>
-            <p style="font-size:12px; color:#555;">আপনার ব্যালেন্স থেকে প্রতিদিন এই টাকা স্বয়ংক্রিয়ভাবে সঞ্চয়ে জমা হবে।</p>
-        `,
-        confirmButtonText: 'সঞ্চয় শুরু করুন',
-        preConfirm: () => {
-            const amount = document.getElementById('dailyAmount').value;
-            // ডাটাবেজে ইউজারকে 'activeSavings' মোডে অন করা
-            update(ref(db, 'users/' + userPhone + '/savingsPlan'), {
-                dailyAmount: amount,
-                status: 'active',
-                startDate: Date.now()
-            });
-            Swal.fire('সফল!', 'আপনার সঞ্চয় প্ল্যান চালু হয়েছে।', 'success');
-        }
-    });
-};
+window.saveSavings = async () => {
+    const amount = parseFloat(document.getElementById('savingsAmount').value);
+    const duration = document.getElementById('savingsDuration').value;
+    
+    if(!amount || amount <= 0) {
+        Swal.fire('Error', 'সঠিক পরিমাণ লিখুন', 'error');
+        return;
+    }
 
+    const snap = await get(userRef);
+    const userData = snap.val() || { balance: 0, savingsBalance: 0 };
+    
+    // ব্যালেন্স চেক
+    if(amount > parseFloat(userData.balance || 0)) {
+        Swal.fire('Error', 'আপনার পর্যাপ্ত মেইন ব্যালেন্স নেই!', 'error');
+        return;
+    }
+
+    // মেইন ব্যালেন্স থেকে কমানো এবং সেভিংস ব্যালেন্সে যোগ করা
+    await update(userRef, { 
+        balance: parseFloat(userData.balance) - amount,
+        savingsBalance: parseFloat(userData.savingsBalance || 0) + amount 
+    });
+
+    // হিস্ট্রিতে রেকর্ড করা
+    await push(ref(db, 'savings/' + userPhone), {
+        amount: amount,
+        duration: duration,
+        timestamp: Date.now(),
+        status: 'ongoing'
+    });
+
+    Swal.fire('সফল!', 'আপনার সঞ্চয় সফলভাবে জমা হয়েছে!', 'success');
+    closeAllPopups();
+};
 
 </script>
 
