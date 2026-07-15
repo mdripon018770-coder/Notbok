@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
 
         body { 
@@ -649,12 +651,15 @@ window.userPhone = userPhone;
 const userRef = ref(db, "users/" + userPhone);
 window.userRef = userRef;
 
-// ২. রিয়েল-টাইম ব্যালেন্স, নাম ও ফোন আপডেট
+// ২. রিয়েল-টাইম ব্যালেন্স, নাম, ফোন এবং বোনাস অ্যানিমেশন আপডেট
 onValue(userRef, (snapshot) => {
     const data = snapshot.val() || {};
+    
+    // ব্যালেন্স আপডেট
     const balanceDisplay = document.getElementById("balance-display");
     if (balanceDisplay) balanceDisplay.innerText = `৳ ${parseFloat(data.balance || 0).toLocaleString("en-BD", { minimumFractionDigits: 2 })}`;
     
+    // নাম ও ফোন আপডেট
     const pName = document.getElementById("popup-name");
     const pPhone = document.getElementById("popup-phone");
     if(pName) pName.innerText = data.name || "User";
@@ -662,6 +667,27 @@ onValue(userRef, (snapshot) => {
     
     const userInfo = document.getElementById("user-info");
     if(userInfo) userInfo.innerHTML = `<b>Welcome, ${data.name || "User"}</b>`;
+
+    // রেফার বোনাস অ্যানিমেশন লজিক
+    if (data.showAnimation === true) {
+        // কনফেটি অ্যানিমেশন শুরু
+        confetti({
+            particleCount: 200,
+            spread: 100,
+            origin: { y: 0.6 },
+            colors: ['#7b2cbf', '#27ae60', '#f1c40f']
+        });
+
+        Swal.fire({
+            title: 'অভিনন্দন!',
+            text: 'আপনার রেফারেল বোনাস সফলভাবে যুক্ত হয়েছে!',
+            icon: 'success',
+            confirmButtonColor: '#7b2cbf'
+        });
+
+        // অ্যানিমেশন হওয়ার পর ফ্ল্যাগটি false করে দেওয়া
+        update(userRef, { showAnimation: false });
+    }
 });
 
 // ৩. লেভেল রেন্ডারিং
