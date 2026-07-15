@@ -47,7 +47,7 @@
 
                 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
 const firebaseConfig = {
     databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com"
@@ -75,7 +75,15 @@ window.openRegister = () => { document.getElementById("regModal").style.display 
 window.closeRegister = () => { document.getElementById("regModal").style.display = "none"; };
 
 // =======================
-// REGISTER (Updated with regTime)
+// REFER LOGIC (New)
+// =======================
+window.generateReferCode = (name) => {
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    return (name ? name.substring(0, 3).toUpperCase() : "USR") + randomNum;
+};
+
+// =======================
+// REGISTER (Updated)
 // =======================
 window.register = async () => {
     const name = document.getElementById("regName").value.trim();
@@ -101,12 +109,13 @@ window.register = async () => {
         return;
     }
 
-    // regTime যোগ করা হয়েছে
+    // রেফার কোড জেনারেট ও সেভ করা হচ্ছে
     await set(userRef,{
         name: name,
         balance: 0,
         password: pass,
-        regTime: Date.now() 
+        regTime: Date.now(),
+        referCode: generateReferCode(name)
     });
 
     localStorage.setItem("userPhone", phone);
@@ -158,6 +167,13 @@ window.login = async () => {
     }).then(() => {
         window.location.replace("https://mdripon018770-coder.github.io/Notbok/task.html");
     });
+};
+
+// এই পেজে রেফার কোড কপি করার প্রয়োজন নেই, তাই ফাংশনটি task.html এ রাখলে ভালো
+window.copyReferCode = () => {
+    const code = document.getElementById('myReferCode').innerText;
+    navigator.clipboard.writeText(code);
+    Swal.fire({ icon: 'success', title: 'কপি হয়েছে!', text: 'কোডটি ক্লিপবোর্ডে কপি করা হয়েছে।', timer: 1500 });
 };
 </script>
 
