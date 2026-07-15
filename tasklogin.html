@@ -34,20 +34,22 @@
     </div>
 
     <div id="regModal" class="modal">
-        <div class="modal-content">
-            <h3>Register</h3>
-            <input type="text" id="regName" placeholder="Name">
-            <input type="number" id="regPhone" placeholder="Phone Number">
-            <input type="password" id="regPass" placeholder="Password">
-            <input type="password" id="regConfirm" placeholder="Confirm Password">
-            <button onclick="register()">REGISTER</button>
-            <button onclick="closeRegister()" style="background:red; margin-top:5px;">Close</button>
-        </div>
+    <div class="modal-content">
+        <h3>Register</h3>
+        <input type="text" id="regName" placeholder="Name">
+        <input type="number" id="regPhone" placeholder="Phone Number">
+        <input type="password" id="regPass" placeholder="Password">
+        <input type="password" id="regConfirm" placeholder="Confirm Password">
+        <input type="text" id="regRefer" placeholder="Referral Code (Optional)">
+        <button onclick="register()">REGISTER</button>
+        <button onclick="closeRegister()" style="background:red; margin-top:5px; border:none; color:white; padding:10px; width:100%; cursor:pointer;">Close</button>
     </div>
+</div>
+
 
                 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+import { getDatabase, ref, set, get, onValue, increment } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
 const firebaseConfig = {
     databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com"
@@ -55,6 +57,10 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+
+// এখন আপনি আপনার কোডে যেকোনো জায়গায় ব্যালেন্স আপডেট করতে 'increment(10)' ব্যবহার করতে পারবেন।
+// যেমন: 
+// await set(ref(db, "users/" + referrerKey + "/balance"), increment(10));
 
 // =======================
 // AUTO LOGIN
@@ -90,43 +96,77 @@ window.register = async () => {
     const phone = document.getElementById("regPhone").value.trim();
     const pass = document.getElementById("regPass").value;
     const confirm = document.getElementById("regConfirm").value;
+    const refCode = document.getElementById("regRefer").value.trim();
 
     if (!name || !phone || !pass || !confirm) {
-        Swal.fire("Error","সব তথ্য পূরণ করুন","error");
+        Swal.fire("Error", "সব তথ্য পূরণ করুন", "error");
+        return;
+    }
+    if (pass !== confirm) {
+        Swal.fire("Error", "Passwords do not match!", "error");
         return;
     }
 
-    if(pass !== confirm){
-        Swal.fire("Error","Passwords do not match!","error");
-        return;
-    }
-
-    const userRef = ref(db,"users/"+phone);
+    const userRef = ref(db, "users/" + phone);
     const snap = await get(userRef);
 
-    if(snap.exists()){
-        Swal.fire("Error","এই নম্বরে ইতোমধ্যে অ্যাকাউন্ট আছে!","error");
+    if (snap.exists()) {
+        Swal.fire("Error", "এই নম্বরে ইতোমধ্যে অ্যাকাউন্ট আছে!", "error");
         return;
     }
 
-    // রেফার কোড জেনারেট ও সেভ করা হচ্ছে
-    await set(userRef,{
+    let myCode = generateReferCode(name);
+    let userData = {
         name: name,
         balance: 0,
         password: pass,
         regTime: Date.now(),
-        referCode: generateReferCode(name)
-    });
+        referCode: myCode,
+        referredBy: refCode || "none"
+    };
+
+    // রেফারেল লজিক
+    if (refCode !== "") {
+        const allUsersRef = ref(db, "users");
+        const allUsersSnap = await get(allUsersRef);
+        let referrerFoundKey = null;
+
+        allUsersSnap.forEach((child) => {
+            if (child.val().referCode === refCode) {
+                referrerFoundKey = child.key;
+            }
+        });
+
+        if (!referrerFoundKey) {
+            Swal.fire("Error", "ভুল রেফার কোড!", "error");
+            return;
+        }
+
+        if (referrerFoundKey === phone) {
+            Swal.fire("Error", "নিজের রেফার কোড নিজে ব্যবহার করা যাবে না!", "error");
+            return;
+        }
+
+        // বোনাস লজিক: রেফারারকে ১০ টাকা, নতুন ইউজারকে ৫ টাকা
+        const referrerBalance = allUsersSnap.val()[referrerFoundKey].balance || 0;
+        await set(ref(db, "users/" + referrerFoundKey + "/balance"), referrerBalance + 10);
+        
+        // অ্যানিমেশন ট্রিগার করার জন্য এটি যুক্ত করা হলো
+        await set(ref(db, "users/" + referrerFoundKey + "/showAnimation"), true);
+        
+        userData.balance = 5; 
+    }
+
+    await set(userRef, userData);
 
     localStorage.setItem("userPhone", phone);
-    localStorage.setItem("userName", name);
-    localStorage.setItem("userPass", pass);
     localStorage.setItem("isLoggedIn", "true");
 
-    Swal.fire("Success","Registration Successful!","success").then(()=>{
+    Swal.fire("Success", "Registration Successful!", "success").then(() => {
         window.location.replace("https://mdripon018770-coder.github.io/Notbok/task.html");
     });
 };
+
 
 // =======================
 // LOGIN (Updated)
