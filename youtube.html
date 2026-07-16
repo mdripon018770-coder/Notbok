@@ -18,14 +18,35 @@
         .icon-history::after { content: ''; position: absolute; top: 4px; left: 9px; width: 2px; height: 7px; background: currentColor; }
         .icon-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
         .icon-menu div { background: currentColor; border-radius: 2px; }
+
+.offer-banner {
+    background: #ff5722; /* ব্যানারের রঙ */
+    color: white;
+    padding: 10px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
     </style>
 </head>
 <body>
 
-    <div class="balance-card">
-        <div style="opacity: 0.9;">Your Balance</div>
-        <h1 id="balance-display" style="margin: 10px 0; font-size: 32px;">৳ 0.00</h1>
-    </div>
+<div class="balance-card" style="display: none;">
+    <div style="opacity: 0.9;">Your Balance</div>
+    <h1 id="balance-display" style="margin: 10px 0; font-size: 32px;">৳ 0.00</h1>
+</div>
+
+
+    <!-- অফার ব্যানার -->
+<div class="offer-banner">
+    <marquee behavior="scroll" direction="left" scrollamount="5">
+        ইউটিউব টাস্ক পূরণ করে টাকা ইনকাম করুন! প্রতিটি ভিডিও সম্পূর্ণ দেখুন এবং ব্যালেন্স যোগ করুন।
+    </marquee>
+</div>
+
 
     <h3 style="margin-top: 20px;">Popular Tasks</h3>
     <!-- সব স্ট্যাটিক ডিভ মুছে ফেলেছি, এখানে শুধু ডায়নামিক কন্টেইনার থাকবে -->
