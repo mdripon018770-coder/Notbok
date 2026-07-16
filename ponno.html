@@ -113,26 +113,45 @@
 }
 
 .search-container {
-    position: relative;
-    width: 90%;
-    margin: 0 auto 20px auto;
+    padding: 10px;
+    background-color: #fff;
 }
-.search-box {
-    width: 100%;
-    padding: 12px 45px 12px 20px; /* ডানে জায়গা রাখা হয়েছে */
+
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    border: 2px solid #f57224; /* ডারায অরেঞ্জ বর্ডার */
+    border-radius: 4px;
+    padding: 0 10px;
+    background: white;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px;
     border: none;
-    border-radius: 20px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    box-sizing: border-box;
+    outline: none;
+    font-size: 14px;
 }
+
 .camera-icon {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 20px;
+    width: 24px;
+    height: 24px;
+    margin: 0 10px;
     cursor: pointer;
+    opacity: 0.7;
 }
+
+.search-btn {
+    background-color: #f57224;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 2px;
+}
+
 
     </style>
 </head>
@@ -150,10 +169,17 @@
 </div>
 
     <div class="search-container">
-    <input type="text" id="search-box" class="search-box" placeholder="Search for a shop">
-    <img src="https://cdn-icons-png.flaticon.com/512/1086/1086915.png" class="camera-icon">
-    <div id="search-history" style="display:none; background: white; border-radius: 10px; padding: 10px; margin-top: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></div>
+    <div class="search-wrapper">
+        <input type="text" id="search-box" class="search-input" placeholder="Search in shop...">
+        <img src="https://cdn-icons-png.flaticon.com/512/1086/1086915.png" 
+             class="camera-icon" alt="camera" onclick="openCamera()">
+        <button class="search-btn">Search</button>
+    </div>
+    <!-- এই ডিভটি মিসিং ছিল, এটি যোগ করুন -->
+    <div id="search-history" style="display:none; background: #fff; border: 1px solid #ddd; padding: 10px; margin-top: 5px; border-radius: 4px;"></div>
 </div>
+
+
 
     <div class="product-grid" id="product-container">
     <!-- এখানে ডাইনামিকলি প্রোডাক্ট আসবে -->
@@ -303,7 +329,8 @@
 
 
     // সার্চ লজিক
-    const searchBox = document.getElementById('search-box');
+    // সার্চ লজিক ও হিস্ট্রি হ্যান্ডলিং
+const searchBox = document.getElementById('search-box');
 const historyDiv = document.getElementById('search-history');
 
 // সার্চ বক্সে ক্লিক করলে হিস্ট্রি দেখাবে
@@ -318,12 +345,30 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// সার্চ করলে ফায়ারবেসে সেভ হবে
+// প্রোডাক্ট ফিল্টারিং ফাংশন
+function filterProducts(searchTerm) {
+    const term = searchTerm.toLowerCase();
+    const cards = document.querySelectorAll('.product-card');
+    cards.forEach(card => {
+        const title = card.getAttribute('data-name').toLowerCase();
+        const tags = card.getAttribute('data-tags').toLowerCase();
+        card.style.display = (title.includes(term) || tags.includes(term)) ? 'flex' : 'none';
+    });
+}
+
+// সার্চ বক্সে টাইপ করলে ফিল্টার হবে
+searchBox.addEventListener('input', (e) => {
+    filterProducts(e.target.value);
+});
+
+// এন্টার প্রেস করলে ফায়ারবেসে সেভ হবে
 searchBox.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         const term = searchBox.value;
         if(term) {
             push(ref(db, 'users/' + userPhone + '/searchHistory'), { term: term, time: Date.now() });
+            filterProducts(term);
+            historyDiv.style.display = 'none';
         }
     }
 });
@@ -334,16 +379,20 @@ onValue(ref(db, 'users/' + userPhone + '/searchHistory'), (snapshot) => {
     snapshot.forEach((child) => {
         const item = document.createElement('div');
         item.innerText = child.val().term;
-        item.style.padding = "5px";
-        item.onclick = () => { searchBox.value = child.val().term; };
+        item.style.padding = "10px";
+        item.style.borderBottom = "1px solid #eee";
+        item.style.cursor = "pointer";
+        
+        // হিস্ট্রিতে ক্লিক করলে যা ঘটবে
+        item.onclick = () => { 
+            searchBox.value = child.val().term; 
+            filterProducts(child.val().term); // অটো ফিল্টার হবে
+            historyDiv.style.display = 'none'; 
+        };
         historyDiv.appendChild(item);
     });
 });
 
-
-window.closeModal = () => {
-    document.getElementById('orderModal').style.display = 'none';
-};
 
 
     </script>
