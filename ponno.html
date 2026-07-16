@@ -69,6 +69,22 @@ body {
     overflow-y: auto;
 }
 
+/* ক্যামেরা আইকনের জন্য স্টাইল */
+.camera-icon {
+    width: 25px;       /* আইকনের সাইজ ঠিক করা */
+    height: 25px; 
+    margin-right: 10px; /* সার্চ বাটনের থেকে কিছুটা দূরত্ব */
+    cursor: pointer;
+}
+
+/* সার্চ র‍্যাপারের বিন্যাস ঠিক রাখা */
+.search-wrapper { 
+    display: flex; 
+    align-items: center; 
+    background: white; 
+    border-radius: 4px; 
+    padding: 2px 5px; /* প্যাডিং ঠিক করা */
+}
 
     </style>
 </head>
@@ -88,13 +104,14 @@ body {
     <div class="search-container">
     <div class="search-wrapper">
         <input type="text" id="search-box" class="search-input" placeholder="Search in shop...">
+        <!-- ক্যামেরা আইকনের জন্য আলাদা ক্লাস দিন -->
         <img src="https://cdn-icons-png.flaticon.com/512/1086/1086915.png" 
              class="camera-icon" alt="camera" onclick="openCamera()">
         <button class="search-btn">Search</button>
     </div>
-    <!-- এই ডিভটি মিসিং ছিল, এটি যোগ করুন -->
     <div id="search-history" style="display:none; background: #fff; border: 1px solid #ddd; padding: 10px; margin-top: 5px; border-radius: 4px;"></div>
 </div>
+
 
 
 
