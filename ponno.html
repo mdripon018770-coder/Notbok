@@ -7,12 +7,41 @@
 
     
         <style>
-    body { 
+    /* Body-র নিচের প্যাডিং ঠিক করা */
+body { 
     font-family: sans-serif; 
     background: #f8d7da; 
     margin: 0; 
     padding: 20px; 
-    padding-bottom: 80px; /* ন্যাভিগেশন বারের জন্য জায়গা রাখা হলো */
+    padding-bottom: 70px; /* নেভিগেশন বারের উচ্চতা অনুযায়ী অ্যাডজাস্ট করুন */
+}
+
+/* Bottom Navigation Bar Design */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0; /* এটি যোগ করুন যাতে বারটি বাম থেকে শুরু হয় */
+    width: 100%;
+    height: 60px;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-between; /* space-around এর বদলে space-between দিন */
+    align-items: center;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    z-index: 9999;
+    padding: 0 15px; /* দুপাশে কিছুটা জায়গা দেওয়ার জন্য */
+    box-sizing: border-box; /* উইডথ ক্যালকুলেশন ঠিক রাখতে */
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 10px;
+    color: #555;
+    flex: 1; /* সমান জায়গা নেওয়ার জন্য */
 }
 
     
@@ -159,35 +188,7 @@
     border-radius: 2px;
 }
 
-/* Bottom Navigation Bar Design */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 60px;
-    background-color: #ffffff;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-    z-index: 9999;
-}
 
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 10px;
-    color: #555;
-}
-
-.nav-item img {
-    width: 24px;
-    height: 24px;
-    margin-bottom: 4px;
-}
 
     </style>
 </head>
@@ -453,6 +454,18 @@ onValue(ref(db, 'users/' + userPhone + '/searchHistory'), (snapshot) => {
     });
 });
 
+
+    // --- মোডাল ক্লোজ করার ফাংশন যোগ করুন ---
+    function closeModal() {
+        document.getElementById('orderModal').style.display = 'none';
+    }
+
+    // --- ক্যামেরা আইকনের এরর এড়াতে ---
+    function openCamera() {
+        console.log("Camera clicked");
+    }
+
+    // --- বাকি ইভেন্ট লিসেনারগুলো যেভাবে আছে সেভাবেই থাকবে ---
 
 
     </script>
