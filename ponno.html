@@ -7,7 +7,14 @@
 
     
         <style>
-    body { font-family: sans-serif; background: #f8d7da; margin: 0; padding: 20px; }
+    body { 
+    font-family: sans-serif; 
+    background: #f8d7da; 
+    margin: 0; 
+    padding: 20px; 
+    padding-bottom: 80px; /* ন্যাভিগেশন বারের জন্য জায়গা রাখা হলো */
+}
+
     
     .search-box { 
         width: 90%; display: block; margin: 0 auto 20px auto; padding: 12px; 
@@ -152,6 +159,35 @@
     border-radius: 2px;
 }
 
+/* Bottom Navigation Bar Design */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    z-index: 9999;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 10px;
+    color: #555;
+}
+
+.nav-item img {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+}
 
     </style>
 </head>
@@ -204,6 +240,25 @@
         
         <button class="order-btn-custom" onclick="sendOrderProcess()" style="width:100%; margin-top:10px;">Confirm Order</button>
         <button class="order-btn-custom" style="background:#ff4757; width:100%; margin-top:10px;" onclick="closeModal()">Cancel</button>
+    </div>
+</div>
+
+<div class="bottom-nav">
+    <div class="nav-item" onclick="window.location.reload()">
+        <img src="https://cdn-icons-png.flaticon.com/512/1946/1946488.png" alt="Home">
+        <span>Home</span>
+    </div>
+    <div class="nav-item">
+        <img src="https://cdn-icons-png.flaticon.com/512/1041/1041916.png" alt="Message">
+        <span>Message</span>
+    </div>
+    <div class="nav-item">
+        <img src="https://cdn-icons-png.flaticon.com/512/2331/2331970.png" alt="Cart">
+        <span>Cart</span>
+    </div>
+    <div class="nav-item">
+        <img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" alt="Account">
+        <span>Account</span>
     </div>
 </div>
 
