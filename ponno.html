@@ -82,12 +82,17 @@
 </head>
 <body>
 
-<!-- ব্যালেন্স কার্ড -->
-<div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
-    <div style="background: #ffffff; padding: 8px 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #ddd; font-weight: bold; color: #5a189a;">
-        ৳ <span id="balance-display">0.00</span>
-    </div>
+<!-- ব্যালেন্স ডিসপ্লে (এটি হিডেন থাকবে অথবা আপনি আপনার ডিজাইনের কোথাও ছোট করে রাখতে পারেন) -->
+<div style="display:none;">
+    ৳ <span id="balance-display">0.00</span>
 </div>
+
+<div class="notice-board">
+    <marquee behavior="scroll" direction="left" scrollamount="5">
+        📢 বিশেষ অফার: প্রোডাক্ট অর্ডারে পাবেন সর্বোচ্চ ক্যাশব্যাক! | প্রতিদিন নতুন নতুন টাস্ক সম্পন্ন করুন এবং আয় করুন! | কোনো সমস্যা হলে এডমিনের সাথে যোগাযোগ করুন।
+    </marquee>
+</div>
+
     <input type="text" class="search-box" placeholder="Search for a shop">
 
     <div class="product-grid" id="product-container">
@@ -110,54 +115,69 @@
 
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getDatabase, ref, push, update, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
     const firebaseConfig = { databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com" };
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // ১. ব্যালেন্স লাইভ আপডেট (আগের লজিক)
-    onValue(ref(db, 'users/balance'), (snapshot) => {
+    const userPhone = localStorage.getItem("userPhone");
+    if (!userPhone) {
+        window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
+    }
+
+    // ব্যালেন্স সিঙ্ক
+    onValue(ref(db, 'users/' + userPhone + '/balance'), (snapshot) => {
         const balance = snapshot.val() || 0;
-        document.getElementById('balance-display').innerText = parseFloat(balance).toLocaleString();
+        document.getElementById('balance-display').innerText = parseFloat(balance).toLocaleString("en-BD", { minimumFractionDigits: 2 });
     });
 
-    // ২. ডেটাবেস থেকে প্রোডাক্ট অটোমেটিক লোড করা (নতুন লজিক)
+    // প্রোডাক্ট লোড করা
     onValue(ref(db, 'products'), (snapshot) => {
-        const container = document.querySelector('.product-grid');
-        container.innerHTML = ''; // আগের সব কার্ড মুছে নতুনগুলো আনবে
-
+        const container = document.getElementById('product-container');
+        container.innerHTML = ''; 
         snapshot.forEach((childSnapshot) => {
             const data = childSnapshot.val();
             const card = document.createElement('div');
             card.className = 'product-card';
+            card.setAttribute('data-name', data.name || "");
+            card.setAttribute('data-tags', data.tags || "");
+
             card.innerHTML = `
                 <img src="${data.imageUrl}" class="product-img">
                 <span class="product-title">${data.name}</span>
                 <div class="price-text">Price: ৳ ${data.price}</div>
                 <div class="cashback-text">Cashback: ৳ ${data.cashback}</div>
-                <button class="order-btn-custom" onclick="openModal('${data.name}', ${data.cashback})">Order Now</button>
+                <button class="order-btn-custom btn-order" data-name="${data.name}" data-cashback="${data.cashback}">Order Now</button>
             `;
             container.appendChild(card);
         });
     });
 
-    // ৩. মোডাল লজিক (আগের লজিক ঠিক আছে)
+    // মোডাল এবং অর্ডার লজিক হ্যান্ডল করার জন্য ইভেন্ট ডেলিগেশন
     let currentProduct = "";
     let currentCashback = 0;
 
-    window.openModal = (prod, cb) => { 
-        currentProduct = prod; 
-        currentCashback = cb; 
-        document.getElementById('orderModal').style.display = 'flex'; 
-    };
+    document.addEventListener('click', async function(e) {
+        // অর্ডার বাটন ক্লিক চেক
+        if (e.target.classList.contains('btn-order')) {
+            currentProduct = e.target.getAttribute('data-name');
+            currentCashback = e.target.getAttribute('data-cashback');
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+        
+        // ক্লোজ বাটন ক্লিক চেক
+        if (e.target.innerText === 'Cancel') {
+            document.getElementById('orderModal').style.display = 'none';
+        }
 
-    window.closeModal = () => { 
-        document.getElementById('orderModal').style.display = 'none'; 
-    };
-    
-    // ৪. হোয়াটসঅ্যাপ ও অর্ডার লজিক (আগের লজিক ঠিক আছে)
-    window.sendToWhatsApp = async () => {
+        // কনফার্ম অর্ডার ক্লিক চেক
+        if (e.target.innerText === 'Confirm Order') {
+            await sendOrderProcess();
+        }
+    });
+
+    async function sendOrderProcess() {
         let name = document.getElementById('userName').value;
         let phone = document.getElementById('userPhone').value;
         let address = document.getElementById('userAddress').value;
@@ -167,36 +187,47 @@
             return;
         }
 
-        const now = new Date();
-        const dateTime = now.toLocaleString('bn-BD');
-
         Swal.fire({ title: 'অর্ডার প্রসেস হচ্ছে...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
         try {
-            await update(push(ref(db, 'orders')), {
+            const orderData = {
+                userId: userPhone,
                 product: currentProduct,
                 userName: name,
                 userPhone: phone,
                 userAddress: address,
                 cashback: currentCashback,
-                status: 'pending',
-                orderTime: dateTime
-            });
+                status: 'Pending',
+                timestamp: new Date().toLocaleString('bn-BD')
+            };
 
-            // হোয়াটসঅ্যাপে মেসেজ পাঠানো
+            await push(ref(db, 'orders'), orderData);
+            await push(ref(db, 'users/' + userPhone + '/history'), orderData);
+
             let msg = `নতুন অর্ডার: ${currentProduct}%0Aনাম: ${name}%0Aফোন: ${phone}%0Aঠিকানা: ${address}`;
             window.open(`https://wa.me/8801877059049?text=${msg}`, '_blank');
 
             Swal.fire({ icon: 'success', title: 'অর্ডার সফল!', text: 'অর্ডারটি জমা হয়েছে।' });
-            closeModal();
+            
             document.getElementById('userName').value = '';
             document.getElementById('userPhone').value = '';
             document.getElementById('userAddress').value = '';
+            document.getElementById('orderModal').style.display = 'none';
         } catch (error) {
             Swal.fire({ icon: 'error', title: 'ভুল হয়েছে!', text: 'আবার চেষ্টা করুন।' });
         }
-    };
+    }
 
+    // সার্চ লজিক
+    const searchBox = document.querySelector('.search-box');
+    searchBox.addEventListener('input', function() {
+        const searchTerm = searchBox.value.toLowerCase();
+        document.querySelectorAll('.product-card').forEach(card => {
+            const title = card.getAttribute('data-name').toLowerCase();
+            const tags = card.getAttribute('data-tags').toLowerCase();
+            card.style.display = (title.includes(searchTerm) || tags.includes(searchTerm)) ? 'flex' : 'none';
+        });
+    });
 
 
 
