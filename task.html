@@ -219,6 +219,25 @@ body {
     overflow-x: hidden; /* স্ক্রিন বড় বা ছোট হলে যেন ডানে-বামে না সরে */
 }
 
+/* স্লাইড পেইজ ডিজাইন */
+#slide-page {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 20000;
+    transition: right 0.4s ease-in-out;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+#slide-page.active {
+    right: 0;
+}
+
     </style>
 </head>
 <body>
@@ -661,6 +680,14 @@ body {
     </div>
 </div>
 
+<div id="slide-page">
+    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+        <button onclick="closeSlide()" style="background: none; border: none; font-size: 24px;">⬅</button>
+        <h3 id="slide-title" style="margin: 0;">Task Details</h3>
+    </div>
+    <div id="slide-content">
+        </div>
+</div>
 
 
 
@@ -860,20 +887,25 @@ onValue(ref(db, 'banners'), (snapshot) => {
 window.handleTaskClick = async (taskId, url) => {
     const taskSnapshot = await get(ref(db, 'tasks/' + taskId));
     const taskData = taskSnapshot.val() || { locked: false };
+    
     if (taskData.locked) {
         Swal.fire({ icon: 'warning', title: 'মেনটেন্যান্স চলছে!', text: 'এই টাস্কটিতে বর্তমানে কাজ চলছে।', confirmButtonColor: '#7b2cbf' });
     } else {
-        if(url !== '#') window.open(url, '_blank');
+        // স্লাইড ওপেন করার লজিক
+        const slide = document.getElementById('slide-page');
+        const slideContent = document.getElementById('slide-content');
+        document.getElementById('slide-title').innerText = taskId.toUpperCase();
+        
+        // এখানে আইফ্রেম দিয়ে ওই লিংকের পেজটি লোড করা হবে
+        slideContent.innerHTML = `<iframe src="${url}" style="width:100%; height:80vh; border:none;"></iframe>`;
+        slide.classList.add('active');
     }
 };
 
-onValue(ref(db, 'tasks'), (snapshot) => {
-    const tasks = snapshot.val() || {};
-    Object.keys(tasks).forEach(taskId => {
-        const lockIcon = document.getElementById('lock-' + taskId);
-        if (lockIcon) lockIcon.style.display = tasks[taskId].locked ? 'inline' : 'none';
-    });
-});
+// স্লাইড বন্ধ করার ফাংশন
+window.closeSlide = () => {
+    document.getElementById('slide-page').classList.remove('active');
+};
 
 
 window.confirmTransfer = async () => {
