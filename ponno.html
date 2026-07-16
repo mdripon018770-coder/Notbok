@@ -75,8 +75,42 @@
     }
 
     .order-btn-custom:active { transform: scale(0.95); } /* ক্লিক করলে বাটনটি একটু ছোট হবে */
-</style>
 
+
+
+/* মোডাল ওভারলে - এটি পপআপকে পুরো স্ক্রিনে কভার করবে এবং সেন্টার করবে */
+.modal-overlay {
+    display: none; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0, 0, 0, 0.7); /* ব্যাকগ্রাউন্ড কালার */
+    justify-content: center; 
+    align-items: center; 
+    z-index: 9999; /* যেন সবার উপরে থাকে */
+}
+
+/* মোডাল কন্টেন্ট - ফর্মের ডিজাইন */
+.modal-content {
+    background: white; 
+    padding: 20px; 
+    border-radius: 20px; 
+    width: 85%; 
+    max-width: 400px; 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+/* ইনপুট ফিল্ডের ডিজাইন */
+.input-field {
+    width: 100%; 
+    padding: 12px; 
+    margin: 8px 0; 
+    border: 1px solid #ddd; 
+    border-radius: 12px; 
+    box-sizing: border-box; /* যেন বর্ডার ফিল্ডের বাইরে না যায় */
+}
 
     </style>
 </head>
