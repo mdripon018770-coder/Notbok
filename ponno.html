@@ -112,6 +112,28 @@
     box-sizing: border-box; /* যেন বর্ডার ফিল্ডের বাইরে না যায় */
 }
 
+.search-container {
+    position: relative;
+    width: 90%;
+    margin: 0 auto 20px auto;
+}
+.search-box {
+    width: 100%;
+    padding: 12px 45px 12px 20px; /* ডানে জায়গা রাখা হয়েছে */
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+.camera-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    cursor: pointer;
+}
+
     </style>
 </head>
 <body>
@@ -127,7 +149,11 @@
     </marquee>
 </div>
 
-    <input type="text" class="search-box" placeholder="Search for a shop">
+    <div class="search-container">
+    <input type="text" id="search-box" class="search-box" placeholder="Search for a shop">
+    <img src="https://cdn-icons-png.flaticon.com/512/1086/1086915.png" class="camera-icon">
+    <div id="search-history" style="display:none; background: white; border-radius: 10px; padding: 10px; margin-top: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></div>
+</div>
 
     <div class="product-grid" id="product-container">
     <!-- এখানে ডাইনামিকলি প্রোডাক্ট আসবে -->
@@ -277,15 +303,42 @@
 
 
     // সার্চ লজিক
-    const searchBox = document.querySelector('.search-box');
-    searchBox.addEventListener('input', function() {
-        const searchTerm = searchBox.value.toLowerCase();
-        document.querySelectorAll('.product-card').forEach(card => {
-            const title = card.getAttribute('data-name').toLowerCase();
-            const tags = card.getAttribute('data-tags').toLowerCase();
-            card.style.display = (title.includes(searchTerm) || tags.includes(searchTerm)) ? 'flex' : 'none';
-        });
+    const searchBox = document.getElementById('search-box');
+const historyDiv = document.getElementById('search-history');
+
+// সার্চ বক্সে ক্লিক করলে হিস্ট্রি দেখাবে
+searchBox.addEventListener('focus', () => {
+    historyDiv.style.display = 'block';
+});
+
+// বাইরে ক্লিক করলে হিস্ট্রি হাইড হবে
+document.addEventListener('click', (e) => {
+    if(!e.target.closest('.search-container')) {
+        historyDiv.style.display = 'none';
+    }
+});
+
+// সার্চ করলে ফায়ারবেসে সেভ হবে
+searchBox.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        const term = searchBox.value;
+        if(term) {
+            push(ref(db, 'users/' + userPhone + '/searchHistory'), { term: term, time: Date.now() });
+        }
+    }
+});
+
+// ফায়ারবেস থেকে হিস্ট্রি লোড করে দেখানো
+onValue(ref(db, 'users/' + userPhone + '/searchHistory'), (snapshot) => {
+    historyDiv.innerHTML = '';
+    snapshot.forEach((child) => {
+        const item = document.createElement('div');
+        item.innerText = child.val().term;
+        item.style.padding = "5px";
+        item.onclick = () => { searchBox.value = child.val().term; };
+        historyDiv.appendChild(item);
     });
+});
 
 
 window.closeModal = () => {
