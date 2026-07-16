@@ -75,128 +75,24 @@
     }
 
     .order-btn-custom:active { transform: scale(0.95); } /* ক্লিক করলে বাটনটি একটু ছোট হবে */
-
-
-.notice-board {
-    background: #ffffff;
-    color: #d63031; /* নোটিশের কালার */
-    padding: 10px;
-    margin: 10px 0 20px 0;
-    border-radius: 15px;
-    font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    overflow: hidden;
-    border: 1px solid #fab1a0;
-}
-
-/* প্রোডাক্ট কন্টেইনারকে স্লাইডার হিসেবে তৈরি করা */
-.product-slider-container {
-    display: flex;
-    overflow-x: auto; /* এটিই ডান-বামে স্ক্রল করার সুবিধা দেবে */
-    gap: 15px;
-    padding: 10px 0;
-    -webkit-overflow-scrolling: touch; /* মোবাইলে স্মুথ স্ক্রলিংয়ের জন্য */
-    scrollbar-width: none; /* স্ক্রলবার লুকানোর জন্য */
-}
-
-/* স্ক্রলবার হাইড করা */
-.product-slider-container::-webkit-scrollbar { display: none; }
-
-.product-card { 
-    background: #d3dce6; 
-    padding: 12px; 
-    border-radius: 20px; 
-    text-align: center; 
-    display: flex; 
-    flex-direction: column;
-    min-width: 150px; /* প্রতিটি কার্ডের সাইজ নির্দিষ্ট করা */
-    max-width: 150px;
-}
-
-.product-container {
-    display: flex;
-    overflow-x: auto;
-    gap: 15px;
-    padding: 10px;
-    /* এখানে এনিমেশন স্লাইড করার জন্য নিচে কোড দেওয়া হলো */
-    animation: slideProduct 15s linear infinite;
-}
-
-@keyframes slideProduct {
-    0% { transform: translateX(0); }
-    50% { transform: translateX(-50px); }
-    100% { transform: translateX(0); }
-}
-
-/* মাউস নিলে এনিমেশন থেমে যাবে */
-.product-container:hover {
-    animation-play-state: paused;
-}
-
-/* কার্ডের ভেতর ছবির ওপর হালকা শ্যাডো */
-.product-img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-/* স্ক্রলবার পুরোপুরি অদৃশ্য করা */
-/* প্রোডাক্ট কন্টেইনারকে গ্রিড বা ফ্লেক্স র‍্যাপ দিয়ে সাজান */
-.product-container {
-    display: flex;
-    flex-wrap: wrap; /* এটি কার্ডগুলোকে পাশাপাশি বসতে সাহায্য করবে */
-    justify-content: space-between; /* দুইপাশে সমান জায়গা রাখবে */
-    padding: 10px;
-    gap: 10px; /* কার্ডের মাঝে সামান্য ফাঁকা জায়গা */
-}
-
-.product-card {
-    flex: 0 0 calc(50% - 15px); /* প্রতিটি কার্ড স্ক্রিনের অর্ধেক (৫০%) জায়গা নেবে */
-    background: #d3dce6;
-    padding: 10px;
-    border-radius: 20px;
-    text-align: center;
-    box-sizing: border-box; /* এটি কার্ডের সাইজ ঠিক রাখবে */
-}
-
-/* প্রোডাক্টের ছবি যেন কার্ডের বাইরে না যায় তার জন্য */
-.product-card img {
-    width: 100%;
-    height: 120px; /* উচ্চতা ফিক্স করে দিলে ডিজাইন সুন্দর দেখাবে */
-    object-fit: cover;
-    border-radius: 15px;
-}
-
+</style>
 
 
     </style>
 </head>
 <body>
 
-<!-- ব্যালেন্স ডিসপ্লে (এটি হিডেন থাকবে অথবা আপনি আপনার ডিজাইনের কোথাও ছোট করে রাখতে পারেন) -->
-<div style="display:none;">
-    ৳ <span id="balance-display">0.00</span>
+<!-- ব্যালেন্স কার্ড -->
+<div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+    <div style="background: #ffffff; padding: 8px 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #ddd; font-weight: bold; color: #5a189a;">
+        ৳ <span id="balance-display">0.00</span>
+    </div>
 </div>
-
-<div class="notice-board">
-    <marquee behavior="scroll" direction="left" scrollamount="5">
-        📢 বিশেষ অফার: প্রোডাক্ট অর্ডারে পাবেন সর্বোচ্চ ক্যাশব্যাক! | প্রতিদিন নতুন নতুন টাস্ক সম্পন্ন করুন এবং আয় করুন! | কোনো সমস্যা হলে এডমিনের সাথে যোগাযোগ করুন।
-    </marquee>
-</div>
-
     <input type="text" class="search-box" placeholder="Search for a shop">
 
-    <h3 style="margin-top: 20px;">আমাদের পণ্যসমূহ</h3>
-<!-- নতুন ক্লাস ব্যবহার করা হয়েছে -->
-<!-- ID যোগ করা হয়েছে যাতে জাভাস্ক্রিপ্ট খুঁজে পায় -->
-<div class="product-container" id="product-container">
-    <!-- এখানে জাভাস্ক্রিপ্ট থেকে কার্ডগুলো আসবে -->
+    <div class="product-grid" id="product-container">
+    <!-- এখানে ডাইনামিকলি প্রোডাক্ট আসবে -->
 </div>
-
-
-
 
 
 <div id="orderModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
@@ -212,71 +108,56 @@
 </div>
 
 
-<script type="module">
+    <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    import { getDatabase, ref, push, update, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
     const firebaseConfig = { databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com" };
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const userPhone = localStorage.getItem("userPhone");
-    if (!userPhone) {
-        window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html");
-    }
-
-    // ব্যালেন্স সিঙ্ক
-    onValue(ref(db, 'users/' + userPhone + '/balance'), (snapshot) => {
+    // ১. ব্যালেন্স লাইভ আপডেট (আগের লজিক)
+    onValue(ref(db, 'users/balance'), (snapshot) => {
         const balance = snapshot.val() || 0;
-        document.getElementById('balance-display').innerText = parseFloat(balance).toLocaleString("en-BD", { minimumFractionDigits: 2 });
+        document.getElementById('balance-display').innerText = parseFloat(balance).toLocaleString();
     });
 
-    // প্রোডাক্ট লোড করা
+    // ২. ডেটাবেস থেকে প্রোডাক্ট অটোমেটিক লোড করা (নতুন লজিক)
     onValue(ref(db, 'products'), (snapshot) => {
-        const container = document.getElementById('product-container');
-        container.innerHTML = ''; 
+        const container = document.querySelector('.product-grid');
+        container.innerHTML = ''; // আগের সব কার্ড মুছে নতুনগুলো আনবে
+
         snapshot.forEach((childSnapshot) => {
             const data = childSnapshot.val();
             const card = document.createElement('div');
             card.className = 'product-card';
-            card.setAttribute('data-name', data.name || "");
-            card.setAttribute('data-tags', data.tags || "");
-
             card.innerHTML = `
                 <img src="${data.imageUrl}" class="product-img">
                 <span class="product-title">${data.name}</span>
                 <div class="price-text">Price: ৳ ${data.price}</div>
                 <div class="cashback-text">Cashback: ৳ ${data.cashback}</div>
-                <button class="order-btn-custom btn-order" data-name="${data.name}" data-cashback="${data.cashback}">Order Now</button>
+                <button class="order-btn-custom" onclick="openModal('${data.name}', ${data.cashback})">Order Now</button>
             `;
             container.appendChild(card);
         });
     });
 
-    // মোডাল এবং অর্ডার লজিক হ্যান্ডল করার জন্য ইভেন্ট ডেলিগেশন
+    // ৩. মোডাল লজিক (আগের লজিক ঠিক আছে)
     let currentProduct = "";
     let currentCashback = 0;
 
-    document.addEventListener('click', async function(e) {
-        // অর্ডার বাটন ক্লিক চেক
-        if (e.target.classList.contains('btn-order')) {
-            currentProduct = e.target.getAttribute('data-name');
-            currentCashback = e.target.getAttribute('data-cashback');
-            document.getElementById('orderModal').style.display = 'flex';
-        }
-        
-        // ক্লোজ বাটন ক্লিক চেক
-        if (e.target.innerText === 'Cancel') {
-            document.getElementById('orderModal').style.display = 'none';
-        }
+    window.openModal = (prod, cb) => { 
+        currentProduct = prod; 
+        currentCashback = cb; 
+        document.getElementById('orderModal').style.display = 'flex'; 
+    };
 
-        // কনফার্ম অর্ডার ক্লিক চেক
-        if (e.target.innerText === 'Confirm Order') {
-            await sendOrderProcess();
-        }
-    });
-
-    async function sendOrderProcess() {
+    window.closeModal = () => { 
+        document.getElementById('orderModal').style.display = 'none'; 
+    };
+    
+    // ৪. হোয়াটসঅ্যাপ ও অর্ডার লজিক (আগের লজিক ঠিক আছে)
+    window.sendToWhatsApp = async () => {
         let name = document.getElementById('userName').value;
         let phone = document.getElementById('userPhone').value;
         let address = document.getElementById('userAddress').value;
@@ -286,47 +167,36 @@
             return;
         }
 
+        const now = new Date();
+        const dateTime = now.toLocaleString('bn-BD');
+
         Swal.fire({ title: 'অর্ডার প্রসেস হচ্ছে...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
         try {
-            const orderData = {
-                userId: userPhone,
+            await update(push(ref(db, 'orders')), {
                 product: currentProduct,
                 userName: name,
                 userPhone: phone,
                 userAddress: address,
                 cashback: currentCashback,
-                status: 'Pending',
-                timestamp: new Date().toLocaleString('bn-BD')
-            };
+                status: 'pending',
+                orderTime: dateTime
+            });
 
-            await push(ref(db, 'orders'), orderData);
-            await push(ref(db, 'users/' + userPhone + '/history'), orderData);
-
+            // হোয়াটসঅ্যাপে মেসেজ পাঠানো
             let msg = `নতুন অর্ডার: ${currentProduct}%0Aনাম: ${name}%0Aফোন: ${phone}%0Aঠিকানা: ${address}`;
             window.open(`https://wa.me/8801877059049?text=${msg}`, '_blank');
 
             Swal.fire({ icon: 'success', title: 'অর্ডার সফল!', text: 'অর্ডারটি জমা হয়েছে।' });
-            
+            closeModal();
             document.getElementById('userName').value = '';
             document.getElementById('userPhone').value = '';
             document.getElementById('userAddress').value = '';
-            document.getElementById('orderModal').style.display = 'none';
         } catch (error) {
             Swal.fire({ icon: 'error', title: 'ভুল হয়েছে!', text: 'আবার চেষ্টা করুন।' });
         }
-    }
+    };
 
-    // সার্চ লজিক
-    const searchBox = document.querySelector('.search-box');
-    searchBox.addEventListener('input', function() {
-        const searchTerm = searchBox.value.toLowerCase();
-        document.querySelectorAll('.product-card').forEach(card => {
-            const title = card.getAttribute('data-name').toLowerCase();
-            const tags = card.getAttribute('data-tags').toLowerCase();
-            card.style.display = (title.includes(searchTerm) || tags.includes(searchTerm)) ? 'flex' : 'none';
-        });
-    });
 
 
 
