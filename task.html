@@ -1340,40 +1340,62 @@ window.openLoanPopup = () => {
     Swal.fire({
         title: 'লোন নিন',
         html: `
-            <div style="text-align: left;">
-                <p style="font-size: 14px; margin-bottom: 5px;">লোনের পরিমাণ (৫০ - ৫০০ টাকা):</p>
-                <input type="number" id="loanAmount" class="swal2-input" placeholder="টাকার পরিমাণ লিখুন">
+            <div style="text-align: left; font-size: 14px;">
+                <p style="color: #e67e22; font-weight: bold; margin-bottom: 10px;">শর্তাবলী: জামানত দিয়ে লোন নিন। লোন ৫০০ থেকে ৫০,০০০ টাকা পর্যন্ত।</p>
                 
-                <p style="font-size: 14px; margin-top: 15px;">আপনার ফোন নম্বর:</p>
-                <input type="text" id="loanPhone" class="swal2-input" value="${userPhone}" readonly>
+                <input type="number" id="loanAmount" class="swal2-input" placeholder="পরিমাণ (৫০০ - ৫০,০০০)" style="margin: 5px 0;">
                 
-                <p style="font-size: 12px; color: #e74c3c; margin-top: 10px;">* লোন নেওয়ার পর নির্দিষ্ট সময়ে ফেরত দিতে হবে।</p>
+                <select id="loanDuration" class="swal2-input" style="margin: 5px 0;">
+                    <option value="7">৭ দিন</option>
+                    <option value="10">১০ দিন</option>
+                    <option value="15">১৫ দিন</option>
+                    <option value="20">২০ দিন</option>
+                    <option value="30">৩০ দিন</option>
+                </select>
+
+                <input type="text" id="loanName" class="swal2-input" placeholder="আপনার নাম" style="margin: 5px 0;">
+                <input type="text" id="loanNumber" class="swal2-input" value="${userPhone}" readonly style="margin: 5px 0;">
+                
+                <p style="margin: 10px 0 5px 0;">NID Front Part (URL):</p>
+                <input type="text" id="nidFront" class="swal2-input" placeholder="NID ফ্রন্ট ছবির লিংক" style="margin: 5px 0;">
+                
+                <p style="margin: 10px 0 5px 0;">NID Back Part (URL):</p>
+                <input type="text" id="nidBack" class="swal2-input" placeholder="NID ব্যাক ছবির লিংক" style="margin: 5px 0;">
             </div>
         `,
-        confirmButtonText: 'লোন আবেদন করুন',
+        confirmButtonText: 'সাবমিট করুন',
         confirmButtonColor: '#e67e22',
         showCancelButton: true,
         cancelButtonText: 'বন্ধ করুন',
         preConfirm: () => {
             const amount = document.getElementById('loanAmount').value;
-            if (!amount || amount < 50 || amount > 500) {
-                Swal.showValidationMessage('অনুগ্রহ করে ৫০ থেকে ৫০০ টাকার মধ্যে অ্যামাউন্ট লিখুন');
+            const duration = document.getElementById('loanDuration').value;
+            const name = document.getElementById('loanName').value;
+            const nidFront = document.getElementById('nidFront').value;
+            const nidBack = document.getElementById('nidBack').value;
+
+            if (!amount || amount < 500 || amount > 50000 || !name || !nidFront || !nidBack) {
+                Swal.showValidationMessage('অনুগ্রহ করে সঠিক তথ্য দিন (৫০,০০০ পর্যন্ত)');
+                return false;
             }
-            return { amount: amount };
+            return { amount, duration, name, nidFront, nidBack };
         }
     }).then((result) => {
         if (result.isConfirmed) {
-            const amount = result.value.amount;
-            
-            // ডাটাবেজে লোন রিকোয়েস্ট পুশ করা
+            const data = result.value;
+            // ডাটাবেজে লোন রিকোয়েস্ট পাঠানো
             push(ref(db, 'loanRequests'), {
                 userId: userPhone,
-                amount: amount,
+                amount: data.amount,
+                duration: data.duration,
+                userName: data.name,
+                nidFront: data.nidFront,
+                nidBack: data.nidBack,
                 status: 'pending',
                 timestamp: Date.now()
             }).then(() => {
-                Swal.fire('আবেদন সফল!', 'আপনার লোন আবেদনটি রিভিউতে আছে।', 'success');
-            }).catch((error) => {
+                Swal.fire('আবেদন সফল!', 'আপনার লোন আবেদনটি সফলভাবে সাবমিট হয়েছে।', 'success');
+            }).catch((err) => {
                 Swal.fire('Error', 'কিছু সমস্যা হয়েছে, আবার চেষ্টা করুন।', 'error');
             });
         }
