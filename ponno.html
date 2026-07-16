@@ -7,187 +7,67 @@
 
     
         <style>
-    /* Body-র নিচের প্যাডিং ঠিক করা */
+   /* রিসেট এবং বেসিক স্টাইল */
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body { 
     font-family: sans-serif; 
-    background: #f8d7da; 
-    margin: 0; 
-    padding: 20px; 
-    padding-bottom: 70px; /* নেভিগেশন বারের উচ্চতা অনুযায়ী অ্যাডজাস্ট করুন */
+    background: #f4f4f4; 
+    padding-bottom: 70px; 
 }
 
-/* Bottom Navigation Bar Design */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0; /* এটি যোগ করুন যাতে বারটি বাম থেকে শুরু হয় */
-    width: 100%;
-    height: 60px;
-    background-color: #ffffff;
-    display: flex;
-    justify-content: space-between; /* space-around এর বদলে space-between দিন */
-    align-items: center;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-    z-index: 9999;
-    padding: 0 15px; /* দুপাশে কিছুটা জায়গা দেওয়ার জন্য */
-    box-sizing: border-box; /* উইডথ ক্যালকুলেশন ঠিক রাখতে */
+/* সার্চ বার */
+.search-container { padding: 10px; background-color: #f57224; }
+.search-wrapper { 
+    display: flex; align-items: center; border-radius: 4px; 
+    padding: 2px 10px; background: white; 
+}
+.search-input { flex: 1; padding: 8px; border: none; outline: none; }
+.search-btn { background: #f57224; color: white; border: none; padding: 8px 15px; font-weight: bold; }
+
+/* প্রোডাক্ট গ্রিড */
+.product-grid { 
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; 
+}
+.product-card { 
+    background: #fff; padding: 10px; border-radius: 8px; 
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: left;
+}
+.product-img { width: 100%; height: 140px; object-fit: cover; border-radius: 4px; margin-bottom: 8px; }
+.product-title { font-size: 13px; color: #212121; height: 35px; overflow: hidden; display: block; margin-bottom: 5px; }
+.price-text { font-size: 15px; font-weight: bold; color: #f57224; margin-bottom: 2px; }
+.cashback-text { font-size: 11px; color: #00b894; margin-bottom: 8px; }
+
+/* বাটন */
+.order-btn-custom { 
+    background: #f57224; color: white; border: none; width: 100%;
+    padding: 8px; border-radius: 4px; cursor: pointer; font-size: 13px;
 }
 
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 10px;
-    color: #555;
-    flex: 1; /* সমান জায়গা নেওয়ার জন্য */
-}
-
-    
-    .search-box { 
-        width: 90%; display: block; margin: 0 auto 20px auto; padding: 12px; 
-        border: none; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-    }
-
-    /* প্রোডাক্ট গ্রিড */
-    .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-    
-    .product-card { 
-        background: #d3dce6; padding: 12px; border-radius: 20px; 
-        text-align: center; display: flex; flex-direction: column;
-    }
-    
-    /* ইমেজ লম্বা করার জন্য height বাড়ানো হয়েছে */
-    .product-img { width: 100%; height: 160px; object-fit: cover; border-radius: 15px; margin-bottom: 10px; }
-    
-    .product-title { font-size: 14px; font-weight: bold; margin: 5px 0; }
-    .price-text { font-size: 14px; color: #1a2a6c; margin: 2px 0; }
-    .cashback-text { font-size: 12px; color: #27ae60; font-weight: bold; margin-bottom: 8px; }
-    
-    /* বাটন ডিজাইন */
-    .order-btn-custom { 
-        background: #5a189a; color: white; border: none; padding: 8px; 
-        border-radius: 15px; cursor: pointer; font-size: 13px; font-weight: bold;
-    }
-
-    /* কার্ডের ভেতরের টেক্সট এবং বাটনের স্টাইল */
-    .product-title { 
-        font-size: 16px; 
-        font-weight: 700; 
-        color: #2d3436; 
-        margin-bottom: 8px; 
-        display: block;
-    }
-
-    .price-text { 
-        font-size: 15px; 
-        color: #636e72; 
-        margin: 2px 0; 
-    }
-
-    .cashback-text { 
-        font-size: 14px; 
-        color: #00b894; 
-        font-weight: 600; 
-        margin-bottom: 12px; 
-        background: #e0f2f1; /* হালকা ব্যাকগ্রাউন্ড কালার */
-        padding: 4px 8px;
-        border-radius: 6px;
-        display: inline-block;
-    }
-
-    .order-btn-custom { 
-        background: linear-gradient(135deg, #6c5ce7, #a29bfe); /* প্রিমিয়াম গ্রেডিয়েন্ট বাটন */
-        color: white; 
-        border: none; 
-        padding: 10px 20px; 
-        border-radius: 12px; 
-        cursor: pointer; 
-        font-size: 14px; 
-        font-weight: bold;
-        transition: transform 0.2s;
-        box-shadow: 0 4px 6px rgba(108, 92, 231, 0.3);
-    }
-
-    .order-btn-custom:active { transform: scale(0.95); } /* ক্লিক করলে বাটনটি একটু ছোট হবে */
-
-
-
-/* মোডাল ওভারলে - এটি পপআপকে পুরো স্ক্রিনে কভার করবে এবং সেন্টার করবে */
+/* মোডাল */
 .modal-overlay {
-    display: none; 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: rgba(0, 0, 0, 0.7); /* ব্যাকগ্রাউন্ড কালার */
-    justify-content: center; 
-    align-items: center; 
-    z-index: 9999; /* যেন সবার উপরে থাকে */
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 9999;
 }
+.modal-content { background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; }
+.input-field { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; }
 
-/* মোডাল কন্টেন্ট - ফর্মের ডিজাইন */
-.modal-content {
-    background: white; 
-    padding: 20px; 
-    border-radius: 20px; 
-    width: 85%; 
-    max-width: 400px; 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+/* নেভিগেশন বার */
+.bottom-nav {
+    position: fixed; bottom: 0; left: 0; width: 100%; height: 60px;
+    background: #ffffff; display: flex; justify-content: space-between;
+    align-items: center; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); z-index: 9999; padding: 0 10px;
 }
+.nav-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; flex: 1; }
+.nav-item img { width: 22px; height: 22px; margin-bottom: 2px; }
+.nav-item span { font-size: 10px; color: #757575; }
 
-/* ইনপুট ফিল্ডের ডিজাইন */
-.input-field {
-    width: 100%; 
-    padding: 12px; 
-    margin: 8px 0; 
-    border: 1px solid #ddd; 
-    border-radius: 12px; 
-    box-sizing: border-box; /* যেন বর্ডার ফিল্ডের বাইরে না যায় */
+#search-history {
+    position: absolute;
+    width: calc(100% - 20px);
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
 }
-
-.search-container {
-    padding: 10px;
-    background-color: #fff;
-}
-
-.search-wrapper {
-    display: flex;
-    align-items: center;
-    border: 2px solid #f57224; /* ডারায অরেঞ্জ বর্ডার */
-    border-radius: 4px;
-    padding: 0 10px;
-    background: white;
-}
-
-.search-input {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    outline: none;
-    font-size: 14px;
-}
-
-.camera-icon {
-    width: 24px;
-    height: 24px;
-    margin: 0 10px;
-    cursor: pointer;
-    opacity: 0.7;
-}
-
-.search-btn {
-    background-color: #f57224;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    cursor: pointer;
-    font-weight: bold;
-    border-radius: 2px;
-}
-
 
 
     </style>
