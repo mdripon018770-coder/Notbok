@@ -219,6 +219,33 @@ body {
     overflow-x: hidden; /* স্ক্রিন বড় বা ছোট হলে যেন ডানে-বামে না সরে */
 }
 
+/* পপআপ এরিয়ার স্টাইল */
+.popup-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;          /* স্ক্রিনের ৯০% জায়গা নেবে */
+    max-width: 400px;    /* সর্বোচ্চ সাইজ */
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.3);
+    z-index: 9999;
+    max-height: 80vh;    /* স্ক্রিনের ৮০% উচ্চতা */
+    overflow-y: auto;    /* বড় মেসেজ হলে স্ক্রল হবে */
+}
+
+/* টেক্সট এরিয়া যেন বক্সের বাইরে না যায় */
+#notice-content {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    padding: 10px;
+}
+
     </style>
 </head>
 <body>
@@ -382,9 +409,10 @@ body {
 <div class="nav-item" onclick="openNoticePopup()" style="position: relative;">
     <svg class="icon-svg" viewBox="0 0 24 24"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"></path></svg>
     <span>Notice</span>
-    <!-- নোটিশ ব্যাজ -->
-    <span id="notice-badge" style="position: absolute; top: -5px; right: 10px; background: red; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: none; align-items: center; justify-content: center; font-weight: bold;">0</span>
+    <!-- নোটিশ ব্যাজ (এখানে display: none রাখা হয়েছে, জাভাস্ক্রিপ্ট এটি কন্ট্রোল করবে) -->
+    <span id="notice-badge" style="position: absolute; top: 0px; right: 25%; background: red; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: none; align-items: center; justify-content: center; font-weight: bold;">1</span>
 </div>
+
 
 
 
@@ -1471,7 +1499,7 @@ window.saveSavings = async () => {
 
 
 
-// নোটিশ আপডেট এবং ব্যাজ লজিক
+
 // নোটিশ আপডেট এবং ব্যাজ লজিক
 onValue(ref(db, 'notice'), (snapshot) => {
     const notice = snapshot.val();
@@ -1480,14 +1508,16 @@ onValue(ref(db, 'notice'), (snapshot) => {
 
     if (notice && notice.active) {
         if(noticeContent) noticeContent.innerText = notice.message;
-        if(badge) {
+        
+        // ব্যাজ দেখানোর লজিক
+        if(badge && !sessionStorage.getItem('noticeRead')) {
             badge.style.display = 'flex';
             badge.innerText = '1';
         }
         
-        // অ্যাপ খোলার পর অটোমেটিক নোটিশ পপআপ হবে যদি এটি প্রথমবার হয়
+        // অ্যাপ খোলার পর অটোমেটিক পপআপ (যদি window হিসেবে থাকে)
         if(!sessionStorage.getItem('noticeShown')) {
-            openNoticePopup();
+            window.openNoticePopup(); // এখানে window. ব্যবহার করুন
             sessionStorage.setItem('noticeShown', 'true');
         }
     } else {
@@ -1495,6 +1525,20 @@ onValue(ref(db, 'notice'), (snapshot) => {
         if(badge) badge.style.display = 'none';
     }
 });
+
+window.openNoticePopup = () => {
+    document.getElementById('notice-popup').style.display = "block";
+
+    // পপআপ খুললেই ব্যাজ সরিয়ে দিবে
+    const badge = document.getElementById('notice-badge');
+    if(badge) {
+        badge.style.display = 'none';
+    }
+    sessionStorage.setItem('noticeRead', 'true');
+};
+
+
+
 
 
 </script>
