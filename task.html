@@ -339,6 +339,9 @@ body {
 </div>
 
 
+
+<!-- বটম ❌নেভিগেশন বার -->
+
     <h3 style="margin-top: 20px;">Popular Tasks</h3>
 
 <!-- প্রতিটি টাস্কে এখন handleTaskClick ফাংশন কাজ করবে -->
@@ -347,7 +350,7 @@ body {
     <div style="flex: 1;">
         <b>পণ্য ক্রয় করুন</b> <span id="lock-ponno" style="display:none; color:red;">🔒</span><br><small>সেরা দামে কিনুন</small>
     </div>
-    <div style="color: #2e7d32; font-weight: bold;">৳ 10.00</div>
+    <div style="color: #2e7d32; font-weight: bold;">৳ 1000.00</div>
 </div>
 
 <div class="task-item" onclick="handleTaskClick('youtube', 'https://mdripon018770-coder.github.io/Notbok/youtube.html')">
@@ -355,43 +358,20 @@ body {
     <div style="flex: 1;">
         <b>Watch YouTube Videos</b> <span id="lock-youtube" style="display:none; color:red;">🔒</span><br><small>Earn money</small>
     </div>
-    <div style="color: #2e7d32; font-weight: bold;">৳ 50.00</div>
+    <div style="color: #2e7d32; font-weight: bold;">৳ 500.00</div>
 </div>
 
-<div class="task-item" onclick="handleTaskClick('facebook', '#')">
-    <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/fb.jpeg" class="task-img">
-    <div style="flex: 1;">
-        <b>Facebook Like & Follow</b> <span id="lock-facebook" style="display:none; color:red;">🔒</span><br><small>Earn money</small>
+
+<!-- এখানে রিপ্লেস করুন -->
+<div id="dynamic-task-container">
+    <div id="loading-container" style="text-align: center; padding: 20px;">
+        <p>Loading tasks...</p>
     </div>
-    <div style="color: #2e7d32; font-weight: bold;">৳ 3.00</div>
-</div>
-
-<div class="task-item" onclick="handleTaskClick('instagram', '#')">
-    <div class="icon-square" style="background: #e1306c;">IG</div>
-    <div style="flex: 1;">
-        <b>Instagram Follow</b> <span id="lock-instagram" style="display:none; color:red;">🔒</span><br><small>Earn money</small>
-    </div>
-    <div style="color: #2e7d32; font-weight: bold;">৳ 4.00</div>
-</div>
-
-<div class="task-item" onclick="handleTaskClick('tiktok', '#')">
-    <div class="icon-square" style="background: #000000;">TT</div>
-    <div style="flex: 1;">
-        <b>TikTok Video Like</b> <span id="lock-tiktok" style="display:none; color:red;">🔒</span><br><small>Earn money</small>
-    </div>
-    <div style="color: #2e7d32; font-weight: bold;">৳ 3.50</div>
-</div>
-
-<div class="task-item" onclick="handleTaskClick('telegram', '#')">
-    <div class="icon-square" style="background: #0088cc;">TG</div>
-    <div style="flex: 1;">
-        <b>Join Telegram Channel</b> <span id="lock-telegram" style="display:none; color:red;">🔒</span><br><small>Earn money</small>
-    </div>
-    <div style="color: #2e7d32; font-weight: bold;">৳ 2.00</div>
 </div>
 
 
-<!-- বটম নেভিগেশন বার -->
+
+<!-- বটম ❌নেভিগেশন বার -->
 <div class="bottom-nav">
     <div class="nav-item active" onclick="window.location.reload()">
         <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M9 21v-6a3 3 0 013-3v0a3 3 0 013 3v6"></path></svg>
@@ -802,6 +782,9 @@ onValue(userRef, (snapshot) => {
     }
 });
 
+
+
+//❌
 // ৩. লেভেল রেন্ডারিং
 const levels = [
     { id: 1, name: "Level 1", cost: 1500, daily: 50, color: "linear-gradient(135deg, #667eea, #764ba2)" },
@@ -839,6 +822,10 @@ window.buyLevel = async (cost, levelId) => {
     }
 };
 
+
+
+
+//❌
 window.confirmDeposit = async () => {
     const amount = document.getElementById('amount').value;
     const sender = document.getElementById('sender-number').value;
@@ -853,6 +840,10 @@ window.confirmDeposit = async () => {
     }
 };
 
+
+
+
+//❌
 window.openWithdrawPopup = () => {
     document.getElementById('withdraw-popup').style.display = 'flex';
     document.getElementById('custom-menu-popup').style.display = 'none';
@@ -902,8 +893,11 @@ window.openPaymentForm = (m, i) => {
     document.getElementById('payment-form-popup').style.display = 'flex'; 
 };
 
-// লাইভ সাপোর্ট এবং স্লাইডার ফাংশনসমূহ এখানে আগের মতোই থাকবে...
-// (আমি আপনার আগের কোডের ব্যানার স্লাইডার, হোয়াটসঅ্যাপ এবং টাস্ক লক লজিক অপরিবর্তিত রেখেছি)
+
+
+
+
+// ❌(আমি আপনার আগের কোডের ব্যানার স্লাইডার, হোয়াটসঅ্যাপ এবং টাস্ক লক লজিক অপরিবর্তিত রেখেছি)
 
 onValue(ref(db, 'banners'), (snapshot) => {
     const banners = snapshot.val();
@@ -928,25 +922,66 @@ onValue(ref(db, 'banners'), (snapshot) => {
     window.bannerInterval = setInterval(showNextSlide, 3000);
 });
 
-window.handleTaskClick = async (taskId, url) => {
-    const taskSnapshot = await get(ref(db, 'tasks/' + taskId));
-    const taskData = taskSnapshot.val() || { locked: false };
-    if (taskData.locked) {
+
+
+
+//❌
+window.handleTaskClick = async (taskId, task) => {
+    // এখানে task অবজেক্ট থেকে সরাসরি url নেওয়া হচ্ছে
+    const url = task.url; 
+    
+    if (task.locked) {
         Swal.fire({ icon: 'warning', title: 'মেনটেন্যান্স চলছে!', text: 'এই টাস্কটিতে বর্তমানে কাজ চলছে।', confirmButtonColor: '#7b2cbf' });
     } else {
-        if(url !== '#') window.open(url, '_blank');
+        if(url && url !== '#') window.open(url, '_blank');
     }
 };
 
+
+
+
+//❌ popular task 
+
 onValue(ref(db, 'tasks'), (snapshot) => {
+    const dynamicContainer = document.getElementById('dynamic-task-container');
+    dynamicContainer.innerHTML = ''; // পুরো লিস্ট পরিষ্কার করা হচ্ছে
+    
     const tasks = snapshot.val() || {};
-    Object.keys(tasks).forEach(taskId => {
-        const lockIcon = document.getElementById('lock-' + taskId);
-        if (lockIcon) lockIcon.style.display = tasks[taskId].locked ? 'inline' : 'none';
+
+    Object.entries(tasks).forEach(([taskId, task]) => {
+        // যদি টাস্কটি 'ponno' বা 'youtube' না হয়, তবেই এটি রেন্ডার করবে
+        if (taskId !== 'ponno' && taskId !== 'youtube') {
+            const taskDiv = document.createElement('div');
+            taskDiv.className = 'task-item';
+            taskDiv.onclick = () => handleTaskClick(taskId, task);
+            
+            // এখানে লক আইকন এবং বাকি সব ডাটা একসাথে রেন্ডার হচ্ছে
+            taskDiv.innerHTML = `
+                <img src="${task.imgUrl}" class="task-img">
+                <div style="flex: 1;">
+                    <b>${task.title}</b> 
+                    <span id="lock-${taskId}" style="display:${task.locked ? 'inline' : 'none'}; color:red;">🔒</span><br>
+                    <small>${task.desc}</small>
+                </div>
+                <div style="color: #2e7d32; font-weight: bold;">৳ ${task.price}</div>
+            `;
+            dynamicContainer.appendChild(taskDiv);
+        }
     });
+
+    // সবশেষে লোডিং কন্টেইনার বন্ধ করা হচ্ছে
+    const loadingContainer = document.getElementById('loading-container');
+    if (loadingContainer) {
+        loadingContainer.style.display = 'none';
+    }
 });
 
 
+
+
+
+
+//❌
 window.confirmTransfer = async () => {
     const method = document.getElementById('tf-method').value;
     const number = document.getElementById('tf-number').value;
@@ -1001,6 +1036,10 @@ window.initShareConfig = async () => {
 };
 
 
+
+
+
+//❌
 window.shareApp = async () => {
     // ১. ফায়ারবেস থেকে লেটেস্ট কনফিগ নিয়ে আসা
     const snapshot = await get(ref(db, 'shareConfig'));
@@ -1045,6 +1084,9 @@ onValue(ref(db, 'shareConfig'), (snapshot) => {
 });
 
 
+
+
+//❌
 window.confirmSendMoney = async () => {
     const receiverPhone = document.getElementById('sm-number').value.trim();
     const amount = parseFloat(document.getElementById('sm-amount').value);
@@ -1096,7 +1138,7 @@ window.confirmSendMoney = async () => {
 
 
 // ==========================================
-// হিস্ট্রি সিস্টেম: ডিপোজিট, উইথড্র, ট্রান্সফার এবং সেন্ড মানি
+// হিস্ট্রি সিস্টেম: ডিপোজিট, উইথড্র, ট্রান্সফার এবং সেন্ড মানি❌❌
 // ==========================================
 
 
@@ -1301,6 +1343,10 @@ window.showInputForm = (action) => {
     }
 };
 
+
+
+
+
 window.hideInputForm = () => {
     document.getElementById('settings-options-container').style.display = 'block';
     document.getElementById('dynamic-input-area').style.display = 'none';
@@ -1323,6 +1369,10 @@ window.processSettingsChange = async () => {
         Swal.fire('Error', 'ডাটা আপডেট করতে সমস্যা হয়েছে।', 'error');
     }
 };
+
+
+
+
 
 window.claimDailyBonus = async () => {
     const statusEl = document.getElementById('bonusStatus');
@@ -1372,7 +1422,9 @@ if(phone) {
     });
 }
 
-// ... আগের সব ফাংশন ...
+
+
+// ... আগের❌ সব ফাংশন ...
 
 window.updateLeaderboard = () => {
     const list = document.getElementById('leaderboard-list');
@@ -1404,6 +1456,8 @@ window.copyReferCode = () => {
         Swal.fire('কপি হয়েছে!', 'রেফার কোডটি কপি করা হয়েছে: ' + code, 'success');
     });
 };
+
+
 
 
 
@@ -1474,6 +1528,8 @@ window.openLoanPopup = () => {
 };
 
 
+
+
 // ১. সেভিংস ড্যাশবোর্ড খোলার ফাংশন (যেখানে ব্যালেন্স কার্ডটি দেখা যাবে)
 window.openSavingsPopup = () => {
     document.getElementById('savings-popup').style.display = 'block';
@@ -1533,7 +1589,7 @@ window.saveSavings = async () => {
 
 
 
-// নোটিশ আপডেট এবং ব্যাজ লজিক (ফাইনাল)
+// নোটিশ আপডেট ❌লজিক (ফাইনাল)
 onValue(ref(db, 'notice'), (snapshot) => {
     const notice = snapshot.val();
     const noticeContent = document.getElementById('notice-content');
