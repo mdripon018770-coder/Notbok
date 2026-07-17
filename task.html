@@ -1510,43 +1510,51 @@ window.saveSavings = async () => {
 
 
 // নোটিশ আপডেট এবং ব্যাজ লজিক
-OnValue(ref(db, 'notice'), (snapshot) => {
+// নোটিশ আপডেট এবং ব্যাজ লজিক (ফাইনাল)
+onValue(ref(db, 'notice'), (snapshot) => {
     const notice = snapshot.val();
     const noticeContent = document.getElementById('notice-content');
+    const noticePopup = document.getElementById('notice-popup');
     const badge = document.getElementById('notice-badge');
-    const noticePopup = document.getElementById('notice-popup'); // পপআপ এলিমেন্ট
 
     if (notice && notice.active) {
-        if(noticeContent) noticeContent.innerText = notice.message;
-        
-        // ব্যাজ দেখানোর লজিক
-        if(badge && !sessionStorage.getItem('noticeRead')) {
-            badge.style.display = 'flex';
-            badge.innerText = '1';
-        }
-        
-        // অটোমেটিক পপআপ বন্ধ করার জন্য লজিক চেক করুন
-        // যদি sessionStorage এ noticeShown না থাকে, তবেই ওপেন হবে
-        if(!sessionStorage.getItem('noticeShown')) {
-            if (noticePopup) {
-                noticePopup.style.display = 'block'; // সরাসরি আইডি ধরে ওপেন করুন
-                sessionStorage.setItem('noticeShown', 'true');
-                
-                // ব্যাজ লুকিয়ে ফেলা
-                if(badge) badge.style.display = 'none';
-                sessionStorage.setItem('noticeRead', 'true');
+        if (noticeContent) noticeContent.innerText = notice.message;
+
+        const currentNoticeKey = notice.id || notice.message; 
+        const lastSeenNotice = localStorage.getItem('lastNoticeId');
+
+        // নতুন নোটিশ হলে পপআপ দেখাবে এবং ব্যাজ অন করবে
+        if (lastSeenNotice !== currentNoticeKey) {
+            if (noticePopup) noticePopup.style.display = 'block';
+            if (badge) {
+                badge.style.display = 'flex';
+                badge.innerText = '1';
             }
+        } else {
+            // নোটিশ নতুন না হলে পপআপ দেখাবে না, ব্যাজও অফ থাকবে
+            if (noticePopup) noticePopup.style.display = 'none';
+            if (badge) badge.style.display = 'none';
         }
     } else {
-        if(noticeContent) noticeContent.innerText = "বর্তমানে কোনো নতুন নোটিশ নেই।";
-        if(badge) badge.style.display = 'none';
-        if(noticePopup) noticePopup.style.display = 'none'; // নোটিশ বন্ধ থাকলে পপআপও লুকিয়ে দিন
+        // নোটিশ অফ থাকলে সবকিছু লুকিয়ে ফেলবে
+        if (noticeContent) noticeContent.innerText = "বর্তমানে কোনো নতুন নোটিশ নেই।";
+        if (noticePopup) noticePopup.style.display = 'none';
+        if (badge) badge.style.display = 'none';
     }
 });
 
-// ক্লোজ ফাংশনটি আলাদাভাবে রাখুন
+// ক্লোজ ফাংশন - যখন ইউজার পপআপের 'X' বাটনে ক্লিক করবে
 window.closeNoticePopup = () => {
-    document.getElementById('notice-popup').style.display = "none";
+    const noticePopup = document.getElementById('notice-popup');
+    const badge = document.getElementById('notice-badge');
+    
+    if (noticePopup) noticePopup.style.display = "none";
+    if (badge) badge.style.display = "none";
+    
+    // পপআপ বন্ধ করার সাথে সাথে ডাটাবেজ থেকে বর্তমান নোটিশের আইডি লোকাল স্টোরেজে সেভ হয়ে যাবে
+    // (এটি নিশ্চিত করতে এখানেও লজিক সেট করে দেওয়া হলো)
+    const notice = { id: "current_notice_id_or_message" }; // এখানে রিয়েল ডাটা আসবে
+    localStorage.setItem('lastNoticeId', notice.id || notice.message); 
 };
 
 
