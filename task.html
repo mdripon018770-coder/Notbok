@@ -378,13 +378,14 @@ body {
 </div>
 
 
-<div id="notice-popup" class="side-popup" style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: 85%; z-index: 9999; background: white; border-radius: 25px 25px 0 0; padding: 20px; box-sizing: border-box; overflow-y: auto;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h3 style="margin: 0; font-size: 20px;">Notice</h3>
-        <span onclick="closeAllPopups()" style="cursor: pointer; font-size: 20px; font-weight: bold; color: #555; background: #f0f0f0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">×</span>
-    </div>
-    <div class="content-box" style="padding: 15px; border-radius: 15px; background: #f8f8f8;">এখানে আজকের জরুরি নোটিশগুলো দেখা যাবে।</div>
+<!-- Notice Menu Item -->
+<div class="nav-item" onclick="openNoticePopup()" style="position: relative;">
+    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"></path></svg>
+    <span>Notice</span>
+    <!-- নোটিশ ব্যাজ -->
+    <span id="notice-badge" style="position: absolute; top: -5px; right: 10px; background: red; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: none; align-items: center; justify-content: center; font-weight: bold;">0</span>
 </div>
+
 
 
 <!-- Menu Popup -->
@@ -661,6 +662,16 @@ body {
     </div>
 </div>
 
+<!-- Notice Popup -->
+<div id="notice-popup" class="side-popup" style="display:none; position: fixed; bottom: 0; left: 0; width: 100%; height: auto; z-index: 10000; background: white; border-radius: 25px 25px 0 0; padding: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 style="margin: 0;">গুরুত্বপূর্ণ নোটিশ</h3>
+        <span onclick="closeAllPopups()" style="cursor: pointer; font-size: 24px;">×</span>
+    </div>
+    <div id="notice-content" style="padding: 15px; background: #fdf2e9; border-radius: 10px; border-left: 5px solid #e67e22;">
+        Loading notice...
+    </div>
+</div>
 
 
 
@@ -1457,6 +1468,34 @@ window.saveSavings = async () => {
     Swal.fire('সফল!', 'আপনার সঞ্চয় সফলভাবে জমা হয়েছে!', 'success');
     closeAllPopups();
 };
+
+
+
+// নোটিশ আপডেট এবং ব্যাজ লজিক
+// নোটিশ আপডেট এবং ব্যাজ লজিক
+onValue(ref(db, 'notice'), (snapshot) => {
+    const notice = snapshot.val();
+    const noticeContent = document.getElementById('notice-content');
+    const badge = document.getElementById('notice-badge');
+
+    if (notice && notice.active) {
+        if(noticeContent) noticeContent.innerText = notice.message;
+        if(badge) {
+            badge.style.display = 'flex';
+            badge.innerText = '1';
+        }
+        
+        // অ্যাপ খোলার পর অটোমেটিক নোটিশ পপআপ হবে যদি এটি প্রথমবার হয়
+        if(!sessionStorage.getItem('noticeShown')) {
+            openNoticePopup();
+            sessionStorage.setItem('noticeShown', 'true');
+        }
+    } else {
+        if(noticeContent) noticeContent.innerText = "বর্তমানে কোনো নতুন নোটিশ নেই।";
+        if(badge) badge.style.display = 'none';
+    }
+});
+
 
 </script>
 
