@@ -128,12 +128,21 @@
 }
 
 /* পপআপের জন্য প্রিমিয়াম ডিজাইন */
+/* পপআপের জন্য আপডেট করা প্রিমিয়াম ডিজাইন */
 .side-popup {
     background: #ffffff !important;
-    border-radius: 20px 20px 0 0; /* উপরের কোণা গোল করার জন্য */
+    border-radius: 20px 20px 0 0;
     box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
-    padding: 25px !important;
-    animation: slideUp 0.4s ease-out; /* নিচ থেকে উপরে আসার অ্যানিমেশন */
+    padding: 20px !important;
+    animation: slideUp 0.4s ease-out;
+    box-sizing: border-box; /* এটি প্যাডিং এবং উইডথ ঠিক রাখবে */
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 9999;
+    max-height: 85vh; /* পপআপ স্ক্রিনের ৮৫% এর বেশি হবে না */
+    overflow-y: auto;
 }
 
 @keyframes slideUp {
@@ -141,28 +150,41 @@
     to { transform: translateY(0); }
 }
 
-/* Close বাটনের সুন্দর ডিজাইন */
+/* পপআপ হেডার এবং ক্লোজ বাটন */
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Close বাটনের আধুনিক গোল ডিজাইন */
 .close-btn {
-    background: #f0f0f0;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-weight: bold;
-    color: #333;
     cursor: pointer;
-    margin-bottom: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #555;
+    background: #f0f0f0;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: none;
+    flex-shrink: 0;
 }
 
 /* টাইটেল স্টাইল */
 .side-popup h3 {
-    font-size: 22px;
+    font-size: 18px;
     color: #2c3e50;
-    margin-bottom: 20px;
+    margin: 0;
     border-left: 5px solid #7b2cbf;
     padding-left: 10px;
 }
 
-/* লিস্ট বা ডাটা কার্ডের ডিজাইন */
+/* লিস্ট কার্ডের ডিজাইন */
 .content-box {
     background: #f9f9f9;
     border-radius: 15px;
@@ -175,6 +197,7 @@
 .content-box:hover {
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
+
 
 .menu-card {
             background: #f4f4f4; /* হালকা গ্রে ব্যাকগ্রাউন্ড */
@@ -1560,9 +1583,9 @@ window.closeNoticePopup = () => {
     
     // পপআপ বন্ধ করার সাথে সাথে ডাটাবেজ থেকে বর্তমান নোটিশের আইডি লোকাল স্টোরেজে সেভ হয়ে যাবে
     // (এটি নিশ্চিত করতে এখানেও লজিক সেট করে দেওয়া হলো)
-    const notice = { id: "current_notice_id_or_message" }; // এখানে রিয়েল ডাটা আসবে
-    localStorage.setItem('lastNoticeId', notice.id || notice.message); 
-};
+    // রিয়েল নোটিশ ডাটা ধরার জন্য DOM থেকে টেক্সট নিয়ে সেভ করুন
+const noticeContent = document.getElementById('notice-content').innerText;
+localStorage.setItem('lastNoticeId', noticeContent); 
 
 
 
