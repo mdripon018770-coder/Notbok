@@ -220,21 +220,26 @@ body {
 }
 
 /* পপআপ এরিয়ার স্টাইল */
-.popup-container {
+.popup-container { /* এখানে আপনার আগে দেওয়া পপআপের আইডি বা ক্লাস অনুযায়ী নাম লিখুন */
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 90%;          /* স্ক্রিনের ৯০% জায়গা নেবে */
-    max-width: 400px;    /* সর্বোচ্চ সাইজ */
+    width: 90%;
+    max-width: 400px;
     background: white;
     padding: 20px;
     border-radius: 20px;
     box-shadow: 0px 0px 20px rgba(0,0,0,0.3);
     z-index: 9999;
-    max-height: 80vh;    /* স্ক্রিনের ৮০% উচ্চতা */
-    overflow-y: auto;    /* বড় মেসেজ হলে স্ক্রল হবে */
+    max-height: 80vh;
+    overflow-y: auto;
+    /* নিচে দেওয়া নতুন প্রপার্টিগুলো যোগ করুন */
+    box-sizing: border-box; 
+    word-wrap: break-word;
+    overflow-x: hidden;
 }
+
 
 /* টেক্সট এরিয়া যেন বক্সের বাইরে না যায় */
 #notice-content {
@@ -691,12 +696,16 @@ body {
 </div>
 
 <!-- Notice Popup -->
-<div id="notice-popup" class="side-popup" style="display:none; position: fixed; bottom: 0; left: 0; width: 100%; height: auto; z-index: 10000; background: white; border-radius: 25px 25px 0 0; padding: 20px;">
+<div id="notice-popup" class="side-popup" style="display:none; position: fixed; bottom: 0; left: 0; width: 100%; height: auto; z-index: 10000; background: white; border-radius: 25px 25px 0 0; padding: 20px; box-shadow: 0px -5px 15px rgba(0,0,0,0.1);">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
         <h3 style="margin: 0;">গুরুত্বপূর্ণ নোটিশ</h3>
-        <span onclick="closeAllPopups()" style="cursor: pointer; font-size: 24px;">×</span>
+        <!-- ক্লোজ আইকনটি এখানে স্পষ্ট করে দেওয়া হলো -->
+        <span onclick="document.getElementById('notice-popup').style.display='none'" 
+              style="cursor: pointer; font-size: 30px; font-weight: bold; padding: 0 10px; color: #333;">
+              &times;
+        </span>
     </div>
-    <div id="notice-content" style="padding: 15px; background: #fdf2e9; border-radius: 10px; border-left: 5px solid #e67e22;">
+    <div id="notice-content" style="padding: 15px; background: #fdf2e9; border-radius: 10px; border-left: 5px solid #e67e22; word-wrap: break-word;">
         Loading notice...
     </div>
 </div>
@@ -1501,10 +1510,11 @@ window.saveSavings = async () => {
 
 
 // নোটিশ আপডেট এবং ব্যাজ লজিক
-onValue(ref(db, 'notice'), (snapshot) => {
+OnValue(ref(db, 'notice'), (snapshot) => {
     const notice = snapshot.val();
     const noticeContent = document.getElementById('notice-content');
     const badge = document.getElementById('notice-badge');
+    const noticePopup = document.getElementById('notice-popup'); // পপআপ এলিমেন্ট
 
     if (notice && notice.active) {
         if(noticeContent) noticeContent.innerText = notice.message;
@@ -1515,26 +1525,28 @@ onValue(ref(db, 'notice'), (snapshot) => {
             badge.innerText = '1';
         }
         
-        // অ্যাপ খোলার পর অটোমেটিক পপআপ (যদি window হিসেবে থাকে)
+        // অটোমেটিক পপআপ বন্ধ করার জন্য লজিক চেক করুন
+        // যদি sessionStorage এ noticeShown না থাকে, তবেই ওপেন হবে
         if(!sessionStorage.getItem('noticeShown')) {
-            window.openNoticePopup(); // এখানে window. ব্যবহার করুন
-            sessionStorage.setItem('noticeShown', 'true');
+            if (noticePopup) {
+                noticePopup.style.display = 'block'; // সরাসরি আইডি ধরে ওপেন করুন
+                sessionStorage.setItem('noticeShown', 'true');
+                
+                // ব্যাজ লুকিয়ে ফেলা
+                if(badge) badge.style.display = 'none';
+                sessionStorage.setItem('noticeRead', 'true');
+            }
         }
     } else {
         if(noticeContent) noticeContent.innerText = "বর্তমানে কোনো নতুন নোটিশ নেই।";
         if(badge) badge.style.display = 'none';
+        if(noticePopup) noticePopup.style.display = 'none'; // নোটিশ বন্ধ থাকলে পপআপও লুকিয়ে দিন
     }
 });
 
-window.openNoticePopup = () => {
-    document.getElementById('notice-popup').style.display = "block";
-
-    // পপআপ খুললেই ব্যাজ সরিয়ে দিবে
-    const badge = document.getElementById('notice-badge');
-    if(badge) {
-        badge.style.display = 'none';
-    }
-    sessionStorage.setItem('noticeRead', 'true');
+// ক্লোজ ফাংশনটি আলাদাভাবে রাখুন
+window.closeNoticePopup = () => {
+    document.getElementById('notice-popup').style.display = "none";
 };
 
 
