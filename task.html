@@ -406,10 +406,13 @@ body {
         <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
         <span>VIP</span>
     </div>
-    <div class="nav-item" onclick="openPopup('notice-popup')">
-        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"></path></svg>
-        <span>Notice</span>
-    </div>
+    <!-- Notice Menu Item -->
+<div class="nav-item" onclick="openNoticePopup()" style="position: relative;">
+    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"></path></svg>
+    <span>Notice</span>
+    <!-- নোটিশ ব্যাজ (এখানে display: none রাখা হয়েছে, জাভাস্ক্রিপ্ট এটি কন্ট্রোল করবে) -->
+    <span id="notice-badge" style="position: absolute; top: 0px; right: 25%; background: red; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: none; align-items: center; justify-content: center; font-weight: bold;">1</span>
+</div>
     <div class="nav-item" onclick="openPopup('custom-menu-popup')">
         <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"></path></svg>
         <span>Menu</span>
@@ -438,16 +441,6 @@ body {
         Loading history...
     </div>
 </div>
-
-
-<!-- Notice Menu Item -->
-<div class="nav-item" onclick="openNoticePopup()" style="position: relative;">
-    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"></path></svg>
-    <span>Notice</span>
-    <!-- নোটিশ ব্যাজ (এখানে display: none রাখা হয়েছে, জাভাস্ক্রিপ্ট এটি কন্ট্রোল করবে) -->
-    <span id="notice-badge" style="position: absolute; top: 0px; right: 25%; background: red; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: none; align-items: center; justify-content: center; font-weight: bold;">1</span>
-</div>
-
 
 
 
@@ -1574,6 +1567,8 @@ onValue(ref(db, 'notice'), (snapshot) => {
 });
 
 // ক্লোজ ফাংশন - যখন ইউজার পপআপের 'X' বাটনে ক্লিক করবে
+// ... আগের কোড ...
+
 window.closeNoticePopup = () => {
     const noticePopup = document.getElementById('notice-popup');
     const badge = document.getElementById('notice-badge');
@@ -1581,11 +1576,12 @@ window.closeNoticePopup = () => {
     if (noticePopup) noticePopup.style.display = "none";
     if (badge) badge.style.display = "none";
     
-    // পপআপ বন্ধ করার সাথে সাথে ডাটাবেজ থেকে বর্তমান নোটিশের আইডি লোকাল স্টোরেজে সেভ হয়ে যাবে
-    // (এটি নিশ্চিত করতে এখানেও লজিক সেট করে দেওয়া হলো)
-    // রিয়েল নোটিশ ডাটা ধরার জন্য DOM থেকে টেক্সট নিয়ে সেভ করুন
-const noticeContent = document.getElementById('notice-content').innerText;
-localStorage.setItem('lastNoticeId', noticeContent); 
+    const noticeContent = document.getElementById('notice-content').innerText;
+    localStorage.setItem('lastNoticeId', noticeContent); 
+}; // এই ব্র্যাকেটটি { } মিসিং ছিল
+
+// এই ব্র্যাকেটের পর আপনার স্ক্রিপ্ট ট্যাগ বন্ধ হবে
+
 
 
 
