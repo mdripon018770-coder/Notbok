@@ -923,13 +923,43 @@ window.openPopup = (id) => {
     }
 };
 
+
+
+
+
+
 window.closeAllPopups = () => {
+    // মেনু পপআপের জন্য স্পেশাল হ্যান্ডলিং
     const menuPopup = document.getElementById('custom-menu-popup');
-    menuPopup.style.bottom = '-100%';
-    setTimeout(() => { menuPopup.style.display = 'none'; }, 400);
+    if(menuPopup) {
+        menuPopup.style.bottom = '-100%';
+        setTimeout(() => { menuPopup.style.display = 'none'; }, 400);
+    }
     
-    // অন্য পপআপগুলো বন্ধ করার জন্য
-    document.querySelectorAll('.popup-class').forEach(p => p.style.display = 'none');
+    // সব ধরণের পপআপ আইডি যা আপনার কোডে আছে সেগুলো এখানে লিখুন
+    const popups = [
+        'vip-popup', 
+        'history-popup', 
+        'add-balance-popup', 
+        'payment-form-popup', 
+        'withdraw-popup', 
+        'send-money-popup', 
+        'transfer-popup', 
+        'refer-popup', 
+        'settings-popup', 
+        'leaderboard-popup', 
+        'savings-popup',
+        'notice-popup'
+    ];
+    
+    popups.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.style.display = 'none';
+    });
+    
+    // ওভারলে থাকলে তা বন্ধ করা
+    const overlay = document.getElementById('overlay');
+    if(overlay) overlay.style.display = 'none';
 };
 
 
