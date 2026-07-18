@@ -281,6 +281,24 @@ body {
 }
 
 
+#custom-menu-popup {
+    display: block; /* ডিসপ্লে ব্লক থাকবে কিন্তু পজিশন দিয়ে বাইরে রাখা হবে */
+    position: fixed;
+    bottom: -100%; /* শুরুতে স্ক্রিনের নিচে থাকবে */
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 9999;
+    transition: bottom 0.4s ease-in-out; /* নিচ থেকে উপরে ওঠার স্মুথ এনিমেশন */
+    overflow-y: auto;
+}
+
+/* পপআপ ওপেন করার জন্য ক্লাস */
+#custom-menu-popup.show {
+    bottom: 0;
+}
+
     </style>
 </head>
 <body>
@@ -424,11 +442,11 @@ body {
 
 
 
-<!-- Menu Popup -->
-<div id="custom-menu-popup" class="side-popup" style="display: none; position: fixed; top: 0; left: 0; width: 85%; max-width: 300px; height: 100%; background: white; z-index: 9999; padding: 20px; box-shadow: 5px 0 20px rgba(0,0,0,0.2); overflow-y: auto;">
+<!-- Menu Popup (নিচ থেকে উপরে ওঠার জন্য নতুন স্ট্রাকচার) -->
+<div id="custom-menu-popup" style="display: none; position: fixed; bottom: -100%; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; padding: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); overflow-y: auto; transition: bottom 0.4s ease-in-out;">
     
-    <div style="text-align: right; margin-bottom: 10px;">
-        <span onclick="closeAllPopups()" style="cursor: pointer; font-size: 24px; color: #555;">×</span>
+    <div style="text-align: left; margin-bottom: 20px;">
+        <span onclick="closeAllPopups()" style="cursor: pointer; font-size: 30px; color: #333;">&times;</span>
     </div>
 
     <!-- প্রোফাইল সেকশন -->
@@ -440,21 +458,21 @@ body {
         </div>
     </div>
 
-    <!-- রেফার কোড সেকশন (নতুন যোগ করা হয়েছে) -->
+    <!-- রেফার কোড সেকশন -->
     <div style="background: #f8f8f8; padding: 15px; border-radius: 15px; margin-bottom: 20px; text-align: center; border: 1px dashed #7b2cbf;">
         <div style="font-size: 13px; color: #666;">আপনার রেফার কোড:</div>
         <div id="myReferCode" style="font-size: 20px; font-weight: bold; color: #7b2cbf; margin: 5px 0;">Loading...</div>
         <button onclick="copyReferCode()" style="background: #7b2cbf; color: white; border: none; padding: 5px 15px; border-radius: 10px; cursor: pointer; font-size: 12px;">Copy Code</button>
     </div>
 
-<div class="menu-card" onclick="openPopup('leaderboard-popup')">Leaderboard</div>
+    <div class="menu-card" onclick="openPopup('leaderboard-popup')">Leaderboard</div>
 
     <!-- মেনু কার্ডস -->
     <div style="display: flex; flex-direction: column; gap: 10px;">
         <div class="menu-card" onclick="openPopup('add-balance-popup')">Add Balance</div>
         <div class="menu-card" onclick="openWithdrawPopup()">Withdraw Funds</div>
-        <div class="menu-card" onclick="document.getElementById('send-money-popup').style.display='block'; document.getElementById('custom-menu-popup').style.display='none'">Send Money</div>
-        <div class="menu-card" onclick="document.getElementById('transfer-popup').style.display='flex'; document.getElementById('custom-menu-popup').style.display='none'">Balance Transfer</div>
+        <div class="menu-card" onclick="document.getElementById('send-money-popup').style.display='block'; closeAllPopups()">Send Money</div>
+        <div class="menu-card" onclick="document.getElementById('transfer-popup').style.display='flex'; closeAllPopups()">Balance Transfer</div>
         <div class="menu-card">Mobile Recharge</div>
         <div class="menu-card" onclick="openPopup('refer-popup')">Refer & Earn</div>
         <div class="menu-card" onclick="openSettings()">Settings</div>
@@ -468,6 +486,7 @@ body {
         </div>
     </div>
 </div>
+
 
 
 <!-- Add Balance Popup (Full Screen & Slide Effect) -->
@@ -867,25 +886,29 @@ window.confirmWithdraw = async () => {
 
 window.logout = () => { localStorage.clear(); window.location.replace("https://mdripon018770-coder.github.io/Notbok/tasklogin.html"); };
 
-window.openPopup = (id) => { 
+window.openPopup = (id) => {
     const popup = document.getElementById(id);
-    if (popup) {
-        popup.style.display = 'block'; 
-        if (id === 'add-balance-popup') setTimeout(() => { popup.style.right = '0'; }, 10);
-        document.getElementById('overlay').style.display = 'block'; 
+    if (id === 'custom-menu-popup') {
+        popup.style.display = 'block';
+        setTimeout(() => { popup.style.bottom = '0'; }, 10);
+    } else {
+        popup.style.display = 'block';
     }
 };
 
-window.closeAllPopups = () => { 
-    const popups = document.querySelectorAll('.side-popup, #add-balance-popup');
-    popups.forEach(p => {
-        if (p.id === 'add-balance-popup') {
-            p.style.right = '-100%';
-            setTimeout(() => { p.style.display = 'none'; }, 400);
-        } else { p.style.display = 'none'; }
-    });
-    document.getElementById('overlay').style.display = 'none'; 
+window.closeAllPopups = () => {
+    const menuPopup = document.getElementById('custom-menu-popup');
+    menuPopup.style.bottom = '-100%';
+    setTimeout(() => { menuPopup.style.display = 'none'; }, 400);
+    
+    // অন্য পপআপগুলো বন্ধ করার জন্য
+    document.querySelectorAll('.popup-class').forEach(p => p.style.display = 'none');
 };
+
+
+
+
+
 
 window.openPaymentForm = (m, i) => { 
     document.getElementById('payment-title').innerText = m; 
@@ -927,13 +950,22 @@ onValue(ref(db, 'banners'), (snapshot) => {
 
 //❌
 window.handleTaskClick = async (taskId, task) => {
-    // এখানে task অবজেক্ট থেকে সরাসরি url নেওয়া হচ্ছে
-    const url = task.url; 
-    
-    if (task.locked) {
-        Swal.fire({ icon: 'warning', title: 'মেনটেন্যান্স চলছে!', text: 'এই টাস্কটিতে বর্তমানে কাজ চলছে।', confirmButtonColor: '#7b2cbf' });
-    } else {
-        if(url && url !== '#') window.open(url, '_blank');
+    // ১. যদি task একটি স্ট্রিং হয় (সরাসরি কোড থেকে আসা লিংক)
+    if (typeof task === 'string' && task.startsWith('http')) {
+        window.open(task, '_blank');
+    } 
+    // ২. যদি task একটি অবজেক্ট হয় (ডাটাবেস বা অ্যাডমিন প্যানেল থেকে আসা)
+    else if (typeof task === 'object' && task !== null) {
+        if (task.locked) {
+            Swal.fire({ 
+                icon: 'warning', 
+                title: 'মেনটেন্যান্স চলছে!', 
+                text: 'এই টাস্কটিতে বর্তমানে কাজ চলছে।', 
+                confirmButtonColor: '#7b2cbf' 
+            });
+        } else if (task.url) {
+            window.open(task.url, '_blank');
+        }
     }
 };
 
@@ -944,37 +976,51 @@ window.handleTaskClick = async (taskId, task) => {
 
 onValue(ref(db, 'tasks'), (snapshot) => {
     const dynamicContainer = document.getElementById('dynamic-task-container');
-    dynamicContainer.innerHTML = ''; // পুরো লিস্ট পরিষ্কার করা হচ্ছে
+    const loadingContainer = document.getElementById('loading-container');
     
-    const tasks = snapshot.val() || {};
+    // ১. লোডিং কন্ট্রোল এবং এরর হ্যান্ডলিং
+    if (!snapshot.exists()) {
+        dynamicContainer.innerHTML = '<p>কোনো টাস্ক পাওয়া যায়নি</p>';
+        if (loadingContainer) loadingContainer.style.display = 'none';
+        return;
+    }
+
+    dynamicContainer.innerHTML = ''; 
+    const tasks = snapshot.val();
 
     Object.entries(tasks).forEach(([taskId, task]) => {
-        // যদি টাস্কটি 'ponno' বা 'youtube' না হয়, তবেই এটি রেন্ডার করবে
+        // ২. ডাটা ভ্যালিডেশন (যদি imgUrl বা price না থাকে তবে এরর দিবে না)
         if (taskId !== 'ponno' && taskId !== 'youtube') {
             const taskDiv = document.createElement('div');
             taskDiv.className = 'task-item';
             taskDiv.onclick = () => handleTaskClick(taskId, task);
             
-            // এখানে লক আইকন এবং বাকি সব ডাটা একসাথে রেন্ডার হচ্ছে
+            // ৩. ব্যাকটিক ব্যবহারের সময় সেফটি চেক
+            const img = task.imgUrl || 'default-image.png'; 
+            const price = task.price || '0';
+            const title = task.title || 'No Title';
+
             taskDiv.innerHTML = `
-                <img src="${task.imgUrl}" class="task-img">
+                <img src="${img}" class="task-img">
                 <div style="flex: 1;">
-                    <b>${task.title}</b> 
+                    <b>${title}</b> 
                     <span id="lock-${taskId}" style="display:${task.locked ? 'inline' : 'none'}; color:red;">🔒</span><br>
-                    <small>${task.desc}</small>
+                    <small>${task.desc || ''}</small>
                 </div>
-                <div style="color: #2e7d32; font-weight: bold;">৳ ${task.price}</div>
+                <div style="color: #2e7d32; font-weight: bold;">৳ ${price}</div>
             `;
             dynamicContainer.appendChild(taskDiv);
         }
     });
 
-    // সবশেষে লোডিং কন্টেইনার বন্ধ করা হচ্ছে
-    const loadingContainer = document.getElementById('loading-container');
     if (loadingContainer) {
         loadingContainer.style.display = 'none';
     }
+}, (error) => {
+    console.error("Firebase Read Error: ", error); // কনসোলে এরর চেক করুন
 });
+
+
 
 
 
