@@ -398,34 +398,22 @@ body {
     </div>
 </div>
 
-<!-- ডেইলি বোনাস সেকশন (আপডেট করা) -->
-<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; gap: 10px;">
-    
-    <!-- বাম পাশে: লোন নিন কার্ড -->
-    <div onclick="openLoanPopup()" style="background: #e67e22; color: white; padding: 10px; border-radius: 15px; text-align: center; flex: 1; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <div style="font-size: 12px; font-weight: bold;">লোন নিন</div>
-    </div>
-
-    <!-- মাঝখানে: ডেইলি বোনাস বাটন -->
-    <button id="dailyBonusBtn" onclick="claimDailyBonus()" style="background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex: 1.5;">Daily Bonus</button>
-
-    <!-- ডান পাশে: সঞ্চয় জমা করুন কার্ড -->
-    <div onclick="openSavingsPopup()" style="background: #2980b9; color: white; padding: 10px; border-radius: 15px; text-align: center; flex: 1; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <div style="font-size: 12px; font-weight: bold;">সঞ্চয় জমা</div>
-    </div>
-</div>
-<p id="bonusStatus" style="text-align:center; font-size: 12px; margin-top: 5px; color: #555;"></p>
 
 
 <div class="action-grid">
-    <div class="grid-item" onclick="location.href='#'"><span>💰</span><p>লোন নিন</p></div>
-    <div class="grid-item" onclick="location.href='#'"><span>🏦</span><p>সঞ্চয়</p></div>
-    <div class="grid-item" onclick="location.href='#'"><span>🎟️</span><p>টিকেট</p></div>
-    <div class="grid-item" onclick="location.href='#'"><span>🛒</span><p>শপিং</p></div>
-    <div class="grid-item" onclick="location.href='#'"><span>🛠️</span><p>মিস্ত্রি</p></div>
-    <div class="grid-item" onclick="location.href='#'"><span>💓</span><p>পাত্র-পাত্রী</p></div>
-    <div class="grid-item" onclick="location.href='#'"><span>🕌</span><p>ইসলামিক</p></div>
-    <div class="grid-item" onclick="location.href='#'"><span>💧</span><p>অন্যান্য</p></div>
+    <!-- লোন কার্ড -->
+    <div class="grid-item" onclick="openLoanPopup()"><span>💰</span><p>লোন নিন</p></div>
+    <!-- সঞ্চয় কার্ড -->
+    <div class="grid-item" onclick="openSavingsPopup()"><span>🏦</span><p>সঞ্চয়</p></div>
+
+
+    <!-- বাকিগুলো -->
+    <div class="grid-item"><span>🎟️</span><p>টিকেট</p></div>
+    <div class="grid-item"><span>🛒</span><p>শপিং</p></div>
+    <div class="grid-item"><span>🛠️</span><p>মিস্ত্রি</p></div>
+    <div class="grid-item"><span>💓</span><p>পাত্র-পাত্রী</p></div>
+    <div class="grid-item"><span>🕌</span><p>ইসলামিক</p></div>
+    <div class="grid-item"><span>💧</span><p>অন্যান্য</p></div>
 </div>
 
 
