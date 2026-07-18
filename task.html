@@ -281,17 +281,19 @@ body {
 }
 
 
+/* মেইন পপআপ কন্টেইনার */
 #custom-menu-popup {
-    display: block; /* ডিসপ্লে ব্লক থাকবে কিন্তু পজিশন দিয়ে বাইরে রাখা হবে */
+    display: block;
     position: fixed;
-    bottom: -100%; /* শুরুতে স্ক্রিনের নিচে থাকবে */
+    bottom: -100%;
     left: 0;
     width: 100%;
     height: 100%;
     background: white;
     z-index: 9999;
-    transition: bottom 0.4s ease-in-out; /* নিচ থেকে উপরে ওঠার স্মুথ এনিমেশন */
+    transition: bottom 0.4s ease-in-out;
     overflow-y: auto;
+    box-sizing: border-box;
 }
 
 /* পপআপ ওপেন করার জন্য ক্লাস */
@@ -299,36 +301,36 @@ body {
     bottom: 0;
 }
 
-
-/* পপআপের ভেতরের মার্জিন ও প্যাডিং ঠিক করার জন্য */
+/* পপআপের ভেতরে প্যাডিং এবং লেআউট কন্ট্রোল */
 .side-popup {
-    padding: 20px !important;
-    box-sizing: border-box !important;
-    width: 100% !important;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
-/* Close বাটনের পজিশন ঠিক করা */
-.close-btn, .popup-header span {
-    margin-right: 0 !important;
-}
-
-/* পপআপের ভেতরে কন্টেন্ট যেন স্ক্রিনের সাথে লেগে না থাকে */
+/* কন্টেন্ট যেন স্ক্রিনের সাথে লেগে না থাকে (মার্জিনাল স্পেস) */
 .side-popup > div:first-child, 
 #notice-popup > div:first-child, 
 #send-money-popup > div:first-child {
-    padding-left: 5px !important;
-    padding-right: 5px !important;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
-/* ইনপুট ফিল্ড এবং বাটনগুলো যেন কন্টেইনারের ভেতরে থাকে */
-input, button, .menu-card, .content-box {
-    box-sizing: border-box !important;
-    width: 100% !important;
+/* সব ইনপুট, বাটন এবং কার্ডের উইডথ ফিক্সড করা */
+#custom-menu-popup input, 
+#custom-menu-popup button, 
+#custom-menu-popup .menu-card, 
+#custom-menu-popup .content-box {
+    width: 100%;
+    box-sizing: border-box;
 }
 
-/* যদি পপআপের ভেতরে স্ক্রলবার থাকে */
-.side-popup {
-    overflow-x: hidden !important;
+/* Close বাটনের পজিশন ঠিক রাখা */
+.close-btn, 
+.popup-header span {
+    display: inline-block;
+    cursor: pointer;
 }
 
     </style>
@@ -474,49 +476,53 @@ input, button, .menu-card, .content-box {
 
 
 
-<!-- Menu Popup (নিচ থেকে উপরে ওঠার জন্য নতুন স্ট্রাকচার) -->
-<div id="custom-menu-popup" style="display: none; position: fixed; bottom: -100%; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; padding: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); overflow-y: auto; transition: bottom 0.4s ease-in-out;">
-    
-    <div style="text-align: left; margin-bottom: 20px;">
-        <span onclick="closeAllPopups()" style="cursor: pointer; font-size: 30px; color: #333;">&times;</span>
-    </div>
-
-    <!-- প্রোফাইল সেকশন -->
-    <div style="display: flex; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #f0f0f0; padding-bottom: 20px;">
-        <div style="width: 50px; height: 50px; background: #7b2cbf; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-right: 15px; font-size: 20px;">👤</div>
-        <div>
-            <div id="popup-name" style="font-weight: bold; font-size: 18px;">Name</div>
-            <div id="popup-phone" style="color: #666; font-size: 14px;">Phone</div>
+<!-- Menu Popup -->
+<div id="custom-menu-popup">
+    <!-- নতুন র‍্যাপার ক্লাস (এটি পপআপের ভেতরের প্যাডিং নিয়ন্ত্রণ করবে) -->
+    <div class="menu-popup-content">
+        
+        <!-- ক্লোজ বাটন -->
+        <div style="text-align: left; margin-bottom: 20px;">
+            <span onclick="closeAllPopups()" style="cursor: pointer; font-size: 30px; color: #333;">&times;</span>
         </div>
-    </div>
 
-    <!-- রেফার কোড সেকশন -->
-    <div style="background: #f8f8f8; padding: 15px; border-radius: 15px; margin-bottom: 20px; text-align: center; border: 1px dashed #7b2cbf;">
-        <div style="font-size: 13px; color: #666;">আপনার রেফার কোড:</div>
-        <div id="myReferCode" style="font-size: 20px; font-weight: bold; color: #7b2cbf; margin: 5px 0;">Loading...</div>
-        <button onclick="copyReferCode()" style="background: #7b2cbf; color: white; border: none; padding: 5px 15px; border-radius: 10px; cursor: pointer; font-size: 12px;">Copy Code</button>
-    </div>
-
-    <div class="menu-card" onclick="openPopup('leaderboard-popup')">Leaderboard</div>
-
-    <!-- মেনু কার্ডস -->
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-        <div class="menu-card" onclick="openPopup('add-balance-popup')">Add Balance</div>
-        <div class="menu-card" onclick="openWithdrawPopup()">Withdraw Funds</div>
-        <div class="menu-card" onclick="document.getElementById('send-money-popup').style.display='block'; closeAllPopups()">Send Money</div>
-        <div class="menu-card" onclick="document.getElementById('transfer-popup').style.display='flex'; closeAllPopups()">Balance Transfer</div>
-        <div class="menu-card">Mobile Recharge</div>
-        <div class="menu-card" onclick="openPopup('refer-popup')">Refer & Earn</div>
-        <div class="menu-card" onclick="openSettings()">Settings</div>
-        <div class="menu-card">Privacy Policy</div>
-        <div class="menu-card">About</div>
-
-        <div style="margin-top: 20px;">
-            <button onclick="logout()" style="width: 100%; padding: 12px; border: none; border-radius: 12px; background: #27ae60; color: white; font-weight: bold; font-size: 15px; cursor: pointer;">
-                Log Out
-            </button>
+        <!-- প্রোফাইল সেকশন -->
+        <div style="display: flex; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #f0f0f0; padding-bottom: 20px;">
+            <div style="width: 50px; height: 50px; background: #7b2cbf; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-right: 15px; font-size: 20px;">👤</div>
+            <div>
+                <div id="popup-name" style="font-weight: bold; font-size: 18px;">Name</div>
+                <div id="popup-phone" style="color: #666; font-size: 14px;">Phone</div>
+            </div>
         </div>
-    </div>
+
+        <!-- রেফার কোড সেকশন -->
+        <div style="background: #f8f8f8; padding: 15px; border-radius: 15px; margin-bottom: 20px; text-align: center; border: 1px dashed #7b2cbf;">
+            <div style="font-size: 13px; color: #666;">আপনার রেফার কোড:</div>
+            <div id="myReferCode" style="font-size: 20px; font-weight: bold; color: #7b2cbf; margin: 5px 0;">Loading...</div>
+            <button onclick="copyReferCode()" style="background: #7b2cbf; color: white; border: none; padding: 5px 15px; border-radius: 10px; cursor: pointer; font-size: 12px;">Copy Code</button>
+        </div>
+
+        <!-- মেনু কার্ডস -->
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="menu-card" onclick="openPopup('leaderboard-popup')">Leaderboard</div>
+            <div class="menu-card" onclick="openPopup('add-balance-popup')">Add Balance</div>
+            <div class="menu-card" onclick="openWithdrawPopup()">Withdraw Funds</div>
+            <div class="menu-card" onclick="document.getElementById('send-money-popup').style.display='block'; closeAllPopups()">Send Money</div>
+            <div class="menu-card" onclick="document.getElementById('transfer-popup').style.display='flex'; closeAllPopups()">Balance Transfer</div>
+            <div class="menu-card">Mobile Recharge</div>
+            <div class="menu-card" onclick="openPopup('refer-popup')">Refer & Earn</div>
+            <div class="menu-card" onclick="openSettings()">Settings</div>
+            <div class="menu-card">Privacy Policy</div>
+            <div class="menu-card">About</div>
+
+            <div style="margin-top: 20px;">
+                <button onclick="logout()" style="width: 100%; padding: 12px; border: none; border-radius: 12px; background: #27ae60; color: white; font-weight: bold; font-size: 15px; cursor: pointer;">
+                    Log Out
+                </button>
+            </div>
+        </div>
+        
+    </div> <!-- .menu-popup-content এর শেষ -->
 </div>
 
 
@@ -1712,7 +1718,8 @@ window.closeNoticePopup = () => {
     
     const noticeContent = document.getElementById('notice-content').innerText;
     localStorage.setItem('lastNoticeId', noticeContent); 
-}; // এই ব্র্যাকেটটি { } মিসিং ছিল
+};
+
 
 // এই ব্র্যাকেটের পর আপনার স্ক্রিপ্ট ট্যাগ বন্ধ হবে
 
