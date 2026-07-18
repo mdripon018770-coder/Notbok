@@ -403,17 +403,20 @@ body {
 <div class="action-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px;">
     
     <!-- লোন কার্ড -->
-    <div class="grid-item" onclick="openLoanPopup()" style="text-align: center; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div class="action-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px;">
+    
+    <!-- লোন কার্ড -->
+    <div class="grid-item" onclick="openLoanPopup()" style="text-align: center; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer;">
         <span style="font-size: 24px;">💰</span><p style="font-size: 12px; margin: 5px 0 0;">লোন নিন</p>
     </div>
 
     <!-- সঞ্চয় কার্ড -->
-    <div class="grid-item" onclick="openSavingsPopup()" style="text-align: center; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div class="grid-item" onclick="openSavingsPopup()" style="text-align: center; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer;">
         <span style="font-size: 24px;">🏦</span><p style="font-size: 12px; margin: 5px 0 0;">সঞ্চয়</p>
     </div>
 
-    <!-- টিকেট কার্ড -->
-    <div class="grid-item" onclick="openTicket()" style="text-align: center; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <!-- টিকেট কার্ড (লিংক সংযুক্ত) -->
+    <div class="grid-item" onclick="openTicket()" style="text-align: center; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer;">
         <span style="font-size: 24px;">✈️</span><p style="font-size: 12px; margin: 5px 0 0;">টিকেট</p>
     </div>
 
@@ -437,13 +440,12 @@ body {
         <span style="font-size: 24px;">🕌</span><p style="font-size: 12px; margin: 5px 0 0;">ইসলামিক</p>
     </div>
 
-    <!-- বোনাস কার্ড -->
-    <div class="grid-item" onclick="claimTicketBonus()" style="text-align: center; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <!-- বোনাস কার্ড (ফাংশন সংযুক্ত) -->
+    <div class="grid-item" onclick="claimTicketBonus()" style="text-align: center; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer;">
         <span style="font-size: 24px;">💵</span><p style="font-size: 12px; margin: 5px 0 0;">বোনাস</p>
     </div>
 
 </div>
-
 
 
 
