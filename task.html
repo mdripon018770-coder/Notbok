@@ -333,6 +333,12 @@ body {
     cursor: pointer;
 }
 
+
+#notice-popup {
+    animation: slideUp 0.4s ease-out;
+}
+
+
     </style>
 </head>
 <body>
@@ -756,11 +762,11 @@ body {
 </div>
 
 <!-- Notice Popup -->
-<div id="notice-popup" class="side-popup" style="display:none; position: fixed; bottom: 0; left: 0; width: 100%; height: auto; z-index: 10000; background: white; border-radius: 25px 25px 0 0; padding: 20px; box-shadow: 0px -5px 15px rgba(0,0,0,0.1);">
+<div id="notice-popup" class="side-popup" style="display:none; position: fixed; bottom: 0; left: 0; width: 100%; height: auto; z-index: 10000; background: white; border-radius: 25px 25px 0 0; padding: 20px; box-shadow: 0px -5px 15px rgba(0,0,0,0.1); animation: slideUp 0.4s ease-out;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
         <h3 style="margin: 0;">গুরুত্বপূর্ণ নোটিশ</h3>
-        <!-- ক্লোজ আইকনটি এখানে স্পষ্ট করে দেওয়া হলো -->
-        <span onclick="document.getElementById('notice-popup').style.display='none'" 
+        <!-- ক্লোজ আইকনটি আপডেট করা হয়েছে -->
+        <span onclick="closeNoticePopup()" 
               style="cursor: pointer; font-size: 30px; font-weight: bold; padding: 0 10px; color: #333;">
               &times;
         </span>
@@ -1708,6 +1714,31 @@ onValue(ref(db, 'notice'), (snapshot) => {
 
 // ক্লোজ ফাংশন - যখন ইউজার পপআপের 'X' বাটনে ক্লিক করবে
 // ... আগের কোড ...
+
+
+
+// নোটিশ পপআপ ওপেন করার ফাংশন
+window.openNoticePopup = () => {
+    const noticePopup = document.getElementById('notice-popup');
+    const badge = document.getElementById('notice-badge');
+    
+    // পপআপ দেখাবে
+    if (noticePopup) noticePopup.style.display = 'block';
+    
+    // আইকনে ক্লিক করলেই ব্যাজটি সরিয়ে ফেলা হবে
+    if (badge) badge.style.display = 'none';
+    
+    // লোকাল স্টোরেজে সেভ করা যে ইউজার নোটিশ দেখেছে
+    const noticeContent = document.getElementById('notice-content').innerText;
+    localStorage.setItem('lastNoticeId', noticeContent);
+};
+
+
+
+
+
+
+
 
 window.closeNoticePopup = () => {
     const noticePopup = document.getElementById('notice-popup');
