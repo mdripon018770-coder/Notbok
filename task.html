@@ -299,6 +299,38 @@ body {
     bottom: 0;
 }
 
+
+/* পপআপের ভেতরের মার্জিন ও প্যাডিং ঠিক করার জন্য */
+.side-popup {
+    padding: 20px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+}
+
+/* Close বাটনের পজিশন ঠিক করা */
+.close-btn, .popup-header span {
+    margin-right: 0 !important;
+}
+
+/* পপআপের ভেতরে কন্টেন্ট যেন স্ক্রিনের সাথে লেগে না থাকে */
+.side-popup > div:first-child, 
+#notice-popup > div:first-child, 
+#send-money-popup > div:first-child {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+
+/* ইনপুট ফিল্ড এবং বাটনগুলো যেন কন্টেইনারের ভেতরে থাকে */
+input, button, .menu-card, .content-box {
+    box-sizing: border-box !important;
+    width: 100% !important;
+}
+
+/* যদি পপআপের ভেতরে স্ক্রলবার থাকে */
+.side-popup {
+    overflow-x: hidden !important;
+}
+
     </style>
 </head>
 <body>
