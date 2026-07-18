@@ -282,56 +282,37 @@ body {
 
 
 /* মেইন পপআপ কন্টেইনার */
+/* মেইন পপআপ কন্টেইনার ফিক্স */
 #custom-menu-popup {
-    display: block;
+    display: none;
     position: fixed;
-    bottom: -100%;
+    bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 90%; /* পপআপের উচ্চতা কিছুটা বাড়ানো হয়েছে */
     background: white;
     z-index: 9999;
+    border-radius: 20px 20px 0 0;
     transition: bottom 0.4s ease-in-out;
-    overflow-y: auto;
-    box-sizing: border-box;
-}
-
-/* পপআপ ওপেন করার জন্য ক্লাস */
-#custom-menu-popup.show {
-    bottom: 0;
-}
-
-/* পপআপের ভেতরে প্যাডিং এবং লেআউট কন্ট্রোল */
-.side-popup {
-    width: 100%;
     padding: 20px;
     box-sizing: border-box;
-    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
-/* কন্টেন্ট যেন স্ক্রিনের সাথে লেগে না থাকে (মার্জিনাল স্পেস) */
-.side-popup > div:first-child, 
-#notice-popup > div:first-child, 
-#send-money-popup > div:first-child {
-    padding-left: 5px;
-    padding-right: 5px;
+/* ফিক্সড অংশ (প্রোফাইল এবং রেফার) */
+.menu-fixed-header {
+    flex-shrink: 0;
+    padding-bottom: 10px;
 }
 
-/* সব ইনপুট, বাটন এবং কার্ডের উইডথ ফিক্সড করা */
-#custom-menu-popup input, 
-#custom-menu-popup button, 
-#custom-menu-popup .menu-card, 
-#custom-menu-popup .content-box {
-    width: 100%;
-    box-sizing: border-box;
+/* স্ক্রলযোগ্য অংশ */
+.menu-scroll-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-bottom: 20px;
 }
 
-/* Close বাটনের পজিশন ঠিক রাখা */
-.close-btn, 
-.popup-header span {
-    display: inline-block;
-    cursor: pointer;
-}
 
 
 #notice-popup {
@@ -483,32 +464,34 @@ body {
 
 
 <!-- Menu Popup -->
-<div id="custom-menu-popup">
-    <!-- নতুন র‍্যাপার ক্লাস (এটি পপআপের ভেতরের প্যাডিং নিয়ন্ত্রণ করবে) -->
-    <div class="menu-popup-content">
-        
-        <!-- ক্লোজ বাটন -->
-        <div style="text-align: left; margin-bottom: 20px;">
-            <span onclick="closeAllPopups()" style="cursor: pointer; font-size: 30px; color: #333;">&times;</span>
+<div id="custom-menu-popup" style="display: none; bottom: -100%;">
+    
+    <!-- ফিক্সড হেডার অংশ -->
+    <div class="menu-fixed-header">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="margin: 0;">Menu</h3>
+            <span onclick="closeAllPopups()" style="cursor: pointer; font-size: 28px; font-weight: bold; color: #333;">&times;</span>
         </div>
 
         <!-- প্রোফাইল সেকশন -->
-        <div style="display: flex; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #f0f0f0; padding-bottom: 20px;">
+        <div style="display: flex; align-items: center; margin-bottom: 15px; padding: 10px; background: #f9f9f9; border-radius: 15px;">
             <div style="width: 50px; height: 50px; background: #7b2cbf; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-right: 15px; font-size: 20px;">👤</div>
             <div>
-                <div id="popup-name" style="font-weight: bold; font-size: 18px;">Name</div>
-                <div id="popup-phone" style="color: #666; font-size: 14px;">Phone</div>
+                <div id="popup-name" style="font-weight: bold; font-size: 16px;">Name</div>
+                <div id="popup-phone" style="color: #666; font-size: 13px;">Phone</div>
             </div>
         </div>
 
         <!-- রেফার কোড সেকশন -->
-        <div style="background: #f8f8f8; padding: 15px; border-radius: 15px; margin-bottom: 20px; text-align: center; border: 1px dashed #7b2cbf;">
+        <div style="background: #f8f8f8; padding: 15px; border-radius: 15px; margin-bottom: 15px; text-align: center; border: 1px dashed #7b2cbf;">
             <div style="font-size: 13px; color: #666;">আপনার রেফার কোড:</div>
-            <div id="myReferCode" style="font-size: 20px; font-weight: bold; color: #7b2cbf; margin: 5px 0;">Loading...</div>
+            <div id="myReferCode" style="font-size: 18px; font-weight: bold; color: #7b2cbf; margin: 5px 0;">Loading...</div>
             <button onclick="copyReferCode()" style="background: #7b2cbf; color: white; border: none; padding: 5px 15px; border-radius: 10px; cursor: pointer; font-size: 12px;">Copy Code</button>
         </div>
+    </div>
 
-        <!-- মেনু কার্ডস -->
+    <!-- স্ক্রলযোগ্য মেনু লিস্ট -->
+    <div class="menu-scroll-area">
         <div style="display: flex; flex-direction: column; gap: 10px;">
             <div class="menu-card" onclick="openPopup('leaderboard-popup')">Leaderboard</div>
             <div class="menu-card" onclick="openPopup('add-balance-popup')">Add Balance</div>
@@ -520,14 +503,14 @@ body {
             <div class="menu-card" onclick="openSettings()">Settings</div>
             <div class="menu-card">Privacy Policy</div>
             <div class="menu-card">About</div>
-
+            
             <div style="margin-top: 20px;">
-                <button onclick="logout()" style="width: 100%; padding: 12px; border: none; border-radius: 12px; background: #27ae60; color: white; font-weight: bold; font-size: 15px; cursor: pointer;">
-                    Log Out
-                </button>
+                <button onclick="logout()" style="width: 100%; padding: 12px; border: none; border-radius: 12px; background: #e74c3c; color: white; font-weight: bold; cursor: pointer;">Log Out</button>
             </div>
         </div>
-        
+    </div>
+</div>
+
     </div> <!-- .menu-popup-content এর শেষ -->
 </div>
 
