@@ -400,20 +400,50 @@ body {
 
 
 
-<div class="action-grid">
+<div class="action-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px;">
+    
     <!-- লোন কার্ড -->
-    <div class="grid-item" onclick="openLoanPopup()"><span>💰</span><p>লোন নিন</p></div>
+    <div class="grid-item" onclick="openLoanPopup()" style="text-align: center; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <span style="font-size: 24px;">💰</span><p style="font-size: 12px; margin: 5px 0 0;">লোন নিন</p>
+    </div>
+
     <!-- সঞ্চয় কার্ড -->
-    <div class="grid-item" onclick="openSavingsPopup()"><span>🏦</span><p>সঞ্চয়</p></div>
+    <div class="grid-item" onclick="openSavingsPopup()" style="text-align: center; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <span style="font-size: 24px;">🏦</span><p style="font-size: 12px; margin: 5px 0 0;">সঞ্চয়</p>
+    </div>
 
+    <!-- টিকেট কার্ড -->
+    <div class="grid-item" onclick="openTicket()" style="text-align: center; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <span style="font-size: 24px;">✈️</span><p style="font-size: 12px; margin: 5px 0 0;">টিকেট</p>
+    </div>
 
-    <!-- বাকিগুলো -->
-    <div class="grid-item" onclick="openTicket()"><span>✈️</span><p>টিকেট</p></div>
-<div class="grid-item"><span>🛒</span><p>শপিং</p></div>
-<div class="grid-item"><span>🛠️</span><p>মিস্ত্রি</p></div>
-<div class="grid-item"><span>💓</span><p>পাত্র-পাত্রী</p></div>
-<div class="grid-item"><span>🕌</span><p>ইসলামিক</p></div>
-<div class="grid-item" onclick="claimTicketBonus()"><span>💵</span><p>বোনাস</p></div>
+    <!-- শপিং কার্ড -->
+    <div class="grid-item" style="text-align: center; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <span style="font-size: 24px;">🛒</span><p style="font-size: 12px; margin: 5px 0 0;">শপিং</p>
+    </div>
+
+    <!-- মিস্ত্রি কার্ড -->
+    <div class="grid-item" style="text-align: center; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <span style="font-size: 24px;">🛠️</span><p style="font-size: 12px; margin: 5px 0 0;">মিস্ত্রি</p>
+    </div>
+
+    <!-- পাত্র-পাত্রী কার্ড -->
+    <div class="grid-item" style="text-align: center; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <span style="font-size: 24px;">💓</span><p style="font-size: 12px; margin: 5px 0 0;">পাত্র-পাত্রী</p>
+    </div>
+
+    <!-- ইসলামিক কার্ড -->
+    <div class="grid-item" style="text-align: center; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <span style="font-size: 24px;">🕌</span><p style="font-size: 12px; margin: 5px 0 0;">ইসলামিক</p>
+    </div>
+
+    <!-- বোনাস কার্ড -->
+    <div class="grid-item" onclick="claimTicketBonus()" style="text-align: center; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <span style="font-size: 24px;">💵</span><p style="font-size: 12px; margin: 5px 0 0;">বোনাস</p>
+    </div>
+
+</div>
+
 
 
 
