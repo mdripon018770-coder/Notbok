@@ -320,6 +320,44 @@ body {
 }
 
 
+
+
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* ৪টি কলাম */
+    gap: 12px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.grid-item {
+    background: #ffffff;
+    padding: 10px 5px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+    border: 1px solid #f9f9f9;
+}
+
+.grid-item:active {
+    transform: scale(0.92);
+}
+
+.grid-item span {
+    font-size: 24px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.grid-item p {
+    font-size: 11px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
     </style>
 </head>
 <body>
@@ -378,6 +416,17 @@ body {
 </div>
 <p id="bonusStatus" style="text-align:center; font-size: 12px; margin-top: 5px; color: #555;"></p>
 
+
+<div class="action-grid">
+    <div class="grid-item" onclick="location.href='#'"><span>💰</span><p>লোন নিন</p></div>
+    <div class="grid-item" onclick="location.href='#'"><span>🏦</span><p>সঞ্চয়</p></div>
+    <div class="grid-item" onclick="location.href='#'"><span>🎟️</span><p>টিকেট</p></div>
+    <div class="grid-item" onclick="location.href='#'"><span>🛒</span><p>শপিং</p></div>
+    <div class="grid-item" onclick="location.href='#'"><span>🛠️</span><p>মিস্ত্রি</p></div>
+    <div class="grid-item" onclick="location.href='#'"><span>💓</span><p>পাত্র-পাত্রী</p></div>
+    <div class="grid-item" onclick="location.href='#'"><span>🕌</span><p>ইসলামিক</p></div>
+    <div class="grid-item" onclick="location.href='#'"><span>💧</span><p>অন্যান্য</p></div>
+</div>
 
 
 
