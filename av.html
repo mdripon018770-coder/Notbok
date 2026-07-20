@@ -101,18 +101,14 @@
     </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-    import { getDatabase, ref, update, onValue, limitToLast, query, set, remove } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, update, onValue, limitToLast, query, set, remove } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-    // মেইন অ্যাপের ফায়ারবেস কনফিগারেশন (যা মেইন অ্যাপ এবং গেমের ব্যালেন্স একই রাখবে)
     const firebaseConfig = {
-        apiKey: "AIzaSyCpwfTWOsU6Gb3rLvMjcKnewLMnlkq5plg",
-        authDomain: "amar-bazar-d99b4.firebaseapp.com",
-        databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com",
-        projectId: "amar-bazar-d99b4",
-        storageBucket: "amar-bazar-d99b4.firebasestorage.app",
-        messagingSenderId: "1000008221916",
-        appId: "1:1000008221916:web:6bd19561f4b64e2002e019"
+        apiKey: "AIzaSyBCjxDS76NO2ib-hW_d9TmPPNIQFnjBO3k",
+        authDomain: "wallet-app-73793.firebaseapp.com",
+        projectId: "wallet-app-73793",
+        databaseURL: "https://wallet-app-73793-default-rtdb.asia-southeast1.firebasedatabase.app"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -127,7 +123,6 @@
         if (bgSound.paused) { bgSound.play().catch(e => {}); }
     }
 
-    // URL বা LocalStorage থেকে মেইন অ্যাপের ইউজারের আইডি (যেমন ফোন নম্বর) রিসিভ করা
     const urlParams = new URLSearchParams(window.location.search);
     let currentUser = urlParams.get('uid') || urlParams.get('id') || localStorage.getItem("userId");
     
@@ -179,13 +174,13 @@
         }
     });
 
-    // মেইন অ্যাপের ডেটাবেজ থেকে সরাসরি ইউজারের ব্যালেন্স লাইভ সিংক করা
     if (currentUser) {
         onValue(ref(db, `users/${currentUser}`), (snap) => {
             if (snap.exists()) {
                 const userData = snap.val();
                 window.balance = parseFloat(userData.balance || 0);
-                document.getElementById("main-balance").innerText = window.balance.toFixed(2);
+                const balEl = document.getElementById("main-balance");
+                if (balEl) balEl.innerText = window.balance.toFixed(2);
             }
         });
     }
@@ -378,10 +373,7 @@
 
     function resizeCanvas() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
     window.addEventListener('resize', resizeCanvas); resizeCanvas();
-
-
-
-
 </script>
+
 </body>
 </html>
