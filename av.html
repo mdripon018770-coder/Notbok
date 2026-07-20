@@ -123,9 +123,13 @@
         if (bgSound.paused) { bgSound.play().catch(e => {}); }
     }
 
-    const urlParams = new URLSearchParams(window.location.search);
-    let currentUser = urlParams.get('uid') || urlParams.get('id') || localStorage.getItem("userId") || localStorage.getItem("currentUser") || localStorage.getItem("phone");
 
+
+
+    const urlParams = new URLSearchParams(window.location.search);
+let currentUser = urlParams.get('uid') || urlParams.get('id') || localStorage.getItem("userId") || localStorage.getItem("currentUser") || localStorage.getItem("phone");
+
+    
     window.balance = 0;
     let currentMult = 1.00;
     let isFlying = false;
@@ -174,8 +178,12 @@
         }
     });
 
-    // ফিক্সড ব্যালেন্স লজিক: ফায়ারবেস থেকে লাইভ ব্যালেন্স রিড ও আপডেট করা
-    if (currentUser) {
+
+
+
+
+    // ফিক্সড ব্যালেন্স লজিক: মেইন অ্যাপের ইউজার নোড থেকে সরাসরি ব্যালেন্স রিড করে UI আপডেট করা
+        if (currentUser) {
         onValue(ref(db, `users/${currentUser}`), (snap) => {
             if (snap.exists()) {
                 const userData = snap.val();
@@ -186,11 +194,15 @@
         });
     }
 
+    
+
+
+
+
+
+
     async function syncBalance(newBal) {
         if (currentUser) {
-            window.balance = parseFloat(newBal);
-            const balEl = document.getElementById("main-balance");
-            if (balEl) balEl.innerText = window.balance.toFixed(2);
             await update(ref(db, `users/${currentUser}`), { balance: parseFloat(newBal.toFixed(2)) });
         }
     }
@@ -215,6 +227,12 @@
             }
         }
     });
+
+
+
+
+
+
 
     function startTimerSync(rem, startTime) {
         if(isWaiting) return;
@@ -249,6 +267,13 @@
             }
         }, 50);
     }
+
+
+
+
+
+
+
 
     function startFlightSync(startAt, crashPoint, startTime) {
         if(isFlying) return;
@@ -286,6 +311,13 @@
         }, 50);
     }
 
+
+
+
+
+
+
+
     function finishGameSync(point) {
         if(!isFlying) return;
         clearInterval(gameInterval);
@@ -315,6 +347,12 @@
             movingBg.style.display = 'none';
         }, 800);
     }
+
+
+
+
+
+
 
     function renderCanvas(x, y) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -367,6 +405,12 @@
         document.getElementById('b' + id).disabled = true;
     }
 
+
+
+
+
+
+
     function showWinAnimation(amount) {
         const winMsg = document.createElement('div');
         winMsg.style.cssText = `position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); background: rgba(40, 167, 69, 0.9); color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; z-index: 10001; animation: fadeInOut 2s forwards;`;
@@ -375,9 +419,15 @@
         setTimeout(() => { winMsg.remove(); }, 2000);
     }
 
+
+
+
+
+
     function resizeCanvas() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
     window.addEventListener('resize', resizeCanvas); resizeCanvas();
 </script>
+
 
 </body>
 </html>
