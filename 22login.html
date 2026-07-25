@@ -691,24 +691,25 @@
 <div class="phone-reg-content">
     <div class="form-card">
         <!-- Country -->
-        <div class="input-box">
-            <p class="input-label">Country *</p>
-            <div class="input-row" onclick="showCountryPopup()" style="cursor:pointer;">
-                <input type="text" id="country-name" value="Bangladesh" readonly style="cursor:pointer;">
-                <i class="fas fa-chevron-down" style="font-size:12px;color:#8a9ea0;"></i>
-            </div>
-        </div>
+        <!-- নতুন আপডেট করা কোড -->
+<div class="input-box">
+    <p class="input-label">Country *</p>
+    <div class="input-row" onclick="showCountryPopup()" style="cursor:pointer;">
+        <input type="text" id="country-name" value="United States (+1)" readonly style="cursor:pointer;">
+        <i class="fas fa-chevron-down" style="font-size:12px;color:#8a9ea0;"></i>
+    </div>
+</div>
 
         <!-- Currency -->
-        <div class="input-box">
-            <p class="input-label">Currency *</p>
-            <div class="input-row">
-                <select id="currency-select">
-                    <option>Bangladeshi taka (BDT)</option>
-                </select>
-                <i class="fas fa-chevron-down" style="font-size:12px;color:#8a9ea0;"></i>
-            </div>
-        </div>
+<div class="input-box">
+    <p class="input-label">Currency *</p>
+    <div class="input-row" onclick="showCurrencyPopup()" style="cursor:pointer;">
+        <input type="text" id="currency-select" placeholder="Select currency" readonly style="width:100%; border:none; background:transparent; outline:none; cursor:pointer;">
+        <i class="fas fa-chevron-down" style="font-size:12px;color:#8a9ea0;"></i>
+    </div>
+</div>
+
+
 
         <!-- Bonus -->
         <div class="input-box">
@@ -764,6 +765,26 @@
 
         <div id="country-list-container">
             <!-- জাভাস্ক্রিপ্ট দিয়ে এখানে ডেটা আসবে -->
+        </div>
+    </div>
+</div>
+
+
+<!-- Currency Popup Modal -->
+<div id="currency-popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999;">
+    <div style="position:absolute; bottom:0; width:100%; background:#fff; border-top-left-radius:20px; border-top-right-radius:20px; max-height:80vh; display:flex; flex-direction:column;">
+        <!-- Header & Drag bar -->
+        <div style="text-align:center; padding:10px;"><div style="width:40px; height:4px; background:#ccc; border-radius:2px; margin:0 auto;"></div></div>
+        <div style="font-size:18px; font-weight:bold; text-align:center; padding-bottom:10px; color:#0b1e36;">Select currency</div>
+        
+        <!-- Search Box -->
+        <div style="padding: 0 15px 10px 15px;">
+            <input type="text" id="currencySearch" placeholder="Currency" onkeyup="filterCurrencies()" style="width:100%; padding:12px; border:none; background:#f0f2f5; border-radius:10px; outline:none;">
+        </div>
+
+        <!-- Currency List Container -->
+        <div id="currency-list-container" style="overflow-y:auto; padding: 0 15px 20px 15px; flex-grow:1;">
+            <!-- Dynamic Currencies will load here -->
         </div>
     </div>
 </div>
@@ -1063,47 +1084,161 @@ window.copyInfo = function() {
         runSequence(1);
     }
 
-// --- Country Data (Line 61-112) ---
+   // --- Country Data (Line 61-112) ---
     const countries = [
-        { name: "Afghanistan", code: "+93", flag: "🇦🇫", currency: "Afghani (AFN)" }, { name: "Albania", code: "+355", flag: "🇦🇱", currency: "Lek (ALL)" },
-        { name: "Algeria", code: "+213", flag: "🇩🇿", currency: "Dinar (DZD)" }, { name: "Andorra", code: "+376", flag: "🇦🇩", currency: "Euro (EUR)" },
-        { name: "Angola", code: "+244", flag: "🇦🇴", currency: "Kwanza (AOA)" }, { name: "Argentina", code: "+54", flag: "🇦🇷", currency: "Peso (ARS)" },
-        { name: "Armenia", code: "+374", flag: "🇦🇲", currency: "Dram (AMD)" }, { name: "Australia", code: "+61", flag: "🇦🇺", currency: "Australian Dollar (AUD)" },
-        { name: "Azerbaijan", code: "+994", flag: "🇦🇿", currency: "Manat (AZN)" }, { name: "Bahrain", code: "+973", flag: "🇧🇭", currency: "Dinar (BHD)" },
-        { name: "Bangladesh", code: "+880", flag: "🇧🇩", currency: "Bangladeshi taka (BDT)" }, { name: "Barbados", code: "+1", flag: "🇧🇧", currency: "Barbados Dollar (BBD)" },
-        { name: "Belize", code: "+501", flag: "🇧🇿", currency: "Belize Dollar (BZD)" }, { name: "Benin", code: "+229", flag: "🇧🇯", currency: "CFA Franc (XOF)" },
-        { name: "Bermuda", code: "+1", flag: "🇧🇲", currency: "Bermudian Dollar (BMD)" }, { name: "Bhutan", code: "+975", flag: "🇧🇹", currency: "Ngultrum (BTN)" },
-        { name: "Bolivia", code: "+591", flag: "🇧🇴", currency: "Boliviano (BOB)" }, { name: "Brazil", code: "+55", flag: "🇧🇷", currency: "Real (BRL)" },
-        { name: "Canada", code: "+1", flag: "🇨🇦", currency: "Canadian Dollar (CAD)" }, { name: "China", code: "+86", flag: "🇨🇳", currency: "Chinese Yuan (CNY)" },
-        { name: "Denmark", code: "+45", flag: "🇩🇰", currency: "Krone (DKK)" }, { name: "Egypt", code: "+20", flag: "🇪🇬", currency: "Egyptian Pound (EGP)" },
-        { name: "France", code: "+33", flag: "🇫🇷", currency: "Euro (EUR)" }, { name: "Germany", code: "+49", flag: "🇩🇪", currency: "Euro (EUR)" },
-        { name: "India", code: "+91", flag: "🇮🇳", currency: "Indian Rupee (INR)" }, { name: "Indonesia", code: "+62", flag: "🇮🇩", currency: "Rupiah (IDR)" },
-        { name: "Italy", code: "+39", flag: "🇮🇹", currency: "Euro (EUR)" }, { name: "Japan", code: "+81", flag: "🇯🇵", currency: "Japanese Yen (JPY)" },
-        { name: "Malaysia", code: "+60", flag: "🇲🇾", currency: "Ringgit (MYR)" }, { name: "Netherlands", code: "+31", flag: "🇳🇱", currency: "Euro (EUR)" },
-        { name: "Nigeria", code: "+234", flag: "🇳🇬", currency: "Naira (NGN)" }, { name: "Norway", code: "+47", flag: "🇳🇴", currency: "Krone (NOK)" },
-        { name: "Pakistan", code: "+92", flag: "🇵🇰", currency: "Pakistani Rupee (PKR)" }, { name: "Poland", code: "+48", flag: "🇵🇱", currency: "Zloty (PLN)" },
-        { name: "Portugal", code: "+351", flag: "🇵🇹", currency: "Euro (EUR)" }, { name: "Russia", code: "+7", flag: "🇷🇺", currency: "Ruble (RUB)" },
-        { name: "Saudi Arabia", code: "+966", flag: "🇸🇦", currency: "Riyal (SAR)" }, { name: "Singapore", code: "+65", flag: "🇸🇬", currency: "Singapore Dollar (SGD)" },
-        { name: "South Africa", code: "+27", flag: "🇿🇦", currency: "Rand (ZAR)" }, { name: "South Korea", code: "+82", flag: "🇰🇷", currency: "Won (KRW)" },
-        { name: "Spain", code: "+34", flag: "🇪🇸", currency: "Euro (EUR)" }, { name: "Sweden", code: "+46", flag: "🇸🇪", currency: "Krona (SEK)" },
-        { name: "Switzerland", code: "+41", flag: "🇨🇭", currency: "Franc (CHF)" }, { name: "Thailand", code: "+66", flag: "🇹🇭", currency: "Baht (THB)" },
-        { name: "Turkey", code: "+90", flag: "🇹🇷", currency: "Lira (TRY)" }, { name: "Ukraine", code: "+380", flag: "🇺🇦", currency: "Hryvnia (UAH)" },
-        { name: "United Arab Emirates", code: "+971", flag: "🇦🇪", currency: "Dirham (AED)" }, { name: "United Kingdom", code: "+44", flag: "🇬🇧", currency: "British Pound (GBP)" },
-        { name: "United States", code: "+1", flag: "🇺🇸", currency: "US Dollar (USD)" }, { name: "Vietnam", code: "+84", flag: "🇻🇳", currency: "Dong (VND)" }
+        { name: "Afghanistan", code: "+93", flag: "🇦🇫", currency: "Afghani (AFN)" }, 
+        { name: "Albania", code: "+355", flag: "🇦🇱", currency: "Lek (ALL)" },
+        { name: "Algeria", code: "+213", flag: "🇩🇿", currency: "Dinar (DZD)" }, 
+        { name: "Andorra", code: "+376", flag: "🇦🇩", currency: "Euro (EUR)" },
+        { name: "Angola", code: "+244", flag: "🇦🇴", currency: "Kwanza (AOA)" }, 
+        { name: "Argentina", code: "+54", flag: "🇦🇷", currency: "Peso (ARS)" },
+        { name: "Armenia", code: "+374", flag: "🇦🇲", currency: "Dram (AMD)" }, 
+        { name: "Australia", code: "+61", flag: "🇦🇺", currency: "Australian Dollar (AUD)" },
+        { name: "Austria", code: "+43", flag: "🇦🇹", currency: "Euro (EUR)" },
+        { name: "Azerbaijan", code: "+994", flag: "🇦🇿", currency: "Manat (AZN)" }, 
+        { name: "Bahamas", code: "+1", flag: "🇧🇸", currency: "Bahamian Dollar (BSD)" },
+        { name: "Bahrain", code: "+973", flag: "🇧🇭", currency: "Dinar (BHD)" },
+        { name: "Bangladesh", code: "+880", flag: "🇧🇩", currency: "Bangladeshi taka (BDT)" }, 
+        { name: "Barbados", code: "+1", flag: "🇧🇧", currency: "Barbados Dollar (BBD)" },
+        { name: "Belarus", code: "+375", flag: "🇧🇾", currency: "Ruble (BYN)" },
+        { name: "Belgium", code: "+32", flag: "🇧🇪", currency: "Euro (EUR)" },
+        { name: "Belize", code: "+501", flag: "🇧🇿", currency: "Belize Dollar (BZD)" }, 
+        { name: "Benin", code: "+229", flag: "🇧🇯", currency: "CFA Franc (XOF)" },
+        { name: "Bermuda", code: "+1", flag: "🇧🇲", currency: "Bermudian Dollar (BMD)" }, 
+        { name: "Bhutan", code: "+975", flag: "🇧🇹", currency: "Ngultrum (BTN)" },
+        { name: "Bolivia", code: "+591", flag: "🇧🇴", currency: "Boliviano (BOB)" }, 
+        { name: "Bosnia and Herzegovina", code: "+387", flag: "🇧🇦", currency: "Marka (BAM)" },
+        { name: "Botswana", code: "+267", flag: "🇧🇼", currency: "Pula (BWP)" },
+        { name: "Brazil", code: "+55", flag: "🇧🇷", currency: "Real (BRL)" },
+        { name: "Brunei", code: "+673", flag: "🇧🇳", currency: "Dollar (BND)" },
+        { name: "Bulgaria", code: "+359", flag: "🇧🇬", currency: "Lev (BGN)" },
+        { name: "Burkina Faso", code: "+226", flag: "🇧🇫", currency: "CFA Franc (XOF)" },
+        { name: "Burundi", code: "+257", flag: "🇧🇮", currency: "Franc (BIF)" },
+        { name: "Cambodia", code: "+855", flag: "🇰🇭", currency: "Riels (KHR)" }, 
+        { name: "Cameroon", code: "+237", flag: "🇨🇲", currency: "CFA Franc (XAF)" },
+        { name: "Canada", code: "+1", flag: "🇨🇦", currency: "Canadian Dollar (CAD)" },
+        { name: "Cape Verde", code: "+238", flag: "🇨🇻", currency: "Escudo (CVE)" },
+        { name: "Chile", code: "+56", flag: "🇨🇱", currency: "Peso (CLP)" },
+        { name: "China", code: "+86", flag: "🇨🇳", currency: "Chinese Yuan (CNY)" }, 
+        { name: "Colombia", code: "+57", flag: "🇨🇴", currency: "Peso (COP)" },
+        { name: "Costa Rica", code: "+506", flag: "🇨🇷", currency: "Colon (CRC)" },
+        { name: "Croatia", code: "+385", flag: "🇭🇷", currency: "Euro (EUR)" },
+        { name: "Cuba", code: "+53", flag: "🇨🇺", currency: "Peso (CUP)" },
+        { name: "Cyprus", code: "+357", flag: "🇨🇾", currency: "Euro (EUR)" },
+        { name: "Czech Republic", code: "+420", flag: "🇨🇿", currency: "Koruna (CZK)" },
+        { name: "Denmark", code: "+45", flag: "🇩🇰", currency: "Krone (DKK)" }, 
+        { name: "Djibouti", code: "+253", flag: "🇩🇯", currency: "Franc (DJF)" },
+        { name: "Dominican Republic", code: "+1", flag: "🇩🇴", currency: "Peso (DOP)" },
+        { name: "Ecuador", code: "+593", flag: "🇪🇨", currency: "US Dollar (USD)" },
+        { name: "Egypt", code: "+20", flag: "🇪🇬", currency: "Egyptian Pound (EGP)" }, 
+        { name: "El Salvador", code: "+503", flag: "🇸🇻", currency: "US Dollar (USD)" },
+        { name: "Estonia", code: "+372", flag: "🇪🇪", currency: "Euro (EUR)" },
+        { name: "Eswatini", code: "+268", flag: "🇸🇿", currency: "Lilangeni (SZL)" },
+        { name: "Ethiopia", code: "+251", flag: "🇪🇹", currency: "Birr (ETB)" },
+        { name: "Fiji", code: "+679", flag: "🇫🇯", currency: "Dollar (FJD)" },
+        { name: "Finland", code: "+358", flag: "🇫🇮", currency: "Euro (EUR)" },
+        { name: "France", code: "+33", flag: "🇫🇷", currency: "Euro (EUR)" }, 
+        { name: "Gabon", code: "+241", flag: "🇬🇦", currency: "CFA Franc (XAF)" },
+        { name: "Georgia", code: "+995", flag: "🇬🇪", currency: "Lari (GEL)" },
+        { name: "Germany", code: "+49", flag: "🇩🇪", currency: "Euro (EUR)" }, 
+        { name: "Ghana", code: "+233", flag: "🇬🇭", currency: "Cedi (GHS)" },
+        { name: "Greece", code: "+30", flag: "🇬🇷", currency: "Euro (EUR)" },
+        { name: "Guatemala", code: "+502", flag: "🇬🇹", currency: "Quetzal (GTQ)" },
+        { name: "Honduras", code: "+504", flag: "🇭🇳", currency: "Lempira (HNL)" },
+        { name: "Hungary", code: "+36", flag: "🇭🇺", currency: "Forint (HUF)" },
+        { name: "Iceland", code: "+354", flag: "🇮🇸", currency: "Krona (ISK)" },
+        { name: "India", code: "+91", flag: "🇮🇳", currency: "Indian Rupee (INR)" }, 
+        { name: "Indonesia", code: "+62", flag: "🇮🇩", currency: "Rupiah (IDR)" }, 
+        { name: "Iran", code: "+98", flag: "🇮🇷", currency: "Rial (IRR)" },
+        { name: "Iraq", code: "+964", flag: "🇮🇶", currency: "Dinar (IQD)" },
+        { name: "Ireland", code: "+353", flag: "🇮🇪", currency: "Euro (EUR)" },
+        { name: "Israel", code: "+972", flag: "🇮🇱", currency: "Shekel (ILS)" },
+        { name: "Italy", code: "+39", flag: "🇮🇹", currency: "Euro (EUR)" }, 
+        { name: "Jamaica", code: "+1", flag: "🇯🇲", currency: "Dollar (JMD)" },
+        { name: "Japan", code: "+81", flag: "🇯🇵", currency: "Japanese Yen (JPY)" }, 
+        { name: "Jordan", code: "+962", flag: "🇯🇴", currency: "Dinar (JOD)" },
+        { name: "Kazakhstan", code: "+7", flag: "🇰🇿", currency: "Tenge (KZT)" },
+        { name: "Kenya", code: "+254", flag: "🇰🇪", currency: "Shilling (KES)" },
+        { name: "Kuwait", code: "+965", flag: "🇰🇼", currency: "Dinar (KWD)" },
+        { name: "Kyrgyzstan", code: "+996", flag: "🇰🇬", currency: "Som (KGS)" },
+        { name: "Laos", code: "+856", flag: "🇱🇦", currency: "Kip (LAK)" },
+        { name: "Latvia", code: "+371", flag: "🇱🇻", currency: "Euro (EUR)" },
+        { name: "Lebanon", code: "+961", flag: "🇱🇧", currency: "Pound (LBP)" },
+        { name: "Libya", code: "+218", flag: "🇱🇾", currency: "Dinar (LYD)" },
+        { name: "Lithuania", code: "+370", flag: "🇱🇹", currency: "Euro (EUR)" },
+        { name: "Luxembourg", code: "+352", flag: "🇱🇺", currency: "Euro (EUR)" },
+        { name: "Madagascar", code: "+261", flag: "🇲🇬", currency: "Ariary (MGA)" },
+        { name: "Malaysia", code: "+60", flag: "🇲🇾", currency: "Ringgit (MYR)" }, 
+        { name: "Maldives", code: "+960", flag: "🇲🇻", currency: "Rufiyaa (MVR)" },
+        { name: "Malta", code: "+356", flag: "🇲🇹", currency: "Euro (EUR)" },
+        { name: "Mexico", code: "+52", flag: "🇲🇽", currency: "Peso (MXN)" },
+        { name: "Mongolia", code: "+976", flag: "🇲🇳", currency: "Tugrik (MNT)" },
+        { name: "Morocco", code: "+212", flag: "🇲🇦", currency: "Dirham (MAD)" },
+        { name: "Nepal", code: "+977", flag: "🇳🇵", currency: "Rupee (NPR)" },
+        { name: "Netherlands", code: "+31", flag: "🇳🇱", currency: "Euro (EUR)" }, 
+        { name: "New Zealand", code: "+64", flag: "🇳🇿", currency: "Dollar (NZD)" },
+        { name: "Nigeria", code: "+234", flag: "🇳🇬", currency: "Naira (NGN)" }, 
+        { name: "North Korea", code: "+850", flag: "🇰🇵", currency: "Won (KPW)" },
+        { name: "Norway", code: "+47", flag: "🇳🇴", currency: "Krone (NOK)" }, 
+        { name: "Oman", code: "+968", flag: "🇴🇲", currency: "Rial (OMR)" },
+        { name: "Pakistan", code: "+92", flag: "🇵🇰", currency: "Pakistani Rupee (PKR)" }, 
+        { name: "Panama", code: "+507", flag: "🇵🇦", currency: "Balboa (PAB)" },
+        { name: "Paraguay", code: "+595", flag: "🇵🇾", currency: "Guarani (PYG)" },
+        { name: "Peru", code: "+51", flag: "🇵🇪", currency: "Sol (PEN)" },
+        { name: "Philippines", code: "+63", flag: "🇵🇭", currency: "Peso (PHP)" },
+        { name: "Poland", code: "+48", flag: "🇵🇱", currency: "Zloty (PLN)" }, 
+        { name: "Portugal", code: "+351", flag: "🇵🇹", currency: "Euro (EUR)" }, 
+        { name: "Qatar", code: "+974", flag: "🇶🇦", currency: "Riyal (QAR)" },
+        { name: "Romania", code: "+40", flag: "🇷🇴", currency: "Leu (RON)" },
+        { name: "Russia", code: "+7", flag: "🇷🇺", currency: "Ruble (RUB)" }, 
+        { name: "Saudi Arabia", code: "+966", flag: "🇸🇦", currency: "Riyal (SAR)" }, 
+        { name: "Senegal", code: "+221", flag: "🇸🇳", currency: "CFA Franc (XOF)" },
+        { name: "Serbia", code: "+381", flag: "🇷🇸", currency: "Dinar (RSD)" },
+        { name: "Singapore", code: "+65", flag: "🇸🇬", currency: "Singapore Dollar (SGD)" }, 
+        { name: "Slovakia", code: "+421", flag: "🇸🇰", currency: "Euro (EUR)" },
+        { name: "Slovenia", code: "+386", flag: "🇸🇮", currency: "Euro (EUR)" },
+        { name: "South Africa", code: "+27", flag: "🇿🇦", currency: "Rand (ZAR)" }, 
+        { name: "South Korea", code: "+82", flag: "🇰🇷", currency: "Won (KRW)" }, 
+        { name: "Spain", code: "+34", flag: "🇪🇸", currency: "Euro (EUR)" }, 
+        { name: "Sri Lanka", code: "+94", flag: "🇱🇰", currency: "Rupee (LKR)" },
+        { name: "Sudan", code: "+249", flag: "🇸🇩", currency: "Pound (SDG)" },
+        { name: "Sweden", code: "+46", flag: "🇸🇪", currency: "Krona (SEK)" }, 
+        { name: "Switzerland", code: "+41", flag: "🇨🇭", currency: "Franc (CHF)" }, 
+        { name: "Syria", code: "+963", flag: "🇸🇾", currency: "Pound (SYP)" },
+        { name: "Taiwan", code: "+886", flag: "🇹🇼", currency: "Dollar (TWD)" },
+        { name: "Tanzania", code: "+255", flag: "🇹🇿", currency: "Shilling (TZS)" },
+        { name: "Thailand", code: "+66", flag: "🇹🇭", currency: "Baht (THB)" }, 
+        { name: "Tunisia", code: "+216", flag: "🇹🇳", currency: "Dinar (TND)" },
+        { name: "Turkey", code: "+90", flag: "🇹🇷", currency: "Lira (TRY)" }, 
+        { name: "Uganda", code: "+256", flag: "🇺🇬", currency: "Shilling (UGX)" },
+        { name: "Ukraine", code: "+380", flag: "🇺🇦", currency: "Hryvnia (UAH)" }, 
+        { name: "United Arab Emirates", code: "+971", flag: "🇦🇪", currency: "Dirham (AED)" }, 
+        { name: "United Kingdom", code: "+44", flag: "🇬🇧", currency: "British Pound (GBP)" }, 
+        { name: "United States", code: "+1", flag: "🇺🇸", currency: "US Dollar (USD)" }, 
+        { name: "Uruguay", code: "+598", flag: "🇺🇾", currency: "Peso (UYU)" },
+        { name: "Uzbekistan", code: "+998", flag: "🇺🇿", currency: "Som (UZS)" },
+        { name: "Venezuela", code: "+58", flag: "🇻🇪", currency: "Bolivar (VES)" },
+        { name: "Vietnam", code: "+84", flag: "🇻🇳", currency: "Dong (VND)" }, 
+        { name: "Yemen", code: "+967", flag: "🇾🇪", currency: "Rial (YER)" },
+        { name: "Zambia", code: "+260", flag: "🇿🇲", currency: "Kwacha (ZMW)" },
+        { name: "Zimbabwe", code: "+263", flag: "🇿🇼", currency: "Dollar (ZWL)" }
     ];
 
+
     window.loadCountries = function() {
+    document.getElementById("currency-select").innerHTML = `<option>US Dollar (USD)</option>`;
+
     const container = document.getElementById('country-list-container');
     container.innerHTML = `
         <div class="section-title">Recommended</div>
-        <div class="country-row" onclick="selectCountry('Bangladesh', '+880', '🇧🇩', 'BDT', this)">
-            <span>🇧🇩 Bangladesh</span> <div class="radio-circle active"></div>
+        <div class="country-row" onclick="selectCountry('United States', '+1', '🇺🇸', 'US Dollar (USD)', this)">
+            <span>🇺🇸 United States</span> <div class="radio-circle active"></div>
         </div>
         <div class="section-title">Other</div>
     `;
     
     countries.forEach((country) => {
-        if(country.name !== "Bangladesh") {
+        if(country.name !== "United States") {
             const row = document.createElement('div');
             row.className = 'country-row';
             row.onclick = () => window.selectCountry(country.name, country.code, country.flag, country.currency, row);
@@ -1113,21 +1248,29 @@ window.copyInfo = function() {
     });
 }
 
-    window.selectCountry = function(name, code, flag, currency, row) {
-        document.querySelectorAll('.radio-circle').forEach(r => r.classList.remove('active'));
-        row.querySelector('.radio-circle').classList.add('active');
-        document.getElementById("country-name").value = `${flag} ${name} (${code})`;
-        document.getElementById("currency-select").innerHTML = `<option>${currency}</option>`;
-        document.getElementById("country-popup").style.display = "none";
-    }
 
-    window.showCountryPopup = () => document.getElementById("country-popup").style.display = "block";
-    window.filterCountries = function() {
-        const value = document.getElementById("countrySearch").value.toLowerCase();
-        document.querySelectorAll(".country-row").forEach(row => {
-            row.style.display = row.innerText.toLowerCase().includes(value) ? "flex" : "none";
-        });
-    }
+
+    window.selectCountry = function(name, code, flag, currency, row) {
+    document.querySelectorAll('.radio-circle').forEach(r => r.classList.remove('active'));
+    row.querySelector('.radio-circle').classList.add('active');
+    document.getElementById("country-name").value = `${flag} ${name} (${code})`;
+    document.getElementById("currency-select").innerHTML = `<option>${currency}</option>`;
+    document.getElementById("country-popup").style.display = "none";
+}
+
+window.showCountryPopup = () => document.getElementById("country-popup").style.display = "block";
+
+window.filterCountries = function() {
+    const value = document.getElementById("countrySearch").value.toLowerCase();
+    document.querySelectorAll(".country-row").forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(value) ? "flex" : "none";
+    });
+}
+
+
+
+
+
 
 window.togglePasswordVisibility = function() {
     const passInput = document.getElementById('login-password');
@@ -1140,6 +1283,203 @@ window.togglePasswordVisibility = function() {
         eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
     }
 };
+
+
+
+
+
+// --- All Countries Currency List ---
+const currenciesList = [
+    { name: "Afghan afghani (AFN)", symbol: "؋" },
+    { name: "Albanian lek (ALL)", symbol: "L" },
+    { name: "Algerian dinar (DZD)", symbol: "دج" },
+    { name: "Andorran euro (EUR)", symbol: "€" },
+    { name: "Angolan kwanza (AOA)", symbol: "Kz" },
+    { name: "Argentine peso (ARS)", symbol: "$" },
+    { name: "Armenian dram (AMD)", symbol: "֏" },
+    { name: "Australian dollar (AUD)", symbol: "A$" },
+    { name: "Austrian euro (EUR)", symbol: "€" },
+    { name: "Azerbaijani manat (AZN)", symbol: "₼" },
+    { name: "Bahamian dollar (BSD)", symbol: "B$" },
+    { name: "Bahraini dinar (BHD)", symbol: ".د.ب" },
+    { name: "Bangladeshi taka (BDT)", symbol: "৳" },
+    { name: "Barbadian dollar (BBD)", symbol: "Bds$" },
+    { name: "Belarusian ruble (BYN)", symbol: "Br" },
+    { name: "Belgian euro (EUR)", symbol: "€" },
+    { name: "Belize dollar (BZD)", symbol: "BZ$" },
+    { name: "Beninese CFA franc (XOF)", symbol: "Fr" },
+    { name: "Bermudian dollar (BMD)", symbol: "$" },
+    { name: "Bhutanese ngultrum (BTN)", symbol: "Nu." },
+    { name: "Bolivian boliviano (BOB)", symbol: "Bs." },
+    { name: "Bosnia and Herzegovina mark (BAM)", symbol: "KM" },
+    { name: "Botswana pula (BWP)", symbol: "P" },
+    { name: "Brazilian real (BRL)", symbol: "R$" },
+    { name: "Brunei dollar (BND)", symbol: "B$" },
+    { name: "Bulgarian lev (BGN)", symbol: "лв" },
+    { name: "Burkinabe CFA franc (XOF)", symbol: "Fr" },
+    { name: "Burundian franc (BIF)", symbol: "Fr" },
+    { name: "Cambodian riel (KHR)", symbol: "៛" },
+    { name: "Cameroonian CFA franc (XAF)", symbol: "Fr" },
+    { name: "Canadian dollar (CAD)", symbol: "CA$" },
+    { name: "Cape Verdean escudo (CVE)", symbol: "$" },
+    { name: "Chilean peso (CLP)", symbol: "$" },
+    { name: "Chinese yuan (CNY)", symbol: "¥" },
+    { name: "Colombian peso (COP)", symbol: "$" },
+    { name: "Costa Rican colón (CRC)", symbol: "₡" },
+    { name: "Croatian euro (EUR)", symbol: "€" },
+    { name: "Cuban peso (CUP)", symbol: "$" },
+    { name: "Cypriot euro (EUR)", symbol: "€" },
+    { name: "Czech koruna (CZK)", symbol: "Kč" },
+    { name: "Danish krone (DKK)", symbol: "kr" },
+    { name: "Djiboutian franc (DJF)", symbol: "Fr" },
+    { name: "Dominican peso (DOP)", symbol: "RD$" },
+    { name: "Ecuadorian US dollar (USD)", symbol: "$" },
+    { name: "Egyptian pound (EGP)", symbol: "£" },
+    { name: "El Salvadorian US dollar (USD)", symbol: "$" },
+    { name: "Estonian euro (EUR)", symbol: "€" },
+    { name: "Eswatini lilangeni (SZL)", symbol: "L" },
+    { name: "Ethiopian birr (ETB)", symbol: "Br" },
+    { name: "Fijian dollar (FJD)", symbol: "FJ$" },
+    { name: "Finnish euro (EUR)", symbol: "€" },
+    { name: "French euro (EUR)", symbol: "€" },
+    { name: "Gabonese CFA franc (XAF)", symbol: "Fr" },
+    { name: "Georgian lari (GEL)", symbol: "₾" },
+    { name: "German euro (EUR)", symbol: "€" },
+    { name: "Ghanaian cedi (GHS)", symbol: "₵" },
+    { name: "Greek euro (EUR)", symbol: "€" },
+    { name: "Guatemalan quetzal (GTQ)", symbol: "Q" },
+    { name: "Honduran lempira (HNL)", symbol: "L" },
+    { name: "Hungarian forint (HUF)", symbol: "Ft" },
+    { name: "Icelandic króna (ISK)", symbol: "kr" },
+    { name: "Indian rupee (INR)", symbol: "₹" },
+    { name: "Indonesian rupiah (IDR)", symbol: "Rp" },
+    { name: "Iranian rial (IRR)", symbol: "﷼" },
+    { name: "Iraqi dinar (IQD)", symbol: "ع.د" },
+    { name: "Irish euro (EUR)", symbol: "€" },
+    { name: "Israeli new shekel (ILS)", symbol: "₪" },
+    { name: "Italian euro (EUR)", symbol: "€" },
+    { name: "Jamaican dollar (JMD)", symbol: "J$" },
+    { name: "Japanese yen (JPY)", symbol: "¥" },
+    { name: "Jordanian dinar (JOD)", symbol: "د.ا" },
+    { name: "Kazakhstani tenge (KZT)", symbol: "₸" },
+    { name: "Kenyan shilling (KES)", symbol: "Sh" },
+    { name: "Kuwaiti dinar (KWD)", symbol: "د.ك" },
+    { name: "Kyrgyzstani som (KGS)", symbol: "с" },
+    { name: "Lao kip (LAK)", symbol: "₭" },
+    { name: "Latvian euro (EUR)", symbol: "€" },
+    { name: "Lebanese pound (LBP)", symbol: "ل.ل" },
+    { name: "Libyan dinar (LYD)", symbol: "ل.د" },
+    { name: "Lithuanian euro (EUR)", symbol: "€" },
+    { name: "Luxembourgish euro (EUR)", symbol: "€" },
+    { name: "Malagasy ariary (MGA)", symbol: "Ar" },
+    { name: "Malaysian ringgit (MYR)", symbol: "RM" },
+    { name: "Maldivian rufiyaa (MVR)", symbol: "Rf" },
+    { name: "Maltese euro (EUR)", symbol: "€" },
+    { name: "Mexican peso (MXN)", symbol: "$" },
+    { name: "Mongolian tögrög (MNT)", symbol: "₮" },
+    { name: "Moroccan dirham (MAD)", symbol: "د.م." },
+    { name: "Nepalese rupee (NPR)", symbol: "रू" },
+    { name: "Netherlands euro (EUR)", symbol: "€" },
+    { name: "New Zealand dollar (NZD)", symbol: "NZ$" },
+    { name: "Nigerian naira (NGN)", symbol: "₦" },
+    { name: "North Korean won (KPW)", symbol: "₩" },
+    { name: "Norwegian krone (NOK)", symbol: "kr" },
+    { name: "Omani rial (OMR)", symbol: "ر.ع." },
+    { name: "Pakistani rupee (PKR)", symbol: "₨" },
+    { name: "Panamanian balboa (PAB)", symbol: "B/." },
+    { name: "Paraguayan guaraní (PYG)", symbol: "₲" },
+    { name: "Peruvian sol (PEN)", symbol: "S/" },
+    { name: "Philippine peso (PHP)", symbol: "₱" },
+    { name: "Polish złoty (PLN)", symbol: "zł" },
+    { name: "Portuguese euro (EUR)", symbol: "€" },
+    { name: "Qatari riyal (QAR)", symbol: "ر.ق" },
+    { name: "Romanian leu (RON)", symbol: "lei" },
+    { name: "Russian ruble (RUB)", symbol: "₽" },
+    { name: "Saudi riyal (SAR)", symbol: "ر.س" },
+    { name: "Senegalese CFA franc (XOF)", symbol: "Fr" },
+    { name: "Serbian dinar (RSD)", symbol: "дин." },
+    { name: "Singapore dollar (SGD)", symbol: "S$" },
+    { name: "Slovak euro (EUR)", symbol: "€" },
+    { name: "Slovenian euro (EUR)", symbol: "€" },
+    { name: "South African rand (ZAR)", symbol: "R" },
+    { name: "South Korean won (KRW)", symbol: "₩" },
+    { name: "Spanish euro (EUR)", symbol: "€" },
+    { name: "Sri Lankan rupee (LKR)", symbol: "Rs" },
+    { name: "Sudanese pound (SDG)", symbol: "ج.س." },
+    { name: "Swedish krona (SEK)", symbol: "kr" },
+    { name: "Swiss franc (CHF)", symbol: "CHF" },
+    { name: "Syrian pound (SYP)", symbol: "£" },
+    { name: "New Taiwan dollar (TWD)", symbol: "NT$" },
+    { name: "Tanzanian shilling (TZS)", symbol: "Sh" },
+    { name: "Thai baht (THB)", symbol: "฿" },
+    { name: "Tunisian dinar (TND)", symbol: "د.ت" },
+    { name: "Turkish lira (TRY)", symbol: "₺" },
+    { name: "Ugandan shilling (UGX)", symbol: "Sh" },
+    { name: "Ukrainian hryvnia (UAH)", symbol: "₴" },
+    { name: "United Arab Emirates dirham (AED)", symbol: "د.إ" },
+    { name: "British pound (GBP)", symbol: "£" },
+    { name: "US dollar (USD)", symbol: "$" },
+    { name: "Uruguayan peso (UYU)", symbol: "$" },
+    { name: "Uzbekistani som (UZS)", symbol: "so'm" },
+    { name: "Venezuelan bolívar (VES)", symbol: "Bs." },
+    { name: "Vietnamese dong (VND)", symbol: "₫" },
+    { name: "Yemeni rial (YER)", symbol: "﷼" },
+    { name: "Zambian kwacha (ZMW)", symbol: "ZK" },
+    { name: "Zimbabwean dollar (ZWL)", symbol: "$" }
+];
+
+
+
+
+
+
+
+
+
+
+
+// --- Currency Popup & Selection Logic ---
+window.showCurrencyPopup = function() {
+    document.getElementById("currency-popup").style.display = "block";
+    window.loadCurrenciesList();
+}
+
+window.loadCurrenciesList = function() {
+    const container = document.getElementById('currency-list-container');
+    container.innerHTML = '';
+    
+    currenciesList.forEach((item) => {
+        const row = document.createElement('div');
+        row.className = 'currency-row';
+        row.style.cssText = "display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; font-size: 16px; color: #0b3238; cursor: pointer;";
+        row.onclick = () => {
+            document.getElementById("currency-select").value = item.name;
+            document.getElementById("currency-popup").style.display = "none";
+        };
+        row.innerHTML = `<span>${item.name}</span> <b style="color: #597385;">${item.symbol}</b>`;
+        container.appendChild(row);
+    });
+}
+
+window.filterCurrencies = function() {
+    const value = document.getElementById("currencySearch").value.toLowerCase();
+    const rows = document.querySelectorAll('#currency-list-container .currency-row');
+    rows.forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(value) ? "flex" : "none";
+    });
+}
+
+// পপআপের বাইরে ক্লিক করলে বা ক্লোজ করার জন্য চাইলে নিচের মতো ব্যাকগ্রাউন্ড ক্লিকের ব্যবস্থা করতে পারেন:
+document.getElementById("currency-popup").onclick = function(e) {
+    if (e.target === this) {
+        this.style.display = "none";
+    }
+};
+
+
+
+
+
 
 
 </script>
