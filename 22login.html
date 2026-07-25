@@ -980,13 +980,16 @@
     if (errorDiv) errorDiv.style.display = "none";
     if (errorIcon) errorIcon.style.display = "none";
 
-    let username = window.generateUsername();
+        let username = window.generateUsername();
     let password = window.generatePassword();
     
+    // ফায়ারবেসে ডেটা সেভ করার সময় কারেন্সি ও সিম্বল পাস করা হচ্ছে
     set(ref(db, 'users/' + username), {
         id: username,
         password: password,
         balance: 0,
+        currency: window.selectedCurrencyName || "US Dollar (USD)",
+        currencySymbol: window.selectedCurrencySymbol || "$",
         date: new Date().toLocaleDateString(),
         time: new Date().toLocaleTimeString()
     }).then(() => {
@@ -1036,27 +1039,8 @@ window.copyInfo = function() {
     window.hideLogin = () => document.getElementById('login-page').style.display = 'none';
     window.switchLoginToReg = () => { window.hideLogin(); window.showReg(); };
 
-        // --- Loaders & Auto-Login Check ---
-    window.onload = function() {
-        // যদি ইউজার আগে থেকে লগইন করা থাকে
-        if (localStorage.getItem('isLoggedIn') === 'true') {
-            window.location.href = "https://mdripon018770-coder.github.io/Notbok/22.html";
-            return; 
-        }
-        
-        // লগইন করা না থাকলে লোডিং এবং কান্ট্রি লিস্ট লোড হবে
-        window.startLoadingSequence();
-        window.loadCountries();
-    };
 
-
-    // --- Loading & Country logic (আপনার আগের কোড থেকে এগুলো এখানে রেখেছি) ---
-    window.startLoadingSequence = function() { /* আগের লোডিং কোড */ }
-    window.loadCountries = function() { /* আগের কান্ট্রি কোড */ }
-    window.selectCountry = function(name, code, flag, currency, row) { /* আগের সিলেকশন কোড */ }
-    // ... বাকি ফাংশনগুলো এখানে বসিয়ে দিন
-
- // --- Loading & Navigation Logic (Line 18-42) ---
+    // --- Loading & Navigation Logic ---
     window.startLoadingSequence = function() {
         const totalBalls = 8;
         const ballActiveTime = 2200; 
@@ -1082,9 +1066,9 @@ window.copyInfo = function() {
             }, ballActiveTime);
         }
         runSequence(1);
-    }
+    };
 
-   // --- Country Data (Line 61-112) ---
+   // --- Country Data ---
     const countries = [
         { name: "Afghanistan", code: "+93", flag: "🇦🇫", currency: "Afghani (AFN)" }, 
         { name: "Albania", code: "+355", flag: "🇦🇱", currency: "Lek (ALL)" },
@@ -1224,265 +1208,255 @@ window.copyInfo = function() {
         { name: "Zimbabwe", code: "+263", flag: "🇿🇼", currency: "Dollar (ZWL)" }
     ];
 
-
     window.loadCountries = function() {
-    document.getElementById("currency-select").innerHTML = `<option>US Dollar (USD)</option>`;
+        document.getElementById("currency-select").innerHTML = `<option>US Dollar (USD)</option>`;
 
-    const container = document.getElementById('country-list-container');
-    container.innerHTML = `
-        <div class="section-title">Recommended</div>
-        <div class="country-row" onclick="selectCountry('United States', '+1', '🇺🇸', 'US Dollar (USD)', this)">
-            <span>🇺🇸 United States</span> <div class="radio-circle active"></div>
-        </div>
-        <div class="section-title">Other</div>
-    `;
-    
-    countries.forEach((country) => {
-        if(country.name !== "United States") {
-            const row = document.createElement('div');
-            row.className = 'country-row';
-            row.onclick = () => window.selectCountry(country.name, country.code, country.flag, country.currency, row);
-            row.innerHTML = `<span>${country.flag} ${country.name}</span> <div class="radio-circle"></div>`;
-            container.appendChild(row);
-        }
-    });
-}
-
-
+        const container = document.getElementById('country-list-container');
+        container.innerHTML = `
+            <div class="section-title">Recommended</div>
+            <div class="country-row" onclick="selectCountry('United States', '+1', '🇺🇸', 'US Dollar (USD)', this)">
+                <span>🇺🇸 United States</span> <div class="radio-circle active"></div>
+            </div>
+            <div class="section-title">Other</div>
+        `;
+        
+        countries.forEach((country) => {
+            if(country.name !== "United States") {
+                const row = document.createElement('div');
+                row.className = 'country-row';
+                row.onclick = () => window.selectCountry(country.name, country.code, country.flag, country.currency, row);
+                row.innerHTML = `<span>${country.flag} ${country.name}</span> <div class="radio-circle"></div>`;
+                container.appendChild(row);
+            }
+        });
+    };
 
     window.selectCountry = function(name, code, flag, currency, row) {
-    document.querySelectorAll('.radio-circle').forEach(r => r.classList.remove('active'));
-    row.querySelector('.radio-circle').classList.add('active');
-    document.getElementById("country-name").value = `${flag} ${name} (${code})`;
-    document.getElementById("currency-select").innerHTML = `<option>${currency}</option>`;
-    document.getElementById("country-popup").style.display = "none";
-}
+        document.querySelectorAll('.radio-circle').forEach(r => r.classList.remove('active'));
+        row.querySelector('.radio-circle').classList.add('active');
+        document.getElementById("country-name").value = `${flag} ${name} (${code})`;
+        document.getElementById("currency-select").value = currency;
+        
+        window.selectedCurrencyName = currency;
+        const matchedCurr = currenciesList.find(c => c.name.toLowerCase() === currency.toLowerCase());
+        window.selectedCurrencySymbol = matchedCurr ? matchedCurr.symbol : "$";
 
-window.showCountryPopup = () => document.getElementById("country-popup").style.display = "block";
+        document.getElementById("country-popup").style.display = "none";
+    };
 
-window.filterCountries = function() {
-    const value = document.getElementById("countrySearch").value.toLowerCase();
-    document.querySelectorAll(".country-row").forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(value) ? "flex" : "none";
-    });
-}
+    window.showCountryPopup = () => document.getElementById("country-popup").style.display = "block";
 
+    window.filterCountries = function() {
+        const value = document.getElementById("countrySearch").value.toLowerCase();
+        document.querySelectorAll(".country-row").forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(value) ? "flex" : "none";
+        });
+    };
 
+    window.togglePasswordVisibility = function() {
+        const passInput = document.getElementById('login-password');
+        const eyeIcon = document.querySelector('.login-toggle-password');
+        if (passInput.type === 'password') {
+            passInput.type = 'text';
+            eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+        } else {
+            passInput.type = 'password';
+            eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+        }
+    };
 
+    // --- All Countries Currency List ---
+    const currenciesList = [
+        { name: "Afghan afghani (AFN)", symbol: "؋" },
+        { name: "Albanian lek (ALL)", symbol: "L" },
+        { name: "Algerian dinar (DZD)", symbol: "دج" },
+        { name: "Andorran euro (EUR)", symbol: "€" },
+        { name: "Angolan kwanza (AOA)", symbol: "Kz" },
+        { name: "Argentine peso (ARS)", symbol: "$" },
+        { name: "Armenian dram (AMD)", symbol: "֏" },
+        { name: "Australian dollar (AUD)", symbol: "A$" },
+        { name: "Austrian euro (EUR)", symbol: "€" },
+        { name: "Azerbaijani manat (AZN)", symbol: "₼" },
+        { name: "Bahamian dollar (BSD)", symbol: "B$" },
+        { name: "Bahraini dinar (BHD)", symbol: ".د.ب" },
+        { name: "Bangladeshi taka (BDT)", symbol: "৳" },
+        { name: "Barbadian dollar (BBD)", symbol: "Bds$" },
+        { name: "Belarusian ruble (BYN)", symbol: "Br" },
+        { name: "Belgian euro (EUR)", symbol: "€" },
+        { name: "Belize dollar (BZD)", symbol: "BZ$" },
+        { name: "Beninese CFA franc (XOF)", symbol: "Fr" },
+        { name: "Bermudian dollar (BMD)", symbol: "$" },
+        { name: "Bhutanese ngultrum (BTN)", symbol: "Nu." },
+        { name: "Bolivian boliviano (BOB)", symbol: "Bs." },
+        { name: "Bosnia and Herzegovina mark (BAM)", symbol: "KM" },
+        { name: "Botswana pula (BWP)", symbol: "P" },
+        { name: "Brazilian real (BRL)", symbol: "R$" },
+        { name: "Brunei dollar (BND)", symbol: "B$" },
+        { name: "Bulgarian lev (BGN)", symbol: "лв" },
+        { name: "Burkinabe CFA franc (XOF)", symbol: "Fr" },
+        { name: "Burundian franc (BIF)", symbol: "Fr" },
+        { name: "Cambodian riel (KHR)", symbol: "៛" },
+        { name: "Cameroonian CFA franc (XAF)", symbol: "Fr" },
+        { name: "Canadian dollar (CAD)", symbol: "CA$" },
+        { name: "Cape Verdean escudo (CVE)", symbol: "$" },
+        { name: "Chilean peso (CLP)", symbol: "$" },
+        { name: "Chinese yuan (CNY)", symbol: "¥" },
+        { name: "Colombian peso (COP)", symbol: "$" },
+        { name: "Costa Rican colón (CRC)", symbol: "₡" },
+        { name: "Croatian euro (EUR)", symbol: "€" },
+        { name: "Cuban peso (CUP)", symbol: "$" },
+        { name: "Cypriot euro (EUR)", symbol: "€" },
+        { name: "Czech koruna (CZK)", symbol: "Kč" },
+        { name: "Danish krone (DKK)", symbol: "kr" },
+        { name: "Djiboutian franc (DJF)", symbol: "Fr" },
+        { name: "Dominican peso (DOP)", symbol: "RD$" },
+        { name: "Ecuadorian US dollar (USD)", symbol: "$" },
+        { name: "Egyptian pound (EGP)", symbol: "£" },
+        { name: "El Salvadorian US dollar (USD)", symbol: "$" },
+        { name: "Estonian euro (EUR)", symbol: "€" },
+        { name: "Eswatini lilangeni (SZL)", symbol: "L" },
+        { name: "Ethiopian birr (ETB)", symbol: "Br" },
+        { name: "Fijian dollar (FJD)", symbol: "FJ$" },
+        { name: "Finnish euro (EUR)", symbol: "€" },
+        { name: "French euro (EUR)", symbol: "€" },
+        { name: "Gabonese CFA franc (XAF)", symbol: "Fr" },
+        { name: "Georgian lari (GEL)", symbol: "₾" },
+        { name: "German euro (EUR)", symbol: "€" },
+        { name: "Ghanaian cedi (GHS)", symbol: "₵" },
+        { name: "Greek euro (EUR)", symbol: "€" },
+        { name: "Guatemalan quetzal (GTQ)", symbol: "Q" },
+        { name: "Honduran lempira (HNL)", symbol: "L" },
+        { name: "Hungarian forint (HUF)", symbol: "Ft" },
+        { name: "Icelandic króna (ISK)", symbol: "kr" },
+        { name: "Indian rupee (INR)", symbol: "₹" },
+        { name: "Indonesian rupiah (IDR)", symbol: "Rp" },
+        { name: "Iranian rial (IRR)", symbol: "﷼" },
+        { name: "Iraqi dinar (IQD)", symbol: "ع.د" },
+        { name: "Irish euro (EUR)", symbol: "€" },
+        { name: "Israeli new shekel (ILS)", symbol: "₪" },
+        { name: "Italian euro (EUR)", symbol: "€" },
+        { name: "Jamaican dollar (JMD)", symbol: "J$" },
+        { name: "Japanese yen (JPY)", symbol: "¥" },
+        { name: "Jordanian dinar (JOD)", symbol: "د.ا" },
+        { name: "Kazakhstani tenge (KZT)", symbol: "₸" },
+        { name: "Kenyan shilling (KES)", symbol: "Sh" },
+        { name: "Kuwaiti dinar (KWD)", symbol: "د.ك" },
+        { name: "Kyrgyzstani som (KGS)", symbol: "с" },
+        { name: "Lao kip (LAK)", symbol: "₭" },
+        { name: "Latvian euro (EUR)", symbol: "€" },
+        { name: "Lebanese pound (LBP)", symbol: "ل.ل" },
+        { name: "Libyan dinar (LYD)", symbol: "ل.د" },
+        { name: "Lithuanian euro (EUR)", symbol: "€" },
+        { name: "Luxembourgish euro (EUR)", symbol: "€" },
+        { name: "Malagasy ariary (MGA)", symbol: "Ar" },
+        { name: "Malaysian ringgit (MYR)", symbol: "RM" },
+        { name: "Maldivian rufiyaa (MVR)", symbol: "Rf" },
+        { name: "Maltese euro (EUR)", symbol: "€" },
+        { name: "Mexican peso (MXN)", symbol: "$" },
+        { name: "Mongolian tögrög (MNT)", symbol: "₮" },
+        { name: "Moroccan dirham (MAD)", symbol: "د.م." },
+        { name: "Nepalese rupee (NPR)", symbol: "रू" },
+        { name: "Netherlands euro (EUR)", symbol: "€" },
+        { name: "New Zealand dollar (NZD)", symbol: "NZ$" },
+        { name: "Nigerian naira (NGN)", symbol: "₦" },
+        { name: "North Korean won (KPW)", symbol: "₩" },
+        { name: "Norwegian krone (NOK)", symbol: "kr" },
+        { name: "Omani rial (OMR)", symbol: "ر.ع." },
+        { name: "Pakistani rupee (PKR)", symbol: "₨" },
+        { name: "Panamanian balboa (PAB)", symbol: "B/." },
+        { name: "Paraguayan guaraní (PYG)", symbol: "₲" },
+        { name: "Peruvian sol (PEN)", symbol: "S/" },
+        { name: "Philippine peso (PHP)", symbol: "₱" },
+        { name: "Polish złoty (PLN)", symbol: "zł" },
+        { name: "Portuguese euro (EUR)", symbol: "€" },
+        { name: "Qatari riyal (QAR)", symbol: "ر.ق" },
+        { name: "Romanian leu (RON)", symbol: "lei" },
+        { name: "Russian ruble (RUB)", symbol: "₽" },
+        { name: "Saudi riyal (SAR)", symbol: "ر.س" },
+        { name: "Senegalese CFA franc (XOF)", symbol: "Fr" },
+        { name: "Serbian dinar (RSD)", symbol: "дин." },
+        { name: "Singapore dollar (SGD)", symbol: "S$" },
+        { name: "Slovak euro (EUR)", symbol: "€" },
+        { name: "Slovenian euro (EUR)", symbol: "€" },
+        { name: "South African rand (ZAR)", symbol: "R" },
+        { name: "South Korean won (KRW)", symbol: "₩" },
+        { name: "Spanish euro (EUR)", symbol: "€" },
+        { name: "Sri Lankan rupee (LKR)", symbol: "Rs" },
+        { name: "Sudanese pound (SDG)", symbol: "ج.س." },
+        { name: "Swedish krona (SEK)", symbol: "kr" },
+        { name: "Swiss franc (CHF)", symbol: "CHF" },
+        { name: "Syrian pound (SYP)", symbol: "£" },
+        { name: "New Taiwan dollar (TWD)", symbol: "NT$" },
+        { name: "Tanzanian shilling (TZS)", symbol: "Sh" },
+        { name: "Thai baht (THB)", symbol: "฿" },
+        { name: "Tunisian dinar (TND)", symbol: "د.ت" },
+        { name: "Turkish lira (TRY)", symbol: "₺" },
+        { name: "Ugandan shilling (UGX)", symbol: "Sh" },
+        { name: "Ukrainian hryvnia (UAH)", symbol: "₴" },
+        { name: "United Arab Emirates dirham (AED)", symbol: "د.إ" },
+        { name: "British pound (GBP)", symbol: "£" },
+        { name: "US dollar (USD)", symbol: "$" },
+        { name: "Uruguayan peso (UYU)", symbol: "$" },
+        { name: "Uzbekistani som (UZS)", symbol: "so'm" },
+        { name: "Venezuelan bolívar (VES)", symbol: "Bs." },
+        { name: "Vietnamese dong (VND)", symbol: "₫" },
+        { name: "Yemeni rial (YER)", symbol: "﷼" },
+        { name: "Zambian kwacha (ZMW)", symbol: "ZK" },
+        { name: "Zimbabwean dollar (ZWL)", symbol: "$" }
+    ];
 
+    // --- Currency Popup & Selection Logic ---
+    window.showCurrencyPopup = function() {
+        document.getElementById("currency-popup").style.display = "block";
+        window.loadCurrenciesList();
+    };
 
+    window.loadCurrenciesList = function() {
+        const container = document.getElementById('currency-list-container');
+        container.innerHTML = '';
+        
+        currenciesList.forEach((item) => {
+            const row = document.createElement('div');
+            row.className = 'currency-row';
+            row.style.cssText = "display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; font-size: 16px; color: #0b3238; cursor: pointer;";
+            row.onclick = () => {
+                document.getElementById("currency-select").value = item.name;
+                document.getElementById("currency-popup").style.display = "none";
+            };
+            row.innerHTML = `<span>${item.name}</span> <b style="color: #597385;">${item.symbol}</b>`;
+            container.appendChild(row);
+        });
+    };
 
-window.togglePasswordVisibility = function() {
-    const passInput = document.getElementById('login-password');
-    const eyeIcon = document.querySelector('.login-toggle-password');
-    if (passInput.type === 'password') {
-        passInput.type = 'text';
-        eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
-    } else {
-        passInput.type = 'password';
-        eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
-    }
-};
+    window.filterCurrencies = function() {
+        const value = document.getElementById("currencySearch").value.toLowerCase();
+        const rows = document.querySelectorAll('#currency-list-container .currency-row');
+        rows.forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(value) ? "flex" : "none";
+        });
+    };
 
-
-
-
-
-// --- All Countries Currency List ---
-const currenciesList = [
-    { name: "Afghan afghani (AFN)", symbol: "؋" },
-    { name: "Albanian lek (ALL)", symbol: "L" },
-    { name: "Algerian dinar (DZD)", symbol: "دج" },
-    { name: "Andorran euro (EUR)", symbol: "€" },
-    { name: "Angolan kwanza (AOA)", symbol: "Kz" },
-    { name: "Argentine peso (ARS)", symbol: "$" },
-    { name: "Armenian dram (AMD)", symbol: "֏" },
-    { name: "Australian dollar (AUD)", symbol: "A$" },
-    { name: "Austrian euro (EUR)", symbol: "€" },
-    { name: "Azerbaijani manat (AZN)", symbol: "₼" },
-    { name: "Bahamian dollar (BSD)", symbol: "B$" },
-    { name: "Bahraini dinar (BHD)", symbol: ".د.ب" },
-    { name: "Bangladeshi taka (BDT)", symbol: "৳" },
-    { name: "Barbadian dollar (BBD)", symbol: "Bds$" },
-    { name: "Belarusian ruble (BYN)", symbol: "Br" },
-    { name: "Belgian euro (EUR)", symbol: "€" },
-    { name: "Belize dollar (BZD)", symbol: "BZ$" },
-    { name: "Beninese CFA franc (XOF)", symbol: "Fr" },
-    { name: "Bermudian dollar (BMD)", symbol: "$" },
-    { name: "Bhutanese ngultrum (BTN)", symbol: "Nu." },
-    { name: "Bolivian boliviano (BOB)", symbol: "Bs." },
-    { name: "Bosnia and Herzegovina mark (BAM)", symbol: "KM" },
-    { name: "Botswana pula (BWP)", symbol: "P" },
-    { name: "Brazilian real (BRL)", symbol: "R$" },
-    { name: "Brunei dollar (BND)", symbol: "B$" },
-    { name: "Bulgarian lev (BGN)", symbol: "лв" },
-    { name: "Burkinabe CFA franc (XOF)", symbol: "Fr" },
-    { name: "Burundian franc (BIF)", symbol: "Fr" },
-    { name: "Cambodian riel (KHR)", symbol: "៛" },
-    { name: "Cameroonian CFA franc (XAF)", symbol: "Fr" },
-    { name: "Canadian dollar (CAD)", symbol: "CA$" },
-    { name: "Cape Verdean escudo (CVE)", symbol: "$" },
-    { name: "Chilean peso (CLP)", symbol: "$" },
-    { name: "Chinese yuan (CNY)", symbol: "¥" },
-    { name: "Colombian peso (COP)", symbol: "$" },
-    { name: "Costa Rican colón (CRC)", symbol: "₡" },
-    { name: "Croatian euro (EUR)", symbol: "€" },
-    { name: "Cuban peso (CUP)", symbol: "$" },
-    { name: "Cypriot euro (EUR)", symbol: "€" },
-    { name: "Czech koruna (CZK)", symbol: "Kč" },
-    { name: "Danish krone (DKK)", symbol: "kr" },
-    { name: "Djiboutian franc (DJF)", symbol: "Fr" },
-    { name: "Dominican peso (DOP)", symbol: "RD$" },
-    { name: "Ecuadorian US dollar (USD)", symbol: "$" },
-    { name: "Egyptian pound (EGP)", symbol: "£" },
-    { name: "El Salvadorian US dollar (USD)", symbol: "$" },
-    { name: "Estonian euro (EUR)", symbol: "€" },
-    { name: "Eswatini lilangeni (SZL)", symbol: "L" },
-    { name: "Ethiopian birr (ETB)", symbol: "Br" },
-    { name: "Fijian dollar (FJD)", symbol: "FJ$" },
-    { name: "Finnish euro (EUR)", symbol: "€" },
-    { name: "French euro (EUR)", symbol: "€" },
-    { name: "Gabonese CFA franc (XAF)", symbol: "Fr" },
-    { name: "Georgian lari (GEL)", symbol: "₾" },
-    { name: "German euro (EUR)", symbol: "€" },
-    { name: "Ghanaian cedi (GHS)", symbol: "₵" },
-    { name: "Greek euro (EUR)", symbol: "€" },
-    { name: "Guatemalan quetzal (GTQ)", symbol: "Q" },
-    { name: "Honduran lempira (HNL)", symbol: "L" },
-    { name: "Hungarian forint (HUF)", symbol: "Ft" },
-    { name: "Icelandic króna (ISK)", symbol: "kr" },
-    { name: "Indian rupee (INR)", symbol: "₹" },
-    { name: "Indonesian rupiah (IDR)", symbol: "Rp" },
-    { name: "Iranian rial (IRR)", symbol: "﷼" },
-    { name: "Iraqi dinar (IQD)", symbol: "ع.د" },
-    { name: "Irish euro (EUR)", symbol: "€" },
-    { name: "Israeli new shekel (ILS)", symbol: "₪" },
-    { name: "Italian euro (EUR)", symbol: "€" },
-    { name: "Jamaican dollar (JMD)", symbol: "J$" },
-    { name: "Japanese yen (JPY)", symbol: "¥" },
-    { name: "Jordanian dinar (JOD)", symbol: "د.ا" },
-    { name: "Kazakhstani tenge (KZT)", symbol: "₸" },
-    { name: "Kenyan shilling (KES)", symbol: "Sh" },
-    { name: "Kuwaiti dinar (KWD)", symbol: "د.ك" },
-    { name: "Kyrgyzstani som (KGS)", symbol: "с" },
-    { name: "Lao kip (LAK)", symbol: "₭" },
-    { name: "Latvian euro (EUR)", symbol: "€" },
-    { name: "Lebanese pound (LBP)", symbol: "ل.ل" },
-    { name: "Libyan dinar (LYD)", symbol: "ل.د" },
-    { name: "Lithuanian euro (EUR)", symbol: "€" },
-    { name: "Luxembourgish euro (EUR)", symbol: "€" },
-    { name: "Malagasy ariary (MGA)", symbol: "Ar" },
-    { name: "Malaysian ringgit (MYR)", symbol: "RM" },
-    { name: "Maldivian rufiyaa (MVR)", symbol: "Rf" },
-    { name: "Maltese euro (EUR)", symbol: "€" },
-    { name: "Mexican peso (MXN)", symbol: "$" },
-    { name: "Mongolian tögrög (MNT)", symbol: "₮" },
-    { name: "Moroccan dirham (MAD)", symbol: "د.م." },
-    { name: "Nepalese rupee (NPR)", symbol: "रू" },
-    { name: "Netherlands euro (EUR)", symbol: "€" },
-    { name: "New Zealand dollar (NZD)", symbol: "NZ$" },
-    { name: "Nigerian naira (NGN)", symbol: "₦" },
-    { name: "North Korean won (KPW)", symbol: "₩" },
-    { name: "Norwegian krone (NOK)", symbol: "kr" },
-    { name: "Omani rial (OMR)", symbol: "ر.ع." },
-    { name: "Pakistani rupee (PKR)", symbol: "₨" },
-    { name: "Panamanian balboa (PAB)", symbol: "B/." },
-    { name: "Paraguayan guaraní (PYG)", symbol: "₲" },
-    { name: "Peruvian sol (PEN)", symbol: "S/" },
-    { name: "Philippine peso (PHP)", symbol: "₱" },
-    { name: "Polish złoty (PLN)", symbol: "zł" },
-    { name: "Portuguese euro (EUR)", symbol: "€" },
-    { name: "Qatari riyal (QAR)", symbol: "ر.ق" },
-    { name: "Romanian leu (RON)", symbol: "lei" },
-    { name: "Russian ruble (RUB)", symbol: "₽" },
-    { name: "Saudi riyal (SAR)", symbol: "ر.س" },
-    { name: "Senegalese CFA franc (XOF)", symbol: "Fr" },
-    { name: "Serbian dinar (RSD)", symbol: "дин." },
-    { name: "Singapore dollar (SGD)", symbol: "S$" },
-    { name: "Slovak euro (EUR)", symbol: "€" },
-    { name: "Slovenian euro (EUR)", symbol: "€" },
-    { name: "South African rand (ZAR)", symbol: "R" },
-    { name: "South Korean won (KRW)", symbol: "₩" },
-    { name: "Spanish euro (EUR)", symbol: "€" },
-    { name: "Sri Lankan rupee (LKR)", symbol: "Rs" },
-    { name: "Sudanese pound (SDG)", symbol: "ج.س." },
-    { name: "Swedish krona (SEK)", symbol: "kr" },
-    { name: "Swiss franc (CHF)", symbol: "CHF" },
-    { name: "Syrian pound (SYP)", symbol: "£" },
-    { name: "New Taiwan dollar (TWD)", symbol: "NT$" },
-    { name: "Tanzanian shilling (TZS)", symbol: "Sh" },
-    { name: "Thai baht (THB)", symbol: "฿" },
-    { name: "Tunisian dinar (TND)", symbol: "د.ت" },
-    { name: "Turkish lira (TRY)", symbol: "₺" },
-    { name: "Ugandan shilling (UGX)", symbol: "Sh" },
-    { name: "Ukrainian hryvnia (UAH)", symbol: "₴" },
-    { name: "United Arab Emirates dirham (AED)", symbol: "د.إ" },
-    { name: "British pound (GBP)", symbol: "£" },
-    { name: "US dollar (USD)", symbol: "$" },
-    { name: "Uruguayan peso (UYU)", symbol: "$" },
-    { name: "Uzbekistani som (UZS)", symbol: "so'm" },
-    { name: "Venezuelan bolívar (VES)", symbol: "Bs." },
-    { name: "Vietnamese dong (VND)", symbol: "₫" },
-    { name: "Yemeni rial (YER)", symbol: "﷼" },
-    { name: "Zambian kwacha (ZMW)", symbol: "ZK" },
-    { name: "Zimbabwean dollar (ZWL)", symbol: "$" }
-];
-
-
-
-
-
-
-
-
-
-
-
-// --- Currency Popup & Selection Logic ---
-window.showCurrencyPopup = function() {
-    document.getElementById("currency-popup").style.display = "block";
-    window.loadCurrenciesList();
-}
-
-window.loadCurrenciesList = function() {
-    const container = document.getElementById('currency-list-container');
-    container.innerHTML = '';
-    
-    currenciesList.forEach((item) => {
-        const row = document.createElement('div');
-        row.className = 'currency-row';
-        row.style.cssText = "display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; font-size: 16px; color: #0b3238; cursor: pointer;";
-        row.onclick = () => {
-            document.getElementById("currency-select").value = item.name;
-            document.getElementById("currency-popup").style.display = "none";
+    const currencyPopupEl = document.getElementById("currency-popup");
+    if (currencyPopupEl) {
+        currencyPopupEl.onclick = function(e) {
+            if (e.target === this) {
+                this.style.display = "none";
+            }
         };
-        row.innerHTML = `<span>${item.name}</span> <b style="color: #597385;">${item.symbol}</b>`;
-        container.appendChild(row);
-    });
-}
-
-window.filterCurrencies = function() {
-    const value = document.getElementById("currencySearch").value.toLowerCase();
-    const rows = document.querySelectorAll('#currency-list-container .currency-row');
-    rows.forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(value) ? "flex" : "none";
-    });
-}
-
-// পপআপের বাইরে ক্লিক করলে বা ক্লোজ করার জন্য চাইলে নিচের মতো ব্যাকগ্রাউন্ড ক্লিকের ব্যবস্থা করতে পারেন:
-document.getElementById("currency-popup").onclick = function(e) {
-    if (e.target === this) {
-        this.style.display = "none";
     }
-};
 
-
-
-
-
-
-
+    // --- Single window.onload Entry Point ---
+    window.onload = function() {
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            window.location.href = "https://mdripon018770-coder.github.io/Notbok/22.html";
+            return; 
+        }
+        
+        window.startLoadingSequence();
+        window.loadCountries();
+    };
 </script>
+
 
 
 </body>
