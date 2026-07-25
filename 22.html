@@ -906,7 +906,7 @@
     // নতুন আপডেটেড কোড
     // নতুন আপডেটেড কোড (এটি আপনার আগের onValue ব্লকের জায়গায় রিপ্লেস করুন)
         // আপনার আগের কোডের এই অংশটি পরিবর্তন করে এটি দিন:
-    document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
         const activeUserRef = ref(db, 'activeUser/id');
         
         onValue(activeUserRef, (snapshot) => {
@@ -925,19 +925,30 @@
                     idDisplay.innerText = 'id: ' + savedUser;
                 }
                 
-                // ৩. ইউজারের ব্যালেন্স ফেচ করার লজিক
+                // ৩. ইউজারের ব্যালেন্স এবং কারেন্সি ফেচ করার লজিক
                 const userRef = ref(db, 'users/' + savedUser);
                 onValue(userRef, (snapshot) => {
                     const data = snapshot.val();
                     if (data) {
                         const balance = data.balance !== undefined ? data.balance : 0;
+                        // ডাটাবেস থেকে ইউজারের নিজস্ব কারেন্সি সিম্বল নেওয়া, না থাকলে ডিফলต์ ৳ থাকবে
+                        const currencySymbol = data.currencySymbol || data.currency || '৳'; 
+                        
+                        // ব্যালেন্স এবং ডাইনামিক কারেন্সি বসানো
                         const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
-                        balanceDisplays.forEach(el => el.innerText = balance + " ৳");
+                        balanceDisplays.forEach(el => el.innerText = `${balance} ${currencySymbol}`);
                     }
                 });
             }
         });
     });
+
+
+
+
+
+
+
 
 
 
