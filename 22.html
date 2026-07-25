@@ -701,9 +701,10 @@
     </div>
 
     <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">Country</span>
-        <span style="color: #1a2b3c;">Not filled in</span>
-    </div>
+    <span style="color: #7a8a94;">Country</span>
+    <span id="display-country" style="color: #1a2b3c;">Not filled in</span>
+</div>
+
 
     <div style="padding: 15px 0; display: flex; justify-content: space-between;">
         <span style="color: #7a8a94;">City</span>
@@ -823,13 +824,16 @@
             <input type="text" id="reg-pob" class="profile-input" placeholder="Place of birth" style="border: none;">
         </div>
 
+        <!-- Residence section -->
         <div class="input-label">Residence</div>
         <div class="input-card">
+            <input type="text" id="reg-country" class="profile-input" placeholder="Country">
             <input type="text" id="reg-region" class="profile-input" placeholder="Region">
             <input type="text" id="reg-city" class="profile-input" placeholder="City">
             <input type="text" id="reg-address" class="profile-input" placeholder="Residence address" style="border: none;">
         </div>
 
+        <!-- ID document section -->
         <div class="input-label">ID document</div>
         <div class="input-card">
             <input type="text" id="reg-doc-type" class="profile-input" placeholder="Document type">
@@ -838,14 +842,17 @@
             <input type="text" id="reg-doc-date" class="profile-input" placeholder="Date of issue" onfocus="(this.type='date')">
             <input type="text" id="reg-issued-by" class="profile-input" placeholder="Issued by" style="border: none;">
         </div>
-    </div>
 
-    <div style="padding: 15px; position: sticky; bottom: 0; background: #eef2f5;">
-        <button id="saveBtn" onclick="saveProfile()" style="width: 100%; padding: 15px; background: #28a745; color: #fff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">Save</button>
+        <!-- Save Button Section -->
+        <div style="padding: 15px 0; position: sticky; bottom: 0; background: #eef2f5;">
+            <button id="saveBtn" onclick="saveProfile()" style="width: 100%; padding: 15px; background: #28a745; color: #fff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">Save</button>
+        </div>
     </div>
 </div>
 </div>
-</div>
+
+
+
 
 
 
@@ -882,6 +889,12 @@
         <span>Menu</span>
     </div>
 </div>
+
+
+
+
+
+
 
 
     <script type="module">
@@ -1025,7 +1038,12 @@
         });
     }
 
-    function loadProfileData() {
+
+
+
+
+
+        function loadProfileData() {
         let regDate = localStorage.getItem('userRegDate');
         if (!regDate) {
             regDate = new Date().toLocaleDateString('en-GB');
@@ -1056,6 +1074,9 @@
                 
             const displayCity = document.getElementById('display-city');
             if(displayCity) displayCity.innerText = data['reg-city'] || "Not filled in";
+
+            const displayCountry = document.getElementById('display-country');
+            if(displayCountry) displayCountry.innerText = data['reg-country'] || "Not filled in";
         }
     }
 
@@ -1109,6 +1130,7 @@
         checkAndHideFields();
     });
 </script>
+
 
 
 
