@@ -927,21 +927,18 @@
                 
                 // ৩. ইউজারের ব্যালেন্স এবং কারেন্সি ফেচ করার লজিক
                 const userRef = ref(db, 'users/' + savedUser);
-                onValue(userRef, (snapshot) => {
-                    const data = snapshot.val();
-                    if (data) {
-                        const balance = data.balance !== undefined ? data.balance : 0;
-                        // ডাটাবেস থেকে ইউজারের নিজস্ব কারেন্সি সিম্বল নেওয়া, না থাকলে ডিফলต์ ৳ থাকবে
-                        const currencySymbol = data.currencySymbol || data.currency || '৳'; 
-                        
-                        // ব্যালেন্স এবং ডাইনামিক কারেন্সি বসানো
-                        const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
-                        balanceDisplays.forEach(el => el.innerText = `${balance} ${currencySymbol}`);
-                    }
-                });
-            }
-        });
-    });
+onValue(userRef, (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+        const balance = data.balance !== undefined ? data.balance : 0;
+        
+        // এখানে ফায়ারবেস থেকে ডাইনামিক কারেন্সি সিম্বল নেওয়া হচ্ছে (যদি না থাকে তবে ডিফল্ট '$' দেখাবে)
+        const currencySymbol = data.currencySymbol || data.currency || '$'; 
+        
+        const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
+        balanceDisplays.forEach(el => el.innerText = `${balance} ${currencySymbol}`);
+    }
+});
 
 
 
