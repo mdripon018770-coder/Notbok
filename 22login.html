@@ -1446,19 +1446,22 @@ window.copyInfo = function() {
     }
 
     // --- Single window.onload Entry Point ---
-window.onload = function() {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    
-    // যদি ইউজার লগইন করা থাকে, শুধুমাত্র তখনই রিডাইরেক্ট করবে
-    if (isLoggedIn === 'true') {
-        window.location.href = "https://mdripon018770-coder.github.io/Notbok/22.html";
-        return; 
-    }
-    
-    // অন্যথায় সাধারণ নিয়ম অনুযায়ী লোডিং স্ক্রিন এবং অ্যাপ চালু হবে
-    window.startLoadingSequence();
-    window.loadCountries();
-};
+    window.onload = function() {
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        
+        // যদি ইউজার লগইন করা থাকে, শুধুমাত্র তখনই রিডাইরেক্ট করবে
+        if (isLoggedIn === 'true') {
+            window.location.href = "https://mdripon018770-coder.github.io/Notbok/22.html";
+            return; 
+        }
+        
+        // অন্যথায় সাধারণ নিয়ম অনুযায়ী লোডিং স্ক্রিন এবং অ্যাপ চালু হবে
+        window.startLoadingSequence();
+        window.loadCountries();
+    };
+
+
+
 
 
 </script>
