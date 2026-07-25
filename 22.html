@@ -771,14 +771,15 @@
         </div>
     </div> 
 
-    <div class="menu-balance-box">
+        <div class="menu-balance-box">
         <div class="wallet-info">
             <i class="fas fa-wallet" style="color: #28a745;"></i>
-            <span style="font-weight: bold; font-size: 14px;">0 ৳</span>
+            <span style="font-weight: bold; font-size: 14px;">...</span>
             <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: auto; color: #ccc;"></i>
         </div>
         <button class="dep-btn" onclick="openDeposit()">+ Deposit</button>
     </div>
+
 
     <div style="margin:0; padding:0;">
     <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/menu.jpg"
@@ -1080,11 +1081,17 @@
         }
     }
 
+
+
+
+
+
+
     // Main Execution on DOM Load
+        // DOM Load হওয়ার সাথে সাথে ব্যালেন্সের জায়গায় শুরুতে শুধু লোডিং বা ড্যাশ রাখা (যাতে ভুল কারেন্সি না দেখায়)
     document.addEventListener('DOMContentLoaded', () => {
-        // ডেটা লোড হওয়ার আগে ব্যালেন্সের জায়গায় ড্যাশ বা ফাকা রাখা যেতে পারে
         const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
-        balanceDisplays.forEach(el => el.innerText = "0 ৳");
+        balanceDisplays.forEach(el => el.innerText = "...");
 
         const activeUserRef = ref(db, 'activeUser/id');
         
@@ -1102,17 +1109,27 @@
                     idDisplay.innerText = 'id: ' + savedUser;
                 }
                 
+                // ইউজারের নিজস্ব ডাটাবেস থেকে তার কারেন্সি এবং ব্যালেন্স ফেচ করা
                 const userRef = ref(db, 'users/' + savedUser);
                 onValue(userRef, (userSnapshot) => {
                     const data = userSnapshot.val();
                     if (data) {
                         const balance = data.balance !== undefined ? data.balance : 0;
+                        // ইউজারের অ্যাকাউন্ট খোলার সময় যে কারেন্সি বা সিম্বল দেওয়া হয়েছিল, সেটি ডায়নামিক্যালি সেট হবে ($ বা ৳ বা অন্য কিছু)
                         const currencySymbol = data.currencySymbol || data.currency || '৳'; 
                         
                         const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
                         updatedDisplays.forEach(el => el.innerText = `${balance} ${currencySymbol}`);
+                    } else {
+                        // যদি ডাটা না থাকে তবে ডিফল্টভাবে ফাকা বা শূন্য দেখাবে
+                        const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
+                        updatedDisplays.forEach(el => el.innerText = `0 ৳`);
                     }
                 });
+            } else {
+                // ইউজার লগইন না থাকলে
+                const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
+                updatedDisplays.forEach(el => el.innerText = `0 ৳`);
             }
         });
 
@@ -1129,11 +1146,10 @@
         loadProfileData();
         checkAndHideFields();
     });
+
+
+
+
 </script>
-
-
-
-
-
 </body>
 </html>
