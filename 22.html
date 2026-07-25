@@ -888,7 +888,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-    // আপনার Firebase কনফিগারেশন
     const firebaseConfig = {
         apiKey: "AIzaSyAsKOo6nJPZWT-DwdmnBR35J0U_feLiYGM",
         authDomain: "betapp-c96eb.firebaseapp.com",
@@ -902,87 +901,31 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // আপনার কাঙ্ক্ষিত কোডটি এখানে বসানো হলো
-    // নতুন আপডেটেড কোড
-    // নতুন আপডেটেড কোড (এটি আপনার আগের onValue ব্লকের জায়গায় রিপ্লেস করুন)
-        // আপনার আগের কোডের এই অংশটি পরিবর্তন করে এটি দিন:
-        document.addEventListener('DOMContentLoaded', () => {
-        const activeUserRef = ref(db, 'activeUser/id');
-        
-        onValue(activeUserRef, (snapshot) => {
-            const savedUser = snapshot.val(); 
-            
-            if (savedUser) {
-                // ১. প্রোফাইলে ইউজার আইডি দেখানোর লজিক
-                const nameDisplay = document.getElementById('profileName');
-                if (nameDisplay) {
-                    nameDisplay.innerText = savedUser; 
-                }
+    // Global UI Functions
+    window.openDeposit = function () {
+        const settings = document.getElementById("settings-page-overlay");
+        const overlay = document.getElementById("deposit-page-overlay");
+        const frame = document.getElementById("deposit-frame");
 
-                // ২. নতুন লজিক: একাউন্ট সেকশনে আইডি অটোমেটিক বসানো
-                const idDisplay = document.querySelector('.account-id-display');
-                if (idDisplay) {
-                    idDisplay.innerText = 'id: ' + savedUser;
-                }
-                
-                // ৩. ইউজারের ব্যালেন্স এবং কারেন্সি ফেচ করার লজিক
-                const userRef = ref(db, 'users/' + savedUser);
-onValue(userRef, (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-        const balance = data.balance !== undefined ? data.balance : 0;
-        
-        // এখানে ফায়ারবেস থেকে ডাইনামিক কারেন্সি সিম্বল নেওয়া হচ্ছে (যদি না থাকে তবে ডিফল্ট '$' দেখাবে)
-        const currencySymbol = data.currencySymbol || data.currency || '$'; 
-        
-        const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
-        balanceDisplays.forEach(el => el.innerText = `${balance} ${currencySymbol}`);
-    }
-});
+        if (overlay) overlay.style.zIndex = "5000";
+        if (frame) frame.src = "";
 
+        setTimeout(() => {
+            if (frame) frame.src = "https://mdripon018770-coder.github.io/Notbok/22dp.html";
+            if (overlay) overlay.classList.add("active");
+        }, 50);
+    };
 
+    window.closeDeposit = function () {
+        const overlay = document.getElementById("deposit-page-overlay");
+        const frame = document.getElementById("deposit-frame");
 
+        if (overlay) overlay.classList.remove("active");
+        setTimeout(() => {
+            if (frame) frame.src = "";
+        }, 400);
+    };
 
-
-
-
-
-
-
-              // --- Deposit Logic Updated ---
-window.openDeposit = function () {
-    const settings = document.getElementById("settings-page-overlay");
-    const overlay = document.getElementById("deposit-page-overlay");
-    const frame = document.getElementById("deposit-frame");
-
-    // Deposit overlay সবসময় Settings-এর উপরে থাকবে
-    overlay.style.zIndex = "5000";
-
-    // iframe reset
-    frame.src = "";
-
-    // Slide in
-    setTimeout(() => {
-        frame.src = "https://mdripon018770-coder.github.io/Notbok/22dp.html";
-        overlay.classList.add("active");
-    }, 50);
-};
-
-// Back Button
-window.closeDeposit = function () {
-    const overlay = document.getElementById("deposit-page-overlay");
-    const frame = document.getElementById("deposit-frame");
-
-    // Slide out
-    overlay.classList.remove("active");
-
-    // iframe clear
-    setTimeout(() => {
-        frame.src = "";
-    }, 400);
-};
-
-    // Tab Switch Logic
     window.switchTab = function(tab) {
         const home = document.getElementById('home-content');
         const menu = document.getElementById('menu-content');
@@ -992,139 +935,177 @@ window.closeDeposit = function () {
         const topNav = document.querySelector('.top-nav');
 
         if(tab === 'menu') {
-            home.style.display = 'none';
-            menu.style.display = 'block';
-            header.style.display = 'none'; 
-            topNav.style.display = 'none'; 
-            menuTab.classList.add('active');
-            popTab.classList.remove('active');
+            if(home) home.style.display = 'none';
+            if(menu) menu.style.display = 'block';
+            if(header) header.style.display = 'none'; 
+            if(topNav) topNav.style.display = 'none'; 
+            if(menuTab) menuTab.classList.add('active');
+            if(popTab) popTab.classList.remove('active');
         } else {
-            home.style.display = 'block';
-            menu.style.display = 'none';
-            header.style.display = 'flex'; 
-            topNav.style.display = 'flex'; 
-            popTab.classList.add('active');
-            menuTab.classList.remove('active');
+            if(home) home.style.display = 'block';
+            if(menu) menu.style.display = 'none';
+            if(header) header.style.display = 'flex'; 
+            if(topNav) topNav.style.display = 'flex'; 
+            if(popTab) popTab.classList.add('active');
+            if(menuTab) menuTab.classList.remove('active');
         }
     };
 
-    window.openSettings = function() { document.getElementById('settings-page-overlay').style.right = '0'; };
-    window.closeSettings = function() { document.getElementById('settings-page-overlay').style.right = '-100%'; };
+    window.openSettings = function() { 
+        const settingsOverlay = document.getElementById('settings-page-overlay');
+        if(settingsOverlay) settingsOverlay.style.right = '0'; 
+    };
+    
+    window.closeSettings = function() { 
+        const settingsOverlay = document.getElementById('settings-page-overlay');
+        if(settingsOverlay) settingsOverlay.style.right = '-100%'; 
+    };
 
-    window.openProfilePage = function() { document.getElementById('personal-profile-overlay').style.right = '0'; };
-    window.closeProfilePage = function() { document.getElementById('personal-profile-overlay').style.right = '-100%'; };
+    window.openProfilePage = function() { 
+        const profileOverlay = document.getElementById('personal-profile-overlay');
+        if(profileOverlay) profileOverlay.style.right = '0'; 
+    };
+    
+    window.closeProfilePage = function() { 
+        const profileOverlay = document.getElementById('personal-profile-overlay');
+        if(profileOverlay) profileOverlay.style.right = '-100%'; 
+    };
 
-    // --- আপনার সমস্যার সমাধান (Form Functions) ---
     window.openCompleteProfile = function() {
-        document.getElementById('complete-profile-form').style.display = 'block';
+        const profileForm = document.getElementById('complete-profile-form');
+        if(profileForm) profileForm.style.display = 'block';
     };
 
     window.closeForm = function() {
-        document.getElementById('complete-profile-form').style.display = 'none';
+        const profileForm = document.getElementById('complete-profile-form');
+        if(profileForm) profileForm.style.display = 'none';
     };
 
     window.saveProfile = function() {
-    const saveBtn = document.getElementById('saveBtn');
-    
-    saveBtn.innerText = "Loading...";
-    saveBtn.style.opacity = "0.7";
-    saveBtn.disabled = true;
+        const saveBtn = document.getElementById('saveBtn');
+        if(saveBtn) {
+            saveBtn.innerText = "Loading...";
+            saveBtn.style.opacity = "0.7";
+            saveBtn.disabled = true;
+        }
 
-    setTimeout(() => {
-        // সব ইনপুট ফিল্ড থেকে ডাটা নেওয়া
-        const inputs = document.querySelectorAll('.profile-input');
+        setTimeout(() => {
+            const inputs = document.querySelectorAll('.profile-input');
+            const savedData = JSON.parse(localStorage.getItem('userProfileData')) || {};
+
+            inputs.forEach(input => {
+                if (input.value.trim() !== "") {
+                    savedData[input.id] = input.value;
+                }
+            });
+
+            localStorage.setItem('userProfileData', JSON.stringify(savedData));
+            
+            loadProfileData(); 
+            checkAndHideFields();
+            
+            if(saveBtn) {
+                saveBtn.innerText = "Save";
+                saveBtn.style.opacity = "1";
+                saveBtn.disabled = false;
+            }
+            
+            closeForm();
+        }, 2000); 
+    };
+
+    function checkAndHideFields() {
         const savedData = JSON.parse(localStorage.getItem('userProfileData')) || {};
+        const inputs = document.querySelectorAll('.profile-input');
 
         inputs.forEach(input => {
-            if (input.value.trim() !== "") {
-                savedData[input.id] = input.value;
+            if (savedData[input.id] && savedData[input.id].trim() !== "") {
+                if(input.parentElement) input.parentElement.style.display = 'none';
+            }
+        });
+    }
+
+    function loadProfileData() {
+        let regDate = localStorage.getItem('userRegDate');
+        if (!regDate) {
+            regDate = new Date().toLocaleDateString('en-GB');
+            localStorage.setItem('userRegDate', regDate);
+        }
+        const regDateEl = document.getElementById('display-reg-date');
+        if(regDateEl) regDateEl.innerText = regDate;
+
+        const savedData = localStorage.getItem('userProfileData');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            
+            const displayName = document.getElementById('display-name');
+            if(displayName) displayName.innerText = data['reg-name'] || "Not filled in";
+                
+            const displayUsername = document.getElementById('display-username');
+            if(displayUsername) {
+                displayUsername.innerText = data['reg-username'] || "Not filled in";
+                const menuName = document.getElementById('profileName');
+                if(menuName) menuName.innerText = data['reg-username'] || "USER";
+            }
+            
+            const displayEmail = document.getElementById('display-email');
+            if(displayEmail) displayEmail.innerText = data['reg-email'] || "Not filled in";
+                
+            const displayPhone = document.getElementById('display-phone');
+            if(displayPhone) displayPhone.innerText = data['reg-phone'] || "Not filled in";
+                
+            const displayCity = document.getElementById('display-city');
+            if(displayCity) displayCity.innerText = data['reg-city'] || "Not filled in";
+        }
+    }
+
+    // Main Execution on DOM Load
+    document.addEventListener('DOMContentLoaded', () => {
+        const activeUserRef = ref(db, 'activeUser/id');
+        
+        onValue(activeUserRef, (snapshot) => {
+            const savedUser = snapshot.val(); 
+            
+            if (savedUser) {
+                const nameDisplay = document.getElementById('profileName');
+                if (nameDisplay) {
+                    nameDisplay.innerText = savedUser; 
+                }
+
+                const idDisplay = document.querySelector('.account-id-display');
+                if (idDisplay) {
+                    idDisplay.innerText = 'id: ' + savedUser;
+                }
+                
+                const userRef = ref(db, 'users/' + savedUser);
+                onValue(userRef, (userSnapshot) => {
+                    const data = userSnapshot.val();
+                    if (data) {
+                        const balance = data.balance !== undefined ? data.balance : 0;
+                        const currencySymbol = data.currencySymbol || data.currency || '$'; 
+                        
+                        const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
+                        balanceDisplays.forEach(el => el.innerText = `${balance} ${currencySymbol}`);
+                    }
+                });
             }
         });
 
-        localStorage.setItem('userProfileData', JSON.stringify(savedData));
-        
-        // প্রোফাইল ভিউ আপডেট এবং ফর্ম ক্লোজ
-        loadProfileData(); 
-        
-        saveBtn.innerText = "Save";
-        saveBtn.style.opacity = "1";
-        saveBtn.disabled = false;
-        
-        closeForm();
-    }, 2000); 
-};
-
-
-// এই ফাংশনটি ফিল্ডগুলো হাইড করার জন্য
-function checkAndHideFields() {
-    const savedData = JSON.parse(localStorage.getItem('userProfileData')) || {};
-    const inputs = document.querySelectorAll('.profile-input');
-
-    inputs.forEach(input => {
-        if (savedData[input.id] && savedData[input.id].trim() !== "") {
-            input.parentElement.style.display = 'none'; // ফিল্ডটি হাইড করে দিবে
+        const logoutTrigger = document.getElementById('logout-trigger');
+        if(logoutTrigger) {
+            logoutTrigger.addEventListener('click', function() {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('savedUserID');
+                localStorage.removeItem('savedPassword');
+                window.location.replace("https://mdripon018770-coder.github.io/Notbok/22login.html");
+            });
         }
+
+        loadProfileData();
+        checkAndHideFields();
     });
-}
-
-
-function loadProfileData() {
-    // ১. রেজিস্ট্রেশন ডেট ম্যানেজমেন্ট
-    let regDate = localStorage.getItem('userRegDate');
-    if (!regDate) {
-        regDate = new Date().toLocaleDateString('en-GB');
-        localStorage.setItem('userRegDate', regDate);
-    }
-    document.getElementById('display-reg-date').innerText = regDate;
-
-    // ২. ইউজার প্রোফাইল ডাটা লোড
-    const savedData = localStorage.getItem('userProfileData');
-    if (savedData) {
-        const data = JSON.parse(savedData);
-        
-        // এখানে data['ID'] ব্যবহার করতে হবে
-        if(document.getElementById('display-name')) 
-            document.getElementById('display-name').innerText = data['reg-name'] || "Not filled in";
-            
-        if(document.getElementById('display-username')) {
-            document.getElementById('display-username').innerText = data['reg-username'] || "Not filled in";
-            const menuName = document.getElementById('profileName');
-            if(menuName) menuName.innerText = data['reg-username'] || "USER";
-        }
-        
-        if(document.getElementById('display-email')) 
-            document.getElementById('display-email').innerText = data['reg-email'] || "Not filled in";
-            
-        if(document.getElementById('display-phone')) 
-            document.getElementById('display-phone').innerText = data['reg-phone'] || "Not filled in";
-            
-        if(document.getElementById('display-city')) 
-            document.getElementById('display-city').innerText = data['reg-city'] || "Not filled in";
-    }
-}
-
-
-
-// Logout Functionality (Updated for Cross-App Redirect)
-document.getElementById('logout-trigger').addEventListener('click', function() {
-    // ১. লোকাল স্টোরেজ থেকে সব তথ্য মুছে ফেলা
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('savedUserID');
-    localStorage.removeItem('savedPassword');
-
-    // ২. নতুন করে রিডাইরেক্ট করা এবং বর্তমান ট্যাব/হিস্ট্রি ক্লিন রাখা
-    window.location.replace("https://mdripon018770-coder.github.io/Notbok/22login.html");
-});
-
-    document.addEventListener('DOMContentLoaded', () => {
-        // Firebase-এর কোডগুলো এখানে থাকবে...
-        
-        // সব শেষে এটি বসিয়ে দিন:
-        loadProfileData(); 
-    });
-
-
 </script>
+
 
 
 </body>
