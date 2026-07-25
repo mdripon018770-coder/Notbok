@@ -1133,7 +1133,7 @@
             }
         });
 
-                const logoutTrigger = document.getElementById('logout-trigger');
+                        const logoutTrigger = document.getElementById('logout-trigger');
         if(logoutTrigger) {
             logoutTrigger.addEventListener('click', function() {
                 // ব্রাউজারের লোকাল স্টোরেজ ক্লিয়ার করা
@@ -1141,15 +1141,15 @@
                 localStorage.removeItem('savedUserID');
                 localStorage.removeItem('savedPassword');
                 
-                // রিয়েল-টাইম ডাটাবেজ থেকে activeUser/id মুছে ফেলা বা ক্লিয়ার করা
+                // রিয়েল-টাইম ডাটাবেজ থেকে activeUser/id মুছে ফেলা
                 import("https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js").then(({ set, ref }) => {
                     const activeUserRef = ref(db, 'activeUser/id');
                     set(activeUserRef, null).then(() => {
-                        // ডাটাবেজ থেকে ক্লিয়ার হওয়ার পর লগইন পেজে রিডাইরেক্ট করা
+                        // সঠিকভাবে সরাসরি 22login.html এ রিডাইরেক্ট করা
                         window.location.replace("https://mdripon018770-coder.github.io/Notbok/22login.html");
                     });
                 }).catch(() => {
-                    // কোনো কারণে ফেইল করলে সরাসরি রিডাইরেক্ট করে দেবে
+                    // কোনো কারণে ফেইল করলে সরাসরি 22login.html এ রিডাইরেক্ট করে দেবে
                     window.location.replace("https://mdripon018770-coder.github.io/Notbok/22login.html");
                 });
             });
