@@ -720,7 +720,7 @@
         <div class="plus-circle">
             <i class="fas fa-plus"></i>
         </div>
-        <span>0 ৳</span>
+        <span>0 $</span>
     </div>
 
     <div class="logo">
@@ -1061,6 +1061,10 @@
 
     // Main Execution on DOM Load
     document.addEventListener('DOMContentLoaded', () => {
+        // ডেটা লোড হওয়ার আগ মুহূর্ত পর্যন্ত ব্যালেন্সের জায়গায় ড্যাশ দেখিয়ে রাখা
+        const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
+        balanceDisplays.forEach(el => el.innerText = "--- ৳");
+
         const activeUserRef = ref(db, 'activeUser/id');
         
         onValue(activeUserRef, (snapshot) => {
@@ -1082,10 +1086,10 @@
                     const data = userSnapshot.val();
                     if (data) {
                         const balance = data.balance !== undefined ? data.balance : 0;
-                        const currencySymbol = data.currencySymbol || data.currency || '$'; 
+                        const currencySymbol = data.currencySymbol || data.currency || '৳'; 
                         
-                        const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
-                        balanceDisplays.forEach(el => el.innerText = `${balance} ${currencySymbol}`);
+                        const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
+                        updatedDisplays.forEach(el => el.innerText = `${balance} ${currencySymbol}`);
                     }
                 });
             }
@@ -1105,6 +1109,7 @@
         checkAndHideFields();
     });
 </script>
+
 
 
 
