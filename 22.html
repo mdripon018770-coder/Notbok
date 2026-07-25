@@ -1061,9 +1061,9 @@
 
     // Main Execution on DOM Load
     document.addEventListener('DOMContentLoaded', () => {
-        // ডেটা লোড হওয়ার আগ মুহূর্ত পর্যন্ত ব্যালেন্সের জায়গায় ড্যাশ দেখিয়ে রাখা
+        // ডেটা লোড হওয়ার আগে ব্যালেন্সের জায়গায় ড্যাশ বা ফাকা রাখা যেতে পারে
         const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
-        balanceDisplays.forEach(el => el.innerText = "--- ৳");
+        balanceDisplays.forEach(el => el.innerText = "0 ৳");
 
         const activeUserRef = ref(db, 'activeUser/id');
         
