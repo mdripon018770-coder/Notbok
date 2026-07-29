@@ -13,15 +13,15 @@
         #deposit-page-overlay {
             position: fixed;
             top: 0;
-            right: -100%; /* শুরুতে স্ক্রিনের বাইরে থাকবে */
+            right: -100%;
             width: 100%;
             height: 100%;
             background: #fff;
-            z-index: 2000;
-            transition: right 0.4s ease; /* স্লাইড অ্যানিমেশন */
+            z-index: 5000;
+            transition: right 0.4s ease;
         }
         #deposit-page-overlay.active {
-            right: 0; /* একটিভ হলে স্ক্রিনে চলে আসবে */
+            right: 0;
         }
         #deposit-frame {
             width: 100%;
@@ -30,400 +30,192 @@
         }
 
         /* --- Header Section --- */
-.header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:8px 15px;
-    height:55px;
-    position:sticky;
-    top:0;
-    background:#ffffff;
-    z-index:100;
-}
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            height: 55px;
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 100;
+        }
+        .balance-pill {
+            display: flex;
+            align-items: center;
+            background: #f3f5f7;
+            border-radius: 18px;
+            height: 34px;
+            padding: 0 10px 0 3px;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .plus-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #28a745;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .balance-pill span {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a2b3c;
+        }
+        .logo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .logo img {
+            height: 50px;
+        }
+        .search-icon {
+            color: #7a8a94;
+            font-size: 20px;
+        }
 
-.balance-pill{
-    display:flex;
-    align-items:center;
-    background:#f3f5f7;
-    border-radius:18px;
-    height:34px;
-    padding:0 10px 0 3px;
-    gap:6px;
-    cursor:pointer;
-}
+        /* --- Top Navigation --- */
+        .top-nav { 
+            display: flex; 
+            background: #ffffff; 
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0; 
+        }
+        .nav-item { 
+            flex: 1; 
+            text-align: center; 
+            color: #7a8a94; 
+            font-size: 11px; 
+            font-weight: 600; 
+            cursor: pointer;
+            background: transparent !important; 
+            border: none !important;
+            box-shadow: none !important;
+        }
+        .nav-item img {
+            width: 36px;
+            height: 36px;
+            display: block;
+            margin: 0 auto 4px;
+            object-fit: contain;
+            background: transparent !important; 
+            border: none !important;
+        }
+        .nav-item.active { 
+            color: #28a745; 
+            border-bottom: 3px solid #28a745 !important; 
+            background: transparent !important;
+        }
 
-.plus-circle{
-    width:20px;
-    height:20px;
-    border-radius:50%;
-    background:#28a745;
-    color:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:13px;
-    flex-shrink:0;
-}
-
-.balance-pill span{
-    font-size:15px;
-    font-weight:700;
-    color:#1a2b3c;
-}
-
-.logo img{
-    height:60px;
-}
-
-.search-icon{
-    color:#7a8a94;
-    font-size:20px;
-}
-
-        /* --- Top Categories --- */
-        .top-nav { display: flex; background: #fff; }
-        .nav-item { flex: 1; text-align: center; padding: 10px 0; color: #7a8a94; font-size: 11px; font-weight: bold; cursor: pointer; }
-        .nav-item i { display: block; font-size: 20px; margin-bottom: 4px; }
-        .nav-item.active { color: #28a745; border-bottom: 3px solid #28a745; }
-
-       /* --- Home Page Content --- */
-#home-content {
-    display: block;
-}
-
-.sub-cats {
-    display: flex;
-    overflow-x: auto;
-    padding: 10px 6px;
-    gap: 5px;
-    scrollbar-width: none;
-    background: #e9eef2;
-}
-
-.sub-cat-card {
-    min-width: 62px;
-    background: #fff;
-    border-radius: 10px;
-    padding: 6px 3px;
-    text-align: center;
-    box-shadow: 0 1px 2px rgba(0,0,0,.04);
-}
-
-.icon-bg {
-    width: 42px;
-    height: 42px;
-    background: transparent;
-    border-radius: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #28a745;
-    font-size: 22px;
-    margin: 0 auto 5px;
-}
-
-.sub-cat-card span {
-    font-size: 10px;
-    font-weight: 600;
-}
-
-.banners {
-    display: flex;
-    overflow-x: auto;
-    padding: 15px 10px;
-    gap: 12px;
-    scrollbar-width: none;
-    background: #e9eef2;
-}
-
-.banner-card {
-    min-width: 135px;
-    text-align: center;
-}
-
-.banner-card img {
-    width: 135px;
-    height: 135px;
-    border-radius: 20px;
-    object-fit: cover;
-    margin-bottom: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,.05);
-}
-
-.banner-card span {
-    font-size: 11px;
-    font-weight: bold;
-    line-height: 1.2;
-    display: block;
-}
-
-.live-head {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 15px;
-    align-items: center;
-}
-
-.live-head h2 {
-    font-size: 18px;
-    font-weight: 800;
-}
-
-.live-badge {
-    background: #e0f2e9;
-    color: #28a745;
-    font-size: 12px;
-    padding: 2px 8px;
-    border-radius: 10px;
-    margin-left: 5px;
-}
-
-.match-box {
-    background: #fff;
-    margin: 0 12px 12px;
-    border-radius: 15px;
-    padding: 15px;
-}
-
-.match-title {
-    font-size: 11px;
-    color: #888;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.team {
-    display: flex;
-    justify-content: space-between;
-    font-weight: bold;
-    font-size: 14px;
-    margin-bottom: 5px;
-}
+        /* --- Home Page Content --- */
+        #home-content { display: block; }
+        
+        .game-slider {
+            width: 100%;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .game-track {
+            display: flex;
+            gap: 12px;
+            animation: slide 20s linear infinite;
+        }
+        .game-track img {
+            width: 260px;
+            height: 140px;
+            border-radius: 20px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        @keyframes slide {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-1100px); }
+        }
 
         /* --- Menu Page Content --- */
-#menu-content { 
-    display: none; 
-    padding: 10px; 
-}
+        #menu-content { display: none; padding: 10px; }
 
-/* ===== PROFILE ===== */
-.profile-section { 
-    display: flex; 
-    align-items: center; 
-    padding: 12px; 
-    margin: 0;
+        .profile-section { 
+            display: flex; 
+            align-items: center; 
+            padding: 15px; 
+            background: #fff; 
+            border-radius: 12px 12px 0 0;
+            border: 1px solid #eef1f4;
+            border-bottom: none;
+            cursor: pointer;
+        }
+        .avatar { 
+            width: 35px; 
+            height: 35px; 
+            background: #cfd8dc; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #fff; 
+            font-size: 20px; 
+        }
+        .profile-info { margin-left: 12px; }
+        .profile-info h4 { font-size: 14px; text-transform: uppercase; color: #1a2b3c; }
+        .profile-info p { font-size: 11px; color: #28a745; font-weight: bold; }
+        .profile-icons { margin-left: auto; display: flex; gap: 18px; align-items: center; }
+        .profile-icons .fa-envelope { font-size: 23px; color: #7a8a94; }
+        .settings-icon { position: relative; display: flex; align-items: center; justify-content: center; }
+        .profile-icons .fa-cog { font-size: 23px; color: #7a8a94; }
+        .settings-icon::after {
+            content: "!";
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 16px;
+            height: 16px;
+            background: red;
+            color: #fff;
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
 
-    background: #fff; 
-    border-radius: 12px 12px 0 0;
-    box-shadow: none;
-    border: 1px solid #eef1f4;
-    border-bottom: none;
-}
-
-/* Avatar */
-.avatar { 
-    width: 35px; 
-    height: 35px; 
-    background: #7a8a94; 
-    border-radius: 50%; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    color: #fff; 
-    font-size: 20px; 
-}
-
-/* Profile text */
-.profile-info { 
-    margin-left: 12px; 
-}
-
-.profile-info h4 { 
-    font-size: 14px; 
-    text-transform: uppercase; 
-    color: #1a2b3c;
-}
-
-.profile-info p { 
-    font-size: 11px; 
-    color: #28a745; 
-    font-weight: bold; 
-}
-
-/* Icons container */
-.profile-icons { 
-    margin-left: auto; 
-    display: flex; 
-    gap: 18px; 
-    align-items: center; 
-}
-
-/* message icon (bigger + grey) */
-.profile-icons .fa-envelope { 
-    font-size: 23px; 
-    color: #7a8a94; 
-}
-
-/* settings wrapper */
-.settings-icon {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* settings icon (bigger + grey) */
-.profile-icons .fa-cog { 
-    font-size: 23px; 
-    color: #7a8a94; 
-}
-
-/* red notification dot (!) */
-.settings-icon::after {
-    content: "!";
-    position: absolute;
-    top: -6px;
-    right: -6px;
-
-    width: 16px;
-    height: 16px;
-    background: red;
-    color: #fff;
-    font-size: 11px;
-    font-weight: bold;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 50%;
-}
-
-
-/* ===== BALANCE BOX ===== */
-.menu-balance-box { 
-    background: #fff; 
-    border-radius: 0;        /* 👈 attach with profile */
-    padding: 10px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    margin: 0;              /* 👈 no gap */
-
-    border-left: 1px solid #eef1f4;
-    border-right: 1px solid #eef1f4;
-}
-
-/* only grey middle */
-.wallet-info { 
-    display: flex; 
-    align-items: center; 
-    gap: 8px; 
-    background: #e9eef2; 
-    padding: 8px 12px; 
-    border-radius: 8px; 
-    flex: 1; 
-    margin-right: 10px;
-}
-
-/* deposit button */
-.dep-btn { 
-    background: #28a745; 
-    color: #fff; 
-    border: none; 
-    padding: 10px 18px; 
-    border-radius: 8px; 
-    font-weight: bold; 
-}
-
-
-/* ===== QUICK GRID (আইকন সাইজ বড় করার জন্য আপডেট) ===== */
-.quick-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    background: #fff;
-    padding: 15px 5px; /* প্যাডিং একটু বাড়িয়ে দিলাম */
-    margin: 0;
-    border-radius: 0 0 12px 12px;
-    border: 1px solid #eef1f4;
-    border-top: none;
-    box-shadow: none;
-}
-
-.quick-item {
-    background: transparent;
-    text-align: center;
-    padding: 5px 2px;
-    cursor: pointer;
-}
-
-/* আইকন সাইজ বড় করা হলো */
-.quick-item img {
-    width: 60px;  /* আগে ৩০ ছিল, এখন ৪৪ করা হলো */
-    height: 60px; /* আগে ৩০ ছিল, এখন ৪৪ করা হলো */
-    display: block; 
-    margin: 0 auto 8px; /* আইকন ও লেখার মাঝের গ্যাপ একটু বাড়ানো হলো */
-    object-fit: contain;
-}
-
-/* টেক্সট সাইজ একটু বড় ও বোল্ড করা হলো */
-.quick-item span {
-    font-size: 11px;
-    font-weight: 700;
-    color: #1a2b3c;
-    display: block;
-}
-
-
-        .menu-list-card{
-    background:#f5f7f9;
-    border-radius:16px;
-    padding:16px 20px;
-    display:flex;
-    align-items:center;
-    gap:18px;
-    margin-bottom:10px;
-    border:1px solid #eef2f5;
-    box-shadow:none;
-}
-
-.menu-icon{
-    width:42px;
-    height:42px;
-    border-radius:50%;
-    background:#eef2f5;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#28a745;
-    font-size:20px;
-    flex-shrink:0;
-}
-
-.menu-text { 
-    flex: 1; 
-}
-
-.menu-text b { 
-    display: block; 
-    font-size: 15px;          /* টেক্সট সাইজ বাড়ানো হলো */
-    color: #1a2b3c; 
-    margin-bottom: 2px;
-}
-
-.menu-text span { 
-    font-size: 12px;          /* সাব-টেক্সট সাইজ বাড়ানো হলো */
-    color: #888; 
-}
-
-
-.arrow-right { 
-    color: #ccc; 
-    font-size: 12px; 
-}
-
+        .menu-balance-box { 
+            background: #fff; 
+            border-radius: 0;
+            padding: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            border-left: 1px solid #eef1f4;
+            border-right: 1px solid #eef1f4;
+        }
+        .wallet-info { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            background: #e9eef2; 
+            padding: 8px 12px; 
+            border-radius: 8px; 
+            flex: 1; 
+            margin-right: 10px;
+        }
+        .dep-btn { 
+            background: #28a745; 
+            color: #fff; 
+            border: none; 
+            padding: 10px 18px; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer;
+        }
 
         /* --- Bottom Navigation --- */
         .bottom-bar { position: fixed; bottom: 0; width: 100%; height: 65px; background: #fff; display: flex; align-items: center; z-index: 1000; }
@@ -435,721 +227,448 @@
         .slip-icon { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); background: #28a745; width: 55px; height: 55px; border-radius: 50%; border: 4px solid #f0f4f7; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2); }
         .slip-text { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); }
 
-.original-ticket-icon{
-    position:relative;
-    width:24px;
-    height:16px;
-}
+        .original-ticket-icon { position: relative; width: 24px; height: 16px; }
+        .original-ticket-icon::before {
+            content: '';
+            position: absolute;
+            left: 2px;
+            top: -2px;
+            width: 18px;
+            height: 13px;
+            background: rgba(255,255,255,.6);
+            border-radius: 2px;
+        }
+        .original-ticket-icon::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 24px;
+            height: 14px;
+            background: #fff;
+            border-radius: 2px;
+            background-image: radial-gradient(circle at center,#28a745 1.5px,transparent 1.5px);
+            background-size: 6px 14px;
+            background-repeat: repeat-x;
+            background-position: center;
+        }
 
-.original-ticket-icon::before{
-    content:'';
-    position:absolute;
-    left:2px;
-    top:-2px;
-    width:18px;
-    height:13px;
-    background:rgba(255,255,255,.6);
-    border-radius:2px;
-}
-
-.original-ticket-icon::after{
-    content:'';
-    position:absolute;
-    left:0;
-    bottom:0;
-    width:24px;
-    height:14px;
-    background:#fff;
-    border-radius:2px;
-    background-image:radial-gradient(circle at center,#28a745 1.5px,transparent 1.5px);
-    background-size:6px 14px;
-    background-repeat:repeat-x;
-    background-position:center;
-}
-
-.custom-menu-icon{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:3px;
-    width:18px;
-    height:18px;
-    margin-bottom:4px;
-}
-
-.custom-menu-icon div{
-    background:#7a8a94;
-    border-radius:2px;
-}
-
-.bottom-item.active .custom-menu-icon div{
-    background:#28a745;
-}
-
-.header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:10px 15px;
-    height:55px;
-    position:sticky;
-    top:0;
-    background:#fff;
-    z-index:100;
-
-    position:relative; /* এটা থাকতে হবে */
-}
-
-.logo{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%) translateX(0px);
-    /* শেষের 0px পরিবর্তন করবে */
-}
-
-.logo img{
-    height:50px;
-}
-
-/* --- Top Navigation - সবগুলো আইকন সমান করার জন্য --- */
-.top-nav { 
-    display: flex; 
-    background: #ffffff; 
-    padding: 10px 0;
-    border-bottom: 1px solid #f0f0f0; 
-}
-
-.nav-item { 
-    flex: 1; 
-    text-align: center; 
-    color: #7a8a94; 
-    font-size: 11px; 
-    font-weight: 600; 
-    cursor: pointer;
-    
-    /* সবগুলো আইকনের ব্যাকগ্রাউন্ড একই রকম স্বচ্ছ করা হলো */
-    background: transparent !important; 
-    border: none !important;
-    box-shadow: none !important;
-}
-
-.nav-item img {
-    width: 36px;
-    height: 36px;
-    display: block;
-    margin: 0 auto 4px;
-    object-fit: contain;
-    
-    /* নিশ্চিত করা হলো যেন কোনো ব্যাকগ্রাউন্ড কালার না থাকে */
-    background: transparent !important; 
-    border: none !important;
-}
-
-.nav-item.active { 
-    color: #28a745; 
-    border-bottom: 3px solid #28a745 !important; 
-    background: transparent !important;
-}
-
-.menu-balance-box{
-    margin:0;
-    border-radius:0;
-}
-
-.game-slider{
-    width:100%;
-    overflow:hidden;
-    margin:10px 0;
-}
-
-.game-track{
-    display:flex;
-    gap:12px;
-    animation:slide 20s linear infinite;
-}
-
-.game-track img{
-    width:260px;
-    height:140px;
-    border-radius:20px;
-    object-fit:cover;
-    flex-shrink:0;
-}
-
-@keyframes slide{
-    0%{transform:translateX(100%);}
-    100%{transform:translateX(-1100px);}
-}
-
-#deposit-page-overlay{
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 100%;
-    height: 100%;
-    background: #fff;
-    z-index: 5000;
-    transition: right .4s ease;
-}
-
-#deposit-page-overlay.active{
-    right: 0;
-}
-
-#deposit-frame{
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
+        .custom-menu-icon {
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            gap: 3px;
+            width: 18px;
+            height: 18px;
+            margin-bottom: 4px;
+        }
+        .custom-menu-icon div {
+            background: #7a8a94;
+            border-radius: 2px;
+        }
+        .bottom-item.active .custom-menu-icon div {
+            background: #28a745;
+        }
     </style>
 </head>
 <body>
 
+    <!-- Deposit Overlay -->
     <div id="deposit-page-overlay">
         <iframe id="deposit-frame" src=""></iframe>
     </div>
 
-<div id="settings-page-overlay" style="position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #eef2f5; z-index: 3000; transition: right 0.4s ease; overflow-y: auto;">
-    
-    <div style="padding: 15px; display: flex; align-items: center; background: #fff; border-bottom: 1px solid #ddd; height: 55px; color: #7a8a94;">
-        <i class="fas fa-arrow-left" onclick="closeSettings()" style="font-size: 20px; cursor: pointer; color: #7a8a94;"></i>
-        <h3 style="flex: 1; text-align: center; font-size: 18px; color: #1a2b3c;">Settings</h3>
-        <i class="fas fa-info-circle" style="margin-right: 15px; font-size: 18px; color: #7a8a94;"></i>
-        <i class="fas fa-user" style="font-size: 18px; color: #7a8a94;"></i>
-    </div>
-
-    <!-- ব্যানার এবং ক্লিক এরিয়া -->
-    <div style="position: relative; width: 100%;">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting3.jpg" alt="Settings Banner" style="width: 100%; display: block; margin-top: 0;">
-        <!-- এখানে Make a deposit এরিয়ার জন্য অদৃশ্য বক্স -->
-        <div onclick="openDeposit()" style="position: absolute; top: 0; left: 0; width: 100%; height: 30%; cursor: pointer; z-index: 3001;"></div>
-    </div>
-
-    <div id="logout-trigger" style="width: calc(100% + 10px); margin-left: -5px; margin-top: 15px; margin-bottom: 20px; cursor: pointer;">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting2.jpg" alt="Settings Footer" style="width: 100%; display: block;">
-    </div>
-    
-</div>
-
-</div>
-
-
-<!-- Personal Profile Page Overlay -->
-<div id="personal-profile-overlay" style="position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #eef2f5; z-index: 4000; transition: right 0.4s ease; overflow-y: auto;">
-    
-    <!-- Header -->
-    <div style="padding: 15px; display: flex; align-items: center; background: #fff; border-bottom: 1px solid #ddd; height: 55px;">
-        <i class="fas fa-arrow-left" onclick="closeProfilePage()" style="font-size: 20px; cursor: pointer; color: #7a8a94; margin-right: 20px;"></i>
-        <h3 style="flex: 1; text-align: center; font-size: 18px; color: #7a8a94;">Personal profile</h3>
-        <div style="width: 20px;"></div> <!-- Alignment fix -->
-    </div>
-
-    <div style="padding: 15px;">
-    <!-- Enter Details Button -->
-    <div onclick="openCompleteProfile()" style="background: #fff; padding: 15px; border-radius: 12px; display: flex; align-items: center; margin-bottom: 20px; cursor: pointer;">
-        <div style="background: #e0f2e9; color: #28a745; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-            <i class="fas fa-pen"></i>
-        </div>
-        <b style="font-size: 16px;">Enter details</b>
-    </div>
-</div>
-
-
-
-        
-        <!-- Account Section -->
-<h4 style="color: #7a8a94; margin: 15px 10px 10px 10px; font-size: 13px;">Account</h4>
-<div style="background: #fff; border-radius: 12px; padding: 0 15px; margin-bottom: 20px;">
-    
-    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">Account number</span>
-        <span style="color: #1a2b3c; font-weight: bold;" class="account-id-display">id: Loading...</span>
-    </div>
-
-    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">Email</span>
-        <span id="display-email" style="color: #28a745; font-weight: bold;">Not filled in</span>
-    </div>
-
-    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">Phone number</span>
-        <span id="display-phone" style="color: #28a745; font-weight: bold;">Not filled in</span>
-    </div>
-
-    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">Password</span>
-        <span style="color: #28a745; font-weight: bold; cursor: pointer;">Change</span>
-    </div>
-
-    <div style="padding: 15px 0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">Registration date</span>
-        <span id="display-reg-date" style="color: #1a2b3c;">--/--/----</span>
-    </div>
-</div>
-
-<h4 style="color: #7a8a94; margin: 15px 10px 10px 10px; font-size: 13px;">Personal information</h4>
-<div style="background: #fff; border-radius: 12px; padding: 0 15px;">
-    
-    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">Name</span>
-        <span id="display-name" style="color: #1a2b3c;">Not filled in</span>
-    </div>
-
-    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">Username</span>
-        <span id="display-username" style="color: #1a2b3c;">Not filled in</span>
-    </div>
-
-    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-    <span style="color: #7a8a94;">Country</span>
-    <span id="display-country" style="color: #1a2b3c;">Not filled in</span>
-</div>
-
-
-    <div style="padding: 15px 0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">City</span>
-        <span id="display-city" style="color: #1a2b3c;">Not filled in</span>
-     </div>
-</div>
- </div>
-</div>
-
-
-    <div class="header">
-    
-    <div class="balance-pill" onclick="openDeposit()">
-        <div class="plus-circle">
-            <i class="fas fa-plus"></i>
-        </div>
-        <span>0 $</span>
-    </div>
-
-    <div class="logo">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/22.jpg" alt="22BET">
-    </div>
-
-    <div class="search-icon">
-        <i class="fas fa-search"></i>
-    </div>
-
-</div>
-
-    <div id="home-content">
-
-    <div style="margin:0;padding:0;">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/home2.jpg"
-             style="display:block;width:100%;height:auto;">
-    </div>
-
-    <div class="game-slider">
-    <div class="game-track">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/fru.jpg">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/royal.jpg">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/burning.jpg">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/scratch.jpg">
-    </div>
-</div>
-</div>
-</div>
-
-    <div id="menu-content">
-    <div class="profile-section" style="padding: 15px; cursor: pointer; display: flex; align-items: center;" onclick="openProfilePage()">
-        <div class="avatar" style="width: 35px; height: 35px; background: #cfd8dc; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px;">
-            <i class="fas fa-user"></i>
-        </div>
-        
-        <div class="profile-info" style="margin-left: 12px;">
-            <h4 id="profileName" style="font-size: 14px; text-transform: uppercase; color: #1a2b3c;">USER</h4>
-            <p style="font-size: 11px; color: #28a745; font-weight: bold;">Personal profile</p>
+    <!-- Settings Overlay -->
+    <div id="settings-page-overlay" style="position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #eef2f5; z-index: 3000; transition: right 0.4s ease; overflow-y: auto;">
+        <div style="padding: 15px; display: flex; align-items: center; background: #fff; border-bottom: 1px solid #ddd; height: 55px; color: #7a8a94;">
+            <i class="fas fa-arrow-left" onclick="closeSettings()" style="font-size: 20px; cursor: pointer; color: #7a8a94;"></i>
+            <h3 style="flex: 1; text-align: center; font-size: 18px; color: #1a2b3c;">Settings</h3>
+            <i class="fas fa-info-circle" style="margin-right: 15px; font-size: 18px; color: #7a8a94;"></i>
+            <i class="fas fa-user" style="font-size: 18px; color: #7a8a94;"></i>
         </div>
 
-        <div class="profile-icons" style="margin-left: auto; display: flex; gap: 18px; align-items: center;">
-            <i class="fas fa-envelope" style="font-size: 23px; color: #7a8a94;"></i>
-            <div class="settings-icon" onclick="event.stopPropagation(); openSettings()" style="cursor: pointer;">
-                <i class="fas fa-cog" style="font-size: 23px; color: #7a8a94;"></i>
+        <div style="position: relative; width: 100%;">
+            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting3.jpg" alt="Settings Banner" style="width: 100%; display: block;">
+            <div onclick="openDeposit()" style="position: absolute; top: 0; left: 0; width: 100%; height: 30%; cursor: pointer; z-index: 3001;"></div>
+        </div>
+
+        <div id="logout-trigger" style="width: calc(100% + 10px); margin-left: -5px; margin-top: 15px; margin-bottom: 20px; cursor: pointer;">
+            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting2.jpg" alt="Settings Footer" style="width: 100%; display: block;">
+        </div>
+    </div>
+
+    <!-- Personal Profile Page Overlay -->
+    <div id="personal-profile-overlay" style="position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #eef2f5; z-index: 4000; transition: right 0.4s ease; overflow-y: auto;">
+        <div style="padding: 15px; display: flex; align-items: center; background: #fff; border-bottom: 1px solid #ddd; height: 55px;">
+            <i class="fas fa-arrow-left" onclick="closeProfilePage()" style="font-size: 20px; cursor: pointer; color: #7a8a94; margin-right: 20px;"></i>
+            <h3 style="flex: 1; text-align: center; font-size: 18px; color: #7a8a94;">Personal profile</h3>
+            <div style="width: 20px;"></div>
+        </div>
+
+        <div style="padding: 15px;">
+            <div onclick="openCompleteProfile()" style="background: #fff; padding: 15px; border-radius: 12px; display: flex; align-items: center; margin-bottom: 20px; cursor: pointer;">
+                <div style="background: #e0f2e9; color: #28a745; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                    <i class="fas fa-pen"></i>
+                </div>
+                <b style="font-size: 16px;">Enter details</b>
+            </div>
+            
+            <h4 style="color: #7a8a94; margin: 15px 10px 10px 10px; font-size: 13px;">Account</h4>
+            <div style="background: #fff; border-radius: 12px; padding: 0 15px; margin-bottom: 20px;">
+                <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span style="color: #7a8a94;">Account number</span>
+                    <span style="color: #1a2b3c; font-weight: bold;" class="account-id-display">id: Loading...</span>
+                </div>
+                <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span style="color: #7a8a94;">Email</span>
+                    <span id="display-email" style="color: #28a745; font-weight: bold;">Not filled in</span>
+                </div>
+                <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span style="color: #7a8a94;">Phone number</span>
+                    <span id="display-phone" style="color: #28a745; font-weight: bold;">Not filled in</span>
+                </div>
+                <div style="padding: 15px 0; display: flex; justify-content: space-between;">
+                    <span style="color: #7a8a94;">Registration date</span>
+                    <span id="display-reg-date" style="color: #1a2b3c;">--/--/----</span>
+                </div>
+            </div>
+
+            <h4 style="color: #7a8a94; margin: 15px 10px 10px 10px; font-size: 13px;">Personal information</h4>
+            <div style="background: #fff; border-radius: 12px; padding: 0 15px;">
+                <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span style="color: #7a8a94;">Name</span>
+                    <span id="display-name" style="color: #1a2b3c;">Not filled in</span>
+                </div>
+                <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span style="color: #7a8a94;">Username</span>
+                    <span id="display-username" style="color: #1a2b3c;">Not filled in</span>
+                </div>
+                <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span style="color: #7a8a94;">Country</span>
+                    <span id="display-country" style="color: #1a2b3c;">Not filled in</span>
+                </div>
+                <div style="padding: 15px 0; display: flex; justify-content: space-between;">
+                    <span style="color: #7a8a94;">City</span>
+                    <span id="display-city" style="color: #1a2b3c;">Not filled in</span>
+                </div>
             </div>
         </div>
-    </div> 
+    </div>
+
+    <!-- Main Header -->
+    <div class="header">
+        <div class="balance-pill" onclick="openDeposit()">
+            <div class="plus-circle"><i class="fas fa-plus"></i></div>
+            <span>0 $</span>
+        </div>
+        <div class="logo">
+            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/22.jpg" alt="22BET">
+        </div>
+        <div class="search-icon"><i class="fas fa-search"></i></div>
+    </div>
+
+    <!-- Home Content -->
+    <div id="home-content">
+        <div style="margin:0;padding:0;">
+            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/home2.jpg" style="display:block;width:100%;height:auto;">
+        </div>
+        <div class="game-slider">
+            <div class="game-track">
+                <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/fru.jpg">
+                <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/royal.jpg">
+                <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/burning.jpg">
+                <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/scratch.jpg">
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Content -->
+    <div id="menu-content">
+        <div class="profile-section" onclick="openProfilePage()">
+            <div class="avatar"><i class="fas fa-user"></i></div>
+            <div class="profile-info">
+                <h4 id="profileName">USER</h4>
+                <p>Personal profile</p>
+            </div>
+            <div class="profile-icons">
+                <i class="fas fa-envelope"></i>
+                <div class="settings-icon" onclick="event.stopPropagation(); openSettings()">
+                    <i class="fas fa-cog"></i>
+                </div>
+            </div>
+        </div> 
 
         <div class="menu-balance-box">
-        <div class="wallet-info">
-            <i class="fas fa-wallet" style="color: #28a745;"></i>
-            <span style="font-weight: bold; font-size: 14px;">...</span>
-            <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: auto; color: #ccc;"></i>
-        </div>
-        <button class="dep-btn" onclick="openDeposit()">+ Deposit</button>
-    </div>
-
-
-    <div style="margin:0; padding:0;">
-    <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/menu.jpg"
-         style="
-            display:block;
-            width:100%;
-            height:auto;
-            margin:0;
-            border-radius:0;
-            object-fit:cover;
-         ">
-</div>
-
-<div style="margin:0;padding:0;">
-    <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/menu2.jpg"
-         style="display:block;width:100%;height:auto;border-radius:0;object-fit:cover;">
-</div>
-
-<div id="complete-profile-form" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef2f5; z-index: 9999; overflow-y: auto;">
-    <!-- Header -->
-    <div style="padding: 15px; display: flex; align-items: center; background: #fff; height: 55px; position: sticky; top: 0; z-index: 10;">
-        <i class="fas fa-arrow-left" onclick="closeForm()" style="font-size: 20px; cursor: pointer; color: #7a8a94; margin-right: 20px;"></i>
-        <h3 style="flex: 1; text-align: center; font-size: 18px; color: #7a8a94; margin: 0;">Complete profile</h3>
-        <div style="width: 20px;"></div>
-    </div>
-
-    <div style="padding: 15px;">
-        <style>
-            .input-card { background: #fff; padding: 0 15px; border-radius: 12px; margin-bottom: 20px; }
-            .input-card input { width: 100%; padding: 15px 0; border: none; border-bottom: 1px solid #eef1f4; font-size: 16px; color: #333; outline: none; }
-            .input-label { color: #7a8a94; margin: 15px 0 10px 5px; font-size: 13px; }
-        </style>
-
-        <!-- Main details section -->
-        <div class="input-label">Main details</div>
-        <div class="input-card">
-            <input type="text" id="reg-name" class="profile-input" placeholder="Name">
-            <input type="text" id="reg-username" class="profile-input" placeholder="Username">
-            <input type="email" id="reg-email" class="profile-input" placeholder="Email">
-            <input type="tel" id="reg-phone" class="profile-input" placeholder="Phone number">
-            <input type="text" id="reg-patronymic" class="profile-input" placeholder="Patronymic (if any)">
-            <input type="text" id="reg-dob" class="profile-input" placeholder="Date of birth" onfocus="(this.type='date')">
-            <input type="text" id="reg-pob" class="profile-input" placeholder="Place of birth" style="border: none;">
+            <div class="wallet-info">
+                <i class="fas fa-wallet" style="color: #28a745;"></i>
+                <span style="font-weight: bold; font-size: 14px;">...</span>
+                <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: auto; color: #ccc;"></i>
+            </div>
+            <button class="dep-btn" onclick="openDeposit()">+ Deposit</button>
         </div>
 
-        <!-- Residence section -->
-        <div class="input-label">Residence</div>
-        <div class="input-card">
-            <input type="text" id="reg-country" class="profile-input" placeholder="Country">
-            <input type="text" id="reg-region" class="profile-input" placeholder="Region">
-            <input type="text" id="reg-city" class="profile-input" placeholder="City">
-            <input type="text" id="reg-address" class="profile-input" placeholder="Residence address" style="border: none;">
+        <div style="margin:0; padding:0;">
+            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/menu.jpg" style="display:block;width:100%;height:auto;object-fit:cover;">
         </div>
-
-        <!-- ID document section -->
-        <div class="input-label">ID document</div>
-        <div class="input-card">
-            <input type="text" id="reg-doc-type" class="profile-input" placeholder="Document type">
-            <input type="text" id="reg-series" class="profile-input" placeholder="Series (if have)">
-            <input type="text" id="reg-doc-num" class="profile-input" placeholder="Document number">
-            <input type="text" id="reg-doc-date" class="profile-input" placeholder="Date of issue" onfocus="(this.type='date')">
-            <input type="text" id="reg-issued-by" class="profile-input" placeholder="Issued by" style="border: none;">
-        </div>
-
-        <!-- Save Button Section -->
-        <div style="padding: 15px 0; position: sticky; bottom: 0; background: #eef2f5;">
-            <button id="saveBtn" onclick="saveProfile()" style="width: 100%; padding: 15px; background: #28a745; color: #fff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">Save</button>
+        <div style="margin:0;padding:0;">
+            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/menu2.jpg" style="display:block;width:100%;height:auto;object-fit:cover;">
         </div>
     </div>
-</div>
-</div>
 
-
-
-
-
-
-<div class="bottom-bar">
-    <div class="bottom-item active" id="pop-tab" onclick="switchTab('home')">
-        <i class="fas fa-fire"></i>
-        <span>Popular</span>
-    </div>
-
-    <div class="bottom-item">
-        <i class="fas fa-star"></i>
-        <span>Favorites</span>
-    </div>
-
-    <div class="slip-btn">
-        <div class="slip-icon">
-            <div class="original-ticket-icon"></div>
+    <!-- Complete Profile Form Modal -->
+    <div id="complete-profile-form" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef2f5; z-index: 9999; overflow-y: auto;">
+        <div style="padding: 15px; display: flex; align-items: center; background: #fff; height: 55px; position: sticky; top: 0; z-index: 10;">
+            <i class="fas fa-arrow-left" onclick="closeForm()" style="font-size: 20px; cursor: pointer; color: #7a8a94; margin-right: 20px;"></i>
+            <h3 style="flex: 1; text-align: center; font-size: 18px; color: #7a8a94; margin: 0;">Complete profile</h3>
+            <div style="width: 20px;"></div>
         </div>
-        <span class="slip-text">Bet slip</span>
-    </div>
 
-    <div class="bottom-item">
-        <i class="fas fa-clock"></i>
-        <span>History</span>
-    </div>
+        <div style="padding: 15px;">
+            <style>
+                .input-card { background: #fff; padding: 0 15px; border-radius: 12px; margin-bottom: 20px; }
+                .input-card input { width: 100%; padding: 15px 0; border: none; border-bottom: 1px solid #eef1f4; font-size: 16px; color: #333; outline: none; }
+                .input-label { color: #7a8a94; margin: 15px 0 10px 5px; font-size: 13px; }
+            </style>
 
-    <div class="bottom-item" id="menu-tab" onclick="switchTab('menu')">
-        <div class="custom-menu-icon">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div class="input-label">Main details</div>
+            <div class="input-card">
+                <input type="text" id="reg-name" class="profile-input" placeholder="Name">
+                <input type="text" id="reg-username" class="profile-input" placeholder="Username">
+                <input type="email" id="reg-email" class="profile-input" placeholder="Email">
+                <input type="tel" id="reg-phone" class="profile-input" placeholder="Phone number">
+            </div>
+
+            <div class="input-label">Residence</div>
+            <div class="input-card">
+                <input type="text" id="reg-country" class="profile-input" placeholder="Country">
+                <input type="text" id="reg-city" class="profile-input" placeholder="City">
+            </div>
+
+            <div style="padding: 15px 0;">
+                <button id="saveBtn" onclick="saveProfile()" style="width: 100%; padding: 15px; background: #28a745; color: #fff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">Save</button>
+            </div>
         </div>
-        <span>Menu</span>
     </div>
-</div>
 
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-bar">
+        <div class="bottom-item active" id="pop-tab" onclick="switchTab('home')">
+            <i class="fas fa-fire"></i>
+            <span>Popular</span>
+        </div>
+        <div class="bottom-item">
+            <i class="fas fa-star"></i>
+            <span>Favorites</span>
+        </div>
+        <div class="slip-btn">
+            <div class="slip-icon">
+                <div class="original-ticket-icon"></div>
+            </div>
+            <span class="slip-text">Bet slip</span>
+        </div>
+        <div class="bottom-item">
+            <i class="fas fa-clock"></i>
+            <span>History</span>
+        </div>
+        <div class="bottom-item" id="menu-tab" onclick="switchTab('menu')">
+            <div class="custom-menu-icon">
+                <div></div><div></div><div></div><div></div>
+            </div>
+            <span>Menu</span>
+        </div>
+    </div>
 
-
-
-
-
-
-
+    <!-- Firebase & Custom Scripts -->
     <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAsKOo6nJPZWT-DwdmnBR35J0U_feLiYGM",
-        authDomain: "betapp-c96eb.firebaseapp.com",
-        projectId: "betapp-c96eb",
-        storageBucket: "betapp-c96eb.firebasestorage.app",
-        messagingSenderId: "1028599491642",
-        appId: "1:1028599491642:web:1b14aea9673b49eb215903",
-        measurementId: "G-GYPL0LQPSG"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyAsKOo6nJPZWT-DwdmnBR35J0U_feLiYGM",
+            authDomain: "betapp-c96eb.firebaseapp.com",
+            projectId: "betapp-c96eb",
+            storageBucket: "betapp-c96eb.firebasestorage.app",
+            messagingSenderId: "1028599491642",
+            appId: "1:1028599491642:web:1b14aea9673b49eb215903",
+            measurementId: "G-GYPL0LQPSG"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-    // Global UI Functions
-    window.openDeposit = function () {
-        const settings = document.getElementById("settings-page-overlay");
-        const overlay = document.getElementById("deposit-page-overlay");
-        const frame = document.getElementById("deposit-frame");
-
-        if (overlay) overlay.style.zIndex = "5000";
-        if (frame) frame.src = "";
-
-        setTimeout(() => {
-            if (frame) frame.src = "https://mdripon018770-coder.github.io/Notbok/22dp.html";
-            if (overlay) overlay.classList.add("active");
-        }, 50);
-    };
-
-    window.closeDeposit = function () {
-        const overlay = document.getElementById("deposit-page-overlay");
-        const frame = document.getElementById("deposit-frame");
-
-        if (overlay) overlay.classList.remove("active");
-        setTimeout(() => {
+        window.openDeposit = function () {
+            const overlay = document.getElementById("deposit-page-overlay");
+            const frame = document.getElementById("deposit-frame");
+            if (overlay) overlay.style.zIndex = "5000";
             if (frame) frame.src = "";
-        }, 400);
-    };
+            setTimeout(() => {
+                if (frame) frame.src = "https://mdripon018770-coder.github.io/Notbok/22dp.html";
+                if (overlay) overlay.classList.add("active");
+            }, 50);
+        };
 
-    window.switchTab = function(tab) {
-        const home = document.getElementById('home-content');
-        const menu = document.getElementById('menu-content');
-        const popTab = document.getElementById('pop-tab');
-        const menuTab = document.getElementById('menu-tab');
-        const header = document.querySelector('.header');
-        const topNav = document.querySelector('.top-nav');
+        window.closeDeposit = function () {
+            const overlay = document.getElementById("deposit-page-overlay");
+            const frame = document.getElementById("deposit-frame");
+            if (overlay) overlay.classList.remove("active");
+            setTimeout(() => { if (frame) frame.src = ""; }, 400);
+        };
 
-        if(tab === 'menu') {
-            if(home) home.style.display = 'none';
-            if(menu) menu.style.display = 'block';
-            if(header) header.style.display = 'none'; 
-            if(topNav) topNav.style.display = 'none'; 
-            if(menuTab) menuTab.classList.add('active');
-            if(popTab) popTab.classList.remove('active');
-        } else {
-            if(home) home.style.display = 'block';
-            if(menu) menu.style.display = 'none';
-            if(header) header.style.display = 'flex'; 
-            if(topNav) topNav.style.display = 'flex'; 
-            if(popTab) popTab.classList.add('active');
-            if(menuTab) menuTab.classList.remove('active');
-        }
-    };
+        window.switchTab = function(tab) {
+            const home = document.getElementById('home-content');
+            const menu = document.getElementById('menu-content');
+            const popTab = document.getElementById('pop-tab');
+            const menuTab = document.getElementById('menu-tab');
+            const header = document.querySelector('.header');
 
-    window.openSettings = function() { 
-        const settingsOverlay = document.getElementById('settings-page-overlay');
-        if(settingsOverlay) settingsOverlay.style.right = '0'; 
-    };
-    
-    window.closeSettings = function() { 
-        const settingsOverlay = document.getElementById('settings-page-overlay');
-        if(settingsOverlay) settingsOverlay.style.right = '-100%'; 
-    };
-
-    window.openProfilePage = function() { 
-        const profileOverlay = document.getElementById('personal-profile-overlay');
-        if(profileOverlay) profileOverlay.style.right = '0'; 
-    };
-    
-    window.closeProfilePage = function() { 
-        const profileOverlay = document.getElementById('personal-profile-overlay');
-        if(profileOverlay) profileOverlay.style.right = '-100%'; 
-    };
-
-    window.openCompleteProfile = function() {
-        const profileForm = document.getElementById('complete-profile-form');
-        if(profileForm) profileForm.style.display = 'block';
-    };
-
-    window.closeForm = function() {
-        const profileForm = document.getElementById('complete-profile-form');
-        if(profileForm) profileForm.style.display = 'none';
-    };
-
-    window.saveProfile = function() {
-        const saveBtn = document.getElementById('saveBtn');
-        if(saveBtn) {
-            saveBtn.innerText = "Loading...";
-            saveBtn.style.opacity = "0.7";
-            saveBtn.disabled = true;
-        }
-
-        setTimeout(() => {
-            const inputs = document.querySelectorAll('.profile-input');
-            const savedData = JSON.parse(localStorage.getItem('userProfileData')) || {};
-
-            inputs.forEach(input => {
-                if (input.value.trim() !== "") {
-                    savedData[input.id] = input.value;
-                }
-            });
-
-            localStorage.setItem('userProfileData', JSON.stringify(savedData));
-            
-            loadProfileData(); 
-            checkAndHideFields();
-            
-            if(saveBtn) {
-                saveBtn.innerText = "Save";
-                saveBtn.style.opacity = "1";
-                saveBtn.disabled = false;
+            if(tab === 'menu') {
+                if(home) home.style.display = 'none';
+                if(menu) menu.style.display = 'block';
+                if(header) header.style.display = 'none'; 
+                if(menuTab) menuTab.classList.add('active');
+                if(popTab) popTab.classList.remove('active');
+            } else {
+                if(home) home.style.display = 'block';
+                if(menu) menu.style.display = 'none';
+                if(header) header.style.display = 'flex'; 
+                if(popTab) popTab.classList.add('active');
+                if(menuTab) menuTab.classList.remove('active');
             }
-            
-            closeForm();
-        }, 2000); 
-    };
+        };
 
-    function checkAndHideFields() {
-        const savedData = JSON.parse(localStorage.getItem('userProfileData')) || {};
-        const inputs = document.querySelectorAll('.profile-input');
-
-        inputs.forEach(input => {
-            if (savedData[input.id] && savedData[input.id].trim() !== "") {
-                if(input.parentElement) input.parentElement.style.display = 'none';
-            }
-        });
-    }
-
-
-
-
-
-
-        function loadProfileData() {
-        let regDate = localStorage.getItem('userRegDate');
-        if (!regDate) {
-            regDate = new Date().toLocaleDateString('en-GB');
-            localStorage.setItem('userRegDate', regDate);
-        }
-        const regDateEl = document.getElementById('display-reg-date');
-        if(regDateEl) regDateEl.innerText = regDate;
-
-        const savedData = localStorage.getItem('userProfileData');
-        if (savedData) {
-            const data = JSON.parse(savedData);
-            
-            const displayName = document.getElementById('display-name');
-            if(displayName) displayName.innerText = data['reg-name'] || "Not filled in";
-                
-            const displayUsername = document.getElementById('display-username');
-            if(displayUsername) {
-                displayUsername.innerText = data['reg-username'] || "Not filled in";
-                const menuName = document.getElementById('profileName');
-                if(menuName) menuName.innerText = data['reg-username'] || "USER";
-            }
-            
-            const displayEmail = document.getElementById('display-email');
-            if(displayEmail) displayEmail.innerText = data['reg-email'] || "Not filled in";
-                
-            const displayPhone = document.getElementById('display-phone');
-            if(displayPhone) displayPhone.innerText = data['reg-phone'] || "Not filled in";
-                
-            const displayCity = document.getElementById('display-city');
-            if(displayCity) displayCity.innerText = data['reg-city'] || "Not filled in";
-
-            const displayCountry = document.getElementById('display-country');
-            if(displayCountry) displayCountry.innerText = data['reg-country'] || "Not filled in";
-        }
-    }
-
-
-
-
-
-
-
-    // Main Execution on DOM Load
-        // DOM Load হওয়ার সাথে সাথে ব্যালেন্সের জায়গায় শুরুতে শুধু লোডিং বা ড্যাশ রাখা (যাতে ভুল কারেন্সি না দেখায়)
-    document.addEventListener('DOMContentLoaded', () => {
-        const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
-        balanceDisplays.forEach(el => el.innerText = "...");
-
-        const activeUserRef = ref(db, 'activeUser/id');
+        window.openSettings = function() { 
+            const settingsOverlay = document.getElementById('settings-page-overlay');
+            if(settingsOverlay) settingsOverlay.style.right = '0'; 
+        };
         
-        onValue(activeUserRef, (snapshot) => {
-            const savedUser = snapshot.val(); 
-            
-            if (savedUser) {
-                const nameDisplay = document.getElementById('profileName');
-                if (nameDisplay) {
-                    nameDisplay.innerText = savedUser; 
-                }
+        window.closeSettings = function() { 
+            const settingsOverlay = document.getElementById('settings-page-overlay');
+            if(settingsOverlay) settingsOverlay.style.right = '-100%'; 
+        };
 
-                const idDisplay = document.querySelector('.account-id-display');
-                if (idDisplay) {
-                    idDisplay.innerText = 'id: ' + savedUser;
-                }
-                
-                // ইউজারের নিজস্ব ডাটাবেস থেকে তার কারেন্সি এবং ব্যালেন্স ফেচ করা
-                const userRef = ref(db, 'users/' + savedUser);
-                onValue(userRef, (userSnapshot) => {
-                    const data = userSnapshot.val();
-                    if (data) {
-                        const balance = data.balance !== undefined ? data.balance : 0;
-                        // ইউজারের অ্যাকাউন্ট খোলার সময় যে কারেন্সি বা সিম্বল দেওয়া হয়েছিল, সেটি ডায়নামিক্যালি সেট হবে ($ বা ৳ বা অন্য কিছু)
-                        const currencySymbol = data.currencySymbol || data.currency || '৳'; 
-                        
-                        const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
-                        updatedDisplays.forEach(el => el.innerText = `${balance} ${currencySymbol}`);
-                    } else {
-                        // যদি ডাটা না থাকে তবে ডিফল্টভাবে ফাকা বা শূন্য দেখাবে
-                        const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
-                        updatedDisplays.forEach(el => el.innerText = `0 ৳`);
+        window.openProfilePage = function() { 
+            const profileOverlay = document.getElementById('personal-profile-overlay');
+            if(profileOverlay) profileOverlay.style.right = '0'; 
+        };
+        
+        window.closeProfilePage = function() { 
+            const profileOverlay = document.getElementById('personal-profile-overlay');
+            if(profileOverlay) profileOverlay.style.right = '-100%'; 
+        };
+
+        window.openCompleteProfile = function() {
+            const profileForm = document.getElementById('complete-profile-form');
+            if(profileForm) profileForm.style.display = 'block';
+        };
+
+        window.closeForm = function() {
+            const profileForm = document.getElementById('complete-profile-form');
+            if(profileForm) profileForm.style.display = 'none';
+        };
+
+        window.saveProfile = function() {
+            const saveBtn = document.getElementById('saveBtn');
+            if(saveBtn) {
+                saveBtn.innerText = "Loading...";
+                saveBtn.style.opacity = "0.7";
+                saveBtn.disabled = true;
+            }
+
+            setTimeout(() => {
+                const inputs = document.querySelectorAll('.profile-input');
+                const savedData = JSON.parse(localStorage.getItem('userProfileData')) || {};
+
+                inputs.forEach(input => {
+                    if (input.value.trim() !== "") {
+                        savedData[input.id] = input.value;
                     }
                 });
-            } else {
-                // ইউজার লগইন না থাকলে
-                const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
-                updatedDisplays.forEach(el => el.innerText = `0 ৳`);
-            }
-        });
 
-        const logoutTrigger = document.getElementById('logout-trigger');
-        if(logoutTrigger) {
-            logoutTrigger.addEventListener('click', function() {
-                localStorage.removeItem('isLoggedIn');
-                localStorage.removeItem('savedUserID');
-                localStorage.removeItem('savedPassword');
-                window.location.replace("https://mdripon018770-coder.github.io/Notbok/22login.html");
-            });
+                localStorage.setItem('userProfileData', JSON.stringify(savedData));
+                loadProfileData();
+                
+                if(saveBtn) {
+                    saveBtn.innerText = "Save";
+                    saveBtn.style.opacity = "1";
+                    saveBtn.disabled = false;
+                }
+                closeForm();
+            }, 1000); 
+        };
+
+        function loadProfileData() {
+            let regDate = localStorage.getItem('userRegDate');
+            if (!regDate) {
+                regDate = new Date().toLocaleDateString('en-GB');
+                localStorage.setItem('userRegDate', regDate);
+            }
+            const regDateEl = document.getElementById('display-reg-date');
+            if(regDateEl) regDateEl.innerText = regDate;
+
+            const savedData = localStorage.getItem('userProfileData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                
+                const displayName = document.getElementById('display-name');
+                if(displayName) displayName.innerText = data['reg-name'] || "Not filled in";
+                    
+                const displayUsername = document.getElementById('display-username');
+                if(displayUsername) {
+                    displayUsername.innerText = data['reg-username'] || "Not filled in";
+                    const menuName = document.getElementById('profileName');
+                    if(menuName) menuName.innerText = data['reg-username'] || "USER";
+                }
+                
+                const displayEmail = document.getElementById('display-email');
+                if(displayEmail) displayEmail.innerText = data['reg-email'] || "Not filled in";
+                    
+                const displayPhone = document.getElementById('display-phone');
+                if(displayPhone) displayPhone.innerText = data['reg-phone'] || "Not filled in";
+                    
+                const displayCity = document.getElementById('display-city');
+                if(displayCity) displayCity.innerText = data['reg-city'] || "Not filled in";
+
+                const displayCountry = document.getElementById('display-country');
+                if(displayCountry) displayCountry.innerText = data['reg-country'] || "Not filled in";
+            }
         }
 
-        loadProfileData();
-        checkAndHideFields();
-    });
+        document.addEventListener('DOMContentLoaded', () => {
+            const activeUserRef = ref(db, 'activeUser/id');
+            onValue(activeUserRef, (snapshot) => {
+                const savedUser = snapshot.val(); 
+                if (savedUser) {
+                    const nameDisplay = document.getElementById('profileName');
+                    if (nameDisplay) nameDisplay.innerText = savedUser; 
 
+                    const idDisplay = document.querySelector('.account-id-display');
+                    if (idDisplay) idDisplay.innerText = 'id: ' + savedUser;
+                    
+                    const userRef = ref(db, 'users/' + savedUser);
+                    onValue(userRef, (userSnapshot) => {
+                        const data = userSnapshot.val();
+                        if (data) {
+                            const balance = data.balance !== undefined ? data.balance : 0;
+                            const currencySymbol = data.currencySymbol || data.currency || '৳'; 
+                            
+                            const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
+                            updatedDisplays.forEach(el => el.innerText = `${balance} ${currencySymbol}`);
+                        }
+                    });
+                }
+            });
 
+            const logoutTrigger = document.getElementById('logout-trigger');
+            if(logoutTrigger) {
+                logoutTrigger.addEventListener('click', function() {
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('savedUserID');
+                    localStorage.removeItem('savedPassword');
+                    window.location.replace("https://mdripon018770-coder.github.io/Notbok/22login.html");
+                });
+            }
 
-
-</script>
+            loadProfileData();
+        });
+    </script>
 </body>
 </html>
