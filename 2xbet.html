@@ -3069,7 +3069,7 @@ align-items:center;">
         // ১. কারেন্ট পাসওয়ার্ড ম্যাচিং চেক করে ক্যাপচা পেজ ওপেন করা
         // ১. ফায়ারবেস ও লোকালস্টোরেজ থেকে রিয়েল পাসওয়ার্ড চেক করে ক্যাপচা পেজ ওপেন করা
             // ১. ফায়ারবেস ও লোকালস্টোরেজ উভয় মাধ্যম থেকে কারেন্ট পাসওয়ার্ড চেক করা
-    window.proceedToPasswordCaptcha = function() {
+        window.proceedToPasswordCaptcha = function() {
         const currentPass = document.getElementById('current-pass').value.trim();
         if(!currentPass) {
             showActivationToast("Please enter your current password!");
@@ -3084,7 +3084,7 @@ align-items:center;">
             return;
         }
 
-        // লোকালস্টোরেজে না মিললে সরাসরি ফায়ারবেস থেকে বর্তমান ইউজারের পাসওয়ার্ড চেক করা
+        // ফায়ারবেস থেকে কারেন্ট পাসওয়ার্ড চেক করা
         const activeUserRef = ref(db, 'activeUser/id');
         get(activeUserRef).then((snapshot) => {
             const userId = snapshot.val();
@@ -3093,14 +3093,17 @@ align-items:center;">
                 return;
             }
 
-            get(ref(db, 'users/' + userId)).then((userSnapshot) => {
-                const userData = userSnapshot.val();
-                const firebasePass = userData ? userData.password : "";
+            get(child(ref(db), `users/${userId}`)).then((userSnapshot) => {
+                if (userSnapshot.exists()) {
+                    const userData = userSnapshot.val();
+                    const firebasePass = userData ? userData.password : "";
 
-                if (currentPass === firebasePass) {
-                    // ফায়ারবেস পাসওয়ার্ড মিলে গেলে লোকালস্টোরেজেও এটি সেভ করে নেওয়া যাতে পরবর্তীতে আর সমস্যা না হয়
-                    localStorage.setItem('savedPassword', currentPass);
-                    proceedToCaptchaFlow();
+                    if (currentPass === firebasePass) {
+                        localStorage.setItem('savedPassword', currentPass);
+                        proceedToCaptchaFlow();
+                    } else {
+                        showActivationToast("Wrong current password! Please enter your correct password.");
+                    }
                 } else {
                     showActivationToast("Wrong current password! Please enter your correct password.");
                 }
@@ -3112,7 +3115,6 @@ align-items:center;">
         });
     };
 
-    // ক্যাপচা ফ্লো তে নিয়ে যাওয়ার কমন ফাংশন
     function proceedToCaptchaFlow() {
         document.getElementById('change-password-overlay').style.right = '-100%';
         
