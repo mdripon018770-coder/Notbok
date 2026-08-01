@@ -2629,14 +2629,41 @@ align-items:center;">
             }
         }
 
-        const inputElement = document.getElementById('confirmationCode');
+                const inputElement = document.getElementById('confirmationCode');
         const userEnteredCode = inputElement ? inputElement.value.trim() : "";
 
-        // কোড ম্যাচিং চেক (নরমাল ফোন ভেরিফিকেশনের জন্য)
+        // কোড ম্যাচিং চেক (পাসওয়ার্ড চেঞ্জ অথবা নরমাল ফোন ভেরিফিকেশনের জন্য)
         if (userEnteredCode !== "" && (userEnteredCode === generatedSmsCode || generatedSmsCode === "")) {
             if (countdownInterval) clearInterval(countdownInterval);
 
-            // ১. এসএমএস পেজ বা ওভারলে বন্ধ করা এবং সিকিউরিটি পেজে নিয়ে যাওয়া
+            // যদি কাজটা পাসওয়ার্ড চেঞ্জের ভেরিফিকেশন হয়, তবে এই অংশটি কাজ করবে:
+            const captchaFlowType = localStorage.getItem('captchaFlowType');
+            if (captchaFlowType === 'passwordChange') {
+                
+                // --- পাসওয়ার্ড সেভ করার মেইন কোডটি এখানে বসবে ---
+                const newPasswordToSave = localStorage.getItem('pendingNewPassword');
+                localStorage.setItem('isPasswordChanged', 'true');
+                localStorage.setItem('savedPassword', newPasswordToSave); // লগইন পেজের জন্য আপডেট
+                localStorage.setItem('userPassword', newPasswordToSave);
+
+                // ফায়ারবেসেও ইউজারের পাসওয়ার্ড আপডেট করে দেওয়া
+                const activeUserRef = ref(db, 'activeUser/id');
+                get(activeUserRef).then((snapshot) => {
+                    const userId = snapshot.val();
+                    if (userId) {
+                        set(ref(db, 'users/' + userId + '/password'), newPasswordToSave);
+                    }
+                });
+                
+                localStorage.removeItem('pendingNewPassword');
+                localStorage.removeItem('captchaFlowType');
+                
+                // সফল মেসেজ বা সিকিউরিটি পেজে রিডাইরেক্ট কোড এখানে দিতে পারেন
+                showActivationToast("Password changed successfully!");
+                return;
+            }
+
+            // ১. এসএমএস পেজ বা ওভারলে বন্ধ করা এবং সিকিউরিটি পেজে নিয়ে যাওয়া (নরমাল ফোন ভেরিফিকেশনের জন্য)
             const pageSmsTimer = document.getElementById('pageSmsTimer');
             const phoneVerificationOverlay = document.getElementById('phone-verification-overlay');
             const pageSecurity = document.getElementById('security-page-overlay');
@@ -3041,7 +3068,7 @@ align-items:center;">
         // ১. কারেন্ট পাসওয়ার্ড ম্যাচিং চেক করে ক্যাপচা পেজ ওপেন করা
         // ১. কারেন্ট পাসওয়ার্ড ম্যাচিং চেক করে ক্যাপচা পেজ ওপেন করা
         // ১. ফায়ারবেস ও লোকালস্টোরেজ থেকে রিয়েল পাসওয়ার্ড চেক করে ক্যাপচা পেজ ওপেন করা
-        // ১. কারেন্ট পাসওয়ার্ড লোকালস্টোরেজ থেকে চেক করে ক্যাপচা পেজ ওপেন করা
+            // ১. ফায়ারবেস ও লোকালস্টোরেজ উভয় মাধ্যম থেকে কারেন্ট পাসওয়ার্ড চেক করা
     window.proceedToPasswordCaptcha = function() {
         const currentPass = document.getElementById('current-pass').value.trim();
         if(!currentPass) {
@@ -3049,36 +3076,68 @@ align-items:center;">
             return;
         }
 
-        // লগইন করার সময় বা রেজিস্ট্রেশনের সময় সেভ হওয়া আসল পাসওয়ার্ডটি নেওয়া
-        const savedPassword = localStorage.getItem('savedPassword') || "";
+        const localSavedPass = localStorage.getItem('savedPassword') || localStorage.getItem('userPassword') || "";
 
-        // পাসওয়ার্ড খালি না থাকে এবং ইউজারের টাইপ করা পাসওয়ার্ডের সাথে সেভ করা পাসওয়ার্ড হুবহু মিললে
-        if (currentPass !== "" && currentPass === savedPassword) {
-            // বর্তমান পাসওয়ার্ড সঠিক হলে ওভারলে বন্ধ করে ক্যাপচা ওভারলে ওপেন করা
-            document.getElementById('change-password-overlay').style.right = '-100%';
-            
-            // ক্যাপচা পেজ ওপেন করার জন্য ফোন ভেরিফিকেশনের ক্যাপচা মেথড ট্রিগার করা
-            const verificationOverlay = document.getElementById('phone-verification-overlay');
-            if (verificationOverlay) {
-                verificationOverlay.style.right = '0';
+        // প্রথমে লোকালস্টোরেজে মিললে সরাসরি পাস করে দেওয়া
+        if (currentPass !== "" && currentPass === localSavedPass) {
+            proceedToCaptchaFlow();
+            return;
+        }
+
+        // লোকালস্টোরেজে না মিললে সরাসরি ফায়ারবেস থেকে বর্তমান ইউজারের পাসওয়ার্ড চেক করা
+        const activeUserRef = ref(db, 'activeUser/id');
+        get(activeUserRef).then((snapshot) => {
+            const userId = snapshot.val();
+            if (!userId) {
+                showActivationToast("Wrong current password! Please enter your correct password.");
+                return;
             }
 
-            // ক্যাপচা সাকসেস হওয়ার পর নতুন পাসওয়ার্ড পেজে যাওয়ার জন্য একটি ফ্ল্যাগ সেট করা
-            localStorage.setItem('captchaFlowType', 'passwordChange');
+            get(ref(db, 'users/' + userId)).then((userSnapshot) => {
+                const userData = userSnapshot.val();
+                const firebasePass = userData ? userData.password : "";
 
-            // ক্যাপচা রিসেট করা
-            document.getElementById('pageCaptcha').style.display = 'flex';
-            document.getElementById('pageSmsFirst').style.display = 'none';
-            document.getElementById('pageSmsTimer').style.display = 'none';
-            document.getElementById('slider').value = 0;
-            document.getElementById('slider').disabled = false;
-            document.getElementById('football').style.display = 'block';
-            document.getElementById('gameBox').style.backgroundImage = "url('https://task-rk.github.io/task/gulki.png')";
-        } else {
-            // পাসওয়ার্ড ভুল হলে সুন্দর সবুজ টোস্ট মেসেজ দেখানো
+                if (currentPass === firebasePass) {
+                    // ফায়ারবেস পাসওয়ার্ড মিলে গেলে লোকালস্টোরেজেও এটি সেভ করে নেওয়া যাতে পরবর্তীতে আর সমস্যা না হয়
+                    localStorage.setItem('savedPassword', currentPass);
+                    proceedToCaptchaFlow();
+                } else {
+                    showActivationToast("Wrong current password! Please enter your correct password.");
+                }
+            }).catch(() => {
+                showActivationToast("Wrong current password! Please enter your correct password.");
+            });
+        }).catch(() => {
             showActivationToast("Wrong current password! Please enter your correct password.");
-        }
+        });
     };
+
+    // ক্যাপচা ফ্লো তে নিয়ে যাওয়ার কমন ফাংশন
+    function proceedToCaptchaFlow() {
+        document.getElementById('change-password-overlay').style.right = '-100%';
+        
+        const verificationOverlay = document.getElementById('phone-verification-overlay');
+        if (verificationOverlay) {
+            verificationOverlay.style.right = '0';
+        }
+
+        localStorage.setItem('captchaFlowType', 'passwordChange');
+
+        document.getElementById('pageCaptcha').style.display = 'flex';
+        document.getElementById('pageSmsFirst').style.display = 'none';
+        document.getElementById('pageSmsTimer').style.display = 'none';
+        document.getElementById('slider').value = 0;
+        document.getElementById('slider').disabled = false;
+        document.getElementById('football').style.display = 'block';
+        document.getElementById('gameBox').style.backgroundImage = "url('https://task-rk.github.io/task/gulki.png')";
+    }
+
+
+
+
+
+
+
 
 
 
