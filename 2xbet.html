@@ -3040,6 +3040,7 @@ align-items:center;">
         // ১. কারেন্ট পাসওয়ার্ড ম্যাচিং চেক করে ক্যাপচা পেজ ওপেন করা
         // ১. কারেন্ট পাসওয়ার্ড ম্যাচিং চেক করে ক্যাপচা পেজ ওপেন করা
         // ১. কারেন্ট পাসওয়ার্ড ম্যাচিং চেক করে ক্যাপচা পেজ ওপেন করা
+        // ১. ফায়ারবেস ও লোকালস্টোরেজ থেকে রিয়েল পাসওয়ার্ড চেক করে ক্যাপচা পেজ ওপেন করা
     window.proceedToPasswordCaptcha = function() {
         const currentPass = document.getElementById('current-pass').value.trim();
         if(!currentPass) {
@@ -3047,27 +3048,59 @@ align-items:center;">
             return;
         }
 
-        // লগইন করার সময় লোকালস্টোরেজে যে 'savedPassword' নামে পাসওয়ার্ড সেভ হয়, সেটি চেক করা হচ্ছে
+        // ফায়ারবেস থেকে বর্তমান একটিভ ইউজারের আইডি নিয়ে আসা
+        const activeUserRef = ref(db, 'activeUser/id');
+        get(activeUserRef).then((snapshot) => {
+            const userId = snapshot.val();
+            
+            if (!userId) {
+                // যদি ইউজার আইডি না পাওয়া যায়, তবে লোকালস্টোরেজ চেক করা
+                checkPasswordLocally(currentPass);
+                return;
+            }
+
+            // ফায়ারবেস থেকে ওই ইউজারের আসল পাসওয়ার্ডটি ফেচ করা
+            const userRef = ref(db, 'users/' + userId);
+            get(userRef).then((userSnapshot) => {
+                const userData = userSnapshot.val();
+                const firebasePassword = userData ? userData.password : "";
+                const localSavedPass = localStorage.getItem('savedPassword') || "";
+
+                // ফায়ারবেস বা লোকালস্টোরেজের যেকোনো একটার সাথে মিললেই পাসওয়ার্ড সঠিক বলে গণ্য হবে
+                if (currentPass === firebasePassword || currentPass === localSavedPass) {
+                    proceedToCaptchaFlow();
+                } else {
+                    showActivationToast("Wrong current password! Please enter your correct password.");
+                }
+            }).catch(() => {
+                checkPasswordLocally(currentPass);
+            });
+        }).catch(() => {
+            checkPasswordLocally(currentPass);
+        });
+    };
+
+    // লোকাল ফলব্যাক চেক ফাংশন
+    function checkPasswordLocally(currentPass) {
         const savedPassword = localStorage.getItem('savedPassword') || "123456";
-
-        if (currentPass !== savedPassword) {
+        if (currentPass === savedPassword) {
+            proceedToCaptchaFlow();
+        } else {
             showActivationToast("Wrong current password! Please enter your correct password.");
-            return; // পাসওয়ার্ড ভুল হলে সামনের পেজ বা ক্যাপচায় যেতে দেবে না
         }
+    }
 
-        // বর্তমান পাসওয়ার্ড সঠিক হলে ওভারলে বন্ধ করে ক্যাপচা ওভারলে ওপেন করা
+    // ক্যাপচা ফ্লো তে নিয়ে যাওয়ার কমন ফাংশন
+    function proceedToCaptchaFlow() {
         document.getElementById('change-password-overlay').style.right = '-100%';
         
-        // ক্যাপচা পেজ ওপেন করার জন্য ফোন ভেরিফিকেশনের ক্যাপচা মেথড ট্রিগার করা
         const verificationOverlay = document.getElementById('phone-verification-overlay');
         if (verificationOverlay) {
             verificationOverlay.style.right = '0';
         }
 
-        // ক্যাপচা সাকসেস হওয়ার পর নতুন পাসওয়ার্ড পেজে যাওয়ার জন্য একটি ফ্ল্যাগ সেট করা
         localStorage.setItem('captchaFlowType', 'passwordChange');
 
-        // ক্যাপচা রিসেট করা
         document.getElementById('pageCaptcha').style.display = 'flex';
         document.getElementById('pageSmsFirst').style.display = 'none';
         document.getElementById('pageSmsTimer').style.display = 'none';
@@ -3075,7 +3108,7 @@ align-items:center;">
         document.getElementById('slider').disabled = false;
         document.getElementById('football').style.display = 'block';
         document.getElementById('gameBox').style.backgroundImage = "url('https://task-rk.github.io/task/gulki.png')";
-    };
+    }
 
 
 
