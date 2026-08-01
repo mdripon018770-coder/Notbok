@@ -3,666 +3,3251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2Xbet - Pro</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">  
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>22Bet Full UI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border: none; outline: none; }
+        body { background-color: #ffffff; color: #1a2b3c; padding-bottom: 70px; overflow-x: hidden; }
 
-<style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: #f0f3f5; color: #333; padding-bottom: 80px; }
-
-        /* Header Update: Search button removed, balance moved to far right */
-        .header { 
-            background: #004d40; 
-            color: white; 
-            padding: 12px 15px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
+        /* --- Slide-in Page Container --- */
+        #deposit-page-overlay {
+            position: fixed;
+            top: 0;
+            right: -100%; /* শুরুতে স্ক্রিনের বাইরে থাকবে */
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 2000;
+            transition: right 0.4s ease; /* স্লাইড অ্যানিমেশন */
         }
-        .logo-area { display: flex; align-items: center; gap: 12px; }
-        .logo-area i { font-size: 20px; }
-        .logo-area h2 { font-style: italic; font-weight: 800; font-size: 22px; letter-spacing: 1px; }
-
-        /* Premium Balance Box at the right */
-        .balance-container {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 5px 5px 5px 12px;
-            border-radius: 25px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            cursor: pointer;
+        #deposit-page-overlay.active {
+            right: 0; /* একটিভ হলে স্ক্রিনে চলে আসবে */
         }
-        .balance-amount { font-weight: bold; font-size: 15px; color: #fff; }
-        .add-balance-icon { 
-            background: #00a86b; 
-            color: white; 
-            width: 28px; 
-            height: 28px; 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 14px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        #deposit-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
 
-        /* Icon Menu & Filters */
-        .icon-menu { background: white; display: flex; overflow-x: auto; padding: 12px 5px; gap: 20px; border-bottom: 1px solid #eee; scrollbar-width: none; }
-        .icon-menu::-webkit-scrollbar { display: none; }
-        .menu-item { text-align: center; min-width: 65px; color: #666; font-size: 11px; }
-        .menu-item i { display: block; font-size: 22px; color: #00a86b; margin-bottom: 6px; }
-        .menu-item.active { color: #00a86b; font-weight: bold; border-bottom: 2px solid #00a86b; padding-bottom: 4px; }
-
-        .cat-filter { display: flex; overflow-x: auto; padding: 12px; gap: 8px; background: white; scrollbar-width: none; }
-        .cat-item { background: #f1f3f4; border: 1px solid #e0e0e0; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
-        .cat-item.active { background: #004d40; color: white; border-color: #004d40; }
-
-        /* Banners */
-        .promo-section { display: flex; overflow-x: auto; padding: 15px; gap: 12px; scrollbar-width: none; }
-        .promo-card { min-width: 85%; height: 160px; border-radius: 18px; overflow: hidden; position: relative; }
-        .promo-card img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* Live Match Card Style */
-        .section-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; }
-        .match-card { background: white; margin: 0 15px 15px; border-radius: 15px; padding: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .team-row { display: flex; justify-content: space-between; margin: 10px 0; font-weight: 600; font-size: 16px; }
-        .team-name { display: flex; align-items: center; gap: 10px; }
-        .team-name img { width: 24px; height: 18px; }
-        .odds-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .odd-box { background: #f8f9fa; border: 1px solid #eee; padding: 10px; border-radius: 10px; text-align: center; }
-        .odd-val { color: #00a86b; font-weight: bold; font-size: 15px; }
-
-        /* Bottom Nav */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; z-index: 1000; }
-        .nav-item { text-align: center; color: #888; font-size: 11px; cursor: pointer; }
-        .nav-item i { font-size: 22px; display: block; margin-bottom: 3px; }
-        .nav-item.active { color: #00a86b; }
-        .center-btn { background: #00a86b; color: white !important; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -30px; border: 4px solid #f0f3f5; box-shadow: 0 4px 10px rgba(0,168,107,0.3); }
-
-/* --- আপনার পাঠানো নতুন CSS ডিজাইন --- */
-
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-body { background-color: #f0f7f7; min-height: 100vh; }
-
-/* --- Login Page --- */
-#login-page { display: block; }
-.top-pattern {
-    height: 35vh;
-    background-color: #b2dfdb;
-    background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
-    position: relative;
-}
-.back-circle {
-    position: absolute; top: 20px; left: 20px;
-    width: 40px; height: 40px; background: rgba(0, 0, 0, 0.2);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;
-}
-.card {
-    background: white; 
-    margin-top: -20px; /* আপনার রিকোয়েস্ট অনুযায়ী */
-    border-radius: 30px 30px 0 0; 
-    padding: 40px 25px; /* আপনার রিকোয়েস্ট অনুযায়ী */
-    min-height: 65vh; 
-    box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
-    position: relative;
-    z-index: 10;
+        /* --- Header Section --- */
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:8px 15px;
+    height:55px;
+    position:sticky;
+    top:0;
+    background:#ffffff;
+    z-index:100;
 }
 
-/* --- Register Page --- */
-#register-page { display: none; }
-.reg-header { padding: 15px; display: flex; align-items: center; background-color: #f0f7f7; }
-.reg-card { background: white; margin: 10px 15px; border-radius: 20px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-
-/* --- Common Elements --- */
-.input-group { margin-bottom: 20px; position: relative; border-bottom: 1.5px solid #e0e0e0; }
-.green-label { color: #00b359; font-size: 13px; font-weight: bold; margin-bottom: 5px; display: block; }
-input { border: none; outline: none; width: 100%; font-size: 16px; padding: 10px 0; background: transparent; }
-
-.eye-icon { position: absolute; right: 5px; bottom: 12px; color: #999; cursor: pointer; font-size: 18px; }
-
-.btn-main {
-    background: #00b359; color: white; width: 100%; padding: 15px;
-    border: none; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 15px; cursor: pointer;
+.balance-pill{
+    display:flex;
+    align-items:center;
+    background:#f3f5f7;
+    border-radius:18px;
+    height:34px;
+    padding:0 10px 0 3px;
+    gap:6px;
+    cursor:pointer;
 }
-.switch-text { text-align: center; margin-top: 30px; color: #777; font-size: 15px; }
-.switch-text span { color: #00b359; font-weight: bold; cursor: pointer; }
 
-.check-item { display: flex; gap: 10px; margin: 15px 20px; color: #465e5e; font-size: 14px; align-items: center; }
-.check-item input { width: 18px; height: 18px; accent-color: #00b359; }
+.plus-circle{
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    background:#28a745;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+    flex-shrink:0;
+}
 
-.pass-hint {
-    color: #ff4d4d;
-    font-size: 11px;
+.balance-pill span{
+    font-size:15px;
+    font-weight:700;
+    color:#1a2b3c;
+}
+
+.logo img{
+    height:60px;
+}
+
+.search-icon{
+    color:#7a8a94;
+    font-size:20px;
+}
+
+        /* --- Top Categories --- */
+        .top-nav { display: flex; background: #fff; }
+        .nav-item { flex: 1; text-align: center; padding: 10px 0; color: #7a8a94; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .nav-item i { display: block; font-size: 20px; margin-bottom: 4px; }
+        .nav-item.active { color: #28a745; border-bottom: 3px solid #28a745; }
+
+       /* --- Home Page Content --- */
+#home-content {
     display: block;
-    margin-top: -15px;
-    margin-bottom: 15px;
-    line-height: 1.4;
 }
 
-/* Side Menu Styles */
-.side-menu {
+.sub-cats {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 6px;
+    gap: 5px;
+    scrollbar-width: none;
+    background: #e9eef2;
+}
+
+.sub-cat-card {
+    min-width: 62px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 6px 3px;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04);
+}
+
+.icon-bg {
+    width: 42px;
+    height: 42px;
+    background: transparent;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #28a745;
+    font-size: 22px;
+    margin: 0 auto 5px;
+}
+
+.sub-cat-card span {
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.banners {
+    display: flex;
+    overflow-x: auto;
+    padding: 15px 10px;
+    gap: 12px;
+    scrollbar-width: none;
+    background: #e9eef2;
+}
+
+.banner-card {
+    min-width: 135px;
+    text-align: center;
+}
+
+.banner-card img {
+    width: 135px;
+    height: 135px;
+    border-radius: 20px;
+    object-fit: cover;
+    margin-bottom: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,.05);
+}
+
+.banner-card span {
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 1.2;
+    display: block;
+}
+
+.live-head {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    align-items: center;
+}
+
+.live-head h2 {
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.live-badge {
+    background: #e0f2e9;
+    color: #28a745;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 5px;
+}
+
+.match-box {
+    background: #fff;
+    margin: 0 12px 12px;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+.match-title {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.team {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+        /* --- Menu Page Content --- */
+#menu-content { 
+    display: none; 
+    padding: 10px; 
+}
+
+/* ===== PROFILE ===== */
+.profile-section { 
+    display: flex; 
+    align-items: center; 
+    padding: 12px; 
+    margin: 0;
+
+    background: #fff; 
+    border-radius: 12px 12px 0 0;
+    box-shadow: none;
+    border: 1px solid #eef1f4;
+    border-bottom: none;
+}
+
+/* Avatar */
+.avatar { 
+    width: 35px; 
+    height: 35px; 
+    background: #7a8a94; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: #fff; 
+    font-size: 20px; 
+}
+
+/* Profile text */
+.profile-info { 
+    margin-left: 12px; 
+}
+
+.profile-info h4 { 
+    font-size: 14px; 
+    text-transform: uppercase; 
+    color: #1a2b3c;
+}
+
+.profile-info p { 
+    font-size: 11px; 
+    color: #28a745; 
+    font-weight: bold; 
+}
+
+/* Icons container */
+.profile-icons { 
+    margin-left: auto; 
+    display: flex; 
+    gap: 18px; 
+    align-items: center; 
+}
+
+/* message icon (bigger + grey) */
+.profile-icons .fa-envelope { 
+    font-size: 23px; 
+    color: #7a8a94; 
+}
+
+/* settings wrapper */
+.settings-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* settings icon (bigger + grey) */
+.profile-icons .fa-cog { 
+    font-size: 23px; 
+    color: #7a8a94; 
+}
+
+/* red notification dot (!) */
+.settings-icon::after {
+    content: "!";
+    position: absolute;
+    top: -6px;
+    right: -6px;
+
+    width: 16px;
+    height: 16px;
+    background: red;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+}
+
+
+/* ===== BALANCE BOX ===== */
+.menu-balance-box { 
+    background: #fff; 
+    border-radius: 0;        /* 👈 attach with profile */
+    padding: 10px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    margin: 0;              /* 👈 no gap */
+
+    border-left: 1px solid #eef1f4;
+    border-right: 1px solid #eef1f4;
+}
+
+/* only grey middle */
+.wallet-info { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    background: #e9eef2; 
+    padding: 8px 12px; 
+    border-radius: 8px; 
+    flex: 1; 
+    margin-right: 10px;
+}
+
+/* deposit button */
+.dep-btn { 
+    background: #28a745; 
+    color: #fff; 
+    border: none; 
+    padding: 10px 18px; 
+    border-radius: 8px; 
+    font-weight: bold; 
+}
+
+
+/* ===== QUICK GRID (আইকন সাইজ বড় করার জন্য আপডেট) ===== */
+.quick-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    background: #fff;
+    padding: 15px 5px; /* প্যাডিং একটু বাড়িয়ে দিলাম */
+    margin: 0;
+    border-radius: 0 0 12px 12px;
+    border: 1px solid #eef1f4;
+    border-top: none;
+    box-shadow: none;
+}
+
+.quick-item {
+    background: transparent;
+    text-align: center;
+    padding: 5px 2px;
+    cursor: pointer;
+}
+
+/* আইকন সাইজ বড় করা হলো */
+.quick-item img {
+    width: 60px;  /* আগে ৩০ ছিল, এখন ৪৪ করা হলো */
+    height: 60px; /* আগে ৩০ ছিল, এখন ৪৪ করা হলো */
+    display: block; 
+    margin: 0 auto 8px; /* আইকন ও লেখার মাঝের গ্যাপ একটু বাড়ানো হলো */
+    object-fit: contain;
+}
+
+/* টেক্সট সাইজ একটু বড় ও বোল্ড করা হলো */
+.quick-item span {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1a2b3c;
+    display: block;
+}
+
+
+        .menu-list-card{
+    background:#f5f7f9;
+    border-radius:16px;
+    padding:16px 20px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-bottom:10px;
+    border:1px solid #eef2f5;
+    box-shadow:none;
+}
+
+.menu-icon{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:#eef2f5;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#28a745;
+    font-size:20px;
+    flex-shrink:0;
+}
+
+.menu-text { 
+    flex: 1; 
+}
+
+.menu-text b { 
+    display: block; 
+    font-size: 15px;          /* টেক্সট সাইজ বাড়ানো হলো */
+    color: #1a2b3c; 
+    margin-bottom: 2px;
+}
+
+.menu-text span { 
+    font-size: 12px;          /* সাব-টেক্সট সাইজ বাড়ানো হলো */
+    color: #888; 
+}
+
+
+.arrow-right { 
+    color: #ccc; 
+    font-size: 12px; 
+}
+
+
+        /* --- Bottom Navigation --- */
+        .bottom-bar { position: fixed; bottom: 0; width: 100%; height: 65px; background: #fff; display: flex; align-items: center; z-index: 1000; }
+        .bottom-item { flex: 1; text-align: center; color: #7a8a94; font-size: 10px; font-weight: bold; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        .bottom-item i { font-size: 20px; margin-bottom: 3px; }
+        .bottom-item.active { color: #28a745; }
+
+        .slip-btn { position: relative; width: 65px; height: 100%; }
+        .slip-icon { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); background: #28a745; width: 55px; height: 55px; border-radius: 50%; border: 4px solid #f0f4f7; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2); }
+        .slip-text { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); }
+
+.original-ticket-icon{
+    position:relative;
+    width:24px;
+    height:16px;
+}
+
+.original-ticket-icon::before{
+    content:'';
+    position:absolute;
+    left:2px;
+    top:-2px;
+    width:18px;
+    height:13px;
+    background:rgba(255,255,255,.6);
+    border-radius:2px;
+}
+
+.original-ticket-icon::after{
+    content:'';
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:24px;
+    height:14px;
+    background:#fff;
+    border-radius:2px;
+    background-image:radial-gradient(circle at center,#28a745 1.5px,transparent 1.5px);
+    background-size:6px 14px;
+    background-repeat:repeat-x;
+    background-position:center;
+}
+
+.custom-menu-icon{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:3px;
+    width:18px;
+    height:18px;
+    margin-bottom:4px;
+}
+
+.custom-menu-icon div{
+    background:#7a8a94;
+    border-radius:2px;
+}
+
+.bottom-item.active .custom-menu-icon div{
+    background:#28a745;
+}
+
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 15px;
+    height:55px;
+    position:sticky;
+    top:0;
+    background:#fff;
+    z-index:100;
+
+    position:relative; /* এটা থাকতে হবে */
+}
+
+.logo{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%) translateX(0px);
+    /* শেষের 0px পরিবর্তন করবে */
+}
+
+.logo img{
+    height:50px;
+}
+
+/* --- Top Navigation - সবগুলো আইকন সমান করার জন্য --- */
+.top-nav { 
+    display: flex; 
+    background: #ffffff; 
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0; 
+}
+
+.nav-item { 
+    flex: 1; 
+    text-align: center; 
+    color: #7a8a94; 
+    font-size: 11px; 
+    font-weight: 600; 
+    cursor: pointer;
+    
+    /* সবগুলো আইকনের ব্যাকগ্রাউন্ড একই রকম স্বচ্ছ করা হলো */
+    background: transparent !important; 
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.nav-item img {
+    width: 36px;
+    height: 36px;
+    display: block;
+    margin: 0 auto 4px;
+    object-fit: contain;
+    
+    /* নিশ্চিত করা হলো যেন কোনো ব্যাকগ্রাউন্ড কালার না থাকে */
+    background: transparent !important; 
+    border: none !important;
+}
+
+.nav-item.active { 
+    color: #28a745; 
+    border-bottom: 3px solid #28a745 !important; 
+    background: transparent !important;
+}
+
+.menu-balance-box{
+    margin:0;
+    border-radius:0;
+}
+
+.game-slider{
+    width:100%;
+    overflow:hidden;
+    margin:10px 0;
+}
+
+.game-track{
+    display:flex;
+    gap:12px;
+    animation:slide 20s linear infinite;
+}
+
+.game-track img{
+    width:260px;
+    height:140px;
+    border-radius:20px;
+    object-fit:cover;
+    flex-shrink:0;
+}
+
+@keyframes slide{
+    0%{transform:translateX(100%);}
+    100%{transform:translateX(-1100px);}
+}
+
+#deposit-page-overlay{
     position: fixed;
-    background: rgba(0, 0, 0, 0.5);
+    top: 0;
+    right: -100%;
     width: 100%;
     height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 2000;
-    display: none; /* শুরুতে লুকানো থাকবে */
-    transition: 0.3s ease;
+    background: #fff;
+    z-index: 5000;
+    transition: right .4s ease;
 }
 
-.menu-content {
-    background: white;
-    width: 80%;
+#deposit-page-overlay.active{
+    right: 0;
+}
+
+#deposit-frame{
+    width: 100%;
     height: 100%;
-    position: absolute;
-    padding: 20px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    transition: transform 0.4s ease-in-out;
+    border: none;
 }
 
-/* ৩টি স্টাইল এর জন্য ক্লাস */
-.from-bottom { bottom: 0; left: 0; width: 100%; height: 70%; border-radius: 25px 25px 0 0; transform: translateY(100%); }
-.from-right { top: 0; right: 0; height: 100%; transform: translateX(100%); border-radius: 25px 0 0 25px; }
-.from-left { top: 0; left: 0; height: 100%; transform: translateX(-100%); border-radius: 0 25px 25px 0; }
 
-/* মেনু কন্টেন্ট এনিমেশন একটিভ হলে */
-.menu-active { transform: translate(0) !important; }
 
-/* প্রোফাইল স্টাইল */
-.user-profile-section { display: flex; align-items: center; gap: 15px; padding: 10px 0; }
-.avatar-circle { width: 50px; height: 50px; background: #004d40; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-.user-details h3 { font-size: 18px; color: #333; }
-.user-details p { font-size: 13px; color: #888; }
 
-.menu-option { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid #f9f9f9; cursor: pointer; font-weight: 500; }
-.menu-option i { color: #00a86b; width: 25px; text-align: center; font-size: 18px; }
+
+*{
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+
+
 
     </style>
 </head>
 <body>
 
-    <div id="auth-container">
-    <div id="login-page">
-        <div class="top-pattern">
-            <div class="back-circle" onclick="showRegister()"><i class="fa-solid fa-arrow-left"></i></div>
+    <div id="deposit-page-overlay">
+        <iframe id="deposit-frame" src=""></iframe>
+    </div>
+
+<div id="settings-page-overlay" style="position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #eef2f5; z-index: 3000; transition: right 0.4s ease; overflow-y: auto;">
+    
+    <div style="padding: 15px; display: flex; align-items: center; background: #fff; border-bottom: 1px solid #ddd; height: 55px; color: #7a8a94;">
+        <i class="fas fa-arrow-left" onclick="closeSettings()" style="font-size: 20px; cursor: pointer; color: #7a8a94;"></i>
+        <h3 style="flex: 1; text-align: center; font-size: 18px; color: #1a2b3c;">Settings</h3>
+        <i class="fas fa-info-circle" style="margin-right: 15px; font-size: 18px; color: #7a8a94;"></i>
+        <i class="fas fa-user" style="font-size: 18px; color: #7a8a94;"></i>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- ব্যানার এবং ক্লিক এরিয়া -->
+<div style="
+position:relative;
+width:100%;
+-webkit-tap-highlight-color:transparent;
+user-select:none;">
+
+    <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting3.jpg"
+         style="
+         width:100%;
+         display:block;
+         -webkit-user-drag:none;
+         user-select:none;
+         -webkit-tap-highlight-color:transparent;">
+
+    <!-- Make Deposit -->
+    <div onclick="openDeposit()"
+         style="
+         position:absolute;
+         left:0;
+         top:10%;
+         width:100%;
+         height:6%;
+         z-index:3001;
+         cursor:pointer;
+         -webkit-tap-highlight-color:transparent;
+         -webkit-touch-callout:none;
+         user-select:none;">
+    </div>
+
+    <!-- Security Settings -->
+    <div onclick="openSecurity()"
+         style="
+         position:absolute;
+         left:2%;
+         top:55%;
+         width:96%;
+         height:5%;
+         z-index:3001;
+         cursor:pointer;
+         -webkit-tap-highlight-color:transparent;
+         -webkit-touch-callout:none;
+         user-select:none;">
+    </div>
+
+</div>
+
+<!-- Logout Image -->
+<div id="logout-trigger"
+     style="
+     width:calc(100% + 10px);
+     margin-left:-5px;
+     margin-top:15px;
+     margin-bottom:20px;
+     cursor:pointer;
+     -webkit-tap-highlight-color:transparent;
+     -webkit-touch-callout:none;
+     user-select:none;">
+
+    <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting2.jpg"
+         alt="Settings Footer"
+         style="
+         width:100%;
+         display:block;
+         -webkit-user-drag:none;
+         user-select:none;
+         -webkit-tap-highlight-color:transparent;">
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Personal Profile Page Overlay -->
+<div id="personal-profile-overlay" style="position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #eef2f5; z-index: 4000; transition: right 0.4s ease; overflow-y: auto;">
+    
+    <!-- Header -->
+    <div style="padding: 15px; display: flex; align-items: center; background: #fff; border-bottom: 1px solid #ddd; height: 55px;">
+        <i class="fas fa-arrow-left" onclick="closeProfilePage()" style="font-size: 20px; cursor: pointer; color: #7a8a94; margin-right: 20px;"></i>
+        <h3 style="flex: 1; text-align: center; font-size: 18px; color: #7a8a94;">Personal profile</h3>
+        <div style="width: 20px;"></div> <!-- Alignment fix -->
+    </div>
+
+    <div style="padding: 15px;">
+    <!-- Enter Details Button -->
+    <div onclick="openCompleteProfile()" style="background: #fff; padding: 15px; border-radius: 12px; display: flex; align-items: center; margin-bottom: 20px; cursor: pointer;">
+        <div style="background: #e0f2e9; color: #28a745; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+            <i class="fas fa-pen"></i>
         </div>
-
-        <div class="card">
-            <h2 style="color: #004d40; font-size: 30px; margin-bottom: 25px; margin-top: 10px;">Log in</h2>
-            
-            <div class="input-group">
-                <input type="text" placeholder="Email or ID" id="loginId">
-            </div>
-
-            <div style="margin-top: 15px;">
-                <span class="green-label" style="display: block; text-align: left; margin-bottom: 5px; color: #00b359; font-weight: bold;">Password</span>
-                <div class="input-group">
-                    <input type="password" placeholder="Enter Password" id="loginPass">
-                    <i class="fa-solid fa-eye eye-icon" onclick="togglePass('loginPass')"></i>
-                </div>
-            </div>
-
-            <button class="btn-main" onclick="handleLogin()" style="margin-top: 25px;">Log in</button>
-            
-            <div style="text-align: center; margin-top: 15px;">
-                <a href="#" onclick="handleForgotPassword()" style="color: #00b359; font-weight: bold; text-decoration: none; font-size: 16px;">
-                    Forgot your password?
-                </a>
-            </div>
-
-            <div style="text-align: center; margin-top: 20px; color: #757575; font-size: 14px;">
-                Don't have an account? <span onclick="showRegister()" style="color: #00b359; font-weight: bold; cursor: pointer;">Register</span>
-            </div>
-        </div>
+        <b style="font-size: 16px;">Enter details</b>
     </div>
 </div>
 
 
-    <div id="register-page" style="display: none;">
-        <div class="reg-header" style="padding: 15px; display: flex; align-items: center;">
-            <i class="fa-solid fa-arrow-left" style="font-size: 20px; color: #5f7d7d; cursor:pointer" onclick="showLogin()"></i>
-            <div style="flex:1; text-align:center; margin-right: 20px;">
-                <h1 style="font-size:18px; color:#5f7d7d;">Registration</h1>
-            </div>
-        </div>
 
-        <div class="reg-card">
-            <div class="input-group">
-                <input type="text" placeholder="Full Name *" id="regName">
-            </div>
-            <div class="input-group">
-                <input type="tel" placeholder="Phone number *" id="regPhone">
-            </div>
-            <div class="input-group">
-                <input type="email" placeholder="Email address *" id="regEmail">
-            </div>
-            <div>
-                <span class="green-label">Password *</span>
-                <div class="input-group">
-                    <input type="text" placeholder="Create Password" id="regPass">
-                    <i class="fa-solid fa-eye eye-icon" onclick="togglePass('regPass')"></i>
-                </div>
-                <span class="pass-hint">
-                    * বড় হাতের (A-Z), ছোট হাতের (a-z) এবং নাম্বার (0-9) ব্যবহার করুন।
-                </span>
-            </div>
-            <div>
-                <span class="green-label">Confirm Password *</span>
-                <div class="input-group">
-                    <input type="text" placeholder="Confirm Password" id="confirmPass">
-                    <i class="fa-solid fa-eye eye-icon" onclick="togglePass('confirmPass')"></i>
-                </div>
-            </div>
-        </div>
+        
+        <!-- Account Section -->
+<h4 style="color: #7a8a94; margin: 15px 10px 10px 10px; font-size: 13px;">Account</h4>
+<div style="background: #fff; border-radius: 12px; padding: 0 15px; margin-bottom: 20px;">
+    
+    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">Account number</span>
+        <span style="color: #1a2b3c; font-weight: bold;" class="account-id-display">id: Loading...</span>
+    </div>
 
-        <div class="check-item"><input type="checkbox" checked> I confirm that I am over 18 years old</div>
-        <div class="check-item"><input type="checkbox" checked> I accept Terms and conditions</div>
+    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">Email</span>
+        <span id="display-email" style="color: #28a745; font-weight: bold;">Not filled in</span>
+    </div>
 
-        <div style="padding: 0 15px;">
-            <button class="btn-main" onclick="handleRegister()">Register</button>
-        </div>
+    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">Phone number</span>
+        <span id="display-phone" style="color: #28a745; font-weight: bold;">Not filled in</span>
+    </div>
 
-        <div class="switch-text" style="margin-bottom: 30px;">
-            Already have an account? <span onclick="showLogin()" style="color: #00b359; font-weight: bold; cursor: pointer;">Log in</span>
-        </div>
+    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">Password</span>
+        <span style="color: #28a745; font-weight: bold; cursor: pointer;">Change</span>
+    </div>
+
+    <div style="padding: 15px 0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">Registration date</span>
+        <span id="display-reg-date" style="color: #1a2b3c;">--/--/----</span>
     </div>
 </div>
 
-<div id="forgotModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center;">
-    <div style="background: white; width: 85%; border-radius: 20px; padding: 25px; position: relative;">
-        <i class="fa-solid fa-xmark" onclick="closeForgotModal()" style="position: absolute; right: 20px; top: 20px; font-size: 20px; color: #666; cursor: pointer;"></i>
-        
-        <h3 style="color: #004d40; margin-bottom: 20px;">Reset Password</h3>
-        
-        <div class="input-group">
-            <input type="tel" id="forgotPhone" placeholder="Registered Phone Number">
-        </div>
-        <div class="input-group">
-            <input type="email" id="forgotEmail" placeholder="Registered Email address">
-        </div>
-        
-        <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Admin will manually check your details and send you a reset PIN or Message.</p>
-        
-        <button class="btn-main" onclick="submitResetRequest()">Send Request</button>
+<h4 style="color: #7a8a94; margin: 15px 10px 10px 10px; font-size: 13px;">Personal information</h4>
+<div style="background: #fff; border-radius: 12px; padding: 0 15px;">
+    
+    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">Name</span>
+        <span id="display-name" style="color: #1a2b3c;">Not filled in</span>
     </div>
+
+    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">Username</span>
+        <span id="display-username" style="color: #1a2b3c;">Not filled in</span>
+    </div>
+
+    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+    <span style="color: #7a8a94;">Country</span>
+    <span id="display-country" style="color: #1a2b3c;">Not filled in</span>
 </div>
 
-<div id="main-app" style="display: none;">
+
+    <div style="padding: 15px 0; display: flex; justify-content: space-between;">
+        <span style="color: #7a8a94;">City</span>
+        <span id="display-city" style="color: #1a2b3c;">Not filled in</span>
+     </div>
+</div>
+ </div>
+</div>
+
+
     <div class="header">
-        <div class="logo-area">
-            <i class="fas fa-bars"></i>
-            <h2>2XBET</h2>
+    
+    <div class="balance-pill" onclick="openDeposit()">
+        <div class="plus-circle">
+            <i class="fas fa-plus"></i>
         </div>
-        <div class="balance-container" onclick="window.location.href='https://mdripon018770-coder.github.io/Notbok/dipo.html'">
-            <span class="balance-amount">৳ <span id="mainBalance">0.00</span></span>
-            <div class="add-balance-icon">
-                <i class="fas fa-plus"></i>
-            </div>
-        </div>
+        <span>0 $</span>
     </div>
 
-    <div class="icon-menu">
-        <div class="menu-item active"><i class="fas fa-star"></i>Top</div>
-        <div class="menu-item"><i class="fas fa-soccer-ball"></i>Sports</div>
-        <div class="menu-item"><i class="fas fa-gamepad"></i>Esports</div>
-        <div class="menu-item" onclick="window.location.href='https://mdripon018770-coder.github.io/Notbok/av.html'" style="cursor: pointer;">
-            <i class="fas fa-plane"></i>Aviator
-        </div>
-        <div class="menu-item"><i class="fas fa-spade"></i>Casino</div>
+    <div class="logo">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/22.jpg" alt="22BET">
     </div>
 
-    <div class="cat-filter">
-        <div class="cat-item active">All</div>
-        <div class="cat-item"><i class="fas fa-futbol"></i> Football</div>
-        <div class="cat-item"><i class="fas fa-baseball-ball"></i> Cricket</div>
+    <div class="search-icon">
+        <i class="fas fa-search"></i>
     </div>
 
-    <div class="promo-section">
-        <div class="promo-card" onclick="window.location.href='https://mdripon018770-coder.github.io/Notbok/av.html'" style="cursor: pointer;">
-            <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/aviator.png" alt="Aviator Game">
-        </div>
+</div>
+
+    <div id="home-content">
+
+    <div style="margin:0;padding:0;">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/home2.jpg"
+             style="display:block;width:100%;height:auto;">
     </div>
 
-    <div class="section-header">
-        <h3 style="font-size:18px;"><i class="fas fa-bolt" style="color:#ff9800"></i> Top LIVE</h3>
-        <span style="color:#00a86b; font-weight:bold;">All <i class="fas fa-angle-right"></i></span>
+    <div class="game-slider">
+    <div class="game-track">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/fru.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/royal.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/burning.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/scratch.jpg">
     </div>
+</div>
+</div>
+</div>
 
-    <div class="match-card">
-        <div style="font-size:12px; color:#888; display:flex; justify-content:space-between;">
-            <span><i class="fas fa-trophy"></i> World Cup Qualifier</span>
-            <i class="far fa-bell"></i>
+    <div id="menu-content">
+    <div class="profile-section" style="padding: 15px; cursor: pointer; display: flex; align-items: center;" onclick="openProfilePage()">
+        <div class="avatar" style="width: 35px; height: 35px; background: #cfd8dc; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px;">
+            <i class="fas fa-user"></i>
         </div>
-        <div class="team-row">
-            <div class="team-name"><img src="https://flagcdn.com/w40/ar.png"> Argentina</div>
-            <span>2</span>
-        </div>
-        <div class="team-row">
-            <div class="team-name"><img src="https://flagcdn.com/w40/fr.png"> France</div>
-            <span>1</span>
-        </div>
-        <div class="odds-grid">
-            <div class="odd-box"><div style="font-size:10px; color:#999;">W1</div><div class="odd-val">1.45</div></div>
-            <div class="odd-box"><div style="font-size:10px; color:#999;">X</div><div class="odd-val">3.20</div></div>
-            <div class="odd-box"><div style="font-size:10px; color:#999;">W2</div><div class="odd-val">4.10</div></div>
-        </div>
-    </div>
-
-    <nav class="bottom-nav">
-    <div class="nav-item active"><i class="fas fa-fire"></i>Popular</div>
-    <div class="nav-item"><i class="far fa-star"></i>Favorites</div>
-    <div class="nav-item"><div class="center-btn"><i class="fas fa-ticket-alt"></i></div>Bet Slip</div>
-    <div class="nav-item"><i class="fas fa-history"></i>History</div>
-    <div class="nav-item" onclick="toggleMenu()"><i class="fas fa-th-large"></i>Menu</div>
-</nav>
-
-<div id="side-menu" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:2000;" onclick="closeMenu()">
-    <div class="menu-content" style="background:white; position:absolute; transition:0.4s cubic-bezier(0.4, 0, 0.2, 1); padding:25px; box-shadow:0 0 20px rgba(0,0,0,0.3);" onclick="event.stopPropagation()">
-        <div style="text-align: right;"><i class="fas fa-times" onclick="closeMenu()" style="font-size:24px; color:#666; cursor:pointer;"></i></div>
         
-        <div style="display:flex; align-items:center; gap:15px; margin-top:10px;">
-            <div style="width:55px; height:55px; background:#004d40; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:20px;"><i class="fas fa-user"></i></div>
-            <div>
-                <h3 id="menuUserName" style="font-size:18px; margin:0; color:#333;">User Profile</h3>
-                <p id="menuUserPhone" style="font-size:14px; color:#888; margin:5px 0 0;">017XXXXXXXX</p>
-            </div>
+        <div class="profile-info" style="margin-left: 12px;">
+            <h4 id="profileName" style="font-size: 14px; text-transform: uppercase; color: #1a2b3c;">USER</h4>
+            <p style="font-size: 11px; color: #28a745; font-weight: bold;">Personal profile</p>
         </div>
 
-        <div style="margin-top:35px;">
-            <div class="menu-opt" onclick="window.location.href='https://mdripon018770-coder.github.io/Notbok/dipo.html'" style="padding:15px 0; border-bottom:1px solid #f0f0f0; display:flex; align-items:center; gap:15px;">
-                <i class="fas fa-wallet" style="color:#00a86b; width:20px;"></i> <span>Deposit Money</span>
+        <div class="profile-icons" style="margin-left: auto; display: flex; gap: 18px; align-items: center;">
+            <i class="fas fa-envelope" style="font-size: 23px; color: #7a8a94;"></i>
+            <div class="settings-icon" onclick="event.stopPropagation(); openSettings()" style="cursor: pointer;">
+                <i class="fas fa-cog" style="font-size: 23px; color: #7a8a94;"></i>
             </div>
-            <div class="menu-opt" style="padding:15px 0; border-bottom:1px solid #f0f0f0; display:flex; align-items:center; gap:15px;">
-                <i class="fas fa-money-check-alt" style="color:#00a86b; width:20px;"></i> <span>Withdraw Funds</span>
-            </div>
-            <div class="menu-opt" style="padding:15px 0; border-bottom:1px solid #f0f0f0; display:flex; align-items:center; gap:15px;">
-                <i class="fas fa-history" style="color:#00a86b; width:20px;"></i> <span>My Bets History</span>
-            </div>
-            <div class="menu-opt" onclick="window.location.href='https://wa.me/88017XXXXXXXX'" style="padding:15px 0; border-bottom:1px solid #f0f0f0; display:flex; align-items:center; gap:15px;">
-                <i class="fab fa-whatsapp" style="color:#25D366; width:20px;"></i> <span>Contact Admin</span>
-            </div>
-            <div class="menu-opt" onclick="handleLogout()" style="padding:15px 0; color:#ff4d4d; margin-top:25px; display:flex; align-items:center; gap:15px;">
-                <i class="fas fa-sign-out-alt" style="width:20px;"></i> <span>Sign Out</span>
-            </div>
+        </div>
+    </div> 
+
+        <div class="menu-balance-box">
+        <div class="wallet-info">
+            <i class="fas fa-wallet" style="color: #28a745;"></i>
+            <span style="font-weight: bold; font-size: 14px;">...</span>
+            <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: auto; color: #ccc;"></i>
+        </div>
+        <button class="dep-btn" onclick="openDeposit()">+ Deposit</button>
+    </div>
+
+
+    <div style="margin:0; padding:0;">
+    <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/menu.jpg"
+         style="
+            display:block;
+            width:100%;
+            height:auto;
+            margin:0;
+            border-radius:0;
+            object-fit:cover;
+         ">
+</div>
+
+<div style="margin:0;padding:0;">
+    <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/menu2.jpg"
+         style="display:block;width:100%;height:auto;border-radius:0;object-fit:cover;">
+</div>
+
+<div id="complete-profile-form" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef2f5; z-index: 9999; overflow-y: auto;">
+    <!-- Header -->
+    <div style="padding: 15px; display: flex; align-items: center; background: #fff; height: 55px; position: sticky; top: 0; z-index: 10;">
+        <i class="fas fa-arrow-left" onclick="closeForm()" style="font-size: 20px; cursor: pointer; color: #7a8a94; margin-right: 20px;"></i>
+        <h3 style="flex: 1; text-align: center; font-size: 18px; color: #7a8a94; margin: 0;">Complete profile</h3>
+        <div style="width: 20px;"></div>
+    </div>
+
+    <div style="padding: 15px;">
+        <style>
+            .input-card { background: #fff; padding: 0 15px; border-radius: 12px; margin-bottom: 20px; }
+            .input-card input { width: 100%; padding: 15px 0; border: none; border-bottom: 1px solid #eef1f4; font-size: 16px; color: #333; outline: none; }
+            .input-label { color: #7a8a94; margin: 15px 0 10px 5px; font-size: 13px; }
+        </style>
+
+        <!-- Main details section -->
+        <div class="input-label">Main details</div>
+        <div class="input-card">
+            <input type="text" id="reg-name" class="profile-input" placeholder="Name">
+            <input type="text" id="reg-username" class="profile-input" placeholder="Username">
+            <input type="email" id="reg-email" class="profile-input" placeholder="Email">
+            <input type="tel" id="reg-phone" class="profile-input" placeholder="Phone number">
+            <input type="text" id="reg-patronymic" class="profile-input" placeholder="Patronymic (if any)">
+            <input type="text" id="reg-dob" class="profile-input" placeholder="Date of birth" onfocus="(this.type='date')">
+            <input type="text" id="reg-pob" class="profile-input" placeholder="Place of birth" style="border: none;">
+        </div>
+
+        <!-- Residence section -->
+        <div class="input-label">Residence</div>
+        <div class="input-card">
+            <input type="text" id="reg-country" class="profile-input" placeholder="Country">
+            <input type="text" id="reg-region" class="profile-input" placeholder="Region">
+            <input type="text" id="reg-city" class="profile-input" placeholder="City">
+            <input type="text" id="reg-address" class="profile-input" placeholder="Residence address" style="border: none;">
+        </div>
+
+        <!-- ID document section -->
+        <div class="input-label">ID document</div>
+        <div class="input-card">
+            <input type="text" id="reg-doc-type" class="profile-input" placeholder="Document type">
+            <input type="text" id="reg-series" class="profile-input" placeholder="Series (if have)">
+            <input type="text" id="reg-doc-num" class="profile-input" placeholder="Document number">
+            <input type="text" id="reg-doc-date" class="profile-input" placeholder="Date of issue" onfocus="(this.type='date')">
+            <input type="text" id="reg-issued-by" class="profile-input" placeholder="Issued by" style="border: none;">
+        </div>
+
+        <!-- Save Button Section -->
+        <div style="padding: 15px 0; position: sticky; bottom: 0; background: #eef2f5;">
+            <button id="saveBtn" onclick="saveProfile()" style="width: 100%; padding: 15px; background: #28a745; color: #fff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">Save</button>
         </div>
     </div>
 </div>
+</div>
+
+
+
+
+
+
+<div class="bottom-bar">
+    <div class="bottom-item active" id="pop-tab" onclick="switchTab('home')">
+        <i class="fas fa-fire"></i>
+        <span>Popular</span>
+    </div>
+
+    <div class="bottom-item">
+        <i class="fas fa-star"></i>
+        <span>Favorites</span>
+    </div>
+
+    <div class="slip-btn">
+        <div class="slip-icon">
+            <div class="original-ticket-icon"></div>
+        </div>
+        <span class="slip-text">Bet slip</span>
+    </div>
+
+    <div class="bottom-item">
+        <i class="fas fa-clock"></i>
+        <span>History</span>
+    </div>
+
+    <div class="bottom-item" id="menu-tab" onclick="switchTab('menu')">
+        <div class="custom-menu-icon">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <span>Menu</span>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- ===== Security Popup ===== -->
+<div id="security-page-overlay"
+style="
+position:fixed;
+top:0;
+right:-100%;
+width:100%;
+height:100%;
+background:#f0f2f5;
+z-index:3500;
+transition:right .4s ease;
+overflow-y:auto;">
+
+    <!-- Header -->
+    <div style="
+    height:55px;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    padding:0 15px;
+    border-bottom:1px solid #e5e5e5;
+    position:sticky;
+    top:0;
+    z-index:10;">
+
+        <i class="fas fa-arrow-left"
+        onclick="closeSecurity()"
+        style="font-size:20px;color:#7a8a94;cursor:pointer;"></i>
+
+        <div style="
+        flex:1;
+        text-align:center;
+        font-size:18px;
+        font-weight:700;
+        color:#7f9096;
+        margin-right:20px;">
+        Security settings
+        </div>
+
+    </div>
+
+    <!-- Content -->
+    <div id="security-content" style="padding:15px;">
+
+        <!-- 1st Card: Top Card (Profile is not protected) -->
+        <div style="
+        background:#fff;
+        border-radius:12px;
+        padding:15px;
+        display:flex;
+        align-items:center;
+        margin-bottom:15px;
+        gap:12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+
+            <div style="
+            width:40px;
+            height:40px;
+            border-radius:50%;
+            background:#ffebee;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#d32f2f;
+            font-size:18px;
+            flex-shrink:0;">
+                <i class="fas fa-user"></i>
+            </div>
+
+            <div>
+                <div style="
+                font-size:15px;
+                font-weight:700;
+                color:#334455;
+                margin-bottom:2px;">
+                Profile is not protected
+                </div>
+                <div style="
+                font-size:12px;
+                color:#7a8a94;">
+                Security issues found
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Section Title -->
+        <div style="
+        font-size:13px;
+        font-weight:600;
+        color:#7a8a94;
+        margin-bottom:8px;
+        padding-left:2px;">
+        Security checklist
+        </div>
+
+        <!-- 2nd Card: Checklist Card -->
+        <div style="
+        background:#fff;
+        border-radius:12px;
+        padding:15px;
+        margin-bottom:15px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+
+            <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:8px;">
+                <span style="font-size:13px; font-weight:600; color:#4a5d6e;">Improve security for your account!</span>
+                <span style="font-size:13px; font-weight:bold; color:#28a745;">2/6</span>
+            </div>
+
+            <!-- Progress -->
+            <div style="
+            width:100%;
+            height:6px;
+            background:#e0e0e0;
+            border-radius:3px;
+            overflow:hidden;">
+                <div style="
+                width:33.33%;
+                height:100%;
+                background:#28a745;
+                border-radius:3px;">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 3rd Card: List Items Container (All Lists) -->
+        <div style="background:#fff; border-radius:12px; padding:0 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+
+            <!-- 1. Phone number -->
+<div onclick="openPhone()" style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+            <i class="fas fa-mobile-alt"></i>
+        </div>
+        <div>
+            <div style="font-size: 14px; font-weight: 600; color:#7f9096;">Phone number</div>
+            
+            <!-- এখানে id="phoneStatusText" যুক্ত করে দেওয়া হলো, যেন জাভাস্ক্রিপ্ট এখানে সফল হওয়ার পর নম্বর বসাতে পারে -->
+            <div id="phoneStatusText" style="font-size: 12px; color: #d32f2f; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                <i class="fas fa-exclamation-circle" style="font-size: 10px;"></i> Not linked
+            </div>
+
+        </div>
+    </div>
+    <i class="fas fa-chevron-right" style="color: #ccc; font-size: 12px;"></i>
+</div>
+
+
+
+
+
+
+
+
+          <!-- Up-to-date password row -->
+<div onclick="window.handlePasswordClick()" style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+            <i class="fas fa-key"></i>
+        </div>
+        <div>
+            <div style="font-size: 14px; font-weight: 600; color:#7f9095;">Up-to-date password (change every 90 days)</div>
+            <div style="font-size: 12px; color: #28a745; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                <i class="fas fa-check-circle" style="font-size: 10px;"></i> Password changed today
+            </div>
+        </div>
+    </div>
+    <i class="fas fa-chevron-right" style="color: #ccc; font-size: 12px;"></i>
+</div>
+
+
+
+
+
+
+
+
+
+                        <!-- 3. Security question -->
+            <div onclick="openQuestion()" style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                        <i class="fas fa-question"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 14px; font-weight: 600; color:#7f9095;">Security question</div>
+                        
+                        <!-- এখানে id="securityQuestionStatus" যুক্ত করে দেওয়া হলো -->
+                        <div id="securityQuestionStatus" style="font-size: 12px; color: #d32f2f; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                            <i class="fas fa-exclamation-circle" style="font-size: 10px;"></i> Not selected
+                        </div>
+
+                    </div>
+                </div>
+                <div style="color: #ccc; font-size: 12px;">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+            <!-- 4. Two-factor authentication -->
+            <div onclick="openTwoFactor()" style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 15px; font-weight: 600; color: #1a2b3c;">Two-factor authentication</div>
+                        <div style="font-size: 12px; color: #7a8a94; margin-top: 2px;">Protect your account</div>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right" style="color: #c7c7cc; font-size: 14px;"></i>
+            </div>
+
+
+
+
+
+
+
+
+            <!-- 5. Personal profile -->
+            <div onclick="openPersonalProfile()" style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 14px; font-weight: 600; color:#7f9095;">Personal profile</div>
+                        <div style="font-size: 12px; color: #28a745; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                            <i class="fas fa-check-circle" style="font-size: 10px;"></i> Filled in
+                        </div>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right" style="color: #ccc; font-size: 12px;"></i>
+            </div>
+
+
+
+
+
+
+
+
+                        <!-- 6. Prevent login via e-mail -->
+            <div style="padding: 15px 0; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 12px; flex: 1; padding-right: 10px;">
+                    <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 14px; font-weight: 600; color:#7f9095;">Prevent login via e-mail</div>
+                        
+                        <!-- এখানে id="emailStatusText" যুক্ত করে দেওয়া হলো -->
+                        <div id="emailStatusText" style="font-size: 12px; color: #d32f2f; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                            <i class="fas fa-exclamation-circle" style="font-size: 10px;"></i> Not enabled
+                        </div>
+
+                    </div>
+                </div>
+                
+                <!-- টগল সুইচ -->
+                <label style="position: relative; display: inline-block; width: 46px; height: 24px; flex-shrink: 0; cursor: pointer;">
+                    <input type="checkbox" id="emailSwitch" onchange="toggleEmailSwitch()" style="opacity: 0; width: 0; height: 0;">
+                    <span id="emailSlider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px;">
+                        <span id="emailDot" style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+                    </span>
+                </label>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ===== Link Phone Number Overlay ===== -->
+<div id="phone-page-overlay"
+style="
+position:fixed;
+top:0;
+right:-100%;
+width:100%;
+height:100%;
+background:#edf3f7;
+z-index:4000;
+transition:right .4s ease;
+overflow:hidden;">
+
+    <!-- Header -->
+    <div style="
+    height:72px;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    padding:0 18px;">
+
+        <i class="fas fa-arrow-left"
+        onclick="closePhone()"
+        style="
+        font-size:28px;
+        color:#6f8d99;
+        cursor:pointer;"></i>
+
+        <div style="
+        flex:1;
+        text-align:center;
+        font-size:22px;
+        font-weight:600;
+        color:#6f8d99;
+        margin-right:28px;">
+        Link your phone number
+        </div>
+
+    </div>
+
+    <!-- Body -->
+    <div style="padding:22px;">
+
+        <!-- White Card -->
+        <div style="
+        background:#fff;
+        border-radius:22px;
+        padding:22px;">
+
+            <div style="
+            font-size:17px;
+            color:#78909c;
+            line-height:30px;
+            margin-bottom:30px;">
+            An SMS with an activation code will be sent to your phone
+            </div>
+
+            <div style="
+            font-size:15px;
+            color:#90a4ae;
+            margin-bottom:10px;">
+            Code
+            </div>
+
+            <!-- Input Row -->
+            <div style="
+            display:flex;
+            align-items:flex-end;
+            gap:18px;">
+
+                <!-- Country -->
+                <div style="width:120px;">
+
+                    <div style="
+                    display:flex;
+                    align-items:center;
+                    gap:8px;">
+
+                        <!-- Bangladesh Flag -->
+                        <div style="
+                        width:28px;
+                        height:28px;
+                        border-radius:50%;
+                        background:#006a4e;
+                        position:relative;
+                        flex-shrink:0;">
+
+                            <div style="
+                            width:12px;
+                            height:12px;
+                            background:#f42a41;
+                            border-radius:50%;
+                            position:absolute;
+                            top:50%;
+                            left:50%;
+                            transform:translate(-50%,-50%);">
+                            </div>
+
+                        </div>
+
+                        <span style="
+                        font-size:18px;
+                        color:#1a2b3c;">
+                        +880
+                        </span>
+
+                        <i class="fas fa-chevron-down"
+                        style="
+                        font-size:13px;
+                        color:#78909c;"></i>
+
+                    </div>
+
+                    <div style="
+                    margin-top:8px;
+                    height:2px;
+                    background:#cfd8dc;"></div>
+
+                </div>
+
+                <!-- Phone -->
+                <div style="flex:1;">
+
+                    <input
+                    id="phone-input-field"
+                    type="tel"
+                    placeholder="Phone number"
+                    oninput="checkPhoneInput()"
+                    style="
+                    width:100%;
+                    border:none;
+                    outline:none;
+                    background:transparent;
+                    font-size:18px;
+                    color:#1a2b3c;
+                    padding-bottom:8px;">
+
+                    <div style="
+                    height:2px;
+                    background:#cfd8dc;"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+       <!-- Bottom Button -->
+<div style="
+position:absolute;
+left:0;
+right:0;
+bottom:0;
+background:#fff;
+padding:16px 20px 22px;">
+
+    <button
+    id="linkPhoneBtn"
+    onclick="openPhoneVerification()"
+    style="
+    width:92%;
+    height:50px;
+    display:block;
+    margin:0 auto;
+    border:none;
+    border-radius:14px;
+    background:#10b981;
+    color:#ffffff;
+    font-size:19px;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    transition:all .3s ease;">
+    Link
+    </button>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Phone Linking Warning Popup -->
+<div id="phoneWarningPopup" style="
+display:none;
+position:fixed;
+top:0; left:0; right:0; bottom:0;
+background:rgba(0,0,0,0.5);
+z-index:9999;
+justify-content:center;
+align-items:center;">
+
+    <div style="
+    background:#ffffff;
+    width:85%;
+    max-width:320px;
+    border-radius:20px;
+    padding:24px 0 0 0;
+    text-align:center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    overflow:hidden;">
+
+        <!-- Title & Text -->
+        <div style="padding: 0 20px 24px 20px;">
+            <h3 style="color:#10b981; font-size:22px; margin-bottom:12px; font-weight:700;">Attention</h3>
+            <p style="color:#4b5563; font-size:15px; line-height:1.4; margin:0;">
+                To change the data, you need to link and activate your phone number
+            </p>
+        </div>
+
+        <!-- Top border line above Link button -->
+        <div style="width:100%; height:1px; background:#e5e7eb;"></div>
+
+        <!-- Link Button with full width style -->
+        <button onclick="openLinkPhonePage()" style="
+        width:100%;
+        padding:15px;
+        background:transparent;
+        color:#10b981;
+        border:none;
+        font-size:16px;
+        font-weight:700;
+        cursor:pointer;">
+        Link
+        </button>
+
+        <!-- Bottom border line below Link button -->
+        <div style="width:100%; height:1px; background:#e5e7eb;"></div>
+
+        <!-- Cancel Button -->
+        <button onclick="closePhoneWarning()" style="
+        width:100%;
+        padding:15px;
+        background:transparent;
+        color:#10b981;
+        border:none;
+        font-size:16px;
+        font-weight:700;
+        cursor:pointer;">
+        Cancel
+        </button>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<!-- ===== Two-Factor Authentication Overlay Page (Screenshot Design) ===== -->
+<div id="two-factor-overlay" style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#f0f2f5; z-index:4500; transition:right .4s ease; overflow-y:auto; display:flex; flex-direction:column;">
+    
+    <!-- Top Header -->
+    <div style="height:55px; background:#fff; display:flex; align-items:center; padding:0 15px; border-bottom:1px solid #e5e5e5; position:sticky; top:0; z-index:10;">
+        <i class="fas fa-arrow-left" onclick="closeTwoFactor()" style="font-size:20px; color:#7a8a94; cursor:pointer;"></i>
+        <div style="flex:1; text-align:center; font-size:18px; font-weight:700; color:#5c6f78; margin-right:20px;">Two-factor authentication</div>
+    </div>
+
+    <!-- Main Container -->
+    <div style="padding: 15px; flex: 1; display: flex; flex-direction: column;">
+        
+        <!-- White Card Box -->
+        <div style="background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+            <div style="font-size: 13px; color: #7a8a94; margin-bottom: 20px; line-height: 1.4;">
+                Protect your account. Enter the code from Google Authenticator or scan the QR code
+            </div>
+            
+            <!-- Option 1: Install Google Authenticator -->
+            <div style="display: flex; align-items: center; margin-bottom: 20px; cursor: pointer;" onclick="installAuthenticator()">
+                <div style="width: 36px; height: 36px; background: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 18px; margin-right: 12px; flex-shrink: 0;">G</div>
+                <div style="font-size: 15px; color: #1a2b3c; font-weight: 500;">Install Google Authenticator</div>
+            </div>
+
+            <!-- Option 2: Show QR code -->
+            <div style="display: flex; align-items: center; margin-bottom: 25px; cursor: pointer;" onclick="showQrCode()">
+                <div style="width: 36px; height: 36px; background: #28a745; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; margin-right: 12px; flex-shrink: 0;">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <div style="font-size: 15px; color: #1a2b3c; font-weight: 500;">Show QR code</div>
+            </div>
+
+            <!-- Input Field -->
+            <div style="margin-top: 10px;">
+                <input type="text" id="ga-code" placeholder="Google Authenticator code" style="width: 100%; border: none; border-bottom: 1px solid #d0d7de; padding: 8px 0; font-size: 16px; color: #1a2b3c; background: transparent; outline: none;">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Fixed Confirm Button Area -->
+    <div style="padding: 15px; background: #f0f2f5; position: sticky; bottom: 0;">
+        <button onclick="submitTwoFactor()" style="width: 100%; padding: 14px; background: #d0e1d4; color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer;">Confirm</button>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- ===== Password Change Flow Overlay ===== -->
+<div id="change-password-overlay" style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#f0f2f5; z-index:4500; transition:right .4s ease; overflow-y:auto; display:flex; flex-direction:column;">
+    
+    <!-- Step 1: Current Password Page -->
+    <div id="passStepCurrent" style="display:flex; flex-direction:column; height:100%;">
+        <div style="height:55px; background:#fff; display:flex; align-items:center; padding:0 15px; border-bottom:1px solid #e5e5e5; position:sticky; top:0; z-index:10;">
+            <i class="fas fa-arrow-left" onclick="closeChangePassword()" style="font-size:20px; color:#7a8a94; cursor:pointer;"></i>
+            <div style="flex:1; text-align:center; font-size:18px; font-weight:700; color:#7f9096; margin-right:20px;">Password change</div>
+        </div>
+        
+        <div style="padding: 15px; flex: 1; display: flex; flex-direction: column;">
+            <div style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <div style="font-size: 13px; color: #7a8a94; margin-bottom: 10px;">Enter your current password</div>
+                <div style="position: relative; display: flex; align-items: center; border-bottom: 1px solid #d0d7de; padding-bottom: 6px;">
+                    <input type="password" id="current-pass" placeholder="Current password" oninput="checkCurrentPassInput()" style="width: 100%; border: none; font-size: 16px; color: #1a2b3c; background: transparent; outline: none;">
+                    <i class="fas fa-eye" id="toggle-current-pass" style="color: #7a8a94; cursor: pointer; font-size: 18px; margin-left: 10px;" onclick="togglePasswordVisibility()"></i>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 25px;">
+                <a href="#" onclick="forgotPasswordAction(event)" style="color: #28a745; font-size: 15px; font-weight: 600; text-decoration: none;">Forgot your password?</a>
+            </div>
+        </div>
+
+        <div style="padding: 15px; background: #f0f2f5; position: sticky; bottom: 0;">
+            <button id="passNextBtn" disabled onclick="proceedToPasswordCaptcha()" style="width: 100%; padding: 14px; background: #d0e1d4; color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: not-allowed;">Next</button>
+        </div>
+    </div>
+
+            <!-- Step 2: New Password Input Page -->
+    <div id="passStepNew" style="display:none; flex-direction:column; height:100%;">
+        <div style="height:55px; background:#fff; display:flex; align-items:center; padding:0 15px; border-bottom:1px solid #e5e5e5; position:sticky; top:0; z-index:10;">
+            <i class="fas fa-arrow-left" onclick="backToCurrentPassStep()" style="font-size:20px; color:#7a8a94; cursor:pointer;"></i>
+            <div style="flex:1; text-align:center; font-size:18px; font-weight:700; color:#7f9096; margin-right:20px;">Password change</div>
+        </div>
+
+        <div style="padding: 15px; flex: 1; display: flex; flex-direction: column;">
+            <!-- মূল সাদা কার্ড যার ভেতরে ইনপুট এবং রিকোয়েরমেন্ট বক্স দুটোই থাকবে -->
+            <div style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px;">
+                <div style="font-size: 13px; color: #7a8a94; margin-bottom: 15px;">Enter your new password</div>
+                
+                <!-- New Password Field with Eye Icon -->
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 12px; color: #7a8a94; margin-bottom: 4px;">New password</div>
+                    <div style="position: relative; display: flex; align-items: center; border-bottom: 1px solid #d0d7de; padding-bottom: 6px;">
+                        <input type="password" id="new-pass" placeholder="New password" oninput="checkNewPassForm()" style="width: 100%; border: none; font-size: 16px; color: #1a2b3c; background: transparent; outline: none;">
+                        <i class="fas fa-eye" id="toggle-new-pass" style="color: #7a8a94; cursor: pointer; font-size: 18px; margin-left: 10px;" onclick="toggleNewPasswordVisibility()"></i>
+                    </div>
+                </div>
+
+                <!-- Repeat Password Field with Eye Icon -->
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 12px; color: #7a8a94; margin-bottom: 4px;">Repeat password</div>
+                    <div style="position: relative; display: flex; align-items: center; border-bottom: 1px solid #d0d7de; padding-bottom: 6px;">
+                        <input type="password" id="confirm-pass" placeholder="Repeat password" oninput="checkNewPassForm()" style="width: 100%; border: none; font-size: 16px; color: #1a2b3c; background: transparent; outline: none;">
+                        <i class="fas fa-eye" id="toggle-confirm-pass" style="color: #7a8a94; cursor: pointer; font-size: 18px; margin-left: 10px;" onclick="toggleConfirmPasswordVisibility()"></i>
+                    </div>
+                </div>
+
+                <!-- Password Requirements Box (সাদা কার্ডের ভেতরে চলে এলো) -->
+                <div style="background: #eef2f5; padding: 15px; border-radius: 12px; font-size: 12px; color: #5c6f78; line-height: 1.6;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: bold; color: #334455;">
+                        <i class="fas fa-info-circle" style="color: #5c6f78; font-size: 14px;"></i> Password requirements
+                    </div>
+                    • must contain at least 8 characters<br>
+                    • must contain at least three types of characters: lowercase letters, uppercase letters, and numbers<br>
+                    • must not be commonly used<br>
+                    • no more than 25% may be repeated characters
+                </div>
+            </div>
+        </div>
+
+        <div style="padding: 15px; background: #f0f2f5; position: sticky; bottom: 0;">
+            <button id="passSubmitBtn" disabled onclick="sendPasswordSmsCode()" style="width: 100%; padding: 14px; background: #d0e1d4; color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: not-allowed;">Next</button>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- ===== Phone Verification & Captcha Overlay Page (New Design) ===== -->
+<div id="phone-verification-overlay" style="position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #f4f6f8; z-index: 5000; transition: right 0.4s ease; overflow-y: auto; display: flex; flex-direction: column; align-items: center;">
+
+    <!-- পেজ ১: মূল ক্যাপচা পেজ -->
+    <div id="pageCaptcha" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <div style="width: 100%; max-width: 380px; height: 55px; display: flex; align-items: center; background: #ffffff; padding: 0 10px; box-sizing: border-box;">
+            <button onclick="closePhoneVerification()" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: none; border: none; color: #6f8f98; cursor: pointer;">
+                <i class="fa-solid fa-arrow-left" style="font-size: 20px; font-weight: 800;"></i>
+            </button>
+            <div style="flex: 1; text-align: center; margin-right: 30px; font-size: 18px; font-weight: 800; color: #6f8f98;">Link your phone number</div>
+        </div>
+
+        <div style="background: #ffffff; padding: 10px 20px 20px 20px; width: 100%; max-width: 380px; box-sizing: border-box; border-radius: 0 0 12px 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); text-align: center; margin-top: 10px;">
+            <div style="color: #1d3557; font-size: 16px; font-weight: bold; margin-bottom: 5px;">Confirm you're not a robot</div>
+            <div style="color: #457b9d; font-size: 13px; margin-bottom: 15px;">Drag the slider left or right to score a goal</div>
+
+            <div id="gameBox" style="position: relative; width: 100%; height: 200px; background-image: url('https://task-rk.github.io/task/gulki.png'); background-size: cover; background-position: center; background-repeat: no-repeat; border-radius: 8px; overflow: hidden; margin-bottom: 15px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg" alt="Football" id="football" style="position: absolute; bottom: 22px; left: 25px; width: 48px; height: 48px; object-fit: contain; transition: transform 0.05s linear; z-index: 2;">
+            </div>
+
+            <div id="sliderContainer" style="position: relative; background: #e2e8f0; border-radius: 30px; height: 45px; display: flex; align-items: center; padding: 0 5px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+                <div id="sliderArrows" style="position: absolute; width: 100%; display: flex; justify-content: space-between; padding: 0 22px; color: white; font-weight: bold; font-size: 16px; pointer-events: none; z-index: 2;">
+                    <span><</span>
+                    <span>></span>
+                </div>
+                <input type="range" min="0" max="100" value="0" id="slider" style="position: absolute; width: 100%; -webkit-appearance: none; appearance: none; background: transparent; outline: none; z-index: 3;">
+            </div>
+        </div>
+    </div>
+
+    <!-- পেজ ২: SMS Activation প্রথম পেজ -->
+    <div id="pageSmsFirst" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+        <div style="width: 100%; max-width: 380px; height: 55px; display: flex; align-items: center; background: #ffffff; padding: 0 10px; box-sizing: border-box;">
+            <button onclick="goToCaptchaPage()" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: none; border: none; color: #6f8f98; cursor: pointer;">
+                <i class="fa-solid fa-arrow-left" style="font-size: 20px; font-weight: 800;"></i>
+            </button>
+            <div style="flex: 1; text-align: center; margin-right: 30px; font-size: 18px; font-weight: 800; color: #6f8f98;">SMS activation</div>
+        </div>
+
+        <div style="width: 100%; max-width: 380px; padding: 0 10px; box-sizing: border-box; display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+            <div style="background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); font-size: 15px; color: #2b4c6f; text-align: left; line-height: 1.5;">
+                A confirmation code will be sent to number <br>
+                <strong id="userPhoneNumber" style="color: #1d3557; font-size: 16px;">+880 1724-853314</strong>
+            </div>
+
+            <div style="font-size: 14px; color: #6f8f98; font-weight: bold; text-align: left; margin-top: 5px;">Confirmation method</div>
+
+            <div onclick="openSmsPageAndNotifyAdmin()" style="background: #ffffff; padding: 15px 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); display: flex; align-items: center; gap: 15px; cursor: pointer;">
+                <div style="width: 40px; height: 40px; background: #2ecc71; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                    <i class="fa-solid fa-comment-sms"></i>
+                </div>
+                <div style="font-weight: bold; color: #1d3557; font-size: 16px;">SMS code</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- পেজ ৩: SMS Code এবং টাইমার পেজ -->
+    <div id="pageSmsTimer" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+        <div style="width: 100%; max-width: 380px; height: 55px; display: flex; align-items: center; background: #ffffff; padding: 0 10px; box-sizing: border-box;">
+            <button onclick="goToSmsFirstPage()" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: none; border: none; color: #6f8f98; cursor: pointer;">
+                <i class="fa-solid fa-arrow-left" style="font-size: 20px; font-weight: 800;"></i>
+            </button>
+            <div style="flex: 1; text-align: center; margin-right: 30px; font-size: 18px; font-weight: 800; color: #6f8f98;">SMS activation</div>
+        </div>
+
+        <div style="width: 100%; max-width: 380px; padding: 0 10px; box-sizing: border-box; display: flex; flex-direction: column; margin-top: 15px;">
+            <div style="background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); font-size: 15px; color: #2b4c6f; text-align: left; line-height: 1.5;">
+                An SMS with a confirmation code has been sent to <br>
+                <strong style="color: #1d3557; font-size: 15px;">+880 1724-853314</strong>
+                
+                <input type="text" id="confirmationCode" placeholder="Confirmation code" oninput="checkCodeInput()" style="width: 100%; border: none; border-bottom: 1px solid #dcdcdc; padding: 8px 0; font-size: 16px; outline: none; margin-top: 15px; color: #1d3557; box-sizing: border-box;">
+            </div>
+
+            <div style="font-size: 13px; color: #6f8f98; text-align: left; padding-left: 5px; margin-top: 5px;">
+                Code can be requested again in <span id="timerCountdown" style="font-weight: bold;">05:00</span>
+            </div>
+        </div>
+
+        <div style="width: 100%; max-width: 380px; position: fixed; bottom: 20px; padding: 0 10px; box-sizing: border-box;">
+    <button id="activateBtn" disabled onclick="verifyActivationCode()" style="width: 100%; height: 48px; background: #d6e2e6; color: #ffffff; border: none; border-radius: 24px; font-size: 16px; font-weight: bold; cursor: not-allowed; transition: background 0.3s ease;">Activate</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 75px;
+        height: 38px;
+        background: #2b6cb0;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ===== Security Question Page Overlay ===== -->
+<div id="securityQuestionPage" style="display: none; position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background-color: #f0f2f5; z-index: 4500; transition: right 0.4s ease; overflow-y: auto; padding: 0;">
+    
+    <!-- Top Bar -->
+    <div style="display: flex; align-items: center; background: #ffffff; padding: 15px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px;">
+        <span onclick="goBackToSecuritySettings()" style="font-size: 18px; cursor: pointer; margin-right: 15px; color: #59717a;"><i class="fas fa-arrow-left"></i></span>
+        <h2 style="font-size: 18px; color: #59717a; margin: 0; font-weight: 600;">Security question</h2>
+    </div>
+
+    <!-- Card Container -->
+    <div style="background: #ffffff; margin: 15px; padding: 20px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.03);">
+        
+        <!-- Select Question Dropdown Trigger -->
+        <div onclick="openQuestionPopup()" style="padding: 12px 0; border-bottom: 1px solid #e1e7ec; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 25px;">
+            <div style="display: flex; flex-direction: column;">
+                <span style="font-size: 11px; color: #28a745; margin-bottom: 2px;">Select question</span>
+                <span id="selectedQuestionText" style="color: #333; font-size: 15px; font-weight: 500;">Select question</span>
+            </div>
+            <span style="color: #59717a; font-size: 14px;"><i class="fas fa-chevron-down"></i></span>
+        </div>
+
+        <!-- Answer Input Container -->
+        <div id="answerInputContainer" style="padding-bottom: 5px; border-bottom: 1px solid #e1e7ec; position: relative; transition: border-color 0.3s;">
+            <!-- ওপরে ভেসে থাকা সবুজ লেবেল (টাইপ করলে শো করবে) -->
+            <span id="answerFloatingLabel" style="display: none; font-size: 11px; color: #28a745; margin-bottom: 2px;">Answer to your question</span>
+            
+            <input type="text" id="securityAnswerInput" placeholder="Answer to your question" oninput="checkSecurityForm()" style="width: 100%; padding: 8px 0; border: none; outline: none; font-size: 15px; background: transparent; color: #333;">
+        </div>
+    </div>
+
+    <!-- Save Button -->
+    <div style="position: fixed; bottom: 20px; left: 15px; right: 15px;">
+        <button id="saveQuestionBtn" onclick="saveSecurityQuestion()" disabled style="width: 100%; padding: 14px; background-color: #d0d7de; color: #fff; border: none; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: not-allowed; transition: background-color 0.3s;">Save</button>
+    </div>
+
+    <!-- Bottom Sheet Popup for Questions -->
+    <div id="questionPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 5000; align-items: flex-end;">
+        <div style="background: #fff; width: 100%; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 20px; max-height: 80vh; overflow-y: auto; box-sizing: border-box;">
+            
+            <!-- Drag Handle -->
+            <div style="width: 40px; height: 4px; background: #c5d0d6; border-radius: 2px; margin: 0 auto 20px auto;"></div>
+            
+            <h3 style="font-size: 18px; color: #113f48; margin-bottom: 20px; text-align: center; font-weight: 700;">Security question</h3>
+
+            <!-- Question Options List -->
+            <div onclick="selectQuestion(this)" style="padding: 15px 0; border-bottom: 1px solid #f0f4f7; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                <span style="font-size: 15px; color: #333;">Surname of your favorite musician</span>
+                <input type="radio" name="sec_q" style="width: 20px; height: 20px; accent-color: #113f48; cursor: pointer;">
+            </div>
+            <div onclick="selectQuestion(this)" style="padding: 15px 0; border-bottom: 1px solid #f0f4f7; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                <span style="font-size: 15px; color: #333;">Your favorite team</span>
+                <input type="radio" name="sec_q" style="width: 20px; height: 20px; accent-color: #113f48; cursor: pointer;">
+            </div>
+            <div onclick="selectQuestion(this)" style="padding: 15px 0; border-bottom: 1px solid #f0f4f7; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                <span style="font-size: 15px; color: #333;">Your favorite childhood book</span>
+                <input type="radio" name="sec_q" style="width: 20px; height: 20px; accent-color: #113f48; cursor: pointer;">
+            </div>
+            <div onclick="selectQuestion(this)" style="padding: 15px 0; border-bottom: 1px solid #f0f4f7; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                <span style="font-size: 15px; color: #333;">Father's first name</span>
+                <input type="radio" name="sec_q" style="width: 20px; height: 20px; accent-color: #113f48; cursor: pointer;">
+            </div>
+            <div onclick="selectQuestion(this)" style="padding: 15px 0; border-bottom: 1px solid #f0f4f7; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                <span style="font-size: 15px; color: #333;">Mother's first name</span>
+                <input type="radio" name="sec_q" style="width: 20px; height: 20px; accent-color: #113f48; cursor: pointer;">
+            </div>
+            <div onclick="selectQuestion(this)" style="padding: 15px 0; border-bottom: 1px solid #f0f4f7; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                <span style="font-size: 15px; color: #333;">Mother's maiden name</span>
+                <input type="radio" name="sec_q" style="width: 20px; height: 20px; accent-color: #113f48; cursor: pointer;">
+            </div>
+            <div onclick="selectQuestion(this)" style="padding: 15px 0; border-bottom: 1px solid #f0f4f7; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                <span style="font-size: 15px; color: #333;">Favorite author</span>
+                <input type="radio" name="sec_q" style="width: 20px; height: 20px; accent-color: #113f48; cursor: pointer;">
+            </div>
+            <div onclick="selectQuestion(this)" style="padding: 15px 0; border-bottom: 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                <span style="font-size: 15px; color: #333;">Your own question</span>
+                <input type="radio" name="sec_q" style="width: 20px; height: 20px; accent-color: #113f48; cursor: pointer;">
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     <script type="module">
-    // Firebase ইম্পোর্ট (আপনার দেওয়া মেইন অ্যাপের কানেকশন অনুযায়ী)
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
-
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyBCjxDS76NO2ib-hW_d9TmPPNIQFnjBO3k",
-        authDomain: "wallet-app-73793.firebaseapp.com",
-        projectId: "wallet-app-73793",
-        databaseURL: "https://wallet-app-73793-default-rtdb.asia-southeast1.firebasedatabase.app"
+        apiKey: "AIzaSyAsKOo6nJPZWT-DwdmnBR35J0U_feLiYGM",
+        authDomain: "betapp-c96eb.firebaseapp.com",
+        projectId: "betapp-c96eb",
+        storageBucket: "betapp-c96eb.firebasestorage.app",
+        messagingSenderId: "1028599491642",
+        appId: "1:1028599491642:web:1b14aea9673b49eb215903",
+        measurementId: "G-GYPL0LQPSG"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-// এই ফাংশনটি দিয়ে সব অ্যালার্ট কন্ট্রোল হবে
-window.showAlert = (message, icon = 'info') => {
-    Swal.fire({
-        text: message,
-        icon: icon, // success, error, warning, info - এই ৪টি আইকন ব্যবহার করা যাবে
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#00b359', // আপনার পছন্দের সবুজ রঙ
-        background: '#ffffff',
-        color: '#004d40',
-        heightAuto: false // মোবাইলে স্ক্রিন নড়াচড়া বন্ধ করার জন্য
-    });
-};
+    // Global UI Functions
+    window.openDeposit = function () {
+        const settings = document.getElementById("settings-page-overlay");
+        const overlay = document.getElementById("deposit-page-overlay");
+        const frame = document.getElementById("deposit-frame");
 
-// ডিফল্ট alert-কেও এর সাথে কানেক্ট করে দিন
-window.alert = (msg) => window.showAlert(msg);
+        if (overlay) overlay.style.zIndex = "5000";
+        if (frame) frame.src = "";
 
-    // ১. পেজ পরিবর্তন করার ফাংশন (আগেরগুলোই থাকল)
-    window.showRegister = function() {
-        document.getElementById('login-page').style.display = 'none';
-        document.getElementById('register-page').style.display = 'block';
-        window.scrollTo(0,0);
-    }
+        setTimeout(() => {
+            if (frame) frame.src = "https://mdripon018770-coder.github.io/Notbok/22dp.html";
+            if (overlay) overlay.classList.add("active");
+        }, 50);
+    };
 
-    window.showLogin = function() {
-        document.getElementById('register-page').style.display = 'none';
-        document.getElementById('login-page').style.display = 'block';
-        window.scrollTo(0,0);
-    }
+    window.closeDeposit = function () {
+        const overlay = document.getElementById("deposit-page-overlay");
+        const frame = document.getElementById("deposit-frame");
 
-    window.togglePass = function(id) {
-        const input = document.getElementById(id);
-        const icon = input.nextElementSibling;
-        if (input.type === "password") {
-            input.type = "text";
-            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        if (overlay) overlay.classList.remove("active");
+        setTimeout(() => {
+            if (frame) frame.src = "";
+        }, 400);
+    };
+
+    window.switchTab = function(tab) {
+        const home = document.getElementById('home-content');
+        const menu = document.getElementById('menu-content');
+        const popTab = document.getElementById('pop-tab');
+        const menuTab = document.getElementById('menu-tab');
+        const header = document.querySelector('.header');
+        const topNav = document.querySelector('.top-nav');
+
+        if(tab === 'menu') {
+            if(home) home.style.display = 'none';
+            if(menu) menu.style.display = 'block';
+            if(header) header.style.display = 'none'; 
+            if(topNav) topNav.style.display = 'none'; 
+            if(menuTab) menuTab.classList.add('active');
+            if(popTab) popTab.classList.remove('active');
         } else {
-            input.type = "password";
-            icon.classList.replace('fa-eye-slash', 'fa-eye');
+            if(home) home.style.display = 'block';
+            if(menu) menu.style.display = 'none';
+            if(header) header.style.display = 'flex'; 
+            if(topNav) topNav.style.display = 'flex'; 
+            if(popTab) popTab.classList.add('active');
+            if(menuTab) menuTab.classList.remove('active');
+        }
+    };
+
+    window.openSettings = function() { 
+        const settingsOverlay = document.getElementById('settings-page-overlay');
+        if(settingsOverlay) settingsOverlay.style.right = '0'; 
+    };
+    
+    window.closeSettings = function() { 
+        const settingsOverlay = document.getElementById('settings-page-overlay');
+        if(settingsOverlay) settingsOverlay.style.right = '-100%'; 
+    };
+
+    window.openProfilePage = function() { 
+        const profileOverlay = document.getElementById('personal-profile-overlay');
+        if(profileOverlay) profileOverlay.style.right = '0'; 
+    };
+    
+    window.closeProfilePage = function() { 
+        const profileOverlay = document.getElementById('personal-profile-overlay');
+        if(profileOverlay) profileOverlay.style.right = '-100%'; 
+    };
+
+    window.openCompleteProfile = function() {
+        const profileForm = document.getElementById('complete-profile-form');
+        if(profileForm) profileForm.style.display = 'block';
+    };
+
+    window.closeForm = function() {
+        const profileForm = document.getElementById('complete-profile-form');
+        if(profileForm) profileForm.style.display = 'none';
+    };
+
+    window.saveProfile = function() {
+        const saveBtn = document.getElementById('saveBtn');
+        if(saveBtn) {
+            saveBtn.innerText = "Loading...";
+            saveBtn.style.opacity = "0.7";
+            saveBtn.disabled = true;
+        }
+
+        setTimeout(() => {
+            const inputs = document.querySelectorAll('.profile-input');
+            const savedData = JSON.parse(localStorage.getItem('userProfileData')) || {};
+
+            inputs.forEach(input => {
+                if (input.value.trim() !== "") {
+                    savedData[input.id] = input.value;
+                }
+            });
+
+            localStorage.setItem('userProfileData', JSON.stringify(savedData));
+            
+            loadProfileData(); 
+            checkAndHideFields();
+            
+            if(saveBtn) {
+                saveBtn.innerText = "Save";
+                saveBtn.style.opacity = "1";
+                saveBtn.disabled = false;
+            }
+            
+            closeForm();
+        }, 2000); 
+    };
+
+    function checkAndHideFields() {
+        const savedData = JSON.parse(localStorage.getItem('userProfileData')) || {};
+        const inputs = document.querySelectorAll('.profile-input');
+
+        inputs.forEach(input => {
+            if (savedData[input.id] && savedData[input.id].trim() !== "") {
+                if(input.parentElement) input.parentElement.style.display = 'none';
+            }
+        });
+    }
+
+    function loadProfileData() {
+        let regDate = localStorage.getItem('userRegDate');
+        if (!regDate) {
+            regDate = new Date().toLocaleDateString('en-GB');
+            localStorage.setItem('userRegDate', regDate);
+        }
+        const regDateEl = document.getElementById('display-reg-date');
+        if(regDateEl) regDateEl.innerText = regDate;
+
+        const savedData = localStorage.getItem('userProfileData');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            
+            const displayName = document.getElementById('display-name');
+            if(displayName) displayName.innerText = data['reg-name'] || "Not filled in";
+                
+            const displayUsername = document.getElementById('display-username');
+            if(displayUsername) {
+                displayUsername.innerText = data['reg-username'] || "Not filled in";
+                const menuName = document.getElementById('profileName');
+                if(menuName) menuName.innerText = data['reg-username'] || "USER";
+            }
+            
+            const displayEmail = document.getElementById('display-email');
+            if(displayEmail) displayEmail.innerText = data['reg-email'] || "Not filled in";
+                
+            const displayPhone = document.getElementById('display-phone');
+            if(displayPhone) displayPhone.innerText = data['reg-phone'] || "Not filled in";
+                
+            const displayCity = document.getElementById('display-city');
+            if(displayCity) displayCity.innerText = data['reg-city'] || "Not filled in";
+
+            const displayCountry = document.getElementById('display-country');
+            if(displayCountry) displayCountry.innerText = data['reg-country'] || "Not filled in";
         }
     }
 
-    window.handleRegister = async function() {
-    const fullName = document.getElementById('regName').value;
-    const phone = document.getElementById('regPhone').value; // এই ফোন নম্বরটিই হবে লগইন আইডি
-    const email = document.getElementById('regEmail').value;
-    const password = document.getElementById('regPass').value;
-    const confirmPass = document.getElementById('confirmPass').value;
+        // Main Execution on DOM Load
+    document.addEventListener('DOMContentLoaded', () => {
+        // সাময়িকভাবে এই লাইনটি এখানে বসিয়ে দিন:
+        localStorage.removeItem('isSecurityQuestionSaved');
 
-    if(!fullName || !phone || !password) {
-        alert("সব তথ্য দিন!");
-        return;
-    }
+        const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
+        balanceDisplays.forEach(el => el.innerText = "...");
 
-    if(password !== confirmPass) {
-        alert("পাসওয়ার্ড মিলছে না!");
-        return;
-    }
+        const activeUserRef = ref(db, 'activeUser/id');
+        
+        onValue(activeUserRef, (snapshot) => {
+            const savedUser = snapshot.val(); 
+            
+            if (savedUser) {
+                const nameDisplay = document.getElementById('profileName');
+                if (nameDisplay) {
+                    nameDisplay.innerText = savedUser; 
+                }
 
-    try {
-        // ফোন নম্বর ব্যবহার করে Firebase-এ সেভ করা হচ্ছে
-        await set(ref(db, 'users/' + phone), {
-            name: fullName,
-            phone: phone,
-            email: email,
-            password: password,
-            balance: 0.00,
-            createdAt: new Date().toISOString()
+                const idDisplay = document.querySelector('.account-id-display');
+                if (idDisplay) {
+                    idDisplay.innerText = 'id: ' + savedUser;
+                }
+                
+                const userRef = ref(db, 'users/' + savedUser);
+                onValue(userRef, (userSnapshot) => {
+                    const data = userSnapshot.val();
+                    if (data) {
+                        const balance = data.balance !== undefined ? data.balance : 0;
+                        const currencySymbol = data.currencySymbol || data.currency || '৳'; 
+                        
+                        const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
+                        updatedDisplays.forEach(el => el.innerText = `${balance} ${currencySymbol}`);
+                    } else {
+                        const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
+                        updatedDisplays.forEach(el => el.innerText = `0 ৳`);
+                    }
+                });
+            } else {
+                const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
+                updatedDisplays.forEach(el => el.innerText = `0 ৳`);
+            }
         });
 
-        localStorage.setItem("userId", phone); // ফোন নম্বরটি সেভ করে রাখা হলো
-        alert("রেজিস্ট্রেশন সফল!");
+        const logoutTrigger = document.getElementById('logout-trigger');
+        if(logoutTrigger) {
+            logoutTrigger.addEventListener('click', function() {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('savedUserID');
+                localStorage.removeItem('savedPassword');
+                window.location.replace("https://mdripon018770-coder.github.io/Notbok/22login.html");
+            });
+        }
+
+        loadProfileData();
+        checkAndHideFields();
+    });
+
+    window.openSecurity = function() {
+        const securityOverlay = document.getElementById('security-page-overlay');
+        if(securityOverlay) securityOverlay.style.right = '0';
+    };
+
+    window.closeSecurity = function() {
+        const securityOverlay = document.getElementById('security-page-overlay');
+        if(securityOverlay) securityOverlay.style.right = '-100%';
+    };
+
+        window.openPhone = function() {
+        const phoneOverlay = document.getElementById('phone-page-overlay');
+        if(phoneOverlay) phoneOverlay.style.right = '0';
+
+        // ফোন নম্বর ইনপুট বক্স ফাঁকা করা
+        const phoneInput = document.getElementById('phone-input-field');
+        if(phoneInput) phoneInput.value = '';
+
+        // কনফার্মেশন কোড বক্স ফাঁকা করা
+        const codeInput = document.getElementById('confirmationCode');
+        if(codeInput) codeInput.value = '';
+
+        // লিংকিং বাটন ডিজেবল বা রিসেট করা
+        const linkBtn = document.getElementById('linkPhoneBtn');
+        if(linkBtn) {
+            linkBtn.disabled = true;
+            linkBtn.style.background = '#d0d7de';
+            linkBtn.style.cursor = 'not-allowed';
+        }
+    };
+
+
+    window.closePhone = function() {
+        const phoneOverlay = document.getElementById('phone-page-overlay');
+        if(phoneOverlay) phoneOverlay.style.right = '-100%';
+    };
+
+    window.checkPhoneInput = function() {
+        const input = document.getElementById('phone-input-field');
+        const btn = document.getElementById('linkPhoneBtn');
         
-        document.getElementById('auth-container').style.display = 'none';
-        document.getElementById('main-app').style.display = 'block';
-
-    } catch (error) {
-        alert("আবার চেষ্টা করুন!");
-    }
-}
-
-window.handleLogin = async function() {
-    const loginPhone = document.getElementById('loginId').value.trim();
-    const loginPass = document.getElementById('loginPass').value;
-
-    if(!loginPhone || !loginPass) {
-        alert("ফোন নম্বর এবং পাসওয়ার্ড দিন!");
-        return;
-    }
-
-    try {
-        // Firebase থেকে তথ্য আনা হচ্ছে
-        const userRef = ref(db, 'users/' + loginPhone);
-        const snapshot = await get(userRef); 
-
-        if (snapshot.exists()) {
-            const userData = snapshot.val();
-            
-            // পাসওয়ার্ড চেক করা হচ্ছে
-            if (userData.password === loginPass) {
-                // ১. তথ্য সেভ করা (পাসওয়ার্ডসহ সেভ হবে যাতে পরের বার অটো-ফিল হয়)
-                localStorage.setItem("userId", loginPhone);
-                localStorage.setItem("userPass", loginPass); // পাসওয়ার্ড মেমোরিতে সেভ হলো
-                localStorage.setItem("userBalance", userData.balance || "0.00");
-
-                // ২. লগইন স্ক্রিন সরিয়ে সরাসরি হোম পেজ (Main App) দেখানো
-                document.getElementById('auth-container').style.display = 'none';
-                document.getElementById('main-app').style.display = 'block';
-                
-                // ৩. হোম পেজের ব্যালেন্স আপডেট করা
-                document.getElementById('mainBalance').innerText = userData.balance || "0.00";
-                
-                alert("লগইন সফল হয়েছে!");
+        if (input && btn) {
+            if (input.value.trim().length > 5) {
+                btn.style.background = '#28a745';
+                btn.style.cursor = 'pointer';
+                btn.disabled = false;
             } else {
-                alert("ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।");
+                btn.style.background = '#d0d7de';
+                btn.style.cursor = 'not-allowed';
+                btn.disabled = true;
+            }
+        }
+    };
+
+    window.submitPhoneLink = function() {
+        const input = document.getElementById('phone-input-field');
+        if (input && input.value.trim() !== "") {
+            alert("Phone number link request sent successfully!");
+            closePhone();
+        }
+    };
+
+    window.handlePasswordClick = function() {
+        const changePassPage = document.getElementById('change-password-overlay');
+        if (changePassPage) {
+            changePassPage.style.right = '0';
+        }
+    };
+
+    window.closeChangePassword = function() {
+        const changePassPage = document.getElementById('change-password-overlay');
+        if (changePassPage) {
+            changePassPage.style.right = '-100%';
+        }
+    };
+
+    window.submitNewPassword = function() {
+        const currentPass = document.getElementById('current-pass').value;
+        const newPass = document.getElementById('new-pass').value;
+        const confirmPass = document.getElementById('confirm-pass').value;
+
+        if(!currentPass || !newPass || !confirmPass) {
+            alert("Please fill in all fields!");
+            return;
+        }
+        if(newPass !== confirmPass) {
+            alert("New passwords do not match!");
+            return;
+        }
+        alert("Password updated successfully!");
+        window.closeChangePassword();
+    };
+
+    window.openQuestionPopup = function() {
+        const popup = document.getElementById('questionPopup');
+        if (popup) {
+            popup.style.display = 'flex';
+        }
+    };
+
+    window.selectQuestion = function(element) {
+        const questionText = element.querySelector('span').innerText;
+        const radio = element.querySelector('input[type="radio"]');
+        
+        document.querySelectorAll('#questionPopup input[type="radio"]').forEach(r => r.checked = false);
+        if (radio) radio.checked = true;
+
+        const selectBoxText = document.getElementById('selectedQuestionText');
+        if (selectBoxText) {
+            selectBoxText.innerText = questionText;
+            selectBoxText.style.color = '#333';
+        }
+
+        setTimeout(() => {
+            const popup = document.getElementById('questionPopup');
+            if (popup) popup.style.display = 'none';
+        }, 200);
+    };
+
+    window.onclick = function(event) {
+        const popup = document.getElementById('questionPopup');
+        if (event.target === popup) {
+            popup.style.display = 'none';
+        }
+    };
+
+
+
+
+
+        window.saveSecurityQuestion = function() {
+        const question = document.getElementById('selectedQuestionText').innerText;
+        const answer = document.getElementById('securityAnswerInput').value;
+        
+        // চেক করা আগে থেকেই সেট করা আছে কি না
+        const isAlreadySaved = localStorage.getItem('isSecurityQuestionSaved') === 'true';
+
+        if (isAlreadySaved) {
+            showActivationToast("You already have a security question");
+            window.goBackToSecuritySettings();
+            return;
+        }
+
+        if (question === 'Select question' || !question) {
+            alert('Please select a security question!');
+            return;
+        }
+        if (!answer.trim()) {
+            alert('Please provide an answer!');
+            return;
+        }
+        
+        // লোকালস্টোরেজে সেভ করা
+        localStorage.setItem('isSecurityQuestionSaved', 'true');
+        localStorage.setItem('userSecurityQuestion', question);
+        localStorage.setItem('userSecurityAnswer', answer);
+
+        // মেইন সিকিউরিটি পেজে স্ট্যাটাস আপডেট করা (আইকন সবুজ, লেখা গ্রে)
+        const questionStatusText = document.getElementById('securityQuestionStatus');
+        if(questionStatusText) {
+            questionStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Selected</span>`;
+        }
+
+        // প্রোগ্রেস বার আপডেট করা
+        updateSecurityProgress();
+
+        showActivationToast("Security question saved successfully!");
+        window.goBackToSecuritySettings();
+    };
+
+    window.openQuestion = function() {
+        const isAlreadySaved = localStorage.getItem('isSecurityQuestionSaved') === 'true';
+
+        if (isAlreadySaved) {
+            // যদি আগে থেকেই সেভ থাকে, তবে পেজে না গিয়ে সরাসরি সবুজ টোস্ট দেখাবে
+            showActivationToast("You already have a security question");
+            return;
+        }
+
+        // না থাকলে পেজ ওপেন হবে
+        const page = document.getElementById('securityQuestionPage');
+        if (page) {
+            page.style.display = 'block';
+            setTimeout(() => {
+                page.style.right = '0';
+            }, 10);
+        }
+    };
+
+    window.goBackToSecuritySettings = function() {
+        const page = document.getElementById('securityQuestionPage');
+        if (page) {
+            page.style.right = '-100%';
+            setTimeout(() => {
+                page.style.display = 'none';
+            }, 400);
+        }
+    };
+
+
+
+
+
+    window.openTwoFactor = () => { document.getElementById('two-factor-overlay').style.right = '0'; };
+    window.closeTwoFactor = () => { document.getElementById('two-factor-overlay').style.right = '-100%'; };
+    window.installAuthenticator = () => { alert("Redirecting to install authenticator..."); };
+    window.showQrCode = () => { alert("Showing QR code..."); };
+    window.submitTwoFactor = () => { alert("Confirm clicked!"); };
+
+    window.openPhoneVerification = () => {
+        const phoneInputVal = document.getElementById('phone-input-field').value;
+        
+        if (!phoneInputVal || phoneInputVal.trim() === '') {
+            alert('দয়া করে আপনার ফোন নম্বরটি লিখুন!');
+            return;
+        }
+
+        const fullPhone = '+880 ' + phoneInputVal;
+        localStorage.setItem('userEnteredPhone', fullPhone);
+
+        const phonePageOverlay = document.getElementById('phone-page-overlay');
+        if (phonePageOverlay) {
+            phonePageOverlay.style.right = '-100%';
+        }
+
+        const verificationOverlay = document.getElementById('phone-verification-overlay');
+        if (verificationOverlay) {
+            verificationOverlay.style.right = '0';
+        }
+
+        const displayPhoneElements = document.querySelectorAll('#userPhoneNumber, .dynamic-user-phone, #displayUserPhone');
+        displayPhoneElements.forEach(el => {
+            el.textContent = fullPhone;
+        });
+
+        document.getElementById('pageCaptcha').style.display = 'flex';
+        document.getElementById('pageSmsFirst').style.display = 'none';
+        document.getElementById('pageSmsTimer').style.display = 'none';
+        document.getElementById('slider').value = 0;
+        document.getElementById('slider').disabled = false;
+        document.getElementById('football').style.display = 'block';
+        document.getElementById('gameBox').style.backgroundImage = "url('https://task-rk.github.io/task/gulki.png')";
+        document.getElementById('sliderContainer').style.background = '#e2e8f0';
+        document.getElementById('sliderArrows').innerHTML = '<span><</span><span>></span>';
+        isLocked = false;
+    };
+
+    window.closePhoneVerification = () => {
+        document.getElementById('phone-verification-overlay').style.right = '-100%';
+        clearInterval(timerInterval);
+    };
+
+    // গেম স্লাইডার এবং পেজ নেভিগেশন লজিক
+    let isLocked = false;
+    let timerInterval = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const slider = document.getElementById('slider');
+        const football = document.getElementById('football');
+        const gameBox = document.getElementById('gameBox');
+        const sliderContainer = document.getElementById('sliderContainer');
+        const sliderArrows = document.getElementById('sliderArrows');
+        
+        const pageCaptcha = document.getElementById('pageCaptcha');
+        const pageSmsFirst = document.getElementById('pageSmsFirst');
+
+        if (slider) {
+            slider.addEventListener('input', (e) => {
+                if (isLocked) return; 
+                let val = e.target.value; 
+
+                if (val >= 67 && val <= 69) {
+                    val = 68;
+                    slider.value = 68;
+                    isLocked = true; 
+
+                    gameBox.style.backgroundImage = "url('https://task-rk.github.io/task/golsacses.jpg')";
+                    football.style.display = 'none'; 
+                    sliderContainer.style.background = '#eaf5e9'; 
+                    sliderArrows.innerHTML = '<span style="width:100%; text-align:center; color: #4CAF50; font-size: 18px;"><i class="fa-solid fa-check"></i></span>';
+                    slider.disabled = true;
+
+                                        setTimeout(() => {
+                        const flowType = localStorage.getItem('captchaFlowType');
+                        if (flowType === 'passwordChange') {
+                            localStorage.removeItem('captchaFlowType');
+                            // ক্যাপচা ওভারলে বন্ধ করে নতুন পাসওয়ার্ড পেজ ওপেন করা
+                            document.getElementById('phone-verification-overlay').style.right = '-100%';
+                            if (typeof window.openNewPasswordStep === 'function') {
+                                window.openNewPasswordStep();
+                            }
+                        } else {
+                            // স্বাভাবিক ফোন ভেরিফিকেশনের জন্য এসএমএস পেজে যাওয়া
+                            pageCaptcha.style.display = 'none';
+                            pageSmsFirst.style.display = 'flex';
+                        }
+                    }, 1200);
+                    return;
+                }
+
+
+                const moveX = (val / 100) * 115; 
+                const moveY = - (val / 100) * 75; 
+                const rotateDeg = val * 12; 
+
+                football.style.transform = `translate(${moveX}px, ${moveY}px) rotate(${rotateDeg}deg)`;
+                gameBox.style.backgroundImage = "url('https://task-rk.github.io/task/gulki.png')";
+                football.style.display = 'block';
+                sliderContainer.style.background = '#e2e8f0';
+                sliderArrows.innerHTML = '<span><</span><span>></span>';
+            });
+        }
+    });
+
+    window.goToCaptchaPage = function() {
+        const pageCaptcha = document.getElementById('pageCaptcha');
+        const pageSmsFirst = document.getElementById('pageSmsFirst');
+        if(pageCaptcha) pageCaptcha.style.display = 'flex';
+        if(pageSmsFirst) pageSmsFirst.style.display = 'none';
+    };
+
+    window.goToSmsFirstPage = function() {
+        const pageSmsFirst = document.getElementById('pageSmsFirst');
+        const pageSmsTimer = document.getElementById('pageSmsTimer');
+        if(pageSmsFirst) pageSmsFirst.style.display = 'flex';
+        if(pageSmsTimer) pageSmsTimer.style.display = 'none';
+        clearInterval(timerInterval);
+    };
+
+    window.checkCodeInput = function() {
+        const codeInput = document.getElementById('confirmationCode');
+        const activateBtn = document.getElementById('activateBtn');
+        if(codeInput && activateBtn) {
+            if(codeInput.value.trim().length > 0) {
+                activateBtn.disabled = false;
+                activateBtn.style.background = '#28a745';
+                activateBtn.style.cursor = 'pointer';
+                activateBtn.style.boxShadow = '0 4px 12px rgba(46, 204, 113, 0.3)';
+            } else {
+                activateBtn.disabled = true;
+                activateBtn.style.background = '#d6e2e6';
+                activateBtn.style.cursor = 'not-allowed';
+                activateBtn.style.boxShadow = 'none';
+            }
+        }
+    };
+
+          // ফায়ারবেসের মাধ্যমে অ্যাডমিনের কাছে ইউজারের রিয়েল নম্বর এবং কোড আলাদা লিস্ট আকারে পাঠানোর ফাংশন
+    function sendSmsRequestToAdmin(phoneNumber) {
+        const activeUserRef = ref(db, 'activeUser/id');
+        onValue(activeUserRef, (snapshot) => {
+            const userId = snapshot.val() || 'user';
+            // ইউনিক আইডি যুক্ত করা হলো যাতে আগের লিস্ট মুছে না যায়
+            const uniqueRequestId = userId + '_' + Date.now();
+            const smsRef = ref(db, 'admin_sms_requests/' + uniqueRequestId);
+            
+            set(smsRef, {
+                phone: phoneNumber,
+                code: generatedSmsCode,
+                requestTime: new Date().toISOString(),
+                time: new Date().toLocaleTimeString(),
+                status: "Pending"
+            }).then(() => {
+                console.log("SMS activation request saved safely to list with code:", generatedSmsCode);
+            }).catch((error) => {
+                console.error("Error sending SMS request to admin: ", error);
+            });
+        }, { onlyOnce: true });
+    }
+
+    let generatedSmsCode = "";
+
+    function generateRandom5DigitCode() {
+        return Math.floor(10000 + Math.random() * 90000).toString();
+    }
+
+    let countdownInterval = null;
+
+    function startSmsTimer() {
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+        }
+
+        let totalSeconds = 5 * 60; 
+        const timerDisplay = document.getElementById('timerCountdown'); 
+
+        countdownInterval = setInterval(() => {
+            let minutes = Math.floor(totalSeconds / 60);
+            let seconds = totalSeconds % 60;
+
+            let formattedMinutes = String(minutes).padStart(2, '0');
+            let formattedSeconds = String(seconds).padStart(2, '0');
+
+            if (timerDisplay) {
+                timerDisplay.innerText = `${formattedMinutes}:${formattedSeconds}`;
+            }
+
+            if (totalSeconds <= 0) {
+                clearInterval(countdownInterval);
+            } else {
+                totalSeconds--;
+            }
+        }, 1000);
+    }
+
+
+
+
+
+
+    window.openSmsPageAndNotifyAdmin = function() {
+        const pageSmsFirst = document.getElementById('pageSmsFirst');
+        const pageSmsTimer = document.getElementById('pageSmsTimer');
+
+        if(pageSmsFirst) pageSmsFirst.style.display = 'none';
+        if(pageSmsTimer) pageSmsTimer.style.display = 'flex';
+        
+        generatedSmsCode = generateRandom5DigitCode();
+        console.log("Admin SMS Code Generated: " + generatedSmsCode);
+
+        const userTypedPhone = localStorage.getItem('userEnteredPhone') || document.getElementById('phone-input-field').value;
+        
+        const requestData = {
+            phone: userTypedPhone,
+            time: new Date().toLocaleTimeString(),
+            status: "requested"
+        };
+        localStorage.setItem('smsRequest', JSON.stringify(requestData));
+
+        sendSmsRequestToAdmin(userTypedPhone);
+        startSmsTimer();
+    };
+
+
+                    window.verifyActivationCode = function() {
+        // ১. সবার আগে চেক করা এটি পাসওয়ার্ড চেঞ্জের কোড নাকি নরমাল ফোন ভেরিফিকেশন
+        if (localStorage.getItem('pendingNewPassword')) {
+            if (typeof window.verifyPasswordChangeCode === 'function') {
+                window.verifyPasswordChangeCode();
+                localStorage.removeItem('pendingNewPassword');
+                return;
+            }
+        }
+
+        const inputElement = document.getElementById('confirmationCode');
+        const userEnteredCode = inputElement ? inputElement.value.trim() : "";
+
+        // কোড ম্যাচিং চেক (নরমাল ফোন ভেরিফিকেশনের জন্য)
+        if (userEnteredCode !== "" && (userEnteredCode === generatedSmsCode || generatedSmsCode === "")) {
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            // ১. এসএমএস পেজ বা ওভারলে বন্ধ করা এবং সিকিউরিটি পেজে নিয়ে যাওয়া
+            const pageSmsTimer = document.getElementById('pageSmsTimer');
+            const phoneVerificationOverlay = document.getElementById('phone-verification-overlay');
+            const pageSecurity = document.getElementById('security-page-overlay');
+            
+            if(pageSmsTimer) pageSmsTimer.style.display = 'none';
+            if(phoneVerificationOverlay) phoneVerificationOverlay.style.right = '-100%';
+            if(pageSecurity) pageSecurity.style.right = '0';
+
+            // ২. ইউজার যে রিয়েল নম্বরটি ইনপুট দিয়েছিল তা সংগ্রহ করা
+            let realPhone = localStorage.getItem('userEnteredPhone') || "";
+            if (!realPhone) {
+                const phoneInputField = document.getElementById('phone-input-field');
+                if (phoneInputField) realPhone = phoneInputField.value.trim();
+            }
+
+            // ৩. ডাইনামিক মাস্কিং তৈরি করা
+            const cleanNum = realPhone.replace(/\D/g, ''); 
+            let maskedString = "172...14"; 
+
+            if (cleanNum.length >= 5) {
+                let digitsOnly = cleanNum;
+                if (digitsOnly.startsWith('880') && digitsOnly.length > 10) {
+                    digitsOnly = digitsOnly.slice(3); 
+                }
+
+                if (digitsOnly.length >= 5) {
+                    const firstPart = digitsOnly.slice(0, 3); 
+                    const lastPart = digitsOnly.slice(-2);    
+                    maskedString = `${firstPart}...${lastPart}`;
+                }
+            }
+
+            // ৪. সিকিউরিটি পেজে নম্বর আপডেট করা
+            const statusHtml = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">${maskedString} activated</span>`;
+
+            const phoneStatusText = document.getElementById('phoneStatusText');
+            if(phoneStatusText) {
+                phoneStatusText.innerHTML = statusHtml;
+            }
+
+            localStorage.setItem('isPhoneActivated', 'true');
+            
+            if (typeof updateSecurityProgress === 'function') {
+                updateSecurityProgress();
+            }
+
+            // ৫. সবুজ পপআপ মেসেজ দেখানো
+            showActivationToast("Your phone number is already activated");
+
+        } else {
+            alert("Wrong confirmation code! Please check admin panel for the correct code.");
+        }
+    };
+
+
+
+
+
+    // নিচে সবুজ পপআপ টোস্ট দেখানোর ফাংশন
+    function showActivationToast(message) {
+        const existingToast = document.getElementById('customActivationToast');
+        if (existingToast) existingToast.remove();
+
+        const toast = document.createElement('div');
+        toast.id = 'customActivationToast';
+        toast.innerHTML = `<i class="fa-solid fa-circle-exclamation" style="margin-right: 8px;"></i> ${message}`;
+        
+        toast.style.position = 'fixed';
+        toast.style.bottom = '20px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.backgroundColor = '#109d42';
+        toast.style.color = '#ffffff';
+        toast.style.padding = '14px 20px';
+        toast.style.borderRadius = '12px';
+        toast.style.fontSize = '15px';
+        toast.style.fontWeight = '500';
+        toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+        toast.style.zIndex = '99999';
+        toast.style.display = 'flex';
+        toast.style.alignItems = 'center';
+        toast.style.width = '90%';
+        toast.style.maxWidth = '420px';
+
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.transition = 'opacity 0.5s ease';
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 500);
+        }, 4000);
+    }
+
+
+
+
+
+
+
+
+    // সিকিউরিটি প্রোগ্রেস এবং কাউন্ট ডাইনামিক আপডেট করার ফাংশন
+    function updateSecurityProgress() {
+        let completedCount = 0;
+        const totalItems = 6;
+
+        // ১. ফোন নম্বর একটিভ কি না চেক করা (লোকালস্টোরেজ বা এলিমেন্ট দেখে)
+        const phoneStatusText = document.getElementById('phoneStatusText');
+        if (phoneStatusText && phoneStatusText.innerHTML.includes('activated')) {
+            completedCount++;
+        }
+
+        // ২. পাসওয়ার্ড পরিবর্তন করা আছে কি না চেক করা (আপনার প্রজেক্টের লজিক অনুযায়ী)
+        const passwordStatus = localStorage.getItem('isPasswordChanged');
+        if (passwordStatus === 'true') {
+            completedCount++;
+        }
+
+        // ৩. সিকিউরিটি কোশ্চেন সিলেক্ট করা আছে কি না
+        const securityQuestionStatus = localStorage.getItem('isSecurityQuestionSaved');
+        if (securityQuestionStatus === 'true') {
+            completedCount++;
+        }
+
+        // ৪. টু-ফ্যাক্টর অথেন্টিকেশন এনাবল করা কি না
+        const tfaStatus = localStorage.getItem('isTfaEnabled');
+        if (tfaStatus === 'true') {
+            completedCount++;
+        }
+
+        // ৫. পার্সোনাল প্রোফাইল ফিলআপ করা কি না (আপনার প্রোফাইল ডাটা থেকে চেক)
+        const profileData = localStorage.getItem('userProfileData');
+        if (profileData) {
+            completedCount++;
+        }
+
+        // ৬. ইমেইল প্রোটেকশন এনাবল করা কি না
+        const emailStatus = localStorage.getItem('isEmailProtected');
+        if (emailStatus === 'true') {
+            completedCount++;
+        }
+
+        // ওপরের টেক্সট আপডেট করা (যেমন: 3/6)
+        const progressText = document.querySelector('.security-checklist-count, #securityCountText, div[style*="font-weight"][class*="6"]');
+        // যদি নির্দিষ্ট কোনো ক্লাস বা আইডি থাকে প্রোগ্রেস টেক্সটের জন্য
+        const progressNumberDisplay = document.getElementById('securityProgressText');
+        if (progressNumberDisplay) {
+            progressNumberDisplay.innerText = `${completedCount}/${totalItems}`;
+        }
+
+        // সবুজ বারের উইথ (Width) পার্সেন্টেজ অনুযায়ী বাড়ানো
+        const progressBarFill = document.getElementById('securityProgressBarFill');
+        if (progressBarFill) {
+            const percentage = (completedCount / totalItems) * 100;
+            progressBarFill.style.width = `${percentage}%`;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // প্রশ্ন সিলেক্ট করার ফাংশন
+    window.selectQuestion = function(element) {
+        const questionText = element.querySelector('span').innerText;
+        const radio = element.querySelector('input[type="radio"]');
+        
+        // সব রেডিও আনচেক করা
+        document.querySelectorAll('#questionPopup input[type="radio"]').forEach(r => r.checked = false);
+        if (radio) radio.checked = true;
+
+        const selectBoxText = document.getElementById('selectedQuestionText');
+        if (selectBoxText) {
+            selectBoxText.innerText = questionText;
+            selectBoxText.style.color = '#333';
+        }
+
+        // পপআপ বন্ধ করা
+        setTimeout(() => {
+            const popup = document.getElementById('questionPopup');
+            if (popup) popup.style.display = 'none';
+        }, 200);
+
+        // সেভ বাটন চেক করা
+        checkSecurityForm();
+    };
+
+    // ইনপুট বা প্রশ্ন সিলেক্ট করার পর সেভ বাটন এবং লেবেল ডাইনামিক চেক করার ফাংশন
+    window.checkSecurityForm = function() {
+        const questionText = document.getElementById('selectedQuestionText').innerText;
+        const answerInput = document.getElementById('securityAnswerInput');
+        const saveBtn = document.getElementById('saveQuestionBtn');
+        const floatingLabel = document.getElementById('answerFloatingLabel');
+        const inputContainer = document.getElementById('answerInputContainer');
+
+        const hasQuestion = questionText && questionText !== 'Select question';
+        const hasAnswer = answerInput && answerInput.value.trim().length > 0;
+
+        // ইনপুটে কিছু লিখলে ওপরে সবুজ লেবেল দেখানো এবং নিচের দাগ সবুজ করা
+        if (answerInput && answerInput.value.trim().length > 0) {
+            if(floatingLabel) floatingLabel.style.display = 'block';
+            if(inputContainer) inputContainer.style.borderBottomColor = '#28a745';
+        } else {
+            if(floatingLabel) floatingLabel.style.display = 'none';
+            if(inputContainer) inputContainer.style.borderBottomColor = '#e1e7ec';
+        }
+
+        // দুটি ফিল্ড পূরণ হলে সেভ বাটন সবুজ এবং ক্লিকযোগ্য করা
+        if (hasQuestion && hasAnswer) {
+            if(saveBtn) {
+                saveBtn.style.backgroundColor = '#28a745';
+                saveBtn.disabled = false;
             }
         } else {
-            alert("এই একাউন্টটি পাওয়া যায়নি!");
+            if(saveBtn) {
+                saveBtn.style.backgroundColor = '#d0d7de';
+                saveBtn.disabled = true;
+            }
         }
-    } catch (error) {
-        console.error("Login Error: ", error);
-        alert("সার্ভার সমস্যা! ডাটা কানেকশন চেক করুন।");
-    }
-}
+    };
 
-// ১. পপআপ ওপেন ও ক্লোজ করার ফাংশন
-window.handleForgotPassword = function() {
-    document.getElementById('forgotModal').style.display = 'flex';
-}
-
-window.closeForgotModal = function() {
-    document.getElementById('forgotModal').style.display = 'none';
-}
-
-// ২. রিকোয়েস্ট সাবমিট করার ফাংশন
-window.submitResetRequest = async function() {
-    const phone = document.getElementById('forgotPhone').value;
-    const email = document.getElementById('forgotEmail').value;
-
-    if(!phone || !email) {
-        alert("Please provide both Phone and Email!");
-        return;
-    }
-
-    try {
-        // Firebase-e 'reset_requests' নামে একটি নতুন লিস্টে ডাটা সেভ হবে
-        const requestId = "REQ" + Date.now();
-        await set(ref(db, 'password_resets/' + phone), {
-            phone: phone,
-            email: email,
-            status: "pending",
-            time: new Date().toLocaleString()
-        });
-
-        alert("Request Sent! Admin will check and contact you soon.");
-        closeForgotModal();
+    // সিকিউরিটি কোশ্চেন সেভ করার ফাংশন
+        // সিকিউরিটি কোশ্চেন সেভ করার ফাংশন
+    window.saveSecurityQuestion = function() {
+        const question = document.getElementById('selectedQuestionText').innerText;
+        const answer = document.getElementById('securityAnswerInput').value;
         
-        // Clear inputs
-        document.getElementById('forgotPhone').value = "";
-        document.getElementById('forgotEmail').value = "";
-
-    } catch (error) {
-        console.error(error);
-        alert("Something went wrong!");
-    }
-}
-
-
-window.handleLogout = function() {
-    // ১. লোকাল স্টোরেজ থেকে ইউজারের সব তথ্য পুরোপুরি মুছে ফেলা
-    localStorage.clear(); 
-
-    // ২. ইন্টারফেস পরিবর্তন করা (মেইন অ্যাপ লুকিয়ে লগইন পেজ দেখানো)
-    document.getElementById('main-app').style.display = 'none';
-    document.getElementById('auth-container').style.display = 'block';
-    document.getElementById('login-page').style.display = 'block';
-
-    // ৩. সাইড মেনু খোলা থাকলে তা বন্ধ করা
-    if(typeof closeMenu === 'function') {
-        closeMenu();
-    }
-
-    alert("লগআউট সফল হয়েছে!");
-}
-
-
-
-window.addEventListener('load', function() {
-    // ১. storage theke data ana
-    const savedUserId = localStorage.getItem("userId");
-    const savedPass = localStorage.getItem("userPass");
-
-    // ২. jodi data thake tobei input field-e boshano hobe
-    if (savedUserId && savedPass) {
-        document.getElementById('loginId').value = savedUserId;
-        document.getElementById('loginPass').value = savedPass;
+        if (question === 'Select question' || !question) {
+            alert('Please select a security question!');
+            return;
+        }
+        if (!answer.trim()) {
+            alert('Please provide an answer!');
+            return;
+        }
         
-        // apni jodi chan auto-fill thakar por-o user login page-ei thakbe, 
-        // tobe niche 'main-app' show korar proyojon nei.
-    } else {
-        // jodi data na thake (notun user), tobe box khali thakbe ebong placeholder dekhabe
-        document.getElementById('loginId').value = "";
-        document.getElementById('loginPass').value = "";
-    }
-});
+        // লোকালস্টোরেজে সেভ করা
+        localStorage.setItem('isSecurityQuestionSaved', 'true');
+        localStorage.setItem('userSecurityQuestion', question);
+        localStorage.setItem('userSecurityAnswer', answer);
+
+        // মেইন সিকিউরিটি পেজে স্ট্যাটাস আপডেট করা (আইকন সবুজ, লেখা গ্রে)
+        const questionStatusText = document.getElementById('securityQuestionStatus');
+        if(questionStatusText) {
+            questionStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Selected</span>`;
+        }
+
+        // প্রোগ্রেস বার এবং কাউন্ট আপডেট করা
+        if (typeof updateSecurityProgress === 'function') {
+            updateSecurityProgress();
+        }
+
+        showActivationToast("Security question saved successfully!");
+        window.goBackToSecuritySettings();
+    };
+
+    // সিকিউরিটি কোশ্চেন পেজ খোলার ফাংশন
+    window.openQuestion = function() {
+        const isAlreadySaved = localStorage.getItem('isSecurityQuestionSaved') === 'true';
+
+        if (isAlreadySaved) {
+            // যদি আগে থেকেই সেভ করা থাকে, তবে পেজে না গিয়ে সরাসরি সবুজ টোস্ট দেখাবে
+            showActivationToast("You already have a security question");
+            return;
+        }
+
+        // আর যদি সেভ করা না থাকে, তবেই সিকিউরিটি কোশ্চেন পেজটি ওপেন হবে
+        const page = document.getElementById('securityQuestionPage');
+        if (page) {
+            page.style.display = 'block';
+            setTimeout(() => {
+                page.style.right = '0';
+            }, 10);
+        }
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Prevent login via e-mail টগল কন্ট্রোল করার ফাংশন
+    window.toggleEmailSwitch = function() {
+        const checkbox = document.getElementById('emailSwitch');
+        const slider = document.getElementById('emailSlider');
+        const dot = document.getElementById('emailDot');
+        const statusText = document.getElementById('emailStatusText');
+
+        if (checkbox.checked) {
+            // টগল অন করার স্টাইল ও ডাটা সেভ
+            slider.style.backgroundColor = '#28a745';
+            dot.style.transform = 'translateX(22px)';
+            
+            localStorage.setItem('isEmailProtected', 'true');
+
+            // স্ট্যাটাস টেক্সট আপডেট (সবুজ টিকমার্কসহ Enabled)
+            if(statusText) {
+                statusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Enabled</span>`;
+            }
+
+            showActivationToast("Login via e-mail prevented");
+        } else {
+            // টগল অফ করার স্টাইল ও ডাটা রিমুভ
+            slider.style.backgroundColor = '#ccc';
+            dot.style.transform = 'translateX(0px)';
+            
+            localStorage.setItem('isEmailProtected', 'false');
+
+            // স্ট্যাটাস টেক্সট আপডেট (লাল আইকনসহ Not enabled)
+            if(statusText) {
+                statusText.innerHTML = `<i class="fas fa-exclamation-circle" style="font-size: 10px;"></i> Not enabled`;
+                statusText.style.color = '#d32f2f';
+            }
+
+            showActivationToast("Login via e-mail allowed");
+        }
+
+        // প্রোগ্রেস বার আপডেট করার ফাংশন কল
+        if (typeof updateSecurityProgress === 'function') {
+            updateSecurityProgress();
+        }
+    };
+
+    // পেজ লোড হওয়ার সময় লোকালস্টোরেজ চেক করে টগল ও স্ট্যাটাস ঠিক রাখার জন্য
+    document.addEventListener('DOMContentLoaded', () => {
+        const isProtected = localStorage.getItem('isEmailProtected') === 'true';
+        const checkbox = document.getElementById('emailSwitch');
+        const slider = document.getElementById('emailSlider');
+        const dot = document.getElementById('emailDot');
+        const statusText = document.getElementById('emailStatusText');
+
+        if (isProtected && checkbox && slider && dot && statusText) {
+            checkbox.checked = true;
+            slider.style.backgroundColor = '#28a745';
+            dot.style.transform = 'translateX(22px)';
+            statusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Enabled</span>`;
+        }
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ১. কারেন্ট পাসওয়ার্ড ইনপুট চেক করা
+    window.checkCurrentPassInput = function() {
+        const val = document.getElementById('current-pass').value.trim();
+        const btn = document.getElementById('passNextBtn');
+        if (val.length > 0) {
+            btn.disabled = false;
+            btn.style.backgroundColor = '#28a745';
+            btn.style.cursor = 'pointer';
+        } else {
+            btn.disabled = true;
+            btn.style.backgroundColor = '#d0e1d4';
+            btn.style.cursor = 'not-allowed';
+        }
+    };
+
+    // ২. নেক্সট এ ক্লিক করলে ক্যাপচা পেজ ওপেন করা (ফোন ভেরিফিকেশনের স্লাইডার ক্যাপচা রিইউজ করা)
+        // ১. কারেন্ট পাসওয়ার্ড ম্যাচিং চেক করে ক্যাপচা পেজ ওপেন করা
+        // ১. কারেন্ট পাসওয়ার্ড ম্যাচিং চেক করে ক্যাপচা পেজ ওপেন করা
+    window.proceedToPasswordCaptcha = function() {
+        const currentPass = document.getElementById('current-pass').value.trim();
+        if(!currentPass) {
+            showActivationToast("Please enter your current password!"); // অ্যালার্টের বদলে সুন্দর টোস্ট
+            return;
+        }
+
+        // লোকালস্টোরেজ থেকে ইউজারের রেজিস্ট্রেশন করা আসল পাসওয়ার্ড চেক করা
+        const savedPassword = localStorage.getItem('userPassword') || localStorage.getItem('savedPassword') || "123456";
+
+        if (currentPass !== savedPassword) {
+            showActivationToast("Wrong current password! Please enter your correct password."); // সুন্দর সবুজ পপআপ মেসেজ
+            return; // পাসওয়ার্ড ভুল হলে সামনের পেজ বা ক্যাপচায় যেতে দেবে না
+        }
+
+        // বর্তমান পাসওয়ার্ড সঠিক হলে ওভারলে বন্ধ করে ক্যাপচা ওভারলে ওপেন করা
+        document.getElementById('change-password-overlay').style.right = '-100%';
+        
+        // ক্যাপচা পেজ ওপেন করার জন্য ফোন ভেরিফিকেশনের ক্যাপচা মেথড ট্রিগার করা
+        const verificationOverlay = document.getElementById('phone-verification-overlay');
+        if (verificationOverlay) {
+            verificationOverlay.style.right = '0';
+        }
+
+        // ক্যাপচা সাকসেস হওয়ার পর নতুন পাসওয়ার্ড পেজে যাওয়ার জন্য একটি ফ্ল্যাগ সেট করা
+        localStorage.setItem('captchaFlowType', 'passwordChange');
+
+        // ক্যাপচা রিসেট করা
+        document.getElementById('pageCaptcha').style.display = 'flex';
+        document.getElementById('pageSmsFirst').style.display = 'none';
+        document.getElementById('pageSmsTimer').style.display = 'none';
+        document.getElementById('slider').value = 0;
+        document.getElementById('slider').disabled = false;
+        document.getElementById('football').style.display = 'block';
+        document.getElementById('gameBox').style.backgroundImage = "url('https://task-rk.github.io/task/gulki.png')";
+    };
+
+
+
+
+
+
+    // ৩. ক্যাপচা সাকসেস হওয়ার পর নতুন পাসওয়ার্ড পেজে নিয়ে যাওয়ার লজিক
+    // (নোট: আপনার আগের ক্যাপচা সাকসেস ইভেন্টে এই চেকটি দিতে হবে যাতে পাসওয়ার্ড ফ্লোতে নতুন পাসওয়ার্ড পেজ খোলে)
+    window.openNewPasswordStep = function() {
+        const overlay = document.getElementById('change-password-overlay');
+        overlay.style.right = '0';
+        document.getElementById('passStepCurrent').style.display = 'none';
+        document.getElementById('passStepNew').style.display = 'flex';
+    };
+
+    window.backToCurrentPassStep = function() {
+        document.getElementById('passStepNew').style.display = 'none';
+        document.getElementById('passStepCurrent').style.display = 'flex';
+    };
+
+    window.checkNewPassForm = function() {
+        const newPass = document.getElementById('new-pass').value.trim();
+        const confirmPass = document.getElementById('confirm-pass').value.trim();
+        const btn = document.getElementById('passSubmitBtn');
+
+        if (newPass.length >= 8 && newPass === confirmPass) {
+            btn.disabled = false;
+            btn.style.backgroundColor = '#28a745';
+            btn.style.cursor = 'pointer';
+        } else {
+            btn.disabled = true;
+            btn.style.backgroundColor = '#d0e1d4';
+            btn.style.cursor = 'not-allowed';
+        }
+    };
+
+    // ৪. নতুন পাসওয়ার্ড পেজ থেকে নেক্সট চাপলে এসএমএস পেজ ওপেন করা এবং অ্যাডমিনের কাছে কোড পাঠানো
+    window.sendPasswordSmsCode = function() {
+        const newPass = document.getElementById('new-pass').value.trim();
+        const confirmPass = document.getElementById('confirm-pass').value.trim();
+
+        if (newPass !== confirmPass) {
+            alert("New passwords do not match!");
+            return;
+        }
+
+        localStorage.setItem('pendingNewPassword', newPass);
+
+        // বর্তমান পাসওয়ার্ড ওভারলে বন্ধ করে এসএমএস টাইমার পেজ বা এসএমএস ফ্লো ওপেন করা
+        document.getElementById('change-password-overlay').style.right = '-100%';
+        
+        // ফোন ভেরিফিকেশনের এসএমএস টাইমার পেজটি পাসওয়ার্ড চেঞ্জের জন্য ওপেন করা
+        const verificationOverlay = document.getElementById('phone-verification-overlay');
+        if (verificationOverlay) {
+            verificationOverlay.style.right = '0';
+        }
+
+        document.getElementById('pageCaptcha').style.display = 'none';
+        document.getElementById('pageSmsFirst').style.display = 'flex';
+        document.getElementById('pageSmsTimer').style.display = 'none';
+    };
+
+    // ৫. এসএমএস কোড ভেরিফাই করার সময় পাসওয়ার্ড চেঞ্জ সফল দেখানো
+    window.verifyPasswordChangeCode = function() {
+        const inputElement = document.getElementById('confirmationCode');
+        const userEnteredCode = inputElement ? inputElement.value.trim() : "";
+
+        if (userEnteredCode !== "" && (userEnteredCode === generatedSmsCode || generatedSmsCode === "")) {
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            // সফলভাবে পাসওয়ার্ড আপডেট লোকালস্টোরেজে সেভ করা
+            localStorage.setItem('isPasswordChanged', 'true');
+            localStorage.setItem('userPassword', localStorage.getItem('pendingNewPassword'));
+
+            // ওভারলে বন্ধ করা
+            document.getElementById('phone-verification-overlay').style.right = '-100%';
+            document.getElementById('change-password-overlay').style.right = '-100%';
+
+            // সিকিউরিটি পেজে স্ট্যাটাস আপডেট করা
+            const passStatusText = document.querySelector('#security-page-overlay .fa-key').closest('div').nextElementSibling.querySelector('div:nth-child(2)');
+            if(passStatusText) {
+                passStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Password changed today</span>`;
+            }
+
+            if (typeof updateSecurityProgress === 'function') {
+                updateSecurityProgress();
+            }
+
+            showActivationToast("Password changed successfully!");
+            window.openSecurity(); // ব্যাক করে সিকিউরিটি পেজে নিয়ে যাওয়া
+        } else {
+            alert("Wrong confirmation code!");
+        }
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // কারেন্ট পাসওয়ার্ড দেখার জন্য টগল
+    window.togglePasswordVisibility = function() {
+        const input = document.getElementById('current-pass');
+        const icon = document.getElementById('toggle-current-pass');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    };
+
+    // নতুন পাসওয়ার্ড দেখার জন্য টগল
+    window.toggleNewPasswordVisibility = function() {
+        const input = document.getElementById('new-pass');
+        const icon = document.getElementById('toggle-new-pass');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    };
+
+    // কনফার্ম পাসওয়ার্ড দেখার জন্য টগল
+    window.toggleConfirmPasswordVisibility = function() {
+        const input = document.getElementById('confirm-pass');
+        const icon = document.getElementById('toggle-confirm-pass');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    };
+
+
+
+
+
+
+
+
+
 
 </script>
 
-<script>
 
-let clickCount = 0; // কতবার ক্লিক হয়েছে তা মাপার জন্য
 
-window.toggleMenu = function() {
-    const menu = document.getElementById('side-menu');
-    const content = menu.querySelector('.menu-content');
-    
-    // ইউজার ডাটা বসানো (Optional: Firebase থেকে আনা যেতে পারে)
-    const phone = localStorage.getItem("userId") || "017XXXXXXXX";
-    document.getElementById('menuUserPhone').innerText = phone;
 
-    // সব আগের ক্লাস রিমুভ করা
-    content.classList.remove('from-bottom', 'from-right', 'from-left');
-    
-    // ক্লিক অনুযায়ী স্টাইল সেট করা
-    clickCount++;
-    if(clickCount === 1) {
-        content.classList.add('from-bottom');
-    } else if(clickCount === 2) {
-        content.classList.add('from-right');
-    } else if(clickCount === 3) {
-        content.classList.add('from-left');
-        clickCount = 0; // ৩ বার হলে আবার ১ থেকে শুরু হবে
-    }
 
-    menu.style.display = 'block';
-    // এনিমেশন এর জন্য সামান্য দেরি করা
-    setTimeout(() => {
-        content.classList.add('menu-active');
-    }, 10);
-}
 
-window.closeMenu = function() {
-    const menu = document.getElementById('side-menu');
-    const content = menu.querySelector('.menu-content');
-    
-    content.classList.remove('menu-active');
-    setTimeout(() => {
-        menu.style.display = 'none';
-    }, 400);
-}
 
-</script>
+
+
+
+
 </body>
 </html>
