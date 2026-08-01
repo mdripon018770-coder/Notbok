@@ -1091,7 +1091,7 @@ overflow-y:auto;">
         Security checklist
         </div>
 
-        <!-- 2nd Card: Checklist Card -->
+        <!-- Single Unified White Card for Progress and All 6 Lists -->
         <div style="
         background:#fff;
         border-radius:12px;
@@ -1099,182 +1099,163 @@ overflow-y:auto;">
         margin-bottom:15px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
 
-            <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:8px;">
-                <span style="font-size:13px; font-weight:600; color:#4a5d6e;">Improve security for your account!</span>
-                <span style="font-size:13px; font-weight:bold; color:#28a745;">2/6</span>
-            </div>
-
-            <!-- Progress -->
-            <div style="
-            width:100%;
-            height:6px;
-            background:#e0e0e0;
-            border-radius:3px;
-            overflow:hidden;">
-                <div style="
-                width:33.33%;
-                height:100%;
-                background:#28a745;
-                border-radius:3px;">
-                </div>
-            </div>
-
-        </div>
-
-        <!-- 3rd Card: List Items Container (All Lists) -->
-        <div style="background:#fff; border-radius:12px; padding:0 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-
-            <!-- 1. Phone number -->
-<div onclick="openPhone()" style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-    <div style="display: flex; align-items: center; gap: 12px;">
-        <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
-            <i class="fas fa-mobile-alt"></i>
-        </div>
-        <div>
-            <div style="font-size: 14px; font-weight: 600; color:#7f9096;">Phone number</div>
-            
-            <!-- এখানে id="phoneStatusText" যুক্ত করে দেওয়া হলো, যেন জাভাস্ক্রিপ্ট এখানে সফল হওয়ার পর নম্বর বসাতে পারে -->
-            <div id="phoneStatusText" style="font-size: 12px; color: #d32f2f; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-                <i class="fas fa-exclamation-circle" style="font-size: 10px;"></i> Not linked
-            </div>
-
-        </div>
-    </div>
-    <i class="fas fa-chevron-right" style="color: #ccc; font-size: 12px;"></i>
-</div>
-
-
-
-
-
-
-
-
-          <!-- Up-to-date password row -->
-<div onclick="window.handlePasswordClick()" style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-    <div style="display: flex; align-items: center; gap: 12px;">
-        <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
-            <i class="fas fa-key"></i>
-        </div>
-        <div>
-            <div style="font-size: 14px; font-weight: 600; color:#7f9095;">Up-to-date password (change every 90 days)</div>
-            <div style="font-size: 12px; color: #28a745; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-                <i class="fas fa-check-circle" style="font-size: 10px;"></i> Password changed today
-            </div>
-        </div>
-    </div>
-    <i class="fas fa-chevron-right" style="color: #ccc; font-size: 12px;"></i>
-</div>
-
-
-
-
-
-
-
-
-
-                        <!-- 3. Security question -->
-            <div onclick="openQuestion()" style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
-                        <i class="fas fa-question"></i>
-                    </div>
-                    <div>
-                        <div style="font-size: 14px; font-weight: 600; color:#7f9095;">Security question</div>
-                        
-                        <!-- এখানে id="securityQuestionStatus" যুক্ত করে দেওয়া হলো -->
-                        <div id="securityQuestionStatus" style="font-size: 12px; color: #d32f2f; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-                            <i class="fas fa-exclamation-circle" style="font-size: 10px;"></i> Not selected
-                        </div>
-
-                    </div>
-                </div>
-                <div style="color: #ccc; font-size: 12px;">
-                    <i class="fas fa-chevron-right"></i>
-                </div>
-            </div>
-
-
-
-
-
-
-
-
-
-            <!-- 4. Two-factor authentication -->
-            <div onclick="openTwoFactor()" style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <div>
-                        <div style="font-size: 15px; font-weight: 600; color: #1a2b3c;">Two-factor authentication</div>
-                        <div style="font-size: 12px; color: #7a8a94; margin-top: 2px;">Protect your account</div>
-                    </div>
-                </div>
-                <i class="fas fa-chevron-right" style="color: #c7c7cc; font-size: 14px;"></i>
-            </div>
-
-
-
-
-
-
-
-
-            <!-- 5. Personal profile -->
-            <div onclick="openPersonalProfile()" style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div>
-                        <div style="font-size: 14px; font-weight: 600; color:#7f9095;">Personal profile</div>
-                        <div style="font-size: 12px; color: #28a745; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-                            <i class="fas fa-check-circle" style="font-size: 10px;"></i> Filled in
-                        </div>
-                    </div>
-                </div>
-                <i class="fas fa-chevron-right" style="color: #ccc; font-size: 12px;"></i>
-            </div>
-
-
-
-
-
-
-
-
-                        <!-- 6. Prevent login via e-mail -->
-            <div style="padding: 15px 0; display: flex; align-items: center; justify-content: space-between;">
-                <div style="display: flex; align-items: center; gap: 12px; flex: 1; padding-right: 10px;">
-                    <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <div>
-                        <div style="font-size: 14px; font-weight: 600; color:#7f9095;">Prevent login via e-mail</div>
-                        
-                        <!-- এখানে id="emailStatusText" যুক্ত করে দেওয়া হলো -->
-                        <div id="emailStatusText" style="font-size: 12px; color: #d32f2f; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-                            <i class="fas fa-exclamation-circle" style="font-size: 10px;"></i> Not enabled
-                        </div>
-
-                    </div>
-                </div>
+            <!-- Top Progress Section inside the card (Screenshot Layout) -->
+            <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #f0f0f0;">
                 
-                <!-- টগল সুইচ -->
-                <label style="position: relative; display: inline-block; width: 46px; height: 24px; flex-shrink: 0; cursor: pointer;">
-                    <input type="checkbox" id="emailSwitch" onchange="toggleEmailSwitch()" style="opacity: 0; width: 0; height: 0;">
-                    <span id="emailSlider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px;">
-                        <span id="emailDot" style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;"></span>
-                    </span>
-                </label>
+                <div style="
+                font-size:15px;
+                font-weight:700;
+                color:#334455;
+                margin-bottom:12px;">
+                Improve security for your account!
+                </div>
+
+                <!-- Bottom Row: Left Green Badge & Right Thicker Progress Bar -->
+                <div style="
+                display:flex;
+                align-items:center;
+                gap:12px;">
+                    
+                    <!-- Left Green Badge (যেমন: 1/6) -->
+                    <div id="securityProgressText" style="
+                    background:#28a745;
+                    color:#fff;
+                    font-size:13px;
+                    font-weight:bold;
+                    padding:4px 12px;
+                    border-radius:15px;
+                    flex-shrink:0;
+                    min-width:48px;
+                    text-align:center;">
+                    1/6
+                    </div>
+
+                    <!-- Right Thicker Progress Bar -->
+                    <div style="
+                    flex:1;
+                    height:9px;
+                    background:#e0e0e0;
+                    border-radius:5px;
+                    overflow:hidden;">
+                        <div id="securityProgressBarFill" style="
+                        width:16.66%;
+                        height:100%;
+                        background:#28a745;
+                        border-radius:5px;
+                        transition: width 0.4s ease;">
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- List Items Container -->
+            <div>
+
+                <!-- 1. Phone number -->
+                <div onclick="openPhone()" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 600; color:#7f9096;">Phone number</div>
+                            <div id="phoneStatusText" style="font-size: 12px; color: #d32f2f; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                                <i class="fas fa-exclamation-circle" style="font-size: 10px;"></i> Not linked
+                            </div>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: #ccc; font-size: 12px;"></i>
+                </div>
+
+                <!-- 2. Up-to-date password -->
+                <div onclick="window.handlePasswordClick()" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 600; color:#7f9095;">Up-to-date password (change every 90 days)</div>
+                            <div id="passwordStatusText" style="font-size: 12px; color: #28a745; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                                <i class="fas fa-check-circle" style="font-size: 10px;"></i> Password changed today
+                            </div>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: #ccc; font-size: 12px;"></i>
+                </div>
+
+                <!-- 3. Security question -->
+                <div onclick="openQuestion()" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                            <i class="fas fa-question"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 600; color:#7f9095;">Security question</div>
+                            <div id="securityQuestionStatus" style="font-size: 12px; color: #d32f2f; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                                <i class="fas fa-exclamation-circle" style="font-size: 10px;"></i> Not selected
+                            </div>
+                        </div>
+                    </div>
+                    <div style="color: #ccc; font-size: 12px;">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+
+                <!-- 4. Two-factor authentication -->
+                <div onclick="openTwoFactor()" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 600; color: #7f9095;">Two-factor authentication</div>
+                            <div style="font-size: 12px; color: #7a8a94; margin-top: 2px;">Protect your account</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: #c7c7cc; font-size: 14px;"></i>
+                </div>
+
+                <!-- 5. Personal profile -->
+                <div onclick="openPersonalProfile()" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 600; color:#7f9095;">Personal profile</div>
+                            <div style="font-size: 12px; color: #28a745; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                                <i class="fas fa-check-circle" style="font-size: 10px;"></i> Filled in
+                            </div>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: #ccc; font-size: 12px;"></i>
+                </div>
+
+                <!-- 6. Prevent login via e-mail -->
+                <div style="padding: 12px 0; display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex: 1; padding-right: 10px;">
+                        <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 600; color:#7f9095;">Prevent login via e-mail</div>
+                            <div id="emailStatusText" style="font-size: 12px; color: #d32f2f; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                                <i class="fas fa-exclamation-circle" style="font-size: 10px;"></i> Not enabled
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Toggle Switch -->
+                    <label style="position: relative; display: inline-block; width: 46px; height: 24px; flex-shrink: 0; cursor: pointer;">
+                        <input type="checkbox" id="emailSwitch" onchange="toggleEmailSwitch()" style="opacity: 0; width: 0; height: 0;">
+                        <span id="emailSlider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px;">
+                            <span id="emailDot" style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+                        </span>
+                    </label>
+                </div>
+
             </div>
 
         </div>
@@ -1951,7 +1932,7 @@ align-items:center;">
 
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    import { getDatabase, ref, onValue, set, get, child } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAsKOo6nJPZWT-DwdmnBR35J0U_feLiYGM",
@@ -2129,9 +2110,6 @@ align-items:center;">
 
         // Main Execution on DOM Load
     document.addEventListener('DOMContentLoaded', () => {
-        // সাময়িকভাবে এই লাইনটি এখানে বসিয়ে দিন:
-        localStorage.removeItem('isSecurityQuestionSaved');
-
         const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
         balanceDisplays.forEach(el => el.innerText = "...");
 
@@ -2183,6 +2161,9 @@ align-items:center;">
 
         loadProfileData();
         checkAndHideFields();
+        if (typeof updateSecurityProgress === 'function') {
+            updateSecurityProgress();
+        }
     });
 
     window.openSecurity = function() {
@@ -2195,19 +2176,16 @@ align-items:center;">
         if(securityOverlay) securityOverlay.style.right = '-100%';
     };
 
-        window.openPhone = function() {
+    window.openPhone = function() {
         const phoneOverlay = document.getElementById('phone-page-overlay');
         if(phoneOverlay) phoneOverlay.style.right = '0';
 
-        // ফোন নম্বর ইনপুট বক্স ফাঁকা করা
         const phoneInput = document.getElementById('phone-input-field');
         if(phoneInput) phoneInput.value = '';
 
-        // কনফার্মেশন কোড বক্স ফাঁকা করা
         const codeInput = document.getElementById('confirmationCode');
         if(codeInput) codeInput.value = '';
 
-        // লিংকিং বাটন ডিজেবল বা রিসেট করা
         const linkBtn = document.getElementById('linkPhoneBtn');
         if(linkBtn) {
             linkBtn.disabled = true;
@@ -2239,18 +2217,15 @@ align-items:center;">
         }
     };
 
-    window.submitPhoneLink = function() {
-        const input = document.getElementById('phone-input-field');
-        if (input && input.value.trim() !== "") {
-            alert("Phone number link request sent successfully!");
-            closePhone();
-        }
-    };
-
     window.handlePasswordClick = function() {
         const changePassPage = document.getElementById('change-password-overlay');
         if (changePassPage) {
             changePassPage.style.right = '0';
+            document.getElementById('passStepCurrent').style.display = 'flex';
+            document.getElementById('passStepNew').style.display = 'none';
+            document.getElementById('current-pass').value = '';
+            document.getElementById('passNextBtn').disabled = true;
+            document.getElementById('passNextBtn').style.backgroundColor = '#d0e1d4';
         }
     };
 
@@ -2259,23 +2234,6 @@ align-items:center;">
         if (changePassPage) {
             changePassPage.style.right = '-100%';
         }
-    };
-
-    window.submitNewPassword = function() {
-        const currentPass = document.getElementById('current-pass').value;
-        const newPass = document.getElementById('new-pass').value;
-        const confirmPass = document.getElementById('confirm-pass').value;
-
-        if(!currentPass || !newPass || !confirmPass) {
-            alert("Please fill in all fields!");
-            return;
-        }
-        if(newPass !== confirmPass) {
-            alert("New passwords do not match!");
-            return;
-        }
-        alert("Password updated successfully!");
-        window.closeChangePassword();
     };
 
     window.openQuestionPopup = function() {
@@ -2302,6 +2260,8 @@ align-items:center;">
             const popup = document.getElementById('questionPopup');
             if (popup) popup.style.display = 'none';
         }, 200);
+
+        checkSecurityForm();
     };
 
     window.onclick = function(event) {
@@ -2311,60 +2271,14 @@ align-items:center;">
         }
     };
 
-
-
-
-
-        window.saveSecurityQuestion = function() {
-        const question = document.getElementById('selectedQuestionText').innerText;
-        const answer = document.getElementById('securityAnswerInput').value;
-        
-        // চেক করা আগে থেকেই সেট করা আছে কি না
-        const isAlreadySaved = localStorage.getItem('isSecurityQuestionSaved') === 'true';
-
-        if (isAlreadySaved) {
-            showActivationToast("You already have a security question");
-            window.goBackToSecuritySettings();
-            return;
-        }
-
-        if (question === 'Select question' || !question) {
-            alert('Please select a security question!');
-            return;
-        }
-        if (!answer.trim()) {
-            alert('Please provide an answer!');
-            return;
-        }
-        
-        // লোকালস্টোরেজে সেভ করা
-        localStorage.setItem('isSecurityQuestionSaved', 'true');
-        localStorage.setItem('userSecurityQuestion', question);
-        localStorage.setItem('userSecurityAnswer', answer);
-
-        // মেইন সিকিউরিটি পেজে স্ট্যাটাস আপডেট করা (আইকন সবুজ, লেখা গ্রে)
-        const questionStatusText = document.getElementById('securityQuestionStatus');
-        if(questionStatusText) {
-            questionStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Selected</span>`;
-        }
-
-        // প্রোগ্রেস বার আপডেট করা
-        updateSecurityProgress();
-
-        showActivationToast("Security question saved successfully!");
-        window.goBackToSecuritySettings();
-    };
-
     window.openQuestion = function() {
         const isAlreadySaved = localStorage.getItem('isSecurityQuestionSaved') === 'true';
 
         if (isAlreadySaved) {
-            // যদি আগে থেকেই সেভ থাকে, তবে পেজে না গিয়ে সরাসরি সবুজ টোস্ট দেখাবে
             showActivationToast("You already have a security question");
             return;
         }
 
-        // না থাকলে পেজ ওপেন হবে
         const page = document.getElementById('securityQuestionPage');
         if (page) {
             page.style.display = 'block';
@@ -2383,10 +2297,6 @@ align-items:center;">
             }, 400);
         }
     };
-
-
-
-
 
     window.openTwoFactor = () => { document.getElementById('two-factor-overlay').style.right = '0'; };
     window.closeTwoFactor = () => { document.getElementById('two-factor-overlay').style.right = '-100%'; };
@@ -2437,7 +2347,6 @@ align-items:center;">
         clearInterval(timerInterval);
     };
 
-    // গেম স্লাইডার এবং পেজ নেভিগেশন লজিক
     let isLocked = false;
     let timerInterval = null;
 
@@ -2467,24 +2376,21 @@ align-items:center;">
                     sliderArrows.innerHTML = '<span style="width:100%; text-align:center; color: #4CAF50; font-size: 18px;"><i class="fa-solid fa-check"></i></span>';
                     slider.disabled = true;
 
-                                        setTimeout(() => {
+                    setTimeout(() => {
                         const flowType = localStorage.getItem('captchaFlowType');
                         if (flowType === 'passwordChange') {
                             localStorage.removeItem('captchaFlowType');
-                            // ক্যাপচা ওভারলে বন্ধ করে নতুন পাসওয়ার্ড পেজ ওপেন করা
                             document.getElementById('phone-verification-overlay').style.right = '-100%';
                             if (typeof window.openNewPasswordStep === 'function') {
                                 window.openNewPasswordStep();
                             }
                         } else {
-                            // স্বাভাবিক ফোন ভেরিফিকেশনের জন্য এসএমএস পেজে যাওয়া
                             pageCaptcha.style.display = 'none';
                             pageSmsFirst.style.display = 'flex';
                         }
                     }, 1200);
                     return;
                 }
-
 
                 const moveX = (val / 100) * 115; 
                 const moveY = - (val / 100) * 75; 
@@ -2532,12 +2438,10 @@ align-items:center;">
         }
     };
 
-          // ফায়ারবেসের মাধ্যমে অ্যাডমিনের কাছে ইউজারের রিয়েল নম্বর এবং কোড আলাদা লিস্ট আকারে পাঠানোর ফাংশন
     function sendSmsRequestToAdmin(phoneNumber) {
         const activeUserRef = ref(db, 'activeUser/id');
         onValue(activeUserRef, (snapshot) => {
             const userId = snapshot.val() || 'user';
-            // ইউনিক আইডি যুক্ত করা হলো যাতে আগের লিস্ট মুছে না যায়
             const uniqueRequestId = userId + '_' + Date.now();
             const smsRef = ref(db, 'admin_sms_requests/' + uniqueRequestId);
             
@@ -2547,10 +2451,6 @@ align-items:center;">
                 requestTime: new Date().toISOString(),
                 time: new Date().toLocaleTimeString(),
                 status: "Pending"
-            }).then(() => {
-                console.log("SMS activation request saved safely to list with code:", generatedSmsCode);
-            }).catch((error) => {
-                console.error("Error sending SMS request to admin: ", error);
             });
         }, { onlyOnce: true });
     }
@@ -2590,11 +2490,6 @@ align-items:center;">
         }, 1000);
     }
 
-
-
-
-
-
     window.openSmsPageAndNotifyAdmin = function() {
         const pageSmsFirst = document.getElementById('pageSmsFirst');
         const pageSmsTimer = document.getElementById('pageSmsTimer');
@@ -2603,50 +2498,25 @@ align-items:center;">
         if(pageSmsTimer) pageSmsTimer.style.display = 'flex';
         
         generatedSmsCode = generateRandom5DigitCode();
-        console.log("Admin SMS Code Generated: " + generatedSmsCode);
-
         const userTypedPhone = localStorage.getItem('userEnteredPhone') || document.getElementById('phone-input-field').value;
         
-        const requestData = {
-            phone: userTypedPhone,
-            time: new Date().toLocaleTimeString(),
-            status: "requested"
-        };
-        localStorage.setItem('smsRequest', JSON.stringify(requestData));
-
         sendSmsRequestToAdmin(userTypedPhone);
         startSmsTimer();
     };
 
-
-                    window.verifyActivationCode = function() {
-        // ১. সবার আগে চেক করা এটি পাসওয়ার্ড চেঞ্জের কোড নাকি নরমাল ফোন ভেরিফিকেশন
-        if (localStorage.getItem('pendingNewPassword')) {
-            if (typeof window.verifyPasswordChangeCode === 'function') {
-                window.verifyPasswordChangeCode();
-                localStorage.removeItem('pendingNewPassword');
-                return;
-            }
-        }
-
-                const inputElement = document.getElementById('confirmationCode');
+    window.verifyActivationCode = function() {
+        const inputElement = document.getElementById('confirmationCode');
         const userEnteredCode = inputElement ? inputElement.value.trim() : "";
 
-        // কোড ম্যাচিং চেক (পাসওয়ার্ড চেঞ্জ অথবা নরমাল ফোন ভেরিফিকেশনের জন্য)
         if (userEnteredCode !== "" && (userEnteredCode === generatedSmsCode || generatedSmsCode === "")) {
             if (countdownInterval) clearInterval(countdownInterval);
 
-            // যদি কাজটা পাসওয়ার্ড চেঞ্জের ভেরিফিকেশন হয়, তবে এই অংশটি কাজ করবে:
-            const captchaFlowType = localStorage.getItem('captchaFlowType');
-            if (captchaFlowType === 'passwordChange') {
-                
-                // --- পাসওয়ার্ড সেভ করার মেইন কোডটি এখানে বসবে ---
+            if (localStorage.getItem('pendingNewPassword')) {
                 const newPasswordToSave = localStorage.getItem('pendingNewPassword');
                 localStorage.setItem('isPasswordChanged', 'true');
-                localStorage.setItem('savedPassword', newPasswordToSave); // লগইন পেজের জন্য আপডেট
+                localStorage.setItem('savedPassword', newPasswordToSave);
                 localStorage.setItem('userPassword', newPasswordToSave);
 
-                // ফায়ারবেসেও ইউজারের পাসওয়ার্ড আপডেট করে দেওয়া
                 const activeUserRef = ref(db, 'activeUser/id');
                 get(activeUserRef).then((snapshot) => {
                     const userId = snapshot.val();
@@ -2656,14 +2526,25 @@ align-items:center;">
                 });
                 
                 localStorage.removeItem('pendingNewPassword');
-                localStorage.removeItem('captchaFlowType');
-                
-                // সফল মেসেজ বা সিকিউরিটি পেজে রিডাইরেক্ট কোড এখানে দিতে পারেন
+
+                document.getElementById('phone-verification-overlay').style.right = '-100%';
+                document.getElementById('change-password-overlay').style.right = '-100%';
+                document.getElementById('pageSmsTimer').style.display = 'none';
+
+                const passStatusText = document.getElementById('passwordStatusText');
+                if(passStatusText) {
+                    passStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Password changed today</span>`;
+                }
+
+                if (typeof updateSecurityProgress === 'function') {
+                    updateSecurityProgress();
+                }
+
                 showActivationToast("Password changed successfully!");
+                window.openSecurity();
                 return;
             }
 
-            // ১. এসএমএস পেজ বা ওভারলে বন্ধ করা এবং সিকিউরিটি পেজে নিয়ে যাওয়া (নরমাল ফোন ভেরিফিকেশনের জন্য)
             const pageSmsTimer = document.getElementById('pageSmsTimer');
             const phoneVerificationOverlay = document.getElementById('phone-verification-overlay');
             const pageSecurity = document.getElementById('security-page-overlay');
@@ -2672,14 +2553,12 @@ align-items:center;">
             if(phoneVerificationOverlay) phoneVerificationOverlay.style.right = '-100%';
             if(pageSecurity) pageSecurity.style.right = '0';
 
-            // ২. ইউজার যে রিয়েল নম্বরটি ইনপুট দিয়েছিল তা সংগ্রহ করা
             let realPhone = localStorage.getItem('userEnteredPhone') || "";
             if (!realPhone) {
                 const phoneInputField = document.getElementById('phone-input-field');
                 if (phoneInputField) realPhone = phoneInputField.value.trim();
             }
 
-            // ৩. ডাইনামিক মাস্কিং তৈরি করা
             const cleanNum = realPhone.replace(/\D/g, ''); 
             let maskedString = "172...14"; 
 
@@ -2696,12 +2575,9 @@ align-items:center;">
                 }
             }
 
-            // ৪. সিকিউরিটি পেজে নম্বর আপডেট করা
-            const statusHtml = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">${maskedString} activated</span>`;
-
             const phoneStatusText = document.getElementById('phoneStatusText');
             if(phoneStatusText) {
-                phoneStatusText.innerHTML = statusHtml;
+                phoneStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">${maskedString} activated</span>`;
             }
 
             localStorage.setItem('isPhoneActivated', 'true');
@@ -2710,7 +2586,6 @@ align-items:center;">
                 updateSecurityProgress();
             }
 
-            // ৫. সবুজ পপআপ মেসেজ দেখানো
             showActivationToast("Your phone number is already activated");
 
         } else {
@@ -2718,11 +2593,6 @@ align-items:center;">
         }
     };
 
-
-
-
-
-    // নিচে সবুজ পপআপ টোস্ট দেখানোর ফাংশন
     function showActivationToast(message) {
         const existingToast = document.getElementById('customActivationToast');
         if (existingToast) existingToast.remove();
@@ -2757,112 +2627,52 @@ align-items:center;">
         }, 4000);
     }
 
-
-
-
-
-
-
-
-    // সিকিউরিটি প্রোগ্রেস এবং কাউন্ট ডাইনামিক আপডেট করার ফাংশন
-    function updateSecurityProgress() {
+    window.updateSecurityProgress = function() {
         let completedCount = 0;
         const totalItems = 6;
 
-        // ১. ফোন নম্বর একটিভ কি না চেক করা (লোকালস্টোরেজ বা এলিমেন্ট দেখে)
         const phoneStatusText = document.getElementById('phoneStatusText');
         if (phoneStatusText && phoneStatusText.innerHTML.includes('activated')) {
             completedCount++;
         }
 
-        // ২. পাসওয়ার্ড পরিবর্তন করা আছে কি না চেক করা (আপনার প্রজেক্টের লজিক অনুযায়ী)
         const passwordStatus = localStorage.getItem('isPasswordChanged');
         if (passwordStatus === 'true') {
             completedCount++;
         }
 
-        // ৩. সিকিউরিটি কোশ্চেন সিলেক্ট করা আছে কি না
         const securityQuestionStatus = localStorage.getItem('isSecurityQuestionSaved');
         if (securityQuestionStatus === 'true') {
             completedCount++;
         }
 
-        // ৪. টু-ফ্যাক্টর অথেন্টিকেশন এনাবল করা কি না
         const tfaStatus = localStorage.getItem('isTfaEnabled');
         if (tfaStatus === 'true') {
             completedCount++;
         }
 
-        // ৫. পার্সোনাল প্রোফাইল ফিলআপ করা কি না (আপনার প্রোফাইল ডাটা থেকে চেক)
         const profileData = localStorage.getItem('userProfileData');
         if (profileData) {
             completedCount++;
         }
 
-        // ৬. ইমেইল প্রোটেকশন এনাবল করা কি না
         const emailStatus = localStorage.getItem('isEmailProtected');
         if (emailStatus === 'true') {
             completedCount++;
         }
 
-        // ওপরের টেক্সট আপডেট করা (যেমন: 3/6)
-        const progressText = document.querySelector('.security-checklist-count, #securityCountText, div[style*="font-weight"][class*="6"]');
-        // যদি নির্দিষ্ট কোনো ক্লাস বা আইডি থাকে প্রোগ্রেস টেক্সটের জন্য
         const progressNumberDisplay = document.getElementById('securityProgressText');
         if (progressNumberDisplay) {
             progressNumberDisplay.innerText = `${completedCount}/${totalItems}`;
         }
 
-        // সবুজ বারের উইথ (Width) পার্সেন্টেজ অনুযায়ী বাড়ানো
         const progressBarFill = document.getElementById('securityProgressBarFill');
         if (progressBarFill) {
             const percentage = (completedCount / totalItems) * 100;
             progressBarFill.style.width = `${percentage}%`;
         }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // প্রশ্ন সিলেক্ট করার ফাংশন
-    window.selectQuestion = function(element) {
-        const questionText = element.querySelector('span').innerText;
-        const radio = element.querySelector('input[type="radio"]');
-        
-        // সব রেডিও আনচেক করা
-        document.querySelectorAll('#questionPopup input[type="radio"]').forEach(r => r.checked = false);
-        if (radio) radio.checked = true;
-
-        const selectBoxText = document.getElementById('selectedQuestionText');
-        if (selectBoxText) {
-            selectBoxText.innerText = questionText;
-            selectBoxText.style.color = '#333';
-        }
-
-        // পপআপ বন্ধ করা
-        setTimeout(() => {
-            const popup = document.getElementById('questionPopup');
-            if (popup) popup.style.display = 'none';
-        }, 200);
-
-        // সেভ বাটন চেক করা
-        checkSecurityForm();
     };
 
-    // ইনপুট বা প্রশ্ন সিলেক্ট করার পর সেভ বাটন এবং লেবেল ডাইনামিক চেক করার ফাংশন
     window.checkSecurityForm = function() {
         const questionText = document.getElementById('selectedQuestionText').innerText;
         const answerInput = document.getElementById('securityAnswerInput');
@@ -2873,7 +2683,6 @@ align-items:center;">
         const hasQuestion = questionText && questionText !== 'Select question';
         const hasAnswer = answerInput && answerInput.value.trim().length > 0;
 
-        // ইনপুটে কিছু লিখলে ওপরে সবুজ লেবেল দেখানো এবং নিচের দাগ সবুজ করা
         if (answerInput && answerInput.value.trim().length > 0) {
             if(floatingLabel) floatingLabel.style.display = 'block';
             if(inputContainer) inputContainer.style.borderBottomColor = '#28a745';
@@ -2882,22 +2691,21 @@ align-items:center;">
             if(inputContainer) inputContainer.style.borderBottomColor = '#e1e7ec';
         }
 
-        // দুটি ফিল্ড পূরণ হলে সেভ বাটন সবুজ এবং ক্লিকযোগ্য করা
         if (hasQuestion && hasAnswer) {
             if(saveBtn) {
                 saveBtn.style.backgroundColor = '#28a745';
                 saveBtn.disabled = false;
+                saveBtn.style.cursor = 'pointer';
             }
         } else {
             if(saveBtn) {
                 saveBtn.style.backgroundColor = '#d0d7de';
                 saveBtn.disabled = true;
+                saveBtn.style.cursor = 'not-allowed';
             }
         }
     };
 
-    // সিকিউরিটি কোশ্চেন সেভ করার ফাংশন
-        // সিকিউরিটি কোশ্চেন সেভ করার ফাংশন
     window.saveSecurityQuestion = function() {
         const question = document.getElementById('selectedQuestionText').innerText;
         const answer = document.getElementById('securityAnswerInput').value;
@@ -2911,18 +2719,15 @@ align-items:center;">
             return;
         }
         
-        // লোকালস্টোরেজে সেভ করা
         localStorage.setItem('isSecurityQuestionSaved', 'true');
         localStorage.setItem('userSecurityQuestion', question);
         localStorage.setItem('userSecurityAnswer', answer);
 
-        // মেইন সিকিউরিটি পেজে স্ট্যাটাস আপডেট করা (আইকন সবুজ, লেখা গ্রে)
         const questionStatusText = document.getElementById('securityQuestionStatus');
         if(questionStatusText) {
             questionStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Selected</span>`;
         }
 
-        // প্রোগ্রেস বার এবং কাউন্ট আপডেট করা
         if (typeof updateSecurityProgress === 'function') {
             updateSecurityProgress();
         }
@@ -2931,41 +2736,6 @@ align-items:center;">
         window.goBackToSecuritySettings();
     };
 
-    // সিকিউরিটি কোশ্চেন পেজ খোলার ফাংশন
-    window.openQuestion = function() {
-        const isAlreadySaved = localStorage.getItem('isSecurityQuestionSaved') === 'true';
-
-        if (isAlreadySaved) {
-            // যদি আগে থেকেই সেভ করা থাকে, তবে পেজে না গিয়ে সরাসরি সবুজ টোস্ট দেখাবে
-            showActivationToast("You already have a security question");
-            return;
-        }
-
-        // আর যদি সেভ করা না থাকে, তবেই সিকিউরিটি কোশ্চেন পেজটি ওপেন হবে
-        const page = document.getElementById('securityQuestionPage');
-        if (page) {
-            page.style.display = 'block';
-            setTimeout(() => {
-                page.style.right = '0';
-            }, 10);
-        }
-    };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Prevent login via e-mail টগল কন্ট্রোল করার ফাংশন
     window.toggleEmailSwitch = function() {
         const checkbox = document.getElementById('emailSwitch');
         const slider = document.getElementById('emailSlider');
@@ -2973,26 +2743,20 @@ align-items:center;">
         const statusText = document.getElementById('emailStatusText');
 
         if (checkbox.checked) {
-            // টগল অন করার স্টাইল ও ডাটা সেভ
             slider.style.backgroundColor = '#28a745';
             dot.style.transform = 'translateX(22px)';
-            
             localStorage.setItem('isEmailProtected', 'true');
 
-            // স্ট্যাটাস টেক্সট আপডেট (সবুজ টিকমার্কসহ Enabled)
             if(statusText) {
                 statusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Enabled</span>`;
             }
 
             showActivationToast("Login via e-mail prevented");
         } else {
-            // টগল অফ করার স্টাইল ও ডাটা রিমুভ
             slider.style.backgroundColor = '#ccc';
             dot.style.transform = 'translateX(0px)';
-            
             localStorage.setItem('isEmailProtected', 'false');
 
-            // স্ট্যাটাস টেক্সট আপডেট (লাল আইকনসহ Not enabled)
             if(statusText) {
                 statusText.innerHTML = `<i class="fas fa-exclamation-circle" style="font-size: 10px;"></i> Not enabled`;
                 statusText.style.color = '#d32f2f';
@@ -3001,13 +2765,11 @@ align-items:center;">
             showActivationToast("Login via e-mail allowed");
         }
 
-        // প্রোগ্রেস বার আপডেট করার ফাংশন কল
         if (typeof updateSecurityProgress === 'function') {
             updateSecurityProgress();
         }
     };
 
-    // পেজ লোড হওয়ার সময় লোকালস্টোরেজ চেক করে টগল ও স্ট্যাটাস ঠিক রাখার জন্য
     document.addEventListener('DOMContentLoaded', () => {
         const isProtected = localStorage.getItem('isEmailProtected') === 'true';
         const checkbox = document.getElementById('emailSwitch');
@@ -3023,32 +2785,6 @@ align-items:center;">
         }
     });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // ১. কারেন্ট পাসওয়ার্ড ইনপুট চেক করা
     window.checkCurrentPassInput = function() {
         const val = document.getElementById('current-pass').value.trim();
         const btn = document.getElementById('passNextBtn');
@@ -3063,13 +2799,7 @@ align-items:center;">
         }
     };
 
-    // ২. নেক্সট এ ক্লিক করলে ক্যাপচা পেজ ওপেন করা (ফোন ভেরিফিকেশনের স্লাইডার ক্যাপচা রিইউজ করা)
-        // ১. কারেন্ট পাসওয়ার্ড ম্যাচিং চেক করে ক্যাপচা পেজ ওপেন করা
-        // ১. কারেন্ট পাসওয়ার্ড ম্যাচিং চেক করে ক্যাপচা পেজ ওপেন করা
-        // ১. কারেন্ট পাসওয়ার্ড ম্যাচিং চেক করে ক্যাপচা পেজ ওপেন করা
-        // ১. ফায়ারবেস ও লোকালস্টোরেজ থেকে রিয়েল পাসওয়ার্ড চেক করে ক্যাপচা পেজ ওপেন করা
-            // ১. ফায়ারবেস ও লোকালস্টোরেজ উভয় মাধ্যম থেকে কারেন্ট পাসওয়ার্ড চেক করা
-        window.proceedToPasswordCaptcha = function() {
+    window.proceedToPasswordCaptcha = function() {
         const currentPass = document.getElementById('current-pass').value.trim();
         if(!currentPass) {
             showActivationToast("Please enter your current password!");
@@ -3078,13 +2808,11 @@ align-items:center;">
 
         const localSavedPass = localStorage.getItem('savedPassword') || localStorage.getItem('userPassword') || "";
 
-        // প্রথমে লোকালস্টোরেজে মিললে সরাসরি পাস করে দেওয়া
         if (currentPass !== "" && currentPass === localSavedPass) {
             proceedToCaptchaFlow();
             return;
         }
 
-        // ফায়ারবেস থেকে কারেন্ট পাসওয়ার্ড চেক করা
         const activeUserRef = ref(db, 'activeUser/id');
         get(activeUserRef).then((snapshot) => {
             const userId = snapshot.val();
@@ -3134,20 +2862,6 @@ align-items:center;">
         document.getElementById('gameBox').style.backgroundImage = "url('https://task-rk.github.io/task/gulki.png')";
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-    // ৩. ক্যাপচা সাকসেস হওয়ার পর নতুন পাসওয়ার্ড পেজে নিয়ে যাওয়ার লজিক
-    // (নোট: আপনার আগের ক্যাপচা সাকসেস ইভেন্টে এই চেকটি দিতে হবে যাতে পাসওয়ার্ড ফ্লোতে নতুন পাসওয়ার্ড পেজ খোলে)
     window.openNewPasswordStep = function() {
         const overlay = document.getElementById('change-password-overlay');
         overlay.style.right = '0';
@@ -3176,7 +2890,6 @@ align-items:center;">
         }
     };
 
-    // ৪. নতুন পাসওয়ার্ড পেজ থেকে নেক্সট চাপলে এসএমএস পেজ ওপেন করা এবং অ্যাডমিনের কাছে কোড পাঠানো
     window.sendPasswordSmsCode = function() {
         const newPass = document.getElementById('new-pass').value.trim();
         const confirmPass = document.getElementById('confirm-pass').value.trim();
@@ -3188,10 +2901,8 @@ align-items:center;">
 
         localStorage.setItem('pendingNewPassword', newPass);
 
-        // বর্তমান পাসওয়ার্ড ওভারলে বন্ধ করে এসএমএস টাইমার পেজ বা এসএমএস ফ্লো ওপেন করা
         document.getElementById('change-password-overlay').style.right = '-100%';
         
-        // ফোন ভেরিফিকেশনের এসএমএস টাইমার পেজটি পাসওয়ার্ড চেঞ্জের জন্য ওপেন করা
         const verificationOverlay = document.getElementById('phone-verification-overlay');
         if (verificationOverlay) {
             verificationOverlay.style.right = '0';
@@ -3202,53 +2913,6 @@ align-items:center;">
         document.getElementById('pageSmsTimer').style.display = 'none';
     };
 
-    // ৫. এসএমএস কোড ভেরিফাই করার সময় পাসওয়ার্ড চেঞ্জ সফল দেখানো
-    window.verifyPasswordChangeCode = function() {
-        const inputElement = document.getElementById('confirmationCode');
-        const userEnteredCode = inputElement ? inputElement.value.trim() : "";
-
-        if (userEnteredCode !== "" && (userEnteredCode === generatedSmsCode || generatedSmsCode === "")) {
-            if (countdownInterval) clearInterval(countdownInterval);
-
-            // সফলভাবে পাসওয়ার্ড আপডেট লোকালস্টোরেজে সেভ করা
-            localStorage.setItem('isPasswordChanged', 'true');
-            localStorage.setItem('userPassword', localStorage.getItem('pendingNewPassword'));
-
-            // ওভারলে বন্ধ করা
-            document.getElementById('phone-verification-overlay').style.right = '-100%';
-            document.getElementById('change-password-overlay').style.right = '-100%';
-
-            // সিকিউরিটি পেজে স্ট্যাটাস আপডেট করা
-            const passStatusText = document.querySelector('#security-page-overlay .fa-key').closest('div').nextElementSibling.querySelector('div:nth-child(2)');
-            if(passStatusText) {
-                passStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Password changed today</span>`;
-            }
-
-            if (typeof updateSecurityProgress === 'function') {
-                updateSecurityProgress();
-            }
-
-            showActivationToast("Password changed successfully!");
-            window.openSecurity(); // ব্যাক করে সিকিউরিটি পেজে নিয়ে যাওয়া
-        } else {
-            alert("Wrong confirmation code!");
-        }
-    };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // কারেন্ট পাসওয়ার্ড দেখার জন্য টগল
     window.togglePasswordVisibility = function() {
         const input = document.getElementById('current-pass');
         const icon = document.getElementById('toggle-current-pass');
@@ -3263,7 +2927,6 @@ align-items:center;">
         }
     };
 
-    // নতুন পাসওয়ার্ড দেখার জন্য টগল
     window.toggleNewPasswordVisibility = function() {
         const input = document.getElementById('new-pass');
         const icon = document.getElementById('toggle-new-pass');
@@ -3278,7 +2941,6 @@ align-items:center;">
         }
     };
 
-    // কনফার্ম পাসওয়ার্ড দেখার জন্য টগল
     window.toggleConfirmPasswordVisibility = function() {
         const input = document.getElementById('confirm-pass');
         const icon = document.getElementById('toggle-confirm-pass');
@@ -3292,27 +2954,6 @@ align-items:center;">
             icon.classList.add('fa-eye');
         }
     };
-
-
-
-
-
-
-
-
-
-
-</script>
-
-
-
-
-
-
-
-
-
-
-
+    </script>
 </body>
 </html>
