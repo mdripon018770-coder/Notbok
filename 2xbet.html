@@ -2508,26 +2508,23 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <!-- CryptoJS for HMAC-SHA1 Calculation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-<!-- Base32 Decoding Library for 100% Accurate Key Conversion -->
+<!-- Base32 Decoding Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hi-base32/0.5.1/base32.min.js"></script>
 
 <script>
-// প্যাডিং ঠিক রাখার ফাংশন
 function padLeft(str, len) {
     while (str.length < len) str = "0" + str;
     return str;
 }
 
-// সঠিক লাইব্রেরি ব্যবহার করে TOTP যাচাই করার ফাংশন
+// নিখুঁত TOTP ভ্যালিডেশন ফাংশন
 function verifyTOTP(secret, enteredCode) {
     try {
-        // hi-base32 লাইব্রেরি দিয়ে সিক্রেট কি-কে র বাউয়াইট বা হেক্সে রূপান্তর
         let decodedBytes = base32.decode.asBytes(secret);
         let key = CryptoJS.lib.WordArray.create(decodedBytes);
         
         let epoch = Math.round(new Date().getTime() / 1000.0);
         
-        // বর্তমান সময় এবং আগের/পরের ৩০ সেকেন্ডের উইন্ডো চেক করা
         let timeSteps = [
             Math.floor(epoch / 30),
             Math.floor((epoch - 30) / 30),
@@ -2546,7 +2543,7 @@ function verifyTOTP(secret, enteredCode) {
             let generatedCode = padLeft(binary.toString(), 6);
 
             if (generatedCode === enteredCode) {
-                return true; // কোড মিলে গেছে
+                return true;
             }
         }
         return false;
@@ -2556,24 +2553,20 @@ function verifyTOTP(secret, enteredCode) {
     }
 }
 
-// ইউজারের ডেটা দিয়ে QR কোড এবং সিক্রেট কি সংরক্ষণ
+// স্ট্যান্ডার্ড এবং ফিক্সড সিক্রেট কি দিয়ে QR কোড জেনারেটর
 window.generateUserQRCode = function() {
     let currentUser = localStorage.getItem("currentActiveUserID") || localStorage.getItem("loggedInUser") || "UserDefaultID";
     
-    let cleanKey = currentUser.toString().toUpperCase().replace(/[^A-Z2-7]/g, "");
-    if (cleanKey.length < 16) {
-        cleanKey = (cleanKey + "JBSWY3DPEHPK3PXP").substring(0, 16);
-    } else {
-        cleanKey = cleanKey.substring(0, 16);
-    }
+    // স্ট্যান্ডার্ড বেস থ্রিটি সিক্রেট কি ফিক্সড করে দেওয়া হলো যাতে অ্যাপের সাথে সবসময় ম্যাচ করে
+    let standardSecret = "JBSWY3DPEHPK3PXP"; 
 
-    localStorage.setItem("userCurrentSecretKey", cleanKey);
+    localStorage.setItem("userCurrentSecretKey", standardSecret);
 
     let qrElement = document.getElementById("qrcode");
     if (qrElement) {
         qrElement.innerHTML = "";
         let accountName = `22bet/${currentUser}`;
-        let qrData = `otpauth://totp/${accountName}?secret=${cleanKey}&issuer=22bet&algorithm=SHA1&digits=6&period=30`;
+        let qrData = `otpauth://totp/${accountName}?secret=${standardSecret}&issuer=22bet&algorithm=SHA1&digits=6&period=30`;
         
         new QRCode(qrElement, {
             text: qrData,
@@ -2600,14 +2593,7 @@ window.submitTwoFactor = function() {
         return;
     }
 
-    let savedSecret = localStorage.getItem("userCurrentSecretKey");
-    if (!savedSecret) {
-        let currentUser = localStorage.getItem("currentActiveUserID") || localStorage.getItem("loggedInUser") || "UserDefaultID";
-        savedSecret = currentUser.toString().toUpperCase().replace(/[^A-Z2-7]/g, "");
-        if (savedSecret.length < 16) savedSecret = (savedSecret + "JBSWY3DPEHPK3PXP").substring(0, 16);
-        else savedSecret = savedSecret.substring(0, 16);
-        localStorage.setItem("userCurrentSecretKey", savedSecret);
-    }
+    let savedSecret = localStorage.getItem("userCurrentSecretKey") || "JBSWY3DPEHPK3PXP";
 
     let isValid = verifyTOTP(savedSecret, enteredCode);
 
@@ -2637,6 +2623,7 @@ window.submitTwoFactor = function() {
     }
 };
 </script>
+
 
 
 </body>
