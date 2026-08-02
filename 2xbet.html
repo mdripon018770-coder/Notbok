@@ -13,15 +13,15 @@
         #deposit-page-overlay {
             position: fixed;
             top: 0;
-            right: -100%; /* শুরুতে স্ক্রিনের বাইরে থাকবে */
+            right: -100%;
             width: 100%;
             height: 100%;
             background: #fff;
             z-index: 2000;
-            transition: right 0.4s ease; /* স্লাইড অ্যানিমেশন */
+            transition: right 0.4s ease;
         }
         #deposit-page-overlay.active {
-            right: 0; /* একটিভ হলে স্ক্রিনে চলে আসবে */
+            right: 0;
         }
         #deposit-frame {
             width: 100%;
@@ -30,56 +30,56 @@
         }
 
         /* --- Header Section --- */
-.header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:8px 15px;
-    height:55px;
-    position:sticky;
-    top:0;
-    background:#ffffff;
-    z-index:100;
-}
+        .header{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:8px 15px;
+            height:55px;
+            position:sticky;
+            top:0;
+            background:#ffffff;
+            z-index:100;
+        }
 
-.balance-pill{
-    display:flex;
-    align-items:center;
-    background:#f3f5f7;
-    border-radius:18px;
-    height:34px;
-    padding:0 10px 0 3px;
-    gap:6px;
-    cursor:pointer;
-}
+        .balance-pill{
+            display:flex;
+            align-items:center;
+            background:#f3f5f7;
+            border-radius:18px;
+            height:34px;
+            padding:0 10px 0 3px;
+            gap:6px;
+            cursor:pointer;
+        }
 
-.plus-circle{
-    width:20px;
-    height:20px;
-    border-radius:50%;
-    background:#28a745;
-    color:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:13px;
-    flex-shrink:0;
-}
+        .plus-circle{
+            width:20px;
+            height:20px;
+            border-radius:50%;
+            background:#28a745;
+            color:#fff;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:13px;
+            flex-shrink:0;
+        }
 
-.balance-pill span{
-    font-size:15px;
-    font-weight:700;
-    color:#1a2b3c;
-}
+        .balance-pill span{
+            font-size:15px;
+            font-weight:700;
+            color:#1a2b3c;
+        }
 
-.logo img{
-    height:60px;
-}
+        .logo img{
+            height:60px;
+        }
 
-.search-icon{
-    color:#7a8a94;
-    font-size:20px;
-}
+        .search-icon{
+            color:#7a8a94;
+            font-size:20px;
+        }
 
         /* --- Top Categories --- */
         .top-nav { display: flex; background: #fff; }
@@ -87,343 +87,321 @@
         .nav-item i { display: block; font-size: 20px; margin-bottom: 4px; }
         .nav-item.active { color: #28a745; border-bottom: 3px solid #28a745; }
 
-       /* --- Home Page Content --- */
-#home-content {
-    display: block;
-}
+        /* --- Home Page Content --- */
+        #home-content {
+            display: block;
+        }
 
-.sub-cats {
-    display: flex;
-    overflow-x: auto;
-    padding: 10px 6px;
-    gap: 5px;
-    scrollbar-width: none;
-    background: #e9eef2;
-}
+        .sub-cats {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 6px;
+            gap: 5px;
+            scrollbar-width: none;
+            background: #e9eef2;
+        }
 
-.sub-cat-card {
-    min-width: 62px;
-    background: #fff;
-    border-radius: 10px;
-    padding: 6px 3px;
-    text-align: center;
-    box-shadow: 0 1px 2px rgba(0,0,0,.04);
-}
+        .sub-cat-card {
+            min-width: 62px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 6px 3px;
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,.04);
+        }
 
-.icon-bg {
-    width: 42px;
-    height: 42px;
-    background: transparent;
-    border-radius: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #28a745;
-    font-size: 22px;
-    margin: 0 auto 5px;
-}
+        .icon-bg {
+            width: 42px;
+            height: 42px;
+            background: transparent;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #28a745;
+            font-size: 22px;
+            margin: 0 auto 5px;
+        }
 
-.sub-cat-card span {
-    font-size: 10px;
-    font-weight: 600;
-}
+        .sub-cat-card span {
+            font-size: 10px;
+            font-weight: 600;
+        }
 
-.banners {
-    display: flex;
-    overflow-x: auto;
-    padding: 15px 10px;
-    gap: 12px;
-    scrollbar-width: none;
-    background: #e9eef2;
-}
+        .banners {
+            display: flex;
+            overflow-x: auto;
+            padding: 15px 10px;
+            gap: 12px;
+            scrollbar-width: none;
+            background: #e9eef2;
+        }
 
-.banner-card {
-    min-width: 135px;
-    text-align: center;
-}
+        .banner-card {
+            min-width: 135px;
+            text-align: center;
+        }
 
-.banner-card img {
-    width: 135px;
-    height: 135px;
-    border-radius: 20px;
-    object-fit: cover;
-    margin-bottom: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,.05);
-}
+        .banner-card img {
+            width: 135px;
+            height: 135px;
+            border-radius: 20px;
+            object-fit: cover;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,.05);
+        }
 
-.banner-card span {
-    font-size: 11px;
-    font-weight: bold;
-    line-height: 1.2;
-    display: block;
-}
+        .banner-card span {
+            font-size: 11px;
+            font-weight: bold;
+            line-height: 1.2;
+            display: block;
+        }
 
-.live-head {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 15px;
-    align-items: center;
-}
+        .live-head {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            align-items: center;
+        }
 
-.live-head h2 {
-    font-size: 18px;
-    font-weight: 800;
-}
+        .live-head h2 {
+            font-size: 18px;
+            font-weight: 800;
+        }
 
-.live-badge {
-    background: #e0f2e9;
-    color: #28a745;
-    font-size: 12px;
-    padding: 2px 8px;
-    border-radius: 10px;
-    margin-left: 5px;
-}
+        .live-badge {
+            background: #e0f2e9;
+            color: #28a745;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 5px;
+        }
 
-.match-box {
-    background: #fff;
-    margin: 0 12px 12px;
-    border-radius: 15px;
-    padding: 15px;
-}
+        .match-box {
+            background: #fff;
+            margin: 0 12px 12px;
+            border-radius: 15px;
+            padding: 15px;
+        }
 
-.match-title {
-    font-size: 11px;
-    color: #888;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-}
+        .match-title {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
 
-.team {
-    display: flex;
-    justify-content: space-between;
-    font-weight: bold;
-    font-size: 14px;
-    margin-bottom: 5px;
-}
+        .team {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
 
         /* --- Menu Page Content --- */
-#menu-content { 
-    display: none; 
-    padding: 10px; 
-}
+        #menu-content { 
+            display: none; 
+            padding: 10px; 
+        }
 
-/* ===== PROFILE ===== */
-.profile-section { 
-    display: flex; 
-    align-items: center; 
-    padding: 12px; 
-    margin: 0;
+        /* ===== PROFILE ===== */
+        .profile-section { 
+            display: flex; 
+            align-items: center; 
+            padding: 12px; 
+            margin: 0;
+            background: #fff; 
+            border-radius: 12px 12px 0 0;
+            box-shadow: none;
+            border: 1px solid #eef1f4;
+            border-bottom: none;
+        }
 
-    background: #fff; 
-    border-radius: 12px 12px 0 0;
-    box-shadow: none;
-    border: 1px solid #eef1f4;
-    border-bottom: none;
-}
+        .avatar { 
+            width: 35px; 
+            height: 35px; 
+            background: #7a8a94; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #fff; 
+            font-size: 20px; 
+        }
 
-/* Avatar */
-.avatar { 
-    width: 35px; 
-    height: 35px; 
-    background: #7a8a94; 
-    border-radius: 50%; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    color: #fff; 
-    font-size: 20px; 
-}
+        .profile-info { 
+            margin-left: 12px; 
+        }
 
-/* Profile text */
-.profile-info { 
-    margin-left: 12px; 
-}
+        .profile-info h4 { 
+            font-size: 14px; 
+            text-transform: uppercase; 
+            color: #1a2b3c;
+        }
 
-.profile-info h4 { 
-    font-size: 14px; 
-    text-transform: uppercase; 
-    color: #1a2b3c;
-}
+        .profile-info p { 
+            font-size: 11px; 
+            color: #28a745; 
+            font-weight: bold; 
+        }
 
-.profile-info p { 
-    font-size: 11px; 
-    color: #28a745; 
-    font-weight: bold; 
-}
+        .profile-icons { 
+            margin-left: auto; 
+            display: flex; 
+            gap: 18px; 
+            align-items: center; 
+        }
 
-/* Icons container */
-.profile-icons { 
-    margin-left: auto; 
-    display: flex; 
-    gap: 18px; 
-    align-items: center; 
-}
+        .profile-icons .fa-envelope { 
+            font-size: 23px; 
+            color: #7a8a94; 
+        }
 
-/* message icon (bigger + grey) */
-.profile-icons .fa-envelope { 
-    font-size: 23px; 
-    color: #7a8a94; 
-}
+        .settings-icon {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-/* settings wrapper */
-.settings-icon {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        .profile-icons .fa-cog { 
+            font-size: 23px; 
+            color: #7a8a94; 
+        }
 
-/* settings icon (bigger + grey) */
-.profile-icons .fa-cog { 
-    font-size: 23px; 
-    color: #7a8a94; 
-}
+        .settings-icon::after {
+            content: "!";
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 16px;
+            height: 16px;
+            background: red;
+            color: #fff;
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
 
-/* red notification dot (!) */
-.settings-icon::after {
-    content: "!";
-    position: absolute;
-    top: -6px;
-    right: -6px;
+        /* ===== BALANCE BOX ===== */
+        .menu-balance-box { 
+            background: #fff; 
+            border-radius: 0;
+            padding: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            margin: 0;
+            border-left: 1px solid #eef1f4;
+            border-right: 1px solid #eef1f4;
+        }
 
-    width: 16px;
-    height: 16px;
-    background: red;
-    color: #fff;
-    font-size: 11px;
-    font-weight: bold;
+        .wallet-info { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            background: #e9eef2; 
+            padding: 8px 12px; 
+            border-radius: 8px; 
+            flex: 1; 
+            margin-right: 10px;
+        }
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+        .dep-btn { 
+            background: #28a745; 
+            color: #fff; 
+            border: none; 
+            padding: 10px 18px; 
+            border-radius: 8px; 
+            font-weight: bold; 
+        }
 
-    border-radius: 50%;
-}
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            background: #fff;
+            padding: 15px 5px;
+            margin: 0;
+            border-radius: 0 0 12px 12px;
+            border: 1px solid #eef1f4;
+            border-top: none;
+            box-shadow: none;
+        }
 
+        .quick-item {
+            background: transparent;
+            text-align: center;
+            padding: 5px 2px;
+            cursor: pointer;
+        }
 
-/* ===== BALANCE BOX ===== */
-.menu-balance-box { 
-    background: #fff; 
-    border-radius: 0;        /* 👈 attach with profile */
-    padding: 10px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    margin: 0;              /* 👈 no gap */
+        .quick-item img {
+            width: 60px;
+            height: 60px;
+            display: block; 
+            margin: 0 auto 8px;
+            object-fit: contain;
+        }
 
-    border-left: 1px solid #eef1f4;
-    border-right: 1px solid #eef1f4;
-}
-
-/* only grey middle */
-.wallet-info { 
-    display: flex; 
-    align-items: center; 
-    gap: 8px; 
-    background: #e9eef2; 
-    padding: 8px 12px; 
-    border-radius: 8px; 
-    flex: 1; 
-    margin-right: 10px;
-}
-
-/* deposit button */
-.dep-btn { 
-    background: #28a745; 
-    color: #fff; 
-    border: none; 
-    padding: 10px 18px; 
-    border-radius: 8px; 
-    font-weight: bold; 
-}
-
-
-/* ===== QUICK GRID (আইকন সাইজ বড় করার জন্য আপডেট) ===== */
-.quick-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    background: #fff;
-    padding: 15px 5px; /* প্যাডিং একটু বাড়িয়ে দিলাম */
-    margin: 0;
-    border-radius: 0 0 12px 12px;
-    border: 1px solid #eef1f4;
-    border-top: none;
-    box-shadow: none;
-}
-
-.quick-item {
-    background: transparent;
-    text-align: center;
-    padding: 5px 2px;
-    cursor: pointer;
-}
-
-/* আইকন সাইজ বড় করা হলো */
-.quick-item img {
-    width: 60px;  /* আগে ৩০ ছিল, এখন ৪৪ করা হলো */
-    height: 60px; /* আগে ৩০ ছিল, এখন ৪৪ করা হলো */
-    display: block; 
-    margin: 0 auto 8px; /* আইকন ও লেখার মাঝের গ্যাপ একটু বাড়ানো হলো */
-    object-fit: contain;
-}
-
-/* টেক্সট সাইজ একটু বড় ও বোল্ড করা হলো */
-.quick-item span {
-    font-size: 11px;
-    font-weight: 700;
-    color: #1a2b3c;
-    display: block;
-}
-
+        .quick-item span {
+            font-size: 11px;
+            font-weight: 700;
+            color: #1a2b3c;
+            display: block;
+        }
 
         .menu-list-card{
-    background:#f5f7f9;
-    border-radius:16px;
-    padding:16px 20px;
-    display:flex;
-    align-items:center;
-    gap:18px;
-    margin-bottom:10px;
-    border:1px solid #eef2f5;
-    box-shadow:none;
-}
+            background:#f5f7f9;
+            border-radius:16px;
+            padding:16px 20px;
+            display:flex;
+            align-items:center;
+            gap:18px;
+            margin-bottom:10px;
+            border:1px solid #eef2f5;
+            box-shadow:none;
+        }
 
-.menu-icon{
-    width:42px;
-    height:42px;
-    border-radius:50%;
-    background:#eef2f5;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#28a745;
-    font-size:20px;
-    flex-shrink:0;
-}
+        .menu-icon{
+            width:42px;
+            height:42px;
+            border-radius:50%;
+            background:#eef2f5;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#28a745;
+            font-size:20px;
+            flex-shrink:0;
+        }
 
-.menu-text { 
-    flex: 1; 
-}
+        .menu-text { 
+            flex: 1; 
+        }
 
-.menu-text b { 
-    display: block; 
-    font-size: 15px;          /* টেক্সট সাইজ বাড়ানো হলো */
-    color: #1a2b3c; 
-    margin-bottom: 2px;
-}
+        .menu-text b { 
+            display: block; 
+            font-size: 15px;
+            color: #1a2b3c; 
+            margin-bottom: 2px;
+        }
 
-.menu-text span { 
-    font-size: 12px;          /* সাব-টেক্সট সাইজ বাড়ানো হলো */
-    color: #888; 
-}
+        .menu-text span { 
+            font-size: 12px;
+            color: #888; 
+        }
 
-
-.arrow-right { 
-    color: #ccc; 
-    font-size: 12px; 
-}
-
+        .arrow-right { 
+            color: #ccc; 
+            font-size: 12px; 
+        }
 
         /* --- Bottom Navigation --- */
         .bottom-bar { position: fixed; bottom: 0; width: 100%; height: 65px; background: #fff; display: flex; align-items: center; z-index: 1000; }
@@ -435,184 +413,170 @@
         .slip-icon { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); background: #28a745; width: 55px; height: 55px; border-radius: 50%; border: 4px solid #f0f4f7; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2); }
         .slip-text { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); }
 
-.original-ticket-icon{
-    position:relative;
-    width:24px;
-    height:16px;
-}
+        .original-ticket-icon{
+            position:relative;
+            width:24px;
+            height:16px;
+        }
 
-.original-ticket-icon::before{
-    content:'';
-    position:absolute;
-    left:2px;
-    top:-2px;
-    width:18px;
-    height:13px;
-    background:rgba(255,255,255,.6);
-    border-radius:2px;
-}
+        .original-ticket-icon::before{
+            content:'';
+            position:absolute;
+            left:2px;
+            top:-2px;
+            width:18px;
+            height:13px;
+            background:rgba(255,255,255,.6);
+            border-radius:2px;
+        }
 
-.original-ticket-icon::after{
-    content:'';
-    position:absolute;
-    left:0;
-    bottom:0;
-    width:24px;
-    height:14px;
-    background:#fff;
-    border-radius:2px;
-    background-image:radial-gradient(circle at center,#28a745 1.5px,transparent 1.5px);
-    background-size:6px 14px;
-    background-repeat:repeat-x;
-    background-position:center;
-}
+        .original-ticket-icon::after{
+            content:'';
+            position:absolute;
+            left:0;
+            bottom:0;
+            width:24px;
+            height:14px;
+            background:#fff;
+            border-radius:2px;
+            background-image:radial-gradient(circle at center,#28a745 1.5px,transparent 1.5px);
+            background-size:6px 14px;
+            background-repeat:repeat-x;
+            background-position:center;
+        }
 
-.custom-menu-icon{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:3px;
-    width:18px;
-    height:18px;
-    margin-bottom:4px;
-}
+        .custom-menu-icon{
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:3px;
+            width:18px;
+            height:18px;
+            margin-bottom:4px;
+        }
 
-.custom-menu-icon div{
-    background:#7a8a94;
-    border-radius:2px;
-}
+        .custom-menu-icon div{
+            background:#7a8a94;
+            border-radius:2px;
+        }
 
-.bottom-item.active .custom-menu-icon div{
-    background:#28a745;
-}
+        .bottom-item.active .custom-menu-icon div{
+            background:#28a745;
+        }
 
-.header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:10px 15px;
-    height:55px;
-    position:sticky;
-    top:0;
-    background:#fff;
-    z-index:100;
+        .header{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:10px 15px;
+            height:55px;
+            position:sticky;
+            top:0;
+            background:#fff;
+            z-index:100;
+            position:relative;
+        }
 
-    position:relative; /* এটা থাকতে হবে */
-}
+        .logo{
+            position:absolute;
+            left:50%;
+            transform:translateX(-50%) translateX(0px);
+        }
 
-.logo{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%) translateX(0px);
-    /* শেষের 0px পরিবর্তন করবে */
-}
+        .logo img{
+            height:50px;
+        }
 
-.logo img{
-    height:50px;
-}
+        .top-nav { 
+            display: flex; 
+            background: #ffffff; 
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0; 
+        }
 
-/* --- Top Navigation - সবগুলো আইকন সমান করার জন্য --- */
-.top-nav { 
-    display: flex; 
-    background: #ffffff; 
-    padding: 10px 0;
-    border-bottom: 1px solid #f0f0f0; 
-}
+        .nav-item { 
+            flex: 1; 
+            text-align: center; 
+            color: #7a8a94; 
+            font-size: 11px; 
+            font-weight: 600; 
+            cursor: pointer;
+            background: transparent !important; 
+            border: none !important;
+            box-shadow: none !important;
+        }
 
-.nav-item { 
-    flex: 1; 
-    text-align: center; 
-    color: #7a8a94; 
-    font-size: 11px; 
-    font-weight: 600; 
-    cursor: pointer;
-    
-    /* সবগুলো আইকনের ব্যাকগ্রাউন্ড একই রকম স্বচ্ছ করা হলো */
-    background: transparent !important; 
-    border: none !important;
-    box-shadow: none !important;
-}
+        .nav-item img {
+            width: 36px;
+            height: 36px;
+            display: block;
+            margin: 0 auto 4px;
+            object-fit: contain;
+            background: transparent !important; 
+            border: none !important;
+        }
 
-.nav-item img {
-    width: 36px;
-    height: 36px;
-    display: block;
-    margin: 0 auto 4px;
-    object-fit: contain;
-    
-    /* নিশ্চিত করা হলো যেন কোনো ব্যাকগ্রাউন্ড কালার না থাকে */
-    background: transparent !important; 
-    border: none !important;
-}
+        .nav-item.active { 
+            color: #28a745; 
+            border-bottom: 3px solid #28a745 !important; 
+            background: transparent !important;
+        }
 
-.nav-item.active { 
-    color: #28a745; 
-    border-bottom: 3px solid #28a745 !important; 
-    background: transparent !important;
-}
+        .menu-balance-box{
+            margin:0;
+            border-radius:0;
+        }
 
-.menu-balance-box{
-    margin:0;
-    border-radius:0;
-}
+        .game-slider{
+            width:100%;
+            overflow:hidden;
+            margin:10px 0;
+        }
 
-.game-slider{
-    width:100%;
-    overflow:hidden;
-    margin:10px 0;
-}
+        .game-track{
+            display:flex;
+            gap:12px;
+            animation:slide 20s linear infinite;
+        }
 
-.game-track{
-    display:flex;
-    gap:12px;
-    animation:slide 20s linear infinite;
-}
+        .game-track img{
+            width:260px;
+            height:140px;
+            border-radius:20px;
+            object-fit:cover;
+            flex-shrink:0;
+        }
 
-.game-track img{
-    width:260px;
-    height:140px;
-    border-radius:20px;
-    object-fit:cover;
-    flex-shrink:0;
-}
+        @keyframes slide{
+            0%{transform:translateX(100%);}
+            100%{transform:translateX(-1100px);}
+        }
 
-@keyframes slide{
-    0%{transform:translateX(100%);}
-    100%{transform:translateX(-1100px);}
-}
+        #deposit-page-overlay{
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 5000;
+            transition: right .4s ease;
+        }
 
-#deposit-page-overlay{
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 100%;
-    height: 100%;
-    background: #fff;
-    z-index: 5000;
-    transition: right .4s ease;
-}
+        #deposit-page-overlay.active{
+            right: 0;
+        }
 
-#deposit-page-overlay.active{
-    right: 0;
-}
+        #deposit-frame{
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
 
-#deposit-frame{
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-
-
-
-
-*{
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    user-select: none;
-}
-
-
-
+        *{
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            user-select: none;
+        }
     </style>
 </head>
 <body>
@@ -630,187 +594,105 @@
         <i class="fas fa-user" style="font-size: 18px; color: #7a8a94;"></i>
     </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <!-- ব্যানার এবং ক্লিক এরিয়া -->
-<div style="
-position:relative;
-width:100%;
--webkit-tap-highlight-color:transparent;
-user-select:none;">
+    <div style="position:relative; width:100%; -webkit-tap-highlight-color:transparent; user-select:none;">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting3.jpg"
+             style="width:100%; display:block; -webkit-user-drag:none; user-select:none; -webkit-tap-highlight-color:transparent;">
 
-    <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting3.jpg"
-         style="
-         width:100%;
-         display:block;
-         -webkit-user-drag:none;
-         user-select:none;
-         -webkit-tap-highlight-color:transparent;">
+        <!-- Make Deposit -->
+        <div onclick="openDeposit()"
+             style="position:absolute; left:0; top:10%; width:100%; height:6%; z-index:3001; cursor:pointer; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; user-select:none;">
+        </div>
 
-    <!-- Make Deposit -->
-    <div onclick="openDeposit()"
-         style="
-         position:absolute;
-         left:0;
-         top:10%;
-         width:100%;
-         height:6%;
-         z-index:3001;
-         cursor:pointer;
-         -webkit-tap-highlight-color:transparent;
-         -webkit-touch-callout:none;
-         user-select:none;">
+        <!-- Security Settings -->
+        <div onclick="openSecurity()"
+             style="position:absolute; left:2%; top:55%; width:96%; height:5%; z-index:3001; cursor:pointer; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; user-select:none;">
+        </div>
     </div>
 
-    <!-- Security Settings -->
-    <div onclick="openSecurity()"
-         style="
-         position:absolute;
-         left:2%;
-         top:55%;
-         width:96%;
-         height:5%;
-         z-index:3001;
-         cursor:pointer;
-         -webkit-tap-highlight-color:transparent;
-         -webkit-touch-callout:none;
-         user-select:none;">
+    <!-- Logout Image -->
+    <div id="logout-trigger"
+         style="width:calc(100% + 10px); margin-left:-5px; margin-top:15px; margin-bottom:20px; cursor:pointer; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; user-select:none;">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting2.jpg"
+             alt="Settings Footer"
+             style="width:100%; display:block; -webkit-user-drag:none; user-select:none; -webkit-tap-highlight-color:transparent;">
     </div>
-
 </div>
-
-<!-- Logout Image -->
-<div id="logout-trigger"
-     style="
-     width:calc(100% + 10px);
-     margin-left:-5px;
-     margin-top:15px;
-     margin-bottom:20px;
-     cursor:pointer;
-     -webkit-tap-highlight-color:transparent;
-     -webkit-touch-callout:none;
-     user-select:none;">
-
-    <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting2.jpg"
-         alt="Settings Footer"
-         style="
-         width:100%;
-         display:block;
-         -webkit-user-drag:none;
-         user-select:none;
-         -webkit-tap-highlight-color:transparent;">
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <!-- Personal Profile Page Overlay -->
 <div id="personal-profile-overlay" style="position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #eef2f5; z-index: 4000; transition: right 0.4s ease; overflow-y: auto;">
     
-    <!-- Header -->
     <div style="padding: 15px; display: flex; align-items: center; background: #fff; border-bottom: 1px solid #ddd; height: 55px;">
         <i class="fas fa-arrow-left" onclick="closeProfilePage()" style="font-size: 20px; cursor: pointer; color: #7a8a94; margin-right: 20px;"></i>
         <h3 style="flex: 1; text-align: center; font-size: 18px; color: #7a8a94;">Personal profile</h3>
-        <div style="width: 20px;"></div> <!-- Alignment fix -->
+        <div style="width: 20px;"></div>
     </div>
 
     <div style="padding: 15px;">
-    <!-- Enter Details Button -->
-    <div onclick="openCompleteProfile()" style="background: #fff; padding: 15px; border-radius: 12px; display: flex; align-items: center; margin-bottom: 20px; cursor: pointer;">
-        <div style="background: #e0f2e9; color: #28a745; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-            <i class="fas fa-pen"></i>
+        <div onclick="openCompleteProfile()" style="background: #fff; padding: 15px; border-radius: 12px; display: flex; align-items: center; margin-bottom: 20px; cursor: pointer;">
+            <div style="background: #e0f2e9; color: #28a745; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                <i class="fas fa-pen"></i>
+            </div>
+            <b style="font-size: 16px;">Enter details</b>
         </div>
-        <b style="font-size: 16px;">Enter details</b>
     </div>
-</div>
-
-
-
         
-        <!-- Account Section -->
-<h4 style="color: #7a8a94; margin: 15px 10px 10px 10px; font-size: 13px;">Account</h4>
-<div style="background: #fff; border-radius: 12px; padding: 0 15px; margin-bottom: 20px;">
-    
-    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">Account number</span>
-        <span style="color: #1a2b3c; font-weight: bold;" class="account-id-display">id: Loading...</span>
+    <!-- Account Section -->
+    <h4 style="color: #7a8a94; margin: 15px 10px 10px 10px; font-size: 13px;">Account</h4>
+    <div style="background: #fff; border-radius: 12px; padding: 0 15px; margin-bottom: 20px;">
+        
+        <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+            <span style="color: #7a8a94;">Account number</span>
+            <span style="color: #1a2b3c; font-weight: bold;" class="account-id-display">id: Loading...</span>
+        </div>
+
+        <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+            <span style="color: #7a8a94;">Email</span>
+            <span id="display-email" style="color: #28a745; font-weight: bold;">Not filled in</span>
+        </div>
+
+        <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+            <span style="color: #7a8a94;">Phone number</span>
+            <span id="display-phone" style="color: #28a745; font-weight: bold;">Not filled in</span>
+        </div>
+
+        <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+            <span style="color: #7a8a94;">Password</span>
+            <span style="color: #28a745; font-weight: bold; cursor: pointer;">Change</span>
+        </div>
+
+        <div style="padding: 15px 0; display: flex; justify-content: space-between;">
+            <span style="color: #7a8a94;">Registration date</span>
+            <span id="display-reg-date" style="color: #1a2b3c;">--/--/----</span>
+        </div>
     </div>
 
-    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">Email</span>
-        <span id="display-email" style="color: #28a745; font-weight: bold;">Not filled in</span>
-    </div>
+    <h4 style="color: #7a8a94; margin: 15px 10px 10px 10px; font-size: 13px;">Personal information</h4>
+    <div style="background: #fff; border-radius: 12px; padding: 0 15px;">
+        
+        <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+            <span style="color: #7a8a94;">Name</span>
+            <span id="display-name" style="color: #1a2b3c;">Not filled in</span>
+        </div>
 
-    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">Phone number</span>
-        <span id="display-phone" style="color: #28a745; font-weight: bold;">Not filled in</span>
-    </div>
+        <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+            <span style="color: #7a8a94;">Username</span>
+            <span id="display-username" style="color: #1a2b3c;">Not filled in</span>
+        </div>
 
-    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">Password</span>
-        <span style="color: #28a745; font-weight: bold; cursor: pointer;">Change</span>
-    </div>
+        <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+            <span style="color: #7a8a94;">Country</span>
+            <span id="display-country" style="color: #1a2b3c;">Not filled in</span>
+        </div>
 
-    <div style="padding: 15px 0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">Registration date</span>
-        <span id="display-reg-date" style="color: #1a2b3c;">--/--/----</span>
+        <div style="padding: 15px 0; display: flex; justify-content: space-between;">
+            <span style="color: #7a8a94;">City</span>
+            <span id="display-city" style="color: #1a2b3c;">Not filled in</span>
+        </div>
     </div>
 </div>
 
-<h4 style="color: #7a8a94; margin: 15px 10px 10px 10px; font-size: 13px;">Personal information</h4>
-<div style="background: #fff; border-radius: 12px; padding: 0 15px;">
-    
-    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">Name</span>
-        <span id="display-name" style="color: #1a2b3c;">Not filled in</span>
-    </div>
-
-    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">Username</span>
-        <span id="display-username" style="color: #1a2b3c;">Not filled in</span>
-    </div>
-
-    <div style="padding: 15px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-    <span style="color: #7a8a94;">Country</span>
-    <span id="display-country" style="color: #1a2b3c;">Not filled in</span>
-</div>
-
-
-    <div style="padding: 15px 0; display: flex; justify-content: space-between;">
-        <span style="color: #7a8a94;">City</span>
-        <span id="display-city" style="color: #1a2b3c;">Not filled in</span>
-     </div>
-</div>
- </div>
-</div>
-
-
-    <div class="header">
-    
+<div class="header">
     <div class="balance-pill" onclick="openDeposit()">
         <div class="plus-circle">
             <i class="fas fa-plus"></i>
@@ -825,28 +707,25 @@ user-select:none;">
     <div class="search-icon">
         <i class="fas fa-search"></i>
     </div>
-
 </div>
 
-    <div id="home-content">
-
+<div id="home-content">
     <div style="margin:0;padding:0;">
         <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/home2.jpg"
              style="display:block;width:100%;height:auto;">
     </div>
 
     <div class="game-slider">
-    <div class="game-track">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/fru.jpg">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/royal.jpg">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/burning.jpg">
-        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/scratch.jpg">
+        <div class="game-track">
+            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/fru.jpg">
+            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/royal.jpg">
+            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/burning.jpg">
+            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/scratch.jpg">
+        </div>
     </div>
 </div>
-</div>
-</div>
 
-    <div id="menu-content">
+<div id="menu-content">
     <div class="profile-section" style="padding: 15px; cursor: pointer; display: flex; align-items: center;" onclick="openProfilePage()">
         <div class="avatar" style="width: 35px; height: 35px; background: #cfd8dc; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px;">
             <i class="fas fa-user"></i>
@@ -865,7 +744,7 @@ user-select:none;">
         </div>
     </div> 
 
-        <div class="menu-balance-box">
+    <div class="menu-balance-box">
         <div class="wallet-info">
             <i class="fas fa-wallet" style="color: #28a745;"></i>
             <span style="font-weight: bold; font-size: 14px;">...</span>
@@ -874,82 +753,64 @@ user-select:none;">
         <button class="dep-btn" onclick="openDeposit()">+ Deposit</button>
     </div>
 
-
     <div style="margin:0; padding:0;">
-    <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/menu.jpg"
-         style="
-            display:block;
-            width:100%;
-            height:auto;
-            margin:0;
-            border-radius:0;
-            object-fit:cover;
-         ">
-</div>
-
-<div style="margin:0;padding:0;">
-    <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/menu2.jpg"
-         style="display:block;width:100%;height:auto;border-radius:0;object-fit:cover;">
-</div>
-
-<div id="complete-profile-form" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef2f5; z-index: 9999; overflow-y: auto;">
-    <!-- Header -->
-    <div style="padding: 15px; display: flex; align-items: center; background: #fff; height: 55px; position: sticky; top: 0; z-index: 10;">
-        <i class="fas fa-arrow-left" onclick="closeForm()" style="font-size: 20px; cursor: pointer; color: #7a8a94; margin-right: 20px;"></i>
-        <h3 style="flex: 1; text-align: center; font-size: 18px; color: #7a8a94; margin: 0;">Complete profile</h3>
-        <div style="width: 20px;"></div>
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/menu.jpg"
+             style="display:block; width:100%; height:auto; margin:0; border-radius:0; object-fit:cover;">
     </div>
 
-    <div style="padding: 15px;">
-        <style>
-            .input-card { background: #fff; padding: 0 15px; border-radius: 12px; margin-bottom: 20px; }
-            .input-card input { width: 100%; padding: 15px 0; border: none; border-bottom: 1px solid #eef1f4; font-size: 16px; color: #333; outline: none; }
-            .input-label { color: #7a8a94; margin: 15px 0 10px 5px; font-size: 13px; }
-        </style>
+    <div style="margin:0;padding:0;">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/menu2.jpg"
+             style="display:block;width:100%;height:auto;border-radius:0;object-fit:cover;">
+    </div>
 
-        <!-- Main details section -->
-        <div class="input-label">Main details</div>
-        <div class="input-card">
-            <input type="text" id="reg-name" class="profile-input" placeholder="Name">
-            <input type="text" id="reg-username" class="profile-input" placeholder="Username">
-            <input type="email" id="reg-email" class="profile-input" placeholder="Email">
-            <input type="tel" id="reg-phone" class="profile-input" placeholder="Phone number">
-            <input type="text" id="reg-patronymic" class="profile-input" placeholder="Patronymic (if any)">
-            <input type="text" id="reg-dob" class="profile-input" placeholder="Date of birth" onfocus="(this.type='date')">
-            <input type="text" id="reg-pob" class="profile-input" placeholder="Place of birth" style="border: none;">
+    <div id="complete-profile-form" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eef2f5; z-index: 9999; overflow-y: auto;">
+        <div style="padding: 15px; display: flex; align-items: center; background: #fff; height: 55px; position: sticky; top: 0; z-index: 10;">
+            <i class="fas fa-arrow-left" onclick="closeForm()" style="font-size: 20px; cursor: pointer; color: #7a8a94; margin-right: 20px;"></i>
+            <h3 style="flex: 1; text-align: center; font-size: 18px; color: #7a8a94; margin: 0;">Complete profile</h3>
+            <div style="width: 20px;"></div>
         </div>
 
-        <!-- Residence section -->
-        <div class="input-label">Residence</div>
-        <div class="input-card">
-            <input type="text" id="reg-country" class="profile-input" placeholder="Country">
-            <input type="text" id="reg-region" class="profile-input" placeholder="Region">
-            <input type="text" id="reg-city" class="profile-input" placeholder="City">
-            <input type="text" id="reg-address" class="profile-input" placeholder="Residence address" style="border: none;">
-        </div>
+        <div style="padding: 15px;">
+            <style>
+                .input-card { background: #fff; padding: 0 15px; border-radius: 12px; margin-bottom: 20px; }
+                .input-card input { width: 100%; padding: 15px 0; border: none; border-bottom: 1px solid #eef1f4; font-size: 16px; color: #333; outline: none; }
+                .input-label { color: #7a8a94; margin: 15px 0 10px 5px; font-size: 13px; }
+            </style>
 
-        <!-- ID document section -->
-        <div class="input-label">ID document</div>
-        <div class="input-card">
-            <input type="text" id="reg-doc-type" class="profile-input" placeholder="Document type">
-            <input type="text" id="reg-series" class="profile-input" placeholder="Series (if have)">
-            <input type="text" id="reg-doc-num" class="profile-input" placeholder="Document number">
-            <input type="text" id="reg-doc-date" class="profile-input" placeholder="Date of issue" onfocus="(this.type='date')">
-            <input type="text" id="reg-issued-by" class="profile-input" placeholder="Issued by" style="border: none;">
-        </div>
+            <div class="input-label">Main details</div>
+            <div class="input-card">
+                <input type="text" id="reg-name" class="profile-input" placeholder="Name">
+                <input type="text" id="reg-username" class="profile-input" placeholder="Username">
+                <input type="email" id="reg-email" class="profile-input" placeholder="Email">
+                <input type="tel" id="reg-phone" class="profile-input" placeholder="Phone number">
+                <input type="text" id="reg-patronymic" class="profile-input" placeholder="Patronymic (if any)">
+                <input type="text" id="reg-dob" class="profile-input" placeholder="Date of birth" onfocus="(this.type='date')">
+                <input type="text" id="reg-pob" class="profile-input" placeholder="Place of birth" style="border: none;">
+            </div>
 
-        <!-- Save Button Section -->
-        <div style="padding: 15px 0; position: sticky; bottom: 0; background: #eef2f5;">
-            <button id="saveBtn" onclick="saveProfile()" style="width: 100%; padding: 15px; background: #28a745; color: #fff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">Save</button>
+            <div class="input-label">Residence</div>
+            <div class="input-card">
+                <input type="text" id="reg-country" class="profile-input" placeholder="Country">
+                <input type="text" id="reg-region" class="profile-input" placeholder="Region">
+                <input type="text" id="reg-city" class="profile-input" placeholder="City">
+                <input type="text" id="reg-address" class="profile-input" placeholder="Residence address" style="border: none;">
+            </div>
+
+            <div class="input-label">ID document</div>
+            <div class="input-card">
+                <input type="text" id="reg-doc-type" class="profile-input" placeholder="Document type">
+                <input type="text" id="reg-series" class="profile-input" placeholder="Series (if have)">
+                <input type="text" id="reg-doc-num" class="profile-input" placeholder="Document number">
+                <input type="text" id="reg-doc-date" class="profile-input" placeholder="Date of issue" onfocus="(this.type='date')">
+                <input type="text" id="reg-issued-by" class="profile-input" placeholder="Issued by" style="border: none;">
+            </div>
+
+            <div style="padding: 15px 0; position: sticky; bottom: 0; background: #eef2f5;">
+                <button id="saveBtn" onclick="saveProfile()" style="width: 100%; padding: 15px; background: #28a745; color: #fff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">Save</button>
+            </div>
         </div>
     </div>
 </div>
-</div>
-
-
-
-
-
 
 <div class="bottom-bar">
     <div class="bottom-item active" id="pop-tab" onclick="switchTab('home')">
@@ -985,176 +846,42 @@ user-select:none;">
     </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
 <!-- ===== Security Popup ===== -->
 <div id="security-page-overlay"
-style="
-position:fixed;
-top:0;
-right:-100%;
-width:100%;
-height:100%;
-background:#f0f2f5;
-z-index:3500;
-transition:right .4s ease;
-overflow-y:auto;">
+style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#f0f2f5; z-index:3500; transition:right .4s ease; overflow-y:auto;">
 
-    <!-- Header -->
-    <div style="
-    height:55px;
-    background:#fff;
-    display:flex;
-    align-items:center;
-    padding:0 15px;
-    border-bottom:1px solid #e5e5e5;
-    position:sticky;
-    top:0;
-    z-index:10;">
-
-        <i class="fas fa-arrow-left"
-        onclick="closeSecurity()"
-        style="font-size:20px;color:#7a8a94;cursor:pointer;"></i>
-
-        <div style="
-        flex:1;
-        text-align:center;
-        font-size:18px;
-        font-weight:700;
-        color:#7f9096;
-        margin-right:20px;">
-        Security settings
-        </div>
-
+    <div style="height:55px; background:#fff; display:flex; align-items:center; padding:0 15px; border-bottom:1px solid #e5e5e5; position:sticky; top:0; z-index:10;">
+        <i class="fas fa-arrow-left" onclick="closeSecurity()" style="font-size:20px;color:#7a8a94;cursor:pointer;"></i>
+        <div style="flex:1; text-align:center; font-size:18px; font-weight:700; color:#7f9096; margin-right:20px;">Security settings</div>
     </div>
 
-    <!-- Content -->
     <div id="security-content" style="padding:15px;">
-
-        <!-- 1st Card: Top Card (Profile is not protected) -->
-        <div style="
-        background:#fff;
-        border-radius:12px;
-        padding:15px;
-        display:flex;
-        align-items:center;
-        margin-bottom:15px;
-        gap:12px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-
-            <div style="
-            width:40px;
-            height:40px;
-            border-radius:50%;
-            background:#ffebee;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#d32f2f;
-            font-size:18px;
-            flex-shrink:0;">
+        <div style="background:#fff; border-radius:12px; padding:15px; display:flex; align-items:center; margin-bottom:15px; gap:12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="width:40px; height:40px; border-radius:50%; background:#ffebee; display:flex; align-items:center; justify-content:center; color:#d32f2f; font-size:18px; flex-shrink:0;">
                 <i class="fas fa-user"></i>
             </div>
-
             <div>
-                <div style="
-                font-size:15px;
-                font-weight:700;
-                color:#334455;
-                margin-bottom:2px;">
-                Profile is not protected
-                </div>
-                <div style="
-                font-size:12px;
-                color:#7a8a94;">
-                Security issues found
-                </div>
+                <div style="font-size:15px; font-weight:700; color:#334455; margin-bottom:2px;">Profile is not protected</div>
+                <div style="font-size:12px; color:#7a8a94;">Security issues found</div>
             </div>
-
         </div>
 
-        <!-- Section Title -->
-        <div style="
-        font-size:13px;
-        font-weight:600;
-        color:#7a8a94;
-        margin-bottom:8px;
-        padding-left:2px;">
-        Security checklist
-        </div>
+        <div style="font-size:13px; font-weight:600; color:#7a8a94; margin-bottom:8px; padding-left:2px;">Security checklist</div>
 
-        <!-- Single Unified White Card for Progress and All 6 Lists -->
-        <div style="
-        background:#fff;
-        border-radius:12px;
-        padding:15px;
-        margin-bottom:15px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-
-            <!-- Top Progress Section inside the card (Screenshot Layout) -->
+        <div style="background:#fff; border-radius:12px; padding:15px; margin-bottom:15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
             <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #f0f0f0;">
-                
-                <div style="
-                font-size:15px;
-                font-weight:700;
-                color:#334455;
-                margin-bottom:12px;">
-                Improve security for your account!
-                </div>
-
-                <!-- Bottom Row: Left Green Badge & Right Thicker Progress Bar -->
-                <div style="
-                display:flex;
-                align-items:center;
-                gap:12px;">
-                    
-                    <!-- Left Green Badge (যেমন: 1/6) -->
-                    <div id="securityProgressText" style="
-                    background:#28a745;
-                    color:#fff;
-                    font-size:13px;
-                    font-weight:bold;
-                    padding:4px 12px;
-                    border-radius:15px;
-                    flex-shrink:0;
-                    min-width:48px;
-                    text-align:center;">
-                    1/6
+                <div style="font-size:15px; font-weight:700; color:#334455; margin-bottom:12px;">Improve security for your account!</div>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div id="securityProgressText" style="background:#28a745; color:#fff; font-size:13px; font-weight:bold; padding:4px 12px; border-radius:15px; flex-shrink:0; min-width:48px; text-align:center;">1/6</div>
+                    <div style="flex:1; height:9px; background:#e0e0e0; border-radius:5px; overflow:hidden;">
+                        <div id="securityProgressBarFill" style="width:16.66%; height:100%; background:#28a745; border-radius:5px; transition: width 0.4s ease;"></div>
                     </div>
-
-                    <!-- Right Thicker Progress Bar -->
-                    <div style="
-                    flex:1;
-                    height:9px;
-                    background:#e0e0e0;
-                    border-radius:5px;
-                    overflow:hidden;">
-                        <div id="securityProgressBarFill" style="
-                        width:16.66%;
-                        height:100%;
-                        background:#28a745;
-                        border-radius:5px;
-                        transition: width 0.4s ease;">
-                        </div>
-                    </div>
-
                 </div>
-
             </div>
 
-            <!-- List Items Container -->
             <div>
-
                 <!-- 1. Phone number -->
-                <div onclick="openPhone()" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                <div onclick="handlePhoneItemClick()" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
                             <i class="fas fa-mobile-alt"></i>
@@ -1186,7 +913,7 @@ overflow-y:auto;">
                 </div>
 
                 <!-- 3. Security question -->
-                <div onclick="openQuestion()" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                <div onclick="handleSecurityQuestionClick()" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
                             <i class="fas fa-question"></i>
@@ -1198,9 +925,7 @@ overflow-y:auto;">
                             </div>
                         </div>
                     </div>
-                    <div style="color: #ccc; font-size: 12px;">
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
+                    <div style="color: #ccc; font-size: 12px;"><i class="fas fa-chevron-right"></i></div>
                 </div>
 
                 <!-- 4. Two-factor authentication -->
@@ -1211,7 +936,7 @@ overflow-y:auto;">
                         </div>
                         <div>
                             <div style="font-size: 14px; font-weight: 600; color: #7f9095;">Two-factor authentication</div>
-                            <div style="font-size: 12px; color: #7a8a94; margin-top: 2px;">Protect your account</div>
+                            <div id="tfaStatusText" style="font-size: 12px; color: #7a8a94; margin-top: 2px;">Protect your account</div>
                         </div>
                     </div>
                     <i class="fas fa-chevron-right" style="color: #c7c7cc; font-size: 14px;"></i>
@@ -1247,7 +972,6 @@ overflow-y:auto;">
                         </div>
                     </div>
                     
-                    <!-- Toggle Switch -->
                     <label style="position: relative; display: inline-block; width: 46px; height: 24px; flex-shrink: 0; cursor: pointer;">
                         <input type="checkbox" id="emailSwitch" onchange="toggleEmailSwitch()" style="opacity: 0; width: 0; height: 0;">
                         <span id="emailSlider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px;">
@@ -1255,367 +979,126 @@ overflow-y:auto;">
                         </span>
                     </label>
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <!-- ===== Link Phone Number Overlay ===== -->
 <div id="phone-page-overlay"
-style="
-position:fixed;
-top:0;
-right:-100%;
-width:100%;
-height:100%;
-background:#edf3f7;
-z-index:4000;
-transition:right .4s ease;
-overflow:hidden;">
+style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#edf3f7; z-index:4000; transition:right .4s ease; overflow:hidden;">
 
-    <!-- Header -->
-    <div style="
-    height:72px;
-    background:#fff;
-    display:flex;
-    align-items:center;
-    padding:0 18px;">
-
-        <i class="fas fa-arrow-left"
-        onclick="closePhone()"
-        style="
-        font-size:28px;
-        color:#6f8d99;
-        cursor:pointer;"></i>
-
-        <div style="
-        flex:1;
-        text-align:center;
-        font-size:22px;
-        font-weight:600;
-        color:#6f8d99;
-        margin-right:28px;">
-        Link your phone number
-        </div>
-
+    <div style="height:72px; background:#fff; display:flex; align-items:center; padding:0 18px;">
+        <i class="fas fa-arrow-left" onclick="closePhone()" style="font-size:28px; color:#6f8d99; cursor:pointer;"></i>
+        <div style="flex:1; text-align:center; font-size:22px; font-weight:600; color:#6f8d99; margin-right:28px;">Link your phone number</div>
     </div>
 
-    <!-- Body -->
-    <div style="padding:22px;">
-
-        <!-- White Card -->
-        <div style="
-        background:#fff;
-        border-radius:22px;
-        padding:22px;">
-
-            <div style="
-            font-size:17px;
-            color:#78909c;
-            line-height:30px;
-            margin-bottom:30px;">
-            An SMS with an activation code will be sent to your phone
+    <div style="padding:15px;">
+        <div style="background:#fff; border-radius:16px; padding:22px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="font-size:16px; color:#78909c; line-height:24px; margin-bottom:22px;">
+                An SMS with an activation code will be sent to your phone
             </div>
 
-            <div style="
-            font-size:15px;
-            color:#90a4ae;
-            margin-bottom:10px;">
-            Code
-            </div>
-
-            <!-- Input Row -->
-            <div style="
-            display:flex;
-            align-items:flex-end;
-            gap:18px;">
-
-                <!-- Country -->
-                <div style="width:120px;">
-
-                    <div style="
-                    display:flex;
-                    align-items:center;
-                    gap:8px;">
-
-                        <!-- Bangladesh Flag -->
-                        <div style="
-                        width:28px;
-                        height:28px;
-                        border-radius:50%;
-                        background:#006a4e;
-                        position:relative;
-                        flex-shrink:0;">
-
-                            <div style="
-                            width:12px;
-                            height:12px;
-                            background:#f42a41;
-                            border-radius:50%;
-                            position:absolute;
-                            top:50%;
-                            left:50%;
-                            transform:translate(-50%,-50%);">
-                            </div>
-
+            <div style="display:flex; gap:15px; align-items:flex-start;">
+                <div style="width:115px;">
+                    <div style="font-size:12px; color:#7a8a94; margin-bottom:6px;">Code</div>
+                    
+                    <div style="display:flex; align-items:center; gap:6px; padding-bottom:8px; border-bottom:1px solid #d0d7de;">
+                        <!-- Accurate Bangladesh Flag -->
+                        <div style="width:22px; height:16px; background:#006a4e; border-radius:3px; position:relative; flex-shrink:0; display:flex; align-items:center; justify-content:center;">
+                            <div style="width:9px; height:9px; background:#f42a41; border-radius:50%;"></div>
                         </div>
 
-                        <span style="
-                        font-size:18px;
-                        color:#1a2b3c;">
-                        +880
-                        </span>
+                        <span style="font-size:15px; font-weight:600; color:#7a8a94;">+880</span>
 
-                        <i class="fas fa-chevron-down"
-                        style="
-                        font-size:13px;
-                        color:#78909c;"></i>
-
+                        <i class="fas fa-chevron-down" style="font-size:11px; color:#7a8a94; margin-left:auto;"></i>
                     </div>
-
-                    <div style="
-                    margin-top:8px;
-                    height:2px;
-                    background:#cfd8dc;"></div>
-
                 </div>
 
-                <!-- Phone -->
                 <div style="flex:1;">
-
-                    <input
-                    id="phone-input-field"
-                    type="tel"
-                    placeholder="Phone number"
-                    oninput="checkPhoneInput()"
-                    style="
-                    width:100%;
-                    border:none;
-                    outline:none;
-                    background:transparent;
-                    font-size:18px;
-                    color:#1a2b3c;
-                    padding-bottom:8px;">
-
-                    <div style="
-                    height:2px;
-                    background:#cfd8dc;"></div>
-
+                    <div style="font-size:12px; color:#7a8a94; margin-bottom:6px;">Phone number</div>
+                    <input id="phone-input-field" type="tel" placeholder="" oninput="checkPhoneInput()"
+                           style="width:100%; border:none; outline:none; background:transparent; font-size:15px; font-weight:500; color:#1a2b3c; padding-bottom:8px; border-bottom:1px solid #d0d7de;">
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
-       <!-- Bottom Button -->
-<div style="
-position:absolute;
-left:0;
-right:0;
-bottom:0;
-background:#fff;
-padding:16px 20px 22px;">
-
-    <button
-    id="linkPhoneBtn"
-    onclick="openPhoneVerification()"
-    style="
-    width:92%;
-    height:50px;
-    display:block;
-    margin:0 auto;
-    border:none;
-    border-radius:14px;
-    background:#10b981;
-    color:#ffffff;
-    font-size:19px;
-    font-weight:700;
-    cursor:pointer;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    transition:all .3s ease;">
-    Link
-    </button>
-
+    <div style="position:absolute; left:0; right:0; bottom:0; background:#fff; padding:16px 20px 22px;">
+        <button id="linkPhoneBtn" disabled onclick="openPhoneVerification()"
+                style="width:100%; height:50px; display:block; margin:0 auto; border:none; border-radius:14px; background:#d0d7de; color:#ffffff; font-size:19px; font-weight:700; cursor:not-allowed; transition:all .3s ease;">
+            Link
+        </button>
+    </div>
 </div>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <!-- Phone Linking Warning Popup -->
-<div id="phoneWarningPopup" style="
-display:none;
-position:fixed;
-top:0; left:0; right:0; bottom:0;
-background:rgba(0,0,0,0.5);
-z-index:9999;
-justify-content:center;
-align-items:center;">
-
-    <div style="
-    background:#ffffff;
-    width:85%;
-    max-width:320px;
-    border-radius:20px;
-    padding:24px 0 0 0;
-    text-align:center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    overflow:hidden;">
-
-        <!-- Title & Text -->
+<div id="phoneWarningPopup" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:#ffffff; width:85%; max-width:320px; border-radius:20px; padding:24px 0 0 0; text-align:center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow:hidden;">
         <div style="padding: 0 20px 24px 20px;">
             <h3 style="color:#10b981; font-size:22px; margin-bottom:12px; font-weight:700;">Attention</h3>
-            <p style="color:#4b5563; font-size:15px; line-height:1.4; margin:0;">
-                To change the data, you need to link and activate your phone number
-            </p>
+            <p style="color:#4b5563; font-size:15px; line-height:1.4; margin:0;">To change the data, you need to link and activate your phone number</p>
         </div>
-
-        <!-- Top border line above Link button -->
         <div style="width:100%; height:1px; background:#e5e7eb;"></div>
-
-        <!-- Link Button with full width style -->
-        <button onclick="openLinkPhonePage()" style="
-        width:100%;
-        padding:15px;
-        background:transparent;
-        color:#10b981;
-        border:none;
-        font-size:16px;
-        font-weight:700;
-        cursor:pointer;">
-        Link
-        </button>
-
-        <!-- Bottom border line below Link button -->
+        <button onclick="openLinkPhonePage()" style="width:100%; padding:15px; background:transparent; color:#10b981; border:none; font-size:16px; font-weight:700; cursor:pointer;">Link</button>
         <div style="width:100%; height:1px; background:#e5e7eb;"></div>
-
-        <!-- Cancel Button -->
-        <button onclick="closePhoneWarning()" style="
-        width:100%;
-        padding:15px;
-        background:transparent;
-        color:#10b981;
-        border:none;
-        font-size:16px;
-        font-weight:700;
-        cursor:pointer;">
-        Cancel
-        </button>
-
+        <button onclick="closePhoneWarning()" style="width:100%; padding:15px; background:transparent; color:#10b981; border:none; font-size:16px; font-weight:700; cursor:pointer;">Cancel</button>
     </div>
 </div>
 
-
-
-
-
-
-
-
-<!-- ===== Two-Factor Authentication Overlay Page (Screenshot Design) ===== -->
+<!-- ===== Two-Factor Authentication Overlay Page ===== -->
 <div id="two-factor-overlay" style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#f0f2f5; z-index:4500; transition:right .4s ease; overflow-y:auto; display:flex; flex-direction:column;">
-    
-    <!-- Top Header -->
     <div style="height:55px; background:#fff; display:flex; align-items:center; padding:0 15px; border-bottom:1px solid #e5e5e5; position:sticky; top:0; z-index:10;">
         <i class="fas fa-arrow-left" onclick="closeTwoFactor()" style="font-size:20px; color:#7a8a94; cursor:pointer;"></i>
         <div style="flex:1; text-align:center; font-size:18px; font-weight:700; color:#5c6f78; margin-right:20px;">Two-factor authentication</div>
     </div>
 
-    <!-- Main Container -->
     <div style="padding: 15px; flex: 1; display: flex; flex-direction: column;">
-        
-        <!-- White Card Box -->
-        <div style="background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-            <div style="font-size: 13px; color: #7a8a94; margin-bottom: 20px; line-height: 1.4;">
-                Protect your account. Enter the code from Google Authenticator or scan the QR code
-            </div>
+        <div style="background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); position: relative;">
+            <div style="font-size: 13px; color: #7a8a94; margin-bottom: 20px; line-height: 1.4;">Protect your account. Enter the code from Google Authenticator or scan the QR code</div>
             
-            <!-- Option 1: Install Google Authenticator -->
             <div style="display: flex; align-items: center; margin-bottom: 20px; cursor: pointer;" onclick="installAuthenticator()">
                 <div style="width: 36px; height: 36px; background: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 18px; margin-right: 12px; flex-shrink: 0;">G</div>
                 <div style="font-size: 15px; color: #1a2b3c; font-weight: 500;">Install Google Authenticator</div>
             </div>
 
-            <!-- Option 2: Show QR code -->
-            <div style="display: flex; align-items: center; margin-bottom: 25px; cursor: pointer;" onclick="showQrCode()">
+            <div style="display: flex; align-items: center; margin-bottom: 25px; cursor: pointer;" onclick="handleShowQrClick()">
                 <div style="width: 36px; height: 36px; background: #28a745; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; margin-right: 12px; flex-shrink: 0;">
                     <i class="fas fa-qrcode"></i>
                 </div>
                 <div style="font-size: 15px; color: #1a2b3c; font-weight: 500;">Show QR code</div>
             </div>
 
-            <!-- Input Field -->
             <div style="margin-top: 10px;">
-                <input type="text" id="ga-code" placeholder="Google Authenticator code" style="width: 100%; border: none; border-bottom: 1px solid #d0d7de; padding: 8px 0; font-size: 16px; color: #1a2b3c; background: transparent; outline: none;">
+                <input type="text" id="ga-code" placeholder="Google Authenticator code" oninput="checkTfaCodeInput()" style="width: 100%; border: none; border-bottom: 1px solid #d0d7de; padding: 8px 0; font-size: 16px; color: #1a2b3c; background: transparent; outline: none;">
             </div>
+
+                        <!-- QR Code Popup Container (Initially Hidden inside card overlay) -->
+            <div id="qrCodePopupModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 6000; justify-content: center; align-items: center;">
+                <div style="background: #ffffff; width: 85%; max-width: 300px; border-radius: 20px; padding: 20px; text-align: center; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                    <i class="fas fa-times" onclick="closeQrModal()" style="position: absolute; top: 15px; right: 15px; font-size: 20px; color: #7a8a94; cursor: pointer;"></i>
+                    <div style="font-size: 14px; color: #1a2b3c; margin-bottom: 15px; font-weight: 600;">Scan QR Code</div>
+                    
+                    <!-- এখানে img ট্যাগ বাদ দিয়ে সঠিক div আইডি দেওয়া হলো -->
+                    <div id="qrcode" style="display: flex; justify-content: center; align-items: center; margin: 0 auto; padding: 10px;"></div>
+                </div>
+            </div>
+
         </div>
-
     </div>
 
-    <!-- Bottom Fixed Confirm Button Area -->
+
+
+
+
     <div style="padding: 15px; background: #f0f2f5; position: sticky; bottom: 0;">
-        <button onclick="submitTwoFactor()" style="width: 100%; padding: 14px; background: #d0e1d4; color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer;">Confirm</button>
+        <button id="tfaConfirmBtn" disabled onclick="submitTwoFactor()" style="width: 100%; padding: 14px; background: #d0e1d4; color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: not-allowed;">Confirm</button>
     </div>
-
 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!-- ===== Password Change Flow Overlay ===== -->
+<!-- ===== Password Change Flow Overlay ===== -->
 <div id="change-password-overlay" style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#f0f2f5; z-index:4500; transition:right .4s ease; overflow-y:auto; display:flex; flex-direction:column;">
     
-    <!-- Step 1: Current Password Page -->
     <div id="passStepCurrent" style="display:flex; flex-direction:column; height:100%;">
         <div style="height:55px; background:#fff; display:flex; align-items:center; padding:0 15px; border-bottom:1px solid #e5e5e5; position:sticky; top:0; z-index:10;">
             <i class="fas fa-arrow-left" onclick="closeChangePassword()" style="font-size:20px; color:#7a8a94; cursor:pointer;"></i>
@@ -1641,7 +1124,6 @@ align-items:center;">
         </div>
     </div>
 
-            <!-- Step 2: New Password Input Page -->
     <div id="passStepNew" style="display:none; flex-direction:column; height:100%;">
         <div style="height:55px; background:#fff; display:flex; align-items:center; padding:0 15px; border-bottom:1px solid #e5e5e5; position:sticky; top:0; z-index:10;">
             <i class="fas fa-arrow-left" onclick="backToCurrentPassStep()" style="font-size:20px; color:#7a8a94; cursor:pointer;"></i>
@@ -1649,11 +1131,9 @@ align-items:center;">
         </div>
 
         <div style="padding: 15px; flex: 1; display: flex; flex-direction: column;">
-            <!-- মূল সাদা কার্ড যার ভেতরে ইনপুট এবং রিকোয়েরমেন্ট বক্স দুটোই থাকবে -->
             <div style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px;">
                 <div style="font-size: 13px; color: #7a8a94; margin-bottom: 15px;">Enter your new password</div>
                 
-                <!-- New Password Field with Eye Icon -->
                 <div style="margin-bottom: 20px;">
                     <div style="font-size: 12px; color: #7a8a94; margin-bottom: 4px;">New password</div>
                     <div style="position: relative; display: flex; align-items: center; border-bottom: 1px solid #d0d7de; padding-bottom: 6px;">
@@ -1662,7 +1142,6 @@ align-items:center;">
                     </div>
                 </div>
 
-                <!-- Repeat Password Field with Eye Icon -->
                 <div style="margin-bottom: 20px;">
                     <div style="font-size: 12px; color: #7a8a94; margin-bottom: 4px;">Repeat password</div>
                     <div style="position: relative; display: flex; align-items: center; border-bottom: 1px solid #d0d7de; padding-bottom: 6px;">
@@ -1671,7 +1150,6 @@ align-items:center;">
                     </div>
                 </div>
 
-                <!-- Password Requirements Box (সাদা কার্ডের ভেতরে চলে এলো) -->
                 <div style="background: #eef2f5; padding: 15px; border-radius: 12px; font-size: 12px; color: #5c6f78; line-height: 1.6;">
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: bold; color: #334455;">
                         <i class="fas fa-info-circle" style="color: #5c6f78; font-size: 14px;"></i> Password requirements
@@ -1688,30 +1166,17 @@ align-items:center;">
             <button id="passSubmitBtn" disabled onclick="sendPasswordSmsCode()" style="width: 100%; padding: 14px; background: #d0e1d4; color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: not-allowed;">Next</button>
         </div>
     </div>
-
-
 </div>
 
-
-
-
-
-
-
-
-
-
-
-<!-- ===== Phone Verification & Captcha Overlay Page (New Design) ===== -->
+<!-- ===== Phone Verification & Captcha Overlay Page ===== -->
 <div id="phone-verification-overlay" style="position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #f4f6f8; z-index: 5000; transition: right 0.4s ease; overflow-y: auto; display: flex; flex-direction: column; align-items: center;">
 
-    <!-- পেজ ১: মূল ক্যাপচা পেজ -->
     <div id="pageCaptcha" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div style="width: 100%; max-width: 380px; height: 55px; display: flex; align-items: center; background: #ffffff; padding: 0 10px; box-sizing: border-box;">
             <button onclick="closePhoneVerification()" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: none; border: none; color: #6f8f98; cursor: pointer;">
                 <i class="fa-solid fa-arrow-left" style="font-size: 20px; font-weight: 800;"></i>
             </button>
-            <div style="flex: 1; text-align: center; margin-right: 30px; font-size: 18px; font-weight: 800; color: #6f8f98;">Link your phone number</div>
+            <div style="flex: 1; text-align: center; margin-right: 30px; font-size: 18px; font-weight: 800; color: #6f8f98;">Verification</div>
         </div>
 
         <div style="background: #ffffff; padding: 10px 20px 20px 20px; width: 100%; max-width: 380px; box-sizing: border-box; border-radius: 0 0 12px 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); text-align: center; margin-top: 10px;">
@@ -1744,7 +1209,7 @@ align-items:center;">
         <div style="width: 100%; max-width: 380px; padding: 0 10px; box-sizing: border-box; display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
             <div style="background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); font-size: 15px; color: #2b4c6f; text-align: left; line-height: 1.5;">
                 A confirmation code will be sent to number <br>
-                <strong id="userPhoneNumber" style="color: #1d3557; font-size: 16px;">+880 1724-853314</strong>
+                <strong id="userPhoneNumber" class="dynamic-user-phone" style="color: #1d3557; font-size: 16px;">+880 ...</strong>
             </div>
 
             <div style="font-size: 14px; color: #6f8f98; font-weight: bold; text-align: left; margin-top: 5px;">Confirmation method</div>
@@ -1764,13 +1229,13 @@ align-items:center;">
             <button onclick="goToSmsFirstPage()" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: none; border: none; color: #6f8f98; cursor: pointer;">
                 <i class="fa-solid fa-arrow-left" style="font-size: 20px; font-weight: 800;"></i>
             </button>
-            <div style="flex: 1; text-align: center; margin-right: 30px; font-size: 18px; font-weight: 800; color: #6f8f98;">SMS activation</div>
+            <div style="flex: 1; text-align: center; margin-right: 30px; font-size: 18px; font-weight: 800; color: #6f8f98;">Confirmation</div>
         </div>
 
         <div style="width: 100%; max-width: 380px; padding: 0 10px; box-sizing: border-box; display: flex; flex-direction: column; margin-top: 15px;">
             <div style="background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); font-size: 15px; color: #2b4c6f; text-align: left; line-height: 1.5;">
                 An SMS with a confirmation code has been sent to <br>
-                <strong style="color: #1d3557; font-size: 15px;">+880 1724-853314</strong>
+                <strong class="dynamic-user-phone" style="color: #1d3557; font-size: 15px;">+880 ...</strong>
                 
                 <input type="text" id="confirmationCode" placeholder="Confirmation code" oninput="checkCodeInput()" style="width: 100%; border: none; border-bottom: 1px solid #dcdcdc; padding: 8px 0; font-size: 16px; outline: none; margin-top: 15px; color: #1d3557; box-sizing: border-box;">
             </div>
@@ -1781,7 +1246,7 @@ align-items:center;">
         </div>
 
         <div style="width: 100%; max-width: 380px; position: fixed; bottom: 20px; padding: 0 10px; box-sizing: border-box;">
-    <button id="activateBtn" disabled onclick="verifyActivationCode()" style="width: 100%; height: 48px; background: #d6e2e6; color: #ffffff; border: none; border-radius: 24px; font-size: 16px; font-weight: bold; cursor: not-allowed; transition: background 0.3s ease;">Activate</button>
+            <button id="activateBtn" disabled onclick="verifyActivationCode()" style="width: 100%; height: 48px; background: #d6e2e6; color: #ffffff; border: none; border-radius: 24px; font-size: 16px; font-weight: bold; cursor: not-allowed; transition: background 0.3s ease;">Confirm</button>
         </div>
     </div>
 </div>
@@ -1799,52 +1264,14 @@ align-items:center;">
     }
 </style>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- ===== Security Question Page Overlay ===== -->
 <div id="securityQuestionPage" style="display: none; position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background-color: #f0f2f5; z-index: 4500; transition: right 0.4s ease; overflow-y: auto; padding: 0;">
-    
-    <!-- Top Bar -->
     <div style="display: flex; align-items: center; background: #ffffff; padding: 15px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px;">
         <span onclick="goBackToSecuritySettings()" style="font-size: 18px; cursor: pointer; margin-right: 15px; color: #59717a;"><i class="fas fa-arrow-left"></i></span>
         <h2 style="font-size: 18px; color: #59717a; margin: 0; font-weight: 600;">Security question</h2>
     </div>
 
-    <!-- Card Container -->
     <div style="background: #ffffff; margin: 15px; padding: 20px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.03);">
-        
-        <!-- Select Question Dropdown Trigger -->
         <div onclick="openQuestionPopup()" style="padding: 12px 0; border-bottom: 1px solid #e1e7ec; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 25px;">
             <div style="display: flex; flex-direction: column;">
                 <span style="font-size: 11px; color: #28a745; margin-bottom: 2px;">Select question</span>
@@ -1853,30 +1280,21 @@ align-items:center;">
             <span style="color: #59717a; font-size: 14px;"><i class="fas fa-chevron-down"></i></span>
         </div>
 
-        <!-- Answer Input Container -->
         <div id="answerInputContainer" style="padding-bottom: 5px; border-bottom: 1px solid #e1e7ec; position: relative; transition: border-color 0.3s;">
-            <!-- ওপরে ভেসে থাকা সবুজ লেবেল (টাইপ করলে শো করবে) -->
             <span id="answerFloatingLabel" style="display: none; font-size: 11px; color: #28a745; margin-bottom: 2px;">Answer to your question</span>
-            
             <input type="text" id="securityAnswerInput" placeholder="Answer to your question" oninput="checkSecurityForm()" style="width: 100%; padding: 8px 0; border: none; outline: none; font-size: 15px; background: transparent; color: #333;">
         </div>
     </div>
 
-    <!-- Save Button -->
     <div style="position: fixed; bottom: 20px; left: 15px; right: 15px;">
         <button id="saveQuestionBtn" onclick="saveSecurityQuestion()" disabled style="width: 100%; padding: 14px; background-color: #d0d7de; color: #fff; border: none; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: not-allowed; transition: background-color 0.3s;">Save</button>
     </div>
 
-    <!-- Bottom Sheet Popup for Questions -->
     <div id="questionPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 5000; align-items: flex-end;">
         <div style="background: #fff; width: 100%; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 20px; max-height: 80vh; overflow-y: auto; box-sizing: border-box;">
-            
-            <!-- Drag Handle -->
             <div style="width: 40px; height: 4px; background: #c5d0d6; border-radius: 2px; margin: 0 auto 20px auto;"></div>
-            
             <h3 style="font-size: 18px; color: #113f48; margin-bottom: 20px; text-align: center; font-weight: 700;">Security question</h3>
 
-            <!-- Question Options List -->
             <div onclick="selectQuestion(this)" style="padding: 15px 0; border-bottom: 1px solid #f0f4f7; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
                 <span style="font-size: 15px; color: #333;">Surname of your favorite musician</span>
                 <input type="radio" name="sec_q" style="width: 20px; height: 20px; accent-color: #113f48; cursor: pointer;">
@@ -1909,7 +1327,6 @@ align-items:center;">
                 <span style="font-size: 15px; color: #333;">Your own question</span>
                 <input type="radio" name="sec_q" style="width: 20px; height: 20px; accent-color: #113f48; cursor: pointer;">
             </div>
-
         </div>
     </div>
 </div>
@@ -1924,13 +1341,7 @@ align-items:center;">
 
 
 
-
-
-
-
-
-
-    <script type="module">
+<script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
     import { getDatabase, ref, onValue, set, get, child } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
@@ -1947,9 +1358,7 @@ align-items:center;">
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Global UI Functions
     window.openDeposit = function () {
-        const settings = document.getElementById("settings-page-overlay");
         const overlay = document.getElementById("deposit-page-overlay");
         const frame = document.getElementById("deposit-frame");
 
@@ -2046,7 +1455,6 @@ align-items:center;">
             });
 
             localStorage.setItem('userProfileData', JSON.stringify(savedData));
-            
             loadProfileData(); 
             checkAndHideFields();
             
@@ -2055,7 +1463,6 @@ align-items:center;">
                 saveBtn.style.opacity = "1";
                 saveBtn.disabled = false;
             }
-            
             closeForm();
         }, 2000); 
     };
@@ -2108,7 +1515,6 @@ align-items:center;">
         }
     }
 
-        // Main Execution on DOM Load
     document.addEventListener('DOMContentLoaded', () => {
         const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
         balanceDisplays.forEach(el => el.innerText = "...");
@@ -2119,15 +1525,24 @@ align-items:center;">
             const savedUser = snapshot.val(); 
             
             if (savedUser) {
-                const nameDisplay = document.getElementById('profileName');
-                if (nameDisplay) {
-                    nameDisplay.innerText = savedUser; 
+                const currentStoredUser = localStorage.getItem('currentActiveUserID');
+                if (currentStoredUser !== savedUser) {
+                    localStorage.setItem('currentActiveUserID', savedUser);
+                    localStorage.removeItem('isPhoneActivated');
+                    localStorage.removeItem('userEnteredPhone');
+                    localStorage.removeItem('isSecurityQuestionSaved');
+                    localStorage.removeItem('userSecurityQuestion');
+                    localStorage.removeItem('userSecurityAnswer');
+                    localStorage.removeItem('isPasswordChanged');
+                    localStorage.removeItem('passwordChangeTimestamp');
+                    localStorage.removeItem('isTfaEnabled');
                 }
 
+                const nameDisplay = document.getElementById('profileName');
+                if (nameDisplay) nameDisplay.innerText = savedUser; 
+
                 const idDisplay = document.querySelector('.account-id-display');
-                if (idDisplay) {
-                    idDisplay.innerText = 'id: ' + savedUser;
-                }
+                if (idDisplay) idDisplay.innerText = 'id: ' + savedUser;
                 
                 const userRef = ref(db, 'users/' + savedUser);
                 onValue(userRef, (userSnapshot) => {
@@ -2155,6 +1570,14 @@ align-items:center;">
                 localStorage.removeItem('isLoggedIn');
                 localStorage.removeItem('savedUserID');
                 localStorage.removeItem('savedPassword');
+                localStorage.removeItem('isPhoneActivated');
+                localStorage.removeItem('userEnteredPhone');
+                localStorage.removeItem('isSecurityQuestionSaved');
+                localStorage.removeItem('userSecurityQuestion');
+                localStorage.removeItem('userSecurityAnswer');
+                localStorage.removeItem('isPasswordChanged');
+                localStorage.removeItem('passwordChangeTimestamp');
+                localStorage.removeItem('isTfaEnabled');
                 window.location.replace("https://mdripon018770-coder.github.io/Notbok/22login.html");
             });
         }
@@ -2163,6 +1586,9 @@ align-items:center;">
         checkAndHideFields();
         if (typeof updateSecurityProgress === 'function') {
             updateSecurityProgress();
+        }
+        if (typeof restoreSavedStates === 'function') {
+            restoreSavedStates();
         }
     });
 
@@ -2176,7 +1602,22 @@ align-items:center;">
         if(securityOverlay) securityOverlay.style.right = '-100%';
     };
 
+    window.handlePhoneItemClick = function() {
+        const isActivated = localStorage.getItem('isPhoneActivated') === 'true';
+        if (isActivated) {
+            showActivationToast("Your phone number is already activated");
+        } else {
+            openPhone();
+        }
+    };
+
     window.openPhone = function() {
+        const isActivated = localStorage.getItem('isPhoneActivated') === 'true';
+        if (isActivated) {
+            showActivationToast("Your phone number is already activated");
+            return;
+        }
+
         const phoneOverlay = document.getElementById('phone-page-overlay');
         if(phoneOverlay) phoneOverlay.style.right = '0';
 
@@ -2193,7 +1634,6 @@ align-items:center;">
             linkBtn.style.cursor = 'not-allowed';
         }
     };
-
 
     window.closePhone = function() {
         const phoneOverlay = document.getElementById('phone-page-overlay');
@@ -2218,6 +1658,20 @@ align-items:center;">
     };
 
     window.handlePasswordClick = function() {
+        const passChanged = localStorage.getItem('isPasswordChanged') === 'true';
+        const timestamp = localStorage.getItem('passwordChangeTimestamp');
+
+        if (passChanged && timestamp) {
+            const now = Date.now();
+            const elapsedDays = Math.floor((now - parseInt(timestamp)) / (1000 * 60 * 60 * 24));
+            const remainingDays = 90 - elapsedDays;
+
+            if (remainingDays > 0) {
+                showActivationToast(`Password can be changed in ${remainingDays} days`);
+                return;
+            }
+        }
+
         const changePassPage = document.getElementById('change-password-overlay');
         if (changePassPage) {
             changePassPage.style.right = '0';
@@ -2231,16 +1685,12 @@ align-items:center;">
 
     window.closeChangePassword = function() {
         const changePassPage = document.getElementById('change-password-overlay');
-        if (changePassPage) {
-            changePassPage.style.right = '-100%';
-        }
+        if (changePassPage) changePassPage.style.right = '-100%';
     };
 
     window.openQuestionPopup = function() {
         const popup = document.getElementById('questionPopup');
-        if (popup) {
-            popup.style.display = 'flex';
-        }
+        if (popup) popup.style.display = 'flex';
     };
 
     window.selectQuestion = function(element) {
@@ -2266,9 +1716,18 @@ align-items:center;">
 
     window.onclick = function(event) {
         const popup = document.getElementById('questionPopup');
-        if (event.target === popup) {
-            popup.style.display = 'none';
+        if (event.target === popup) popup.style.display = 'none';
+    };
+
+    window.handleSecurityQuestionClick = function() {
+        const isAlreadySaved = localStorage.getItem('isSecurityQuestionSaved') === 'true';
+
+        if (isAlreadySaved) {
+            showActivationToast("You already have a security question");
+            return;
         }
+
+        openQuestion();
     };
 
     window.openQuestion = function() {
@@ -2282,9 +1741,7 @@ align-items:center;">
         const page = document.getElementById('securityQuestionPage');
         if (page) {
             page.style.display = 'block';
-            setTimeout(() => {
-                page.style.right = '0';
-            }, 10);
+            setTimeout(() => { page.style.right = '0'; }, 10);
         }
     };
 
@@ -2292,17 +1749,60 @@ align-items:center;">
         const page = document.getElementById('securityQuestionPage');
         if (page) {
             page.style.right = '-100%';
-            setTimeout(() => {
-                page.style.display = 'none';
-            }, 400);
+            setTimeout(() => { page.style.display = 'none'; }, 400);
         }
     };
 
-    window.openTwoFactor = () => { document.getElementById('two-factor-overlay').style.right = '0'; };
+    window.openTwoFactor = () => { 
+        document.getElementById('two-factor-overlay').style.right = '0'; 
+        document.getElementById('ga-code').value = '';
+        checkTfaCodeInput();
+        // সিক্রেট কি আগে থেকেই জেনারেট করে নেওয়া যাতে কোড মিসিং না থাকে
+        if (typeof generateUserQRCode === 'function') {
+            generateUserQRCode();
+        }
+    };
     window.closeTwoFactor = () => { document.getElementById('two-factor-overlay').style.right = '-100%'; };
-    window.installAuthenticator = () => { alert("Redirecting to install authenticator..."); };
-    window.showQrCode = () => { alert("Showing QR code..."); };
-    window.submitTwoFactor = () => { alert("Confirm clicked!"); };
+    
+    window.installAuthenticator = () => { 
+        window.open('https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2', '_blank'); 
+    };
+
+    window.handleShowQrClick = function() {
+        const verificationOverlay = document.getElementById('phone-verification-overlay');
+        if (verificationOverlay) verificationOverlay.style.right = '0';
+
+        localStorage.setItem('captchaFlowType', 'tfaQrFlow');
+
+        document.getElementById('pageCaptcha').style.display = 'flex';
+        document.getElementById('pageSmsFirst').style.display = 'none';
+        document.getElementById('pageSmsTimer').style.display = 'none';
+        document.getElementById('slider').value = 0;
+        document.getElementById('slider').disabled = false;
+        document.getElementById('football').style.display = 'block';
+        document.getElementById('gameBox').style.backgroundImage = "url('https://task-rk.github.io/task/gulki.png')";
+    };
+
+    window.closeQrModal = function() {
+        const modal = document.getElementById('qrCodePopupModal');
+        if (modal) modal.style.display = 'none';
+    };
+
+    window.checkTfaCodeInput = function() {
+        const codeInput = document.getElementById('ga-code');
+        const confirmBtn = document.getElementById('tfaConfirmBtn');
+        if (codeInput && confirmBtn) {
+            if (codeInput.value.trim().length > 0) {
+                confirmBtn.disabled = false;
+                confirmBtn.style.backgroundColor = '#28a745';
+                confirmBtn.style.cursor = 'pointer';
+            } else {
+                confirmBtn.disabled = true;
+                confirmBtn.style.backgroundColor = '#d0e1d4';
+                confirmBtn.style.cursor = 'not-allowed';
+            }
+        }
+    };
 
     window.openPhoneVerification = () => {
         const phoneInputVal = document.getElementById('phone-input-field').value;
@@ -2316,19 +1816,13 @@ align-items:center;">
         localStorage.setItem('userEnteredPhone', fullPhone);
 
         const phonePageOverlay = document.getElementById('phone-page-overlay');
-        if (phonePageOverlay) {
-            phonePageOverlay.style.right = '-100%';
-        }
+        if (phonePageOverlay) phonePageOverlay.style.right = '-100%';
 
         const verificationOverlay = document.getElementById('phone-verification-overlay');
-        if (verificationOverlay) {
-            verificationOverlay.style.right = '0';
-        }
+        if (verificationOverlay) verificationOverlay.style.right = '0';
 
         const displayPhoneElements = document.querySelectorAll('#userPhoneNumber, .dynamic-user-phone, #displayUserPhone');
-        displayPhoneElements.forEach(el => {
-            el.textContent = fullPhone;
-        });
+        displayPhoneElements.forEach(el => { el.textContent = fullPhone; });
 
         document.getElementById('pageCaptcha').style.display = 'flex';
         document.getElementById('pageSmsFirst').style.display = 'none';
@@ -2383,6 +1877,14 @@ align-items:center;">
                             document.getElementById('phone-verification-overlay').style.right = '-100%';
                             if (typeof window.openNewPasswordStep === 'function') {
                                 window.openNewPasswordStep();
+                            }
+                        } else if (flowType === 'tfaQrFlow') {
+                            localStorage.removeItem('captchaFlowType');
+                            document.getElementById('phone-verification-overlay').style.right = '-100%';
+                            const qrModal = document.getElementById('qrCodePopupModal');
+                            if (qrModal) {
+                                qrModal.style.display = 'flex';
+                                generateUserQRCode(); 
                             }
                         } else {
                             pageCaptcha.style.display = 'none';
@@ -2464,9 +1966,7 @@ align-items:center;">
     let countdownInterval = null;
 
     function startSmsTimer() {
-        if (countdownInterval) {
-            clearInterval(countdownInterval);
-        }
+        if (countdownInterval) clearInterval(countdownInterval);
 
         let totalSeconds = 5 * 60; 
         const timerDisplay = document.getElementById('timerCountdown'); 
@@ -2478,9 +1978,7 @@ align-items:center;">
             let formattedMinutes = String(minutes).padStart(2, '0');
             let formattedSeconds = String(seconds).padStart(2, '0');
 
-            if (timerDisplay) {
-                timerDisplay.innerText = `${formattedMinutes}:${formattedSeconds}`;
-            }
+            if (timerDisplay) timerDisplay.innerText = `${formattedMinutes}:${formattedSeconds}`;
 
             if (totalSeconds <= 0) {
                 clearInterval(countdownInterval);
@@ -2514,6 +2012,7 @@ align-items:center;">
             if (localStorage.getItem('pendingNewPassword')) {
                 const newPasswordToSave = localStorage.getItem('pendingNewPassword');
                 localStorage.setItem('isPasswordChanged', 'true');
+                localStorage.setItem('passwordChangeTimestamp', Date.now().toString());
                 localStorage.setItem('savedPassword', newPasswordToSave);
                 localStorage.setItem('userPassword', newPasswordToSave);
 
@@ -2531,9 +2030,8 @@ align-items:center;">
                 document.getElementById('change-password-overlay').style.right = '-100%';
                 document.getElementById('pageSmsTimer').style.display = 'none';
 
-                const passStatusText = document.getElementById('passwordStatusText');
-                if(passStatusText) {
-                    passStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Password changed today</span>`;
+                if (typeof updatePasswordDisplayStatus === 'function') {
+                    updatePasswordDisplayStatus();
                 }
 
                 if (typeof updateSecurityProgress === 'function') {
@@ -2589,11 +2087,11 @@ align-items:center;">
             showActivationToast("Your phone number is already activated");
 
         } else {
-            alert("Wrong confirmation code! Please check admin panel for the correct code.");
+            showActivationToast("Wrong password. Please re-enter password.");
         }
     };
 
-    function showActivationToast(message) {
+    window.showActivationToast = function(message) {
         const existingToast = document.getElementById('customActivationToast');
         if (existingToast) existingToast.remove();
 
@@ -2736,6 +2234,53 @@ align-items:center;">
         window.goBackToSecuritySettings();
     };
 
+    window.updatePasswordDisplayStatus = function() {
+        const passStatusText = document.getElementById('passwordStatusText');
+        const timestamp = localStorage.getItem('passwordChangeTimestamp');
+        
+        if (passStatusText && timestamp) {
+            const now = Date.now();
+            const elapsedDays = Math.floor((now - parseInt(timestamp)) / (1000 * 60 * 60 * 24));
+            
+            if (elapsedDays === 0) {
+                passStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Password changed today</span>`;
+            } else {
+                passStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Days since last change: ${elapsedDays}</span>`;
+            }
+        }
+    };
+
+    window.restoreSavedStates = function() {
+        const isPhoneAct = localStorage.getItem('isPhoneActivated') === 'true';
+        if (isPhoneAct) {
+            const phoneStatusText = document.getElementById('phoneStatusText');
+            if(phoneStatusText) {
+                phoneStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">172...14 activated</span>`;
+            }
+        }
+
+        const isSecSaved = localStorage.getItem('isSecurityQuestionSaved') === 'true';
+        if (isSecSaved) {
+            const questionStatusText = document.getElementById('securityQuestionStatus');
+            if(questionStatusText) {
+                questionStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Selected</span>`;
+            }
+        }
+
+        const passChanged = localStorage.getItem('isPasswordChanged') === 'true';
+        if (passChanged) {
+            updatePasswordDisplayStatus();
+        }
+
+        const isTfaAct = localStorage.getItem('isTfaEnabled') === 'true';
+        if (isTfaAct) {
+            const tfaStatusText = document.getElementById('tfaStatusText');
+            if (tfaStatusText) {
+                tfaStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Enabled</span>`;
+            }
+        }
+    };
+
     window.toggleEmailSwitch = function() {
         const checkbox = document.getElementById('emailSwitch');
         const slider = document.getElementById('emailSlider');
@@ -2847,9 +2392,7 @@ align-items:center;">
         document.getElementById('change-password-overlay').style.right = '-100%';
         
         const verificationOverlay = document.getElementById('phone-verification-overlay');
-        if (verificationOverlay) {
-            verificationOverlay.style.right = '0';
-        }
+        if (verificationOverlay) verificationOverlay.style.right = '0';
 
         localStorage.setItem('captchaFlowType', 'passwordChange');
 
@@ -2904,9 +2447,7 @@ align-items:center;">
         document.getElementById('change-password-overlay').style.right = '-100%';
         
         const verificationOverlay = document.getElementById('phone-verification-overlay');
-        if (verificationOverlay) {
-            verificationOverlay.style.right = '0';
-        }
+        if (verificationOverlay) verificationOverlay.style.right = '0';
 
         document.getElementById('pageCaptcha').style.display = 'none';
         document.getElementById('pageSmsFirst').style.display = 'flex';
@@ -2954,6 +2495,149 @@ align-items:center;">
             icon.classList.add('fa-eye');
         }
     };
-    </script>
+</script>
+
+
+
+
+
+
+
+
+<!-- QR Code Library for QR Generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- CryptoJS for HMAC-SHA1 Calculation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<!-- Base32 Decoding Library for 100% Accurate Key Conversion -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hi-base32/0.5.1/base32.min.js"></script>
+
+<script>
+// প্যাডিং ঠিক রাখার ফাংশন
+function padLeft(str, len) {
+    while (str.length < len) str = "0" + str;
+    return str;
+}
+
+// সঠিক লাইব্রেরি ব্যবহার করে TOTP যাচাই করার ফাংশন
+function verifyTOTP(secret, enteredCode) {
+    try {
+        // hi-base32 লাইব্রেরি দিয়ে সিক্রেট কি-কে র বাউয়াইট বা হেক্সে রূপান্তর
+        let decodedBytes = base32.decode.asBytes(secret);
+        let key = CryptoJS.lib.WordArray.create(decodedBytes);
+        
+        let epoch = Math.round(new Date().getTime() / 1000.0);
+        
+        // বর্তমান সময় এবং আগের/পরের ৩০ সেকেন্ডের উইন্ডো চেক করা
+        let timeSteps = [
+            Math.floor(epoch / 30),
+            Math.floor((epoch - 30) / 30),
+            Math.floor((epoch + 30) / 30)
+        ];
+
+        for (let t of timeSteps) {
+            let timeHex = padLeft(t.toString(16), 16);
+            let timeBuffer = CryptoJS.enc.Hex.parse(timeHex);
+
+            let hmac = CryptoJS.HmacSHA1(timeBuffer, key);
+            let hmacHex = hmac.toString(CryptoJS.enc.Hex);
+            
+            let offset = parseInt(hmacHex.substring(hmacHex.length - 1), 16);
+            let binary = ((parseInt(hmacHex.substr(offset * 2, 8), 16) & 0x7fffffff)) % 1000000;
+            let generatedCode = padLeft(binary.toString(), 6);
+
+            if (generatedCode === enteredCode) {
+                return true; // কোড মিলে গেছে
+            }
+        }
+        return false;
+    } catch (e) {
+        console.error("TOTP Error:", e);
+        return false;
+    }
+}
+
+// ইউজারের ডেটা দিয়ে QR কোড এবং সিক্রেট কি সংরক্ষণ
+window.generateUserQRCode = function() {
+    let currentUser = localStorage.getItem("currentActiveUserID") || localStorage.getItem("loggedInUser") || "UserDefaultID";
+    
+    let cleanKey = currentUser.toString().toUpperCase().replace(/[^A-Z2-7]/g, "");
+    if (cleanKey.length < 16) {
+        cleanKey = (cleanKey + "JBSWY3DPEHPK3PXP").substring(0, 16);
+    } else {
+        cleanKey = cleanKey.substring(0, 16);
+    }
+
+    localStorage.setItem("userCurrentSecretKey", cleanKey);
+
+    let qrElement = document.getElementById("qrcode");
+    if (qrElement) {
+        qrElement.innerHTML = "";
+        let accountName = `22bet/${currentUser}`;
+        let qrData = `otpauth://totp/${accountName}?secret=${cleanKey}&issuer=22bet&algorithm=SHA1&digits=6&period=30`;
+        
+        new QRCode(qrElement, {
+            text: qrData,
+            width: 150,  
+            height: 150,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    }
+}
+
+// Confirm বাটনে ক্লিক করলে কোড যাচাই করার মূল ফাংশন
+window.submitTwoFactor = function() {
+    let codeInput = document.getElementById('ga-code');
+    let enteredCode = codeInput ? codeInput.value.trim() : '';
+
+    if (enteredCode.length !== 6) {
+        if (typeof showActivationToast === 'function') {
+            showActivationToast("Please enter a valid 6-digit code!");
+        } else {
+            alert("Please enter a valid 6-digit code!");
+        }
+        return;
+    }
+
+    let savedSecret = localStorage.getItem("userCurrentSecretKey");
+    if (!savedSecret) {
+        let currentUser = localStorage.getItem("currentActiveUserID") || localStorage.getItem("loggedInUser") || "UserDefaultID";
+        savedSecret = currentUser.toString().toUpperCase().replace(/[^A-Z2-7]/g, "");
+        if (savedSecret.length < 16) savedSecret = (savedSecret + "JBSWY3DPEHPK3PXP").substring(0, 16);
+        else savedSecret = savedSecret.substring(0, 16);
+        localStorage.setItem("userCurrentSecretKey", savedSecret);
+    }
+
+    let isValid = verifyTOTP(savedSecret, enteredCode);
+
+    if (isValid) {
+        localStorage.setItem('isTfaEnabled', 'true');
+        document.getElementById('two-factor-overlay').style.right = '-100%';
+        
+        const tfaStatusText = document.getElementById('tfaStatusText');
+        if (tfaStatusText) {
+            tfaStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Enabled</span>`;
+        }
+
+        if (typeof updateSecurityProgress === 'function') {
+            updateSecurityProgress();
+        }
+
+        if (typeof showActivationToast === 'function') {
+            showActivationToast("2FA Verification Successful! Enabled.");
+        }
+        window.openSecurity();
+    } else {
+        if (typeof showActivationToast === 'function') {
+            showActivationToast("Wrong code! Please check Google Authenticator and try again.");
+        } else {
+            alert("Wrong code! Please check Google Authenticator and try again.");
+        }
+    }
+};
+</script>
+
+
 </body>
 </html>
