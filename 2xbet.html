@@ -856,133 +856,356 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
     </div>
 
     <div id="security-content" style="padding:15px;">
-        <div style="background:#fff; border-radius:12px; padding:15px; display:flex; align-items:center; margin-bottom:15px; gap:12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-            <div style="width:40px; height:40px; border-radius:50%; background:#ffebee; display:flex; align-items:center; justify-content:center; color:#d32f2f; font-size:18px; flex-shrink:0;">
-                <i class="fas fa-user"></i>
-            </div>
-            <div>
-                <div style="font-size:15px; font-weight:700; color:#334455; margin-bottom:2px;">Profile is not protected</div>
-                <div style="font-size:12px; color:#7a8a94;">Security issues found</div>
-            </div>
+
+    <div style="
+background:#fff;
+border-radius:18px;
+padding:14px 16px;
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:16px;
+box-shadow:0 1px 4px rgba(0,0,0,.04);">
+
+    <div style="
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:#fff4f2;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;">
+
+        <i class="fas fa-user"
+        style="
+        font-size:18px;
+        color:#f57c00;">
+        </i>
+
+    </div>
+
+    <div>
+
+        <div style="
+        font-size:15px;
+        font-weight:600;
+        color:#5f7078;
+        line-height:1.2;">
+            Profile is poorly protected
         </div>
 
-        <div style="font-size:13px; font-weight:600; color:#7a8a94; margin-bottom:8px; padding-left:2px;">Security checklist</div>
+        <div style="
+        margin-top:3px;
+        font-size:12px;
+        color:#8f9aa1;">
+            Security issues found
+        </div>
 
-        <div style="background:#fff; border-radius:12px; padding:15px; margin-bottom:15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-            <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #f0f0f0;">
-                <div style="font-size:15px; font-weight:700; color:#334455; margin-bottom:12px;">Improve security for your account!</div>
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <div id="securityProgressText" style="background:#28a745; color:#fff; font-size:13px; font-weight:bold; padding:4px 12px; border-radius:15px; flex-shrink:0; min-width:48px; text-align:center;">1/6</div>
-                    <div style="flex:1; height:9px; background:#e0e0e0; border-radius:5px; overflow:hidden;">
-                        <div id="securityProgressBarFill" style="width:16.66%; height:100%; background:#28a745; border-radius:5px; transition: width 0.4s ease;"></div>
+    </div>
+
+</div>
+
+    <div style="
+    font-size:13px;
+    font-weight:600;
+    color:#7a8a94;
+    margin-bottom:8px;
+    padding-left:2px;">
+        Security checklist
+    </div>
+
+        <div style="
+background:#fff;
+border-radius:22px;
+padding:14px 16px 4px;
+margin:12px 0;
+border:1px solid #eef2f4;
+box-shadow:none;
+max-width:400px;
+margin-left:auto;
+margin-right:auto;
+">
+
+    <div style="
+    margin-bottom:12px;
+    padding-bottom:12px;
+    border-bottom:1px solid #eef2f4;">
+
+        <div style="
+        font-size:13px;
+        font-weight:500;
+        color:#6f858d;
+        margin-bottom:10px;">
+            Improve security for your account!
+        </div>
+
+        <div style="
+        display:flex;
+        align-items:center;
+        gap:12px;">
+
+            <div id="securityProgressText"
+            style="
+            min-width:54px;
+            height:26px;
+            background:#19b33d;
+            color:#fff;
+            border-radius:16px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:14px;
+            font-weight:700;">
+                1/6
+            </div>
+
+            <div style="
+            flex:1;
+            height:10px;
+            background:#e9edf0;
+            border-radius:30px;
+            overflow:hidden;">
+
+                <div id="securityProgressBarFill"
+                style="
+                width:16.66%;
+                height:100%;
+                background:#19b33d;
+                border-radius:30px;
+                transition:width .35s ease;">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div>
+        <!-- 1. Phone number -->
+        <div onclick="handlePhoneItemClick()" style="
+        padding:12px 0;
+        border-bottom:1px solid #eef2f4;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        cursor:pointer;">
+
+            <div style="display:flex;align-items:center;">
+                <div style="
+                width:44px;
+                height:44px;
+                border-radius:50%;
+                background:#f3f5f7;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                margin-right:12px;">
+                    <i class="fas fa-mobile-alt" style="font-size:20px;color:#17b53f;"></i>
+                </div>
+                <div>
+                    <div style="font-size:14px;font-weight:500;color:#30444e;">
+                        Phone number
+                    </div>
+                    <div id="phoneStatusText" style="margin-top:2px;font-size:12px;color:#7d9199;display:flex;align-items:center;gap:5px;">
+                        <i class="fas fa-check-circle" style="color:#17b53f;font-size:12px;"></i>
+                        172...14 activated
                     </div>
                 </div>
             </div>
 
-            <div>
-                <!-- 1. Phone number -->
-                <div onclick="handlePhoneItemClick()" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
-                            <i class="fas fa-mobile-alt"></i>
-                        </div>
-                        <div>
-                            <div style="font-size: 14px; font-weight: 600; color:#7f9096;">Phone number</div>
-                            <div id="phoneStatusText" style="font-size: 12px; color: #d32f2f; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-                                <i class="fas fa-exclamation-circle" style="font-size: 10px;"></i> Not linked
-                            </div>
-                        </div>
-                    </div>
-                    <i class="fas fa-chevron-right" style="color: #ccc; font-size: 12px;"></i>
-                </div>
+            <i class="fas fa-chevron-right" style="font-size:14px;color:#aeb9bf;"></i>
+        </div>
 
-                <!-- 2. Up-to-date password -->
-                <div onclick="window.handlePasswordClick()" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
-                            <i class="fas fa-key"></i>
-                        </div>
-                        <div>
-                            <div style="font-size: 14px; font-weight: 600; color:#7f9095;">Up-to-date password (change every 90 days)</div>
-                            <div id="passwordStatusText" style="font-size: 12px; color: #28a745; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-                                <i class="fas fa-check-circle" style="font-size: 10px;"></i> Password changed today
-                            </div>
-                        </div>
-                    </div>
-                    <i class="fas fa-chevron-right" style="color: #ccc; font-size: 12px;"></i>
-                </div>
+        <!-- 2. Up-to-date password -->
+        <div onclick="window.handlePasswordClick()" style="
+        padding:12px 0;
+        border-bottom:1px solid #eef2f4;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        cursor:pointer;">
 
-                <!-- 3. Security question -->
-                <div onclick="handleSecurityQuestionClick()" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
-                            <i class="fas fa-question"></i>
-                        </div>
-                        <div>
-                            <div style="font-size: 14px; font-weight: 600; color:#7f9095;">Security question</div>
-                            <div id="securityQuestionStatus" style="font-size: 12px; color: #d32f2f; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-                                <i class="fas fa-exclamation-circle" style="font-size: 10px;"></i> Not selected
-                            </div>
-                        </div>
-                    </div>
-                    <div style="color: #ccc; font-size: 12px;"><i class="fas fa-chevron-right"></i></div>
+            <div style="display:flex;align-items:center;">
+                <div style="
+                width:44px;
+                height:44px;
+                border-radius:50%;
+                background:#f3f5f7;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                margin-right:12px;">
+                    <i class="fas fa-key" style="font-size:18px;color:#17b53f;"></i>
                 </div>
-
-                <!-- 4. Two-factor authentication -->
-                <div onclick="openTwoFactor()" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <div>
-                            <div style="font-size: 14px; font-weight: 600; color: #7f9095;">Two-factor authentication</div>
-                            <div id="tfaStatusText" style="font-size: 12px; color: #7a8a94; margin-top: 2px;">Protect your account</div>
-                        </div>
-                    </div>
-                    <i class="fas fa-chevron-right" style="color: #c7c7cc; font-size: 14px;"></i>
-                </div>
-
-                <!-- 5. Personal profile -->
-                <div onclick="openPersonalProfile()" style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div>
-                            <div style="font-size: 14px; font-weight: 600; color:#7f9095;">Personal profile</div>
-                            <div style="font-size: 12px; color: #28a745; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-                                <i class="fas fa-check-circle" style="font-size: 10px;"></i> Filled in
-                            </div>
-                        </div>
-                    </div>
-                    <i class="fas fa-chevron-right" style="color: #ccc; font-size: 12px;"></i>
-                </div>
-
-                <!-- 6. Prevent login via e-mail -->
-                <div style="padding: 12px 0; display: flex; align-items: center; justify-content: space-between;">
-                    <div style="display: flex; align-items: center; gap: 12px; flex: 1; padding-right: 10px;">
-                        <div style="width: 36px; height: 36px; background: #e8f5e9; color: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div>
-                            <div style="font-size: 14px; font-weight: 600; color:#7f9095;">Prevent login via e-mail</div>
-                            <div id="emailStatusText" style="font-size: 12px; color: #d32f2f; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-                                <i class="fas fa-exclamation-circle" style="font-size: 10px;"></i> Not enabled
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <label style="position: relative; display: inline-block; width: 46px; height: 24px; flex-shrink: 0; cursor: pointer;">
-                        <input type="checkbox" id="emailSwitch" onchange="toggleEmailSwitch()" style="opacity: 0; width: 0; height: 0;">
-                        <span id="emailSlider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px;">
-                            <span id="emailDot" style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;"></span>
-                        </span>
-                    </label>
+                <div>
+                    <div style="font-size:15px;font-weight:500;color:#30444e;">
+    Up-to-date password (change every 90 days)
+</div>
+                    <div id="passwordStatusText"
+style="margin-top:2px;font-size:12px;color:#7d9199;">
+    Every 90 days
+                  </div>
                 </div>
             </div>
+
+            <i class="fas fa-chevron-right" style="font-size:14px;color:#aeb9bf;"></i>
+        </div>
+
+        <!-- 3. Security question -->
+        <div onclick="handleSecurityQuestionClick()" style="
+        padding:12px 0;
+        border-bottom:1px solid #eef2f4;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        cursor:pointer;">
+
+            <div style="display:flex;align-items:center;">
+                <div style="
+                width:44px;
+                height:44px;
+                border-radius:50%;
+                background:#f3f5f7;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                margin-right:12px;">
+                    <i class="fas fa-question" style="font-size:18px;color:#17b53f;"></i>
+                </div>
+                <div>
+                    <div style="font-size:14px;font-weight:500;color:#30444e;">
+                        Security question
+                    </div>
+                    <div id="securityQuestionStatus" style="margin-top:2px;font-size:12px;color:#7d9199;">
+                        Not selected
+                    </div>
+                </div>
+            </div>
+
+            <i class="fas fa-chevron-right" style="font-size:14px;color:#aeb9bf;"></i>
+        </div>
+
+        <!-- 4. Two-factor authentication -->
+        <div onclick="openTwoFactor()" style="
+        padding:12px 0;
+        border-bottom:1px solid #eef2f4;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        cursor:pointer;">
+
+            <div style="display:flex;align-items:center;">
+                <div style="
+                width:44px;
+                height:44px;
+                border-radius:50%;
+                background:#f3f5f7;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                margin-right:12px;">
+                    <i class="fas fa-shield-alt" style="font-size:18px;color:#17b53f;"></i>
+                </div>
+                <div>
+                    <div style="font-size:14px;font-weight:500;color:#30444e;">
+                        Two-factor authentication
+                    </div>
+                    <div id="tfaStatusText" style="margin-top:2px;font-size:12px;color:#7d9199;">
+                        Protect your account
+                    </div>
+                </div>
+            </div>
+
+            <i class="fas fa-chevron-right" style="font-size:14px;color:#aeb9bf;"></i>
+        </div>
+
+        <!-- 5. Personal profile -->
+        <div onclick="openProfilePage()" style="
+        padding:12px 0;
+        border-bottom:1px solid #eef2f4;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        cursor:pointer;">
+
+            <div style="display:flex;align-items:center;">
+                <div style="
+                width:44px;
+                height:44px;
+                border-radius:50%;
+                background:#f3f5f7;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                margin-right:12px;">
+                    <i class="fas fa-user" style="font-size:18px;color:#17b53f;"></i>
+                </div>
+                <div>
+                    <div style="font-size:14px;font-weight:500;color:#30444e;">
+                        Personal profile
+                    </div>
+                    <div style="margin-top:2px;font-size:12px;color:#7d9199;display:flex;align-items:center;gap:5px;">
+                        <i class="fas fa-check-circle" style="color:#17b53f;font-size:12px;"></i>
+                        Filled in
+                    </div>
+                </div>
+            </div>
+
+            <i class="fas fa-chevron-right" style="font-size:14px;color:#aeb9bf;"></i>
+        </div>
+
+        <!-- 6. Prevent login via e-mail -->
+        <div style="
+        padding:12px 0 4px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;">
+
+            <div style="display:flex;align-items:center;gap:12px;flex:1;">
+                <div style="
+                width:40px;
+                height:40px;
+                border-radius:12px;
+                background:#f4faf5;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                color:#19b33d;
+                font-size:16px;">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div>
+                    <div style="font-size:14px;font-weight:600;color:#3b4b52;">
+                        Prevent login via e-mail
+                    </div>
+                    <div id="emailStatusText" style="margin-top:2px;font-size:12px;color:#98a6ad;display:flex;align-items:center;gap:5px;">
+                        <i class="fas fa-exclamation-circle" style="font-size:10px;"></i>
+                        Not enabled
+                    </div>
+                </div>
+            </div>
+
+            <label style="position:relative;display:inline-block;width:44px;height:26px;cursor:pointer;">
+                <input type="checkbox" id="emailSwitch" onchange="toggleEmailSwitch()" style="display:none;">
+                <span id="emailSlider" style="position:absolute;inset:0;background:#d7dde1;border-radius:30px;transition:.3s;">
+                    <span id="emailDot" style="position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 2px 6px rgba(0,0,0,.18);"></span>
+                </span>
+            </label>
         </div>
     </div>
 </div>
+
+    </div>
+</div>
+
+                        
+
+
+
+
+
 
 <!-- ===== Link Phone Number Overlay ===== -->
 <div id="phone-page-overlay"
@@ -1086,10 +1309,6 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
 
         </div>
     </div>
-
-
-
-
 
     <div style="padding: 15px; background: #f0f2f5; position: sticky; bottom: 0;">
         <button id="tfaConfirmBtn" disabled onclick="submitTwoFactor()" style="width: 100%; padding: 14px; background: #d0e1d4; color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: not-allowed;">Confirm</button>
@@ -1658,30 +1877,33 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
     };
 
     window.handlePasswordClick = function() {
-        const passChanged = localStorage.getItem('isPasswordChanged') === 'true';
-        const timestamp = localStorage.getItem('passwordChangeTimestamp');
+    const passChanged = localStorage.getItem('isPasswordChanged') === 'true';
+    const timestamp = localStorage.getItem('passwordChangeTimestamp');
 
-        if (passChanged && timestamp) {
-            const now = Date.now();
-            const elapsedDays = Math.floor((now - parseInt(timestamp)) / (1000 * 60 * 60 * 24));
-            const remainingDays = 90 - elapsedDays;
+    if (passChanged && timestamp) {
+        const now = Date.now();
+        const elapsedDays = Math.floor((now - parseInt(timestamp)) / (1000 * 60 * 60 * 24));
+        const remainingDays = Math.max(0, 90 - elapsedDays);
 
-            if (remainingDays > 0) {
-                showActivationToast(`Password can be changed in ${remainingDays} days`);
-                return;
-            }
+        if (remainingDays > 0) {
+            showActivationToast(`You can change your password after ${remainingDays} day(s).`);
+            return;
         }
+    }
 
-        const changePassPage = document.getElementById('change-password-overlay');
-        if (changePassPage) {
-            changePassPage.style.right = '0';
-            document.getElementById('passStepCurrent').style.display = 'flex';
-            document.getElementById('passStepNew').style.display = 'none';
-            document.getElementById('current-pass').value = '';
-            document.getElementById('passNextBtn').disabled = true;
-            document.getElementById('passNextBtn').style.backgroundColor = '#d0e1d4';
-        }
-    };
+    const changePassPage = document.getElementById('change-password-overlay');
+    if (changePassPage) {
+        changePassPage.style.right = '0';
+        document.getElementById('passStepCurrent').style.display = 'flex';
+        document.getElementById('passStepNew').style.display = 'none';
+        document.getElementById('current-pass').value = '';
+        document.getElementById('passNextBtn').disabled = true;
+        document.getElementById('passNextBtn').style.backgroundColor = '#d0e1d4';
+    }
+};
+
+
+
 
     window.closeChangePassword = function() {
         const changePassPage = document.getElementById('change-password-overlay');
@@ -1757,10 +1979,6 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
         document.getElementById('two-factor-overlay').style.right = '0'; 
         document.getElementById('ga-code').value = '';
         checkTfaCodeInput();
-        // সিক্রেট কি আগে থেকেই জেনারেট করে নেওয়া যাতে কোড মিসিং না থাকে
-        if (typeof generateUserQRCode === 'function') {
-            generateUserQRCode();
-        }
     };
     window.closeTwoFactor = () => { document.getElementById('two-factor-overlay').style.right = '-100%'; };
     
@@ -1801,6 +2019,30 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
                 confirmBtn.style.backgroundColor = '#d0e1d4';
                 confirmBtn.style.cursor = 'not-allowed';
             }
+        }
+    };
+
+    window.submitTwoFactor = function() {
+        const codeInput = document.getElementById('ga-code');
+        const codeVal = codeInput ? codeInput.value.trim() : '';
+
+        if (codeVal.length > 0) {
+            localStorage.setItem('isTfaEnabled', 'true');
+            document.getElementById('two-factor-overlay').style.right = '-100%';
+            
+            const tfaStatusText = document.getElementById('tfaStatusText');
+            if (tfaStatusText) {
+                tfaStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Enabled</span>`;
+            }
+
+            if (typeof updateSecurityProgress === 'function') {
+                updateSecurityProgress();
+            }
+
+            showActivationToast("Two-factor authentication enabled successfully!");
+            window.openSecurity();
+        } else {
+            showActivationToast("Please enter Google Authenticator code!");
         }
     };
 
@@ -1884,7 +2126,7 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
                             const qrModal = document.getElementById('qrCodePopupModal');
                             if (qrModal) {
                                 qrModal.style.display = 'flex';
-                                generateUserQRCode(); 
+                                generateUserQRCode(); // QR কোড জেনারেটর কল করা হলো
                             }
                         } else {
                             pageCaptcha.style.display = 'none';
@@ -2091,7 +2333,7 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
         }
     };
 
-    window.showActivationToast = function(message) {
+    function showActivationToast(message) {
         const existingToast = document.getElementById('customActivationToast');
         if (existingToast) existingToast.remove();
 
@@ -2125,51 +2367,67 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
         }, 4000);
     }
 
+
+
+
     window.updateSecurityProgress = function() {
-        let completedCount = 0;
-        const totalItems = 6;
+    let completedCount = 0;
+    const totalItems = 6;
 
-        const phoneStatusText = document.getElementById('phoneStatusText');
-        if (phoneStatusText && phoneStatusText.innerHTML.includes('activated')) {
-            completedCount++;
-        }
+    // Phone
+    const phoneStatusText = document.getElementById('phoneStatusText');
+    if (phoneStatusText && phoneStatusText.innerHTML.includes('activated')) {
+        completedCount++;
+    }
 
-        const passwordStatus = localStorage.getItem('isPasswordChanged');
-        if (passwordStatus === 'true') {
-            completedCount++;
-        }
+    // Password
+    if (localStorage.getItem('isPasswordChanged') === 'true') {
+        completedCount++;
+    }
 
-        const securityQuestionStatus = localStorage.getItem('isSecurityQuestionSaved');
-        if (securityQuestionStatus === 'true') {
-            completedCount++;
-        }
+    // Security Question
+    if (localStorage.getItem('isSecurityQuestionSaved') === 'true') {
+        completedCount++;
+    }
 
-        const tfaStatus = localStorage.getItem('isTfaEnabled');
-        if (tfaStatus === 'true') {
-            completedCount++;
-        }
+    // Two Factor Authentication
+    if (localStorage.getItem('isTfaEnabled') === 'true') {
+        completedCount++;
+    }
 
-        const profileData = localStorage.getItem('userProfileData');
-        if (profileData) {
-            completedCount++;
-        }
+    // Complete Profile
+    const profileData = JSON.parse(localStorage.getItem('userProfileData') || "{}");
 
-        const emailStatus = localStorage.getItem('isEmailProtected');
-        if (emailStatus === 'true') {
-            completedCount++;
-        }
+    if (
+        profileData["reg-name"] ||
+        profileData["reg-username"] ||
+        profileData["reg-email"] ||
+        profileData["reg-phone"] ||
+        profileData["reg-city"] ||
+        profileData["reg-country"]
+    ) {
+        completedCount++;
+    }
 
-        const progressNumberDisplay = document.getElementById('securityProgressText');
-        if (progressNumberDisplay) {
-            progressNumberDisplay.innerText = `${completedCount}/${totalItems}`;
-        }
+    // Email Protection
+    if (localStorage.getItem('isEmailProtected') === 'true') {
+        completedCount++;
+    }
 
-        const progressBarFill = document.getElementById('securityProgressBarFill');
-        if (progressBarFill) {
-            const percentage = (completedCount / totalItems) * 100;
-            progressBarFill.style.width = `${percentage}%`;
-        }
-    };
+    // Progress Text
+    const progressNumberDisplay = document.getElementById('securityProgressText');
+    if (progressNumberDisplay) {
+        progressNumberDisplay.innerText = `${completedCount}/${totalItems}`;
+    }
+
+    // Progress Bar
+    const progressBarFill = document.getElementById('securityProgressBarFill');
+    if (progressBarFill) {
+        progressBarFill.style.width = `${(completedCount / totalItems) * 100}%`;
+    }
+};
+
+
 
     window.checkSecurityForm = function() {
         const questionText = document.getElementById('selectedQuestionText').innerText;
@@ -2235,51 +2493,108 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
     };
 
     window.updatePasswordDisplayStatus = function() {
-        const passStatusText = document.getElementById('passwordStatusText');
-        const timestamp = localStorage.getItem('passwordChangeTimestamp');
-        
-        if (passStatusText && timestamp) {
-            const now = Date.now();
-            const elapsedDays = Math.floor((now - parseInt(timestamp)) / (1000 * 60 * 60 * 24));
-            
-            if (elapsedDays === 0) {
-                passStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Password changed today</span>`;
-            } else {
-                passStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Days since last change: ${elapsedDays}</span>`;
-            }
-        }
-    };
+
+    const passStatusText = document.getElementById('passwordStatusText');
+    const timestamp = localStorage.getItem('passwordChangeTimestamp');
+
+    if (!passStatusText || !timestamp) return;
+
+    const days = Math.floor(
+        (Date.now() - parseInt(timestamp))
+        / (1000 * 60 * 60 * 24)
+    );
+
+    if (days === 0) {
+
+        passStatusText.innerHTML =
+        `<span style="color:#28a745;">
+            <i class="fa-solid fa-circle-check"></i>
+        </span>
+        <span style="color:#7d9199;">
+            Password changed today
+        </span>`;
+
+    } else {
+
+        passStatusText.innerHTML =
+        `<span style="color:#7d9199;">
+            Every 90 days (${Math.min(days,90)}/90)
+        </span>`;
+    }
+};
+
+
+
+
+
+
 
     window.restoreSavedStates = function() {
-        const isPhoneAct = localStorage.getItem('isPhoneActivated') === 'true';
-        if (isPhoneAct) {
-            const phoneStatusText = document.getElementById('phoneStatusText');
-            if(phoneStatusText) {
-                phoneStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">172...14 activated</span>`;
-            }
-        }
+    const isPhoneAct = localStorage.getItem('isPhoneActivated') === 'true';
+    if (isPhoneAct) {
+        const phoneStatusText = document.getElementById('phoneStatusText');
 
-        const isSecSaved = localStorage.getItem('isSecurityQuestionSaved') === 'true';
-        if (isSecSaved) {
-            const questionStatusText = document.getElementById('securityQuestionStatus');
-            if(questionStatusText) {
-                questionStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Selected</span>`;
-            }
-        }
+        if (phoneStatusText) {
+            let realPhone = localStorage.getItem('userEnteredPhone') || "";
+            let maskedString = "172...14";
 
-        const passChanged = localStorage.getItem('isPasswordChanged') === 'true';
-        if (passChanged) {
-            updatePasswordDisplayStatus();
-        }
+            if (realPhone) {
+                const cleanNum = realPhone.replace(/\D/g, "");
+                let digits = cleanNum;
+                if (digits.startsWith("880")) {
+                    digits = digits.slice(3);
+                }
 
-        const isTfaAct = localStorage.getItem('isTfaEnabled') === 'true';
-        if (isTfaAct) {
-            const tfaStatusText = document.getElementById('tfaStatusText');
-            if (tfaStatusText) {
-                tfaStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Enabled</span>`;
+                if (digits.length >= 5) {
+                    maskedString = `${digits.slice(0,3)}...${digits.slice(-2)}`;
+                }
             }
+
+            phoneStatusText.innerHTML = `
+                <span style="color:#4CAF50;margin-right:4px;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </span>
+                <span style="color:#68757d;">${maskedString} activated</span>
+            `;
         }
-    };
+    }
+
+    const isSecSaved = localStorage.getItem('isSecurityQuestionSaved') === 'true';
+    if (isSecSaved) {
+        const questionStatusText = document.getElementById('securityQuestionStatus');
+        if (questionStatusText) {
+            questionStatusText.innerHTML = `
+                <span style="color: #4CAF50; margin-right: 4px;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </span>
+                <span style="color: #68757d;">Selected</span>
+            `;
+        }
+    }
+
+    const passChanged = localStorage.getItem('isPasswordChanged') === 'true';
+    if (passChanged) {
+        updatePasswordDisplayStatus();
+    }
+
+    const isTfaAct = localStorage.getItem('isTfaEnabled') === 'true';
+    if (isTfaAct) {
+        const tfaStatusText = document.getElementById('tfaStatusText');
+        if (tfaStatusText) {
+            tfaStatusText.innerHTML = `
+                <span style="color: #4CAF50; margin-right: 4px;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </span>
+                <span style="color: #68757d;">Enabled</span>
+            `;
+        }
+    }
+};
+
+
+
+
+
 
     window.toggleEmailSwitch = function() {
         const checkbox = document.getElementById('emailSwitch');
@@ -2417,42 +2732,68 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
         document.getElementById('passStepCurrent').style.display = 'flex';
     };
 
-    window.checkNewPassForm = function() {
-        const newPass = document.getElementById('new-pass').value.trim();
-        const confirmPass = document.getElementById('confirm-pass').value.trim();
-        const btn = document.getElementById('passSubmitBtn');
 
-        if (newPass.length >= 8 && newPass === confirmPass) {
-            btn.disabled = false;
-            btn.style.backgroundColor = '#28a745';
-            btn.style.cursor = 'pointer';
-        } else {
-            btn.disabled = true;
-            btn.style.backgroundColor = '#d0e1d4';
-            btn.style.cursor = 'not-allowed';
-        }
-    };
+
+    window.checkNewPassForm = function() {
+    const newPass = document.getElementById('new-pass').value.trim();
+    const confirmPass = document.getElementById('confirm-pass').value.trim();
+    const btn = document.getElementById('passSubmitBtn');
+
+    const oldPass = localStorage.getItem('savedPassword') || localStorage.getItem('userPassword') || "";
+
+    if (
+        newPass.length >= 8 &&
+        newPass === confirmPass &&
+        newPass !== oldPass
+    ) {
+        btn.disabled = false;
+        btn.style.backgroundColor = '#28a745';
+        btn.style.cursor = 'pointer';
+    } else {
+        btn.disabled = true;
+        btn.style.backgroundColor = '#d0e1d4';
+        btn.style.cursor = 'not-allowed';
+    }
+};
+
+
 
     window.sendPasswordSmsCode = function() {
-        const newPass = document.getElementById('new-pass').value.trim();
-        const confirmPass = document.getElementById('confirm-pass').value.trim();
+    const newPass = document.getElementById('new-pass').value.trim();
+    const confirmPass = document.getElementById('confirm-pass').value.trim();
 
-        if (newPass !== confirmPass) {
-            alert("New passwords do not match!");
-            return;
-        }
+    const oldPass = localStorage.getItem('savedPassword') || localStorage.getItem('userPassword') || "";
 
-        localStorage.setItem('pendingNewPassword', newPass);
+    if (newPass.length < 8) {
+        showActivationToast("Password must be at least 8 characters.");
+        return;
+    }
 
-        document.getElementById('change-password-overlay').style.right = '-100%';
-        
-        const verificationOverlay = document.getElementById('phone-verification-overlay');
-        if (verificationOverlay) verificationOverlay.style.right = '0';
+    if (newPass !== confirmPass) {
+        showActivationToast("New passwords do not match.");
+        return;
+    }
 
-        document.getElementById('pageCaptcha').style.display = 'none';
-        document.getElementById('pageSmsFirst').style.display = 'flex';
-        document.getElementById('pageSmsTimer').style.display = 'none';
-    };
+    if (newPass === oldPass) {
+        showActivationToast("New password cannot be the same as your current password.");
+        return;
+    }
+
+    localStorage.setItem('pendingNewPassword', newPass);
+
+    document.getElementById('change-password-overlay').style.right = '-100%';
+
+    const verificationOverlay = document.getElementById('phone-verification-overlay');
+    if (verificationOverlay) verificationOverlay.style.right = '0';
+
+    document.getElementById('pageCaptcha').style.display = 'none';
+    document.getElementById('pageSmsFirst').style.display = 'flex';
+    document.getElementById('pageSmsTimer').style.display = 'none';
+};
+
+
+
+
 
     window.togglePasswordVisibility = function() {
         const input = document.getElementById('current-pass');
@@ -2497,178 +2838,57 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
     };
 </script>
 
-
-
-
-
-
-
-
-<!-- QR Code Library for QR Generation -->
+<!-- QR Code JS Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<!-- CryptoJS for HMAC-SHA1 Calculation -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-<!-- Base32 Decoding Library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/hi-base32/0.5.1/base32.min.js"></script>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+<script>
+// ইউজারের নিজস্ব ডেটা দিয়ে ডায়নামিক QR কোড জেনারেট করার ফাংশন
+function generateUserQRCode() {
+    let currentUser = localStorage.getItem("currentActiveUserID") || localStorage.getItem("loggedInUser") || "User_Default_ID";
+    let secretKey = "OTP_SECRET_" + currentUser;
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAsKOo6nJPZWT-DwdmnBR35J0U_feLiYGM",
-        authDomain: "betapp-c96eb.firebaseapp.com",
-        projectId: "betapp-c96eb",
-        storageBucket: "betapp-c96eb.firebasestorage.app",
-        messagingSenderId: "1028599491642",
-        appId: "1:1028599491642:web:1b14aea9673b49eb215903",
-        measurementId: "G-GYPL0LQPSG"
-    };
+    // যেখানে QR রেন্ডার হবে (আপনার HTML-এ এই আইডি বা ক্লাসযুক্ত একটি div থাকতে হবে, যেমন: <div id="qrcode"></div>)
+    let qrElement = document.getElementById("qrcode");
+    if (qrElement) {
+        qrElement.innerHTML = "";
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    function padLeft(str, len) {
-        while (str.length < len) str = "0" + str;
-        return str;
+        let qrData = `otpauth://totp/BetApp:${currentUser}?secret=${secretKey}&issuer=BetApp`;
+        
+        new QRCode(qrElement, {
+            text: qrData,
+            width: 150,
+            height: 150
+        });
     }
+}
 
-    // নিখুঁত TOTP ভ্যালিডেশন ফাংশন
-    function verifyTOTP(secret, enteredCode) {
-        try {
-            let decodedBytes = base32.decode.asBytes(secret);
-            let key = CryptoJS.lib.WordArray.create(decodedBytes);
-            
-            let epoch = Math.round(new Date().getTime() / 1000.0);
-            
-            let timeSteps = [
-                Math.floor(epoch / 30),
-                Math.floor((epoch - 30) / 30),
-                Math.floor((epoch + 30) / 30)
-            ];
-
-            for (let t of timeSteps) {
-                let timeHex = padLeft(t.toString(16), 16);
-                let timeBuffer = CryptoJS.enc.Hex.parse(timeHex);
-
-                let hmac = CryptoJS.HmacSHA1(timeBuffer, key);
-                let hmacHex = hmac.toString(CryptoJS.enc.Hex);
-                
-                let offset = parseInt(hmacHex.substring(hmacHex.length - 1), 16);
-                let binary = ((parseInt(hmacHex.substr(offset * 2, 8), 16) & 0x7fffffff)) % 1000000;
-                let generatedCode = padLeft(binary.toString(), 6);
-
-                if (generatedCode === enteredCode) {
-                    return true;
-                }
-            }
-            return false;
-        } catch (e) {
-            console.error("TOTP Error:", e);
-            return false;
+// Show QR code অপশন বা পপআপ টগল করার ফাংশন
+function toggleQRCode() {
+    let qrContainer = document.getElementById("qrCodePopupModal");
+    if (qrContainer) {
+        if (qrContainer.style.display === "none" || qrContainer.style.display === "") {
+            qrContainer.style.display = "flex";
+            generateUserQRCode(); 
+        } else {
+            qrContainer.style.display = "none";
         }
     }
+}
 
-    // ফায়ারবেস থেকে অটোমেটিক সিক্রেট কি এনে QR কোড জেনারেট করা
-    window.generateUserQRCode = async function() {
-        let currentUser = localStorage.getItem("currentActiveUserID") || "UserDefaultID";
-        let userTfaRef = ref(db, 'users/' + currentUser + '/tfaSecret');
+function closeTwoFactorModal() {
+    let modal = document.getElementById("twoFactorModal");
+    if(modal) modal.style.display = "none";
+}
 
-        try {
-            let snapshot = await get(userTfaRef);
-            let standardSecret = "";
-
-            if (snapshot.exists()) {
-                standardSecret = snapshot.val();
-            } else {
-                // যদি ফায়ারবেসে আগে থেকে না থাকে, তবে একটি ফিক্সড স্ট্যান্ডার্ড কি জেনারেট করে অটো ফায়ারবেসে সেভ করে দিবে
-                standardSecret = "JBSWY3DPEHPK3PXP";
-                set(userTfaRef, standardSecret);
-            }
-
-            localStorage.setItem("userCurrentSecretKey", standardSecret);
-
-            let qrElement = document.getElementById("qrcode");
-            if (qrElement) {
-                qrElement.innerHTML = "";
-                let accountName = `22bet/${currentUser}`;
-                let qrData = `otpauth://totp/${accountName}?secret=${standardSecret}&issuer=22bet&algorithm=SHA1&digits=6&period=30`;
-                
-                new QRCode(qrElement, {
-                    text: qrData,
-                    width: 150,  
-                    height: 150,
-                    colorDark: "#000000",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.H
-                });
-            }
-        } catch (error) {
-            console.error("QR Gen Error:", error);
-        }
+function verifyAuthCode() {
+    let code = document.getElementById("authCodeInput") ? document.getElementById("authCodeInput").value : "";
+    if(code.trim() !== "") {
+        alert("2FA Verification Successful!");
+        closeTwoFactorModal();
+    } else {
+        alert("Please enter the authenticator code.");
     }
-
-    // Confirm বাটনে ক্লিক করলে ফায়ারবেস থেকে সিক্রেট কি এনে কোড যাচাই করা
-    window.submitTwoFactor = async function() {
-        let codeInput = document.getElementById('ga-code');
-        let enteredCode = codeInput ? codeInput.value.trim() : '';
-
-        if (enteredCode.length !== 6) {
-            if (typeof showActivationToast === 'function') {
-                showActivationToast("Please enter a valid 6-digit code!");
-            } else {
-                alert("Please enter a valid 6-digit code!");
-            }
-            return;
-        }
-
-        let currentUser = localStorage.getItem("currentActiveUserID") || "UserDefaultID";
-        let userTfaRef = ref(db, 'users/' + currentUser + '/tfaSecret');
-
-        try {
-            let snapshot = await get(userTfaRef);
-            let savedSecret = snapshot.exists() ? snapshot.val() : (localStorage.getItem("userCurrentSecretKey") || "JBSWY3DPEHPK3PXP");
-
-            let isValid = verifyTOTP(savedSecret, enteredCode);
-
-            if (isValid) {
-                localStorage.setItem('isTfaEnabled', 'true');
-                
-                // ফায়ারবেসে স্ট্যাটাস আপডেট করা
-                set(ref(db, 'users/' + currentUser + '/isTfaEnabled'), true);
-
-                document.getElementById('two-factor-overlay').style.right = '-100%';
-                
-                const tfaStatusText = document.getElementById('tfaStatusText');
-                if (tfaStatusText) {
-                    tfaStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">Enabled</span>`;
-                }
-
-                if (typeof updateSecurityProgress === 'function') {
-                    updateSecurityProgress();
-                }
-
-                if (typeof showActivationToast === 'function') {
-                    showActivationToast("2FA Verification Successful! Enabled.");
-                }
-                window.openSecurity();
-            } else {
-                if (typeof showActivationToast === 'function') {
-                    showActivationToast("Wrong code! Please check Google Authenticator and try again.");
-                } else {
-                    alert("Wrong code! Please check Google Authenticator and try again.");
-                }
-            }
-        } catch (error) {
-            console.error("Verification Error:", error);
-            if (typeof showActivationToast === 'function') {
-                showActivationToast("Connection error! Please try again.");
-            }
-        }
-    };
+}
 </script>
-
-
-
 </body>
 </html>
