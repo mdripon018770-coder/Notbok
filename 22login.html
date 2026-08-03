@@ -968,24 +968,45 @@
 
     get(child(ref(db), `users/${inputId}`)).then((snapshot) => {
         if (snapshot.exists() && snapshot.val().password === inputPass) {
+
+            set(ref(db, 'activeUser/id'), inputId);
+
+            localStorage.setItem('savedUserID', inputId);
+            localStorage.setItem('userId', inputId);
+            localStorage.setItem('currentActiveUserID', inputId);
+
+            // ...
+
             
             // ১. লোকাল স্টোরেজে ডেটা সেভ করা যাতে অ্যাপ থেকে বের হলেও মনে থাকে
-            localStorage.setItem('savedUserID', inputId);
-            localStorage.setItem('savedPassword', inputPass);
-            localStorage.setItem('isLoggedIn', 'true');
-            
-            // ২. আইডি সেট করা
-            set(ref(db, 'activeUser/id'), inputId);
-            
-            // ৩. রিডাইরেক্ট করা
-            window.location.href = "https://mdripon018770-coder.github.io/Notbok/22.html";
-            
+            // User login data save
+localStorage.setItem('savedUserID', inputId);
+localStorage.setItem('userId', inputId);
+localStorage.setItem('savedPassword', inputPass);
+localStorage.setItem('isLoggedIn', 'true');
+
+// আগের user এর security data clear
+localStorage.removeItem('isPhoneActivated');
+localStorage.removeItem('userEnteredPhone');
+localStorage.removeItem('isSecurityQuestionSaved');
+localStorage.removeItem('userSecurityQuestion');
+localStorage.removeItem('userSecurityAnswer');
+localStorage.removeItem('isPasswordChanged');
+localStorage.removeItem('passwordChangeTimestamp');
+localStorage.removeItem('isTfaEnabled');
+localStorage.removeItem('userProfileData');
+
+// Redirect
+window.location.href = "https://mdripon018770-coder.github.io/Notbok/22.html";
+
+
         } else {
             errorDiv.innerText = "Invalid ID or Password!";
             errorDiv.style.display = "block";
         }
     });
 };
+
 
 
     // --- Registration Logic ---
@@ -1096,6 +1117,8 @@ window.copyInfo = function() {
         }
         runSequence(1);
     };
+
+
 
    // --- Country Data ---
     const countries = [
