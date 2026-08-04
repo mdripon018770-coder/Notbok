@@ -1748,7 +1748,7 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
         }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('DOMContentLoaded', () => {
         const balanceDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
         balanceDisplays.forEach(el => el.innerText = "...");
 
@@ -1770,6 +1770,7 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
                     localStorage.removeItem('passwordChangeTimestamp');
                     localStorage.removeItem('isTfaEnabled');
                     localStorage.removeItem('isProfileFilled');
+                    localStorage.removeItem('userProfileData');
                 }
 
                 const nameDisplay = document.getElementById('profileName');
@@ -1778,21 +1779,15 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
                 const idDisplay = document.querySelector('.account-id-display');
                 if (idDisplay) idDisplay.innerText = 'id: ' + savedUser;
                 
-                                const userRef = ref(db, 'users/' + savedUser);
+                const userRef = ref(db, 'users/' + savedUser);
                 onValue(userRef, (userSnapshot) => {
                     const data = userSnapshot.val();
+                    
                     if (data) {
                         const balance = data.balance !== undefined ? data.balance : 0;
                         
-                        // ইউজারের নিজস্ব কারেন্সি সিম্বল (যেমন: ৳, $, ইত্যাদি) ফায়ারবেস থেকে চেক করা
-                        let currencySymbol = '৳';
-                        if (data.currencySymbol) {
-                            currencySymbol = data.currencySymbol;
-                        } else if (data.currency === 'USD' || data.country === 'USA' || data.country === 'United States') {
-                            currencySymbol = '$';
-                        } else if (data.currency) {
-                            currencySymbol = data.currency;
-                        }
+                        // ফায়ারবেসে রেজিস্টার্ড ইউজারের নিজস্ব কারেন্সি সিম্বল
+                        const currencySymbol = data.currencySymbol || data.currency || '৳';
                         
                         const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
                         updatedDisplays.forEach(el => el.innerText = `${balance} ${currencySymbol}`);
@@ -1819,6 +1814,7 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
                         if (typeof updateSecurityProgress === 'function') updateSecurityProgress();
 
                     } else {
+                        // যদি ডাটা ফেচিং এ সময় নেয়
                         const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
                         updatedDisplays.forEach(el => el.innerText = `0 ৳`);
                     }
@@ -1828,6 +1824,7 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
                 updatedDisplays.forEach(el => el.innerText = `0 ৳`);
             }
         });
+    });
 
 
 
