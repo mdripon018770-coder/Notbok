@@ -563,31 +563,37 @@
     animation: popupUp 0.4s ease-out; /* এখানে আপনার তৈরি করা অ্যানিমেশনটি যোগ করা হলো */
 }
 
-/* --- Updated Banner Slider --- */
-.game-slider{
-    width:100%;
-    overflow:hidden;
-    margin:10px 0;
-}
+.game-slider {
+            width: 100%;
+            overflow: hidden;
+            margin: 10px 0;
+            position: relative;
+        }
 
-.game-track{
-    display:flex;
-    gap:12px;
-    animation:slide 20s linear infinite;
-}
+        .game-track {
+            display: flex;
+            gap: 12px;
+            width: max-content;
+            animation: smoothInfiniteSlide 16s linear infinite;
+        }
 
-.game-track img{
-    width:260px;
-    height:140px;
-    border-radius:20px;
-    object-fit:cover;
-    flex-shrink:0;
-}
+        .game-track img {
+            width: 260px;
+            height: 140px;
+            border-radius: 20px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
 
-@keyframes slide{
-    0%{transform:translateX(100%);}
-    100%{transform:translateX(-1100px);}
-}
+        @keyframes smoothInfiniteSlide {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                /* ৪টি ছবি এবং তাদের মাঝের ১২ পিক্সেল গ্যাপের টোটাল সাইজ হিসাব করে পারফেক্ট লুপ করা হয়েছে */
+                transform: translateX(calc(-4 * (260px + 12px)));
+            }
+        }
 
 
 
@@ -628,15 +634,22 @@
 
         <!-- Banner Slider Area (সঠিক পজিশনে আনা হয়েছে) -->
         <div class="game-slider">
-            <div class="game-track">
-                <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/fru.jpg">
-                <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/royal.jpg">
-                <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/burning.jpg">
-                <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/scratch.jpg">
-            </div>
-        </div>
-    </div>
+    <div class="game-track">
+        <!-- প্রথম সেট (1, 2, 3, 4) -->
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/fru.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/royal.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/burning.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/scratch.jpg">
         
+        <!-- দ্বিতীয় সেট (স্মুথ লুপের জন্য ডুপ্লিকেট) -->
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/fru.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/royal.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/burning.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/scratch.jpg">
+    </div>
+</div>
+</div>
+
         <!-- Bottom Navigation -->
         <div class="bottom-nav">
             <div class="nav-item active"><i class="fas fa-fire"></i><span>Popular</span></div>
