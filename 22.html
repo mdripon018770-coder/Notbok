@@ -3043,23 +3043,33 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
             }
         }
 
-        const isProtected = localStorage.getItem('isEmailProtected') === 'true';
+
+
+
+                const isProtected = localStorage.getItem('isEmailProtected') === 'true';
         const checkbox = document.getElementById('emailSwitch');
         const slider = document.getElementById('emailSlider');
         const dot = document.getElementById('emailDot');
         const statusText = document.getElementById('emailStatusText');
 
         const profileData = JSON.parse(localStorage.getItem('userProfileData') || "{}");
-        const isProfileComplete =
-            profileData["reg-name"]?.trim() &&
-            profileData["reg-username"]?.trim() &&
-            profileData["reg-email"]?.trim() &&
-            profileData["reg-phone"]?.trim() &&
-            profileData["reg-city"]?.trim() &&
-            profileData["reg-country"]?.trim();
+        
+        // প্রফাইলের মূল ফিল্ডগুলোর লিস্ট
+        const fieldsToCheck = ["reg-name", "reg-username", "reg-email", "reg-phone", "reg-city", "reg-country"];
+        
+        // কয়টি ফিল্ড পূরণ করা হয়েছে তা গননা করা
+        let filledCount = 0;
+        fieldsToCheck.forEach(fieldId => {
+            if (profileData[fieldId] && profileData[fieldId].trim() !== "") {
+                filledCount++;
+            }
+        });
+        
+        // যেকোনো ২টি ফিল্ড পূরণ করা থাকলেই শর্ত পূর্ণ হবে (filledCount >= 2)
+        const isTwoFieldsMet = filledCount >= 2;
 
         if (checkbox) {
-            if (!isProfileComplete) {
+            if (!isTwoFieldsMet) {
                 checkbox.disabled = true;
                 checkbox.checked = false;
                 checkbox.style.opacity = "0.5";
@@ -3072,7 +3082,7 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
         }
 
         if (statusText) {
-            if (isProtected && isProfileComplete) {
+            if (isProtected && isTwoFieldsMet) {
                 if (checkbox) checkbox.checked = true;
                 if (slider) slider.style.backgroundColor = '#28a745';
                 if (dot) dot.style.transform = 'translateX(22px)';
