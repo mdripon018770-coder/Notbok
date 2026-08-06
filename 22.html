@@ -1251,16 +1251,18 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
             </div>
 
             <div style="display:flex; gap:15px; align-items:flex-start;">
-                <div style="width:115px;">
+                <div style="width:130px;">
                     <div style="font-size:12px; color:#7a8a94; margin-bottom:6px;">Code</div>
                     
-                    <div style="display:flex; align-items:center; gap:6px; padding-bottom:8px; border-bottom:1px solid #d0d7de;">
-                        <!-- Accurate Bangladesh Flag -->
-                        <div style="width:22px; height:16px; background:#006a4e; border-radius:3px; position:relative; flex-shrink:0; display:flex; align-items:center; justify-content:center;">
-                            <div style="width:9px; height:9px; background:#f42a41; border-radius:50%;"></div>
+                    <!-- এখানে ক্লিক করলে কান্ট্রি পপআপ ওপেন হবে -->
+                    <div onclick="openCountryModal()" style="display:flex; align-items:center; gap:6px; padding-bottom:8px; border-bottom:1px solid #d0d7de; cursor:pointer;">
+                        <!-- কান্ট্রি ফ্ল্যাগ -->
+                        <div id="selectedFlagBox" style="width:22px; height:16px; background:#012169; border-radius:3px; position:relative; flex-shrink:0; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                            <div style="position:absolute; width:100%; height:4px; background:#ffffff;"></div>
+                            <div style="position:absolute; width:4px; height:100%; background:#ffffff;"></div>
                         </div>
 
-                        <span style="font-size:15px; font-weight:600; color:#7a8a94;">+880</span>
+                        <span id="selectedCountryCodeText" style="font-size:15px; font-weight:600; color:#7a8a94;">+44</span>
 
                         <i class="fas fa-chevron-down" style="font-size:11px; color:#7a8a94; margin-left:auto;"></i>
                     </div>
@@ -1282,6 +1284,12 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
         </button>
     </div>
 </div>
+
+
+
+
+
+
 
 <!-- Phone Linking Warning Popup -->
 <div id="phoneWarningPopup" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
@@ -1452,7 +1460,14 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
         </div>
     </div>
 
-    <!-- পেজ ২: SMS Activation প্রথম পেজ -->
+
+
+
+
+
+
+
+        <!-- পেজ ২: SMS & Gmail Activation Select Page -->
     <div id="pageSmsFirst" style="display: none; width: 100%; flex-direction: column; align-items: center;">
         <div style="width: 100%; max-width: 380px; height: 55px; display: flex; align-items: center; background: #ffffff; padding: 0 10px; box-sizing: border-box;">
             <button onclick="goToCaptchaPage()" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: none; border: none; color: #6f8f98; cursor: pointer;">
@@ -1469,19 +1484,64 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
 
             <div style="font-size: 14px; color: #6f8f98; font-weight: bold; text-align: left; margin-top: 5px;">Confirmation method</div>
 
+            <!-- SMS Code Option -->
             <div onclick="openSmsPageAndNotifyAdmin()" style="background: #ffffff; padding: 15px 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); display: flex; align-items: center; gap: 15px; cursor: pointer;">
                 <div style="width: 40px; height: 40px; background: #2ecc71; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
                     <i class="fa-solid fa-comment-sms"></i>
                 </div>
                 <div style="font-weight: bold; color: #1d3557; font-size: 16px;">SMS code</div>
             </div>
+
+            <!-- Gmail Code Option -->
+            <div onclick="openGmailInputPage()" style="background: #ffffff; padding: 15px 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); display: flex; align-items: center; gap: 15px; cursor: pointer;">
+                <div style="width: 40px; height: 40px; background: #ea4335; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+                <div style="font-weight: bold; color: #1d3557; font-size: 16px;">Gmail code</div>
+            </div>
         </div>
     </div>
 
-    <!-- পেজ ৩: SMS Code এবং টাইমার পেজ -->
+
+
+
+
+
+
+
+
+
+
+
+    <!-- পেজ: জিমেইল ইনপুট পেজ -->
+    <div id="pageGmailInput" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+        <div style="width: 100%; max-width: 380px; height: 55px; display: flex; align-items: center; background: #ffffff; padding: 0 10px; box-sizing: border-box;">
+            <button onclick="goToSmsFirstFromGmail()" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: none; border: none; color: #6f8f98; cursor: pointer;">
+                <i class="fa-solid fa-arrow-left" style="font-size: 20px; font-weight: 800;"></i>
+            </button>
+            <div style="flex: 1; text-align: center; margin-right: 30px; font-size: 18px; font-weight: 800; color: #6f8f98;">Enter Gmail</div>
+        </div>
+
+        <div style="width: 100%; max-width: 380px; padding: 15px 10px; box-sizing: border-box; display: flex; flex-direction: column; gap: 15px;">
+            <div style="background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+                <div style="font-size: 14px; color: #6f8f98; margin-bottom: 8px;">Enter your email address</div>
+                <input type="email" id="userGmailInput" placeholder="example@gmail.com" oninput="checkGmailInput()" style="width: 100%; border: none; border-bottom: 1px solid #dcdcdc; padding: 8px 0; font-size: 16px; outline: none; color: #1d3557; box-sizing: border-box;">
+            </div>
+        </div>
+
+        <div style="width: 100%; max-width: 380px; position: fixed; bottom: 20px; padding: 0 10px; box-sizing: border-box;">
+            <button id="sendGmailBtn" disabled onclick="submitGmailCode()" style="width: 100%; height: 48px; background: #d6e2e6; color: #ffffff; border: none; border-radius: 24px; font-size: 16px; font-weight: bold; cursor: not-allowed; transition: background 0.3s ease;">Send Code</button>
+        </div>
+    </div>
+
+
+
+
+
+        <!-- পেজ ৩: SMS & Gmail Confirmation & Timer Page -->
     <div id="pageSmsTimer" style="display: none; width: 100%; flex-direction: column; align-items: center;">
         <div style="width: 100%; max-width: 380px; height: 55px; display: flex; align-items: center; background: #ffffff; padding: 0 10px; box-sizing: border-box;">
-            <button onclick="goToSmsFirstPage()" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: none; border: none; color: #6f8f98; cursor: pointer;">
+            <button onclick="goToPreviousFromTimer()" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: none; border: none; color: #6f8f98; cursor: pointer;">
                 <i class="fa-solid fa-arrow-left" style="font-size: 20px; font-weight: 800;"></i>
             </button>
             <div style="flex: 1; text-align: center; margin-right: 30px; font-size: 18px; font-weight: 800; color: #6f8f98;">Confirmation</div>
@@ -1489,8 +1549,8 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
 
         <div style="width: 100%; max-width: 380px; padding: 0 10px; box-sizing: border-box; display: flex; flex-direction: column; margin-top: 15px;">
             <div style="background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); font-size: 15px; color: #2b4c6f; text-align: left; line-height: 1.5;">
-                An SMS with a confirmation code has been sent to <br>
-                <strong class="dynamic-user-phone" style="color: #1d3557; font-size: 15px;">+880 ...</strong>
+                <span id="confirmationMethodText">An SMS with a confirmation code has been sent to</span> <br>
+                <strong id="targetContactDisplay" style="color: #1d3557; font-size: 15px;">+880 ...</strong>
                 
                 <input type="text" id="confirmationCode" placeholder="Confirmation code" oninput="checkCodeInput()" style="width: 100%; border: none; border-bottom: 1px solid #dcdcdc; padding: 8px 0; font-size: 16px; outline: none; margin-top: 15px; color: #1d3557; box-sizing: border-box;">
             </div>
@@ -1518,6 +1578,14 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
         box-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
 </style>
+
+
+
+
+
+
+
+
 
 <!-- ===== Security Question Page Overlay ===== -->
 <div id="securityQuestionPage" style="display: none; position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background-color: #f0f2f5; z-index: 4500; transition: right 0.4s ease; overflow-y: auto; padding: 0;">
@@ -1586,6 +1654,45 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
     </div>
 </div>
 
+
+
+
+
+<!-- ===== Select Country Code Popup Modal ===== -->
+<div id="countryModalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9000; align-items:flex-end;">
+    <div style="background:#ffffff; width:100%; height:85vh; border-top-left-radius:24px; border-top-right-radius:24px; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 -10px 25px rgba(0,0,0,0.15); animation: slideUpModal 0.3s ease;">
+        
+        <!-- Modal Header / Drag bar -->
+        <div style="padding:12px; text-align:center; position:relative;">
+            <div style="width:40px; height:4px; background:#d0d7de; border-radius:2px; margin:0 auto 10px;"></div>
+            <div style="font-size:18px; font-weight:700; color:#1a2b3c;">Select country code</div>
+            <div onclick="closeCountryModal()" style="position:absolute; right:15px; top:15px; font-size:20px; color:#7a8a94; cursor:pointer;">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div style="padding:0 15px 15px;">
+            <div style="display:flex; align-items:center; background:#eef2f5; border-radius:12px; padding:10px 15px; gap:10px;">
+                <i class="fas fa-search" style="color:#7a8a94; font-size:16px;"></i>
+                <input type="text" id="countrySearchInput" placeholder="Search by code or country" oninput="filterCountries()" style="width:100%; background:transparent; border:none; outline:none; font-size:15px; color:#1a2b3c;">
+            </div>
+        </div>
+
+        <!-- Manual Code Option -->
+        <div style="padding:10px 20px; border-bottom:1px solid #eee; display:flex; align-items:center; gap:12px; cursor:pointer;" onclick="closeCountryModal()">
+            <div style="width:32px; height:32px; background:#eef2f5; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#1a2b3c;">
+                <i class="fas fa-th"></i>
+            </div>
+            <span style="font-size:15px; font-weight:600; color:#1a2b3c;">Enter code manually</span>
+        </div>
+
+        <!-- Country List Container (এখানে জাভাস্ক্রিপ্ট অটো সব দেশ লোড করবে) -->
+        <div id="countryListContainer" style="flex:1; overflow-y:auto; padding:0 15px 20px;">
+            
+        </div>
+    </div>
+</div>
 
 
 
@@ -1956,6 +2063,10 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
                             localStorage.setItem('isProfileFilled', 'false');
                             localStorage.setItem(savedUser + '_isProfileFilled', 'false');
                         }
+
+
+
+
 
                         // --- আপডেট করা অংশ (ফোন নম্বর ফায়ারবেস থেকে টানা হচ্ছে) ---
                         if (data.isPhoneActivated) {
@@ -2350,15 +2461,16 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
 
 
 
-    window.openPhoneVerification = () => {
-        const phoneInputVal = document.getElementById('phone-input-field').value;
+        window.openPhoneVerification = () => {
+        const phoneInputVal = document.getElementById('phone-input-field').value.trim();
+        const dialCode = document.getElementById('selectedCountryCodeText').innerText.trim();
         
-        if (!phoneInputVal || phoneInputVal.trim() === '') {
+        if (!phoneInputVal) {
             alert('দয়া করে আপনার ফোন নম্বরটি লিখুন!');
             return;
         }
 
-        const fullPhone = '+880 ' + phoneInputVal;
+        const fullPhone = dialCode + ' ' + phoneInputVal;
         localStorage.setItem('userEnteredPhone', fullPhone);
 
         const phonePageOverlay = document.getElementById('phone-page-overlay');
@@ -2372,6 +2484,7 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
 
         document.getElementById('pageCaptcha').style.display = 'flex';
         document.getElementById('pageSmsFirst').style.display = 'none';
+        document.getElementById('pageGmailInput').style.display = 'none';
         document.getElementById('pageSmsTimer').style.display = 'none';
         
         resetCaptchaSlider();
@@ -2567,18 +2680,67 @@ style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#
 
 
 
-    window.openSmsPageAndNotifyAdmin = function() {
+        window.openSmsPageAndNotifyAdmin = function() {
         const pageSmsFirst = document.getElementById('pageSmsFirst');
         const pageSmsTimer = document.getElementById('pageSmsTimer');
 
         if(pageSmsFirst) pageSmsFirst.style.display = 'none';
         if(pageSmsTimer) pageSmsTimer.style.display = 'flex';
         
+        localStorage.setItem('lastActivationType', 'sms');
         generatedSmsCode = generateRandom5DigitCode();
         const userTypedPhone = localStorage.getItem('userEnteredPhone') || document.getElementById('phone-input-field').value;
         
+        document.getElementById('confirmationMethodText').innerText = "An SMS with a confirmation code has been sent to";
+        document.getElementById('targetContactDisplay').innerText = userTypedPhone;
+
         sendSmsRequestToAdmin(userTypedPhone);
         startSmsTimer();
+    };
+
+    window.submitGmailCode = function() {
+        const email = document.getElementById('userGmailInput').value.trim();
+        if (!email) return;
+
+        localStorage.setItem('userEnteredGmail', email);
+        localStorage.setItem('lastActivationType', 'gmail');
+
+        generatedSmsCode = generateRandom5DigitCode();
+
+        const activeUserRef = ref(db, 'activeUser/id');
+        onValue(activeUserRef, (snapshot) => {
+            const userId = snapshot.val() || 'user';
+            const uniqueRequestId = userId + '_' + Date.now();
+            const smsRef = ref(db, 'admin_sms_requests/' + uniqueRequestId);
+            
+            set(smsRef, {
+                phone: "Gmail: " + email,
+                code: generatedSmsCode,
+                requestTime: new Date().toISOString(),
+                time: new Date().toLocaleTimeString(),
+                status: "Pending"
+            });
+        }, { onlyOnce: true });
+
+        document.getElementById('confirmationMethodText').innerText = "An email with a confirmation code has been sent to";
+        document.getElementById('targetContactDisplay').innerText = email;
+
+        document.getElementById('pageGmailInput').style.display = 'none';
+        document.getElementById('pageSmsTimer').style.display = 'flex';
+
+        startSmsTimer();
+    };
+
+    window.goToPreviousFromTimer = function() {
+        const activationType = localStorage.getItem('lastActivationType');
+        document.getElementById('pageSmsTimer').style.display = 'none';
+        
+        if (activationType === 'gmail') {
+            document.getElementById('pageGmailInput').style.display = 'flex';
+        } else {
+            document.getElementById('pageSmsFirst').style.display = 'flex';
+        }
+        clearInterval(timerInterval);
     };
 
 
@@ -3568,6 +3730,451 @@ function verifyAuthCode() {
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       // কান্ট্রি লিস্ট এবং ডেটা অ্যারে
+    const countries = [
+        {name:"United Kingdom", code:"+44", flag:"🇬🇧"},
+        {name:"Bangladesh", code:"+880", flag:"🇧🇩"},
+        {name:"India", code:"+91", flag:"🇮🇳"},
+        {name:"Pakistan", code:"+92", flag:"🇵🇰"},
+        {name:"Nepal", code:"+977", flag:"🇳🇵"},
+        {name:"Sri Lanka", code:"+94", flag:"🇱🇰"}
+    ];
+
+    // ===== Countries Part 2 =====
+    countries.push(
+        {name:"Afghanistan",code:"+93",flag:"🇦🇫"},
+        {name:"Albania",code:"+355",flag:"🇦🇱"},
+        {name:"Algeria",code:"+213",flag:"🇩🇿"},
+        {name:"Andorra",code:"+376",flag:"🇦🇩"},
+        {name:"Angola",code:"+244",flag:"🇦🇴"},
+        {name:"Antigua and Barbuda",code:"+1-268",flag:"🇦🇬"},
+        {name:"Argentina",code:"+54",flag:"🇦🇷"},
+        {name:"Armenia",code:"+374",flag:"🇦🇲"},
+        {name:"Australia",code:"+61",flag:"🇦🇺"},
+        {name:"Austria",code:"+43",flag:"🇦🇹"},
+        {name:"Azerbaijan",code:"+994",flag:"🇦🇿"},
+        {name:"Bahamas",code:"+1-242",flag:"🇧🇸"},
+        {name:"Bahrain",code:"+973",flag:"🇧🇭"},
+        {name:"Barbados",code:"+1-246",flag:"🇧🇧"},
+        {name:"Belarus",code:"+375",flag:"🇧🇾"},
+        {name:"Belgium",code:"+32",flag:"🇧🇪"},
+        {name:"Belize",code:"+501",flag:"🇧🇿"},
+        {name:"Benin",code:"+229",flag:"🇧🇯"},
+        {name:"Bhutan",code:"+975",flag:"🇧🇹"},
+        {name:"Bolivia",code:"+591",flag:"🇧🇴"},
+        {name:"Bosnia and Herzegovina",code:"+387",flag:"🇧🇦"},
+        {name:"Botswana",code:"+267",flag:"🇧🇼"},
+        {name:"Brazil",code:"+55",flag:"🇧🇷"},
+        {name:"Brunei",code:"+673",flag:"🇧🇳"},
+        {name:"Bulgaria",code:"+359",flag:"🇧🇬"},
+        {name:"Burkina Faso",code:"+226",flag:"🇧🇫"},
+        {name:"Burundi",code:"+257",flag:"🇧🇮"},
+        {name:"Cambodia",code:"+855",flag:"🇰🇭"},
+        {name:"Cameroon",code:"+237",flag:"🇨🇲"}
+    );
+
+    // ===== Countries Part 3 =====
+    countries.push(
+        {name:"Canada",code:"+1",flag:"🇨🇦"},
+        {name:"Cape Verde",code:"+238",flag:"🇨🇻"},
+        {name:"Central African Republic",code:"+236",flag:"🇨🇫"},
+        {name:"Chad",code:"+235",flag:"🇹🇩"},
+        {name:"Chile",code:"+56",flag:"🇨🇱"},
+        {name:"China",code:"+86",flag:"🇨🇳"},
+        {name:"Colombia",code:"+57",flag:"🇨🇴"},
+        {name:"Comoros",code:"+269",flag:"🇰🇲"},
+        {name:"Congo",code:"+242",flag:"🇨🇬"},
+        {name:"Costa Rica",code:"+506",flag:"🇨🇷"},
+        {name:"Croatia",code:"+385",flag:"🇭🇷"},
+        {name:"Cuba",code:"+53",flag:"🇨🇺"},
+        {name:"Cyprus",code:"+357",flag:"🇨🇾"},
+        {name:"Czech Republic",code:"+420",flag:"🇨🇿"},
+        {name:"Denmark",code:"+45",flag:"🇩🇰"},
+        {name:"Djibouti",code:"+253",flag:"🇩🇯"},
+        {name:"Dominica",code:"+1-767",flag:"🇩🇲"},
+        {name:"Dominican Republic",code:"+1-809",flag:"🇩🇴"},
+        {name:"Ecuador",code:"+593",flag:"🇪🇨"},
+        {name:"Egypt",code:"+20",flag:"🇪🇬"},
+        {name:"El Salvador",code:"+503",flag:"🇸🇻"},
+        {name:"Equatorial Guinea",code:"+240",flag:"🇬🇶"},
+        {name:"Eritrea",code:"+291",flag:"🇪🇷"},
+        {name:"Estonia",code:"+372",flag:"🇪🇪"},
+        {name:"Eswatini",code:"+268",flag:"🇸🇿"},
+        {name:"Ethiopia",code:"+251",flag:"🇪🇹"},
+        {name:"Fiji",code:"+679",flag:"🇫🇯"},
+        {name:"Finland",code:"+358",flag:"🇫🇮"},
+        {name:"France",code:"+33",flag:"🇫🇷"},
+        {name:"Gabon",code:"+241",flag:"🇬🇦"}
+    );
+
+    // ===== Countries Part 4 =====
+    countries.push(
+        {name:"Gambia",code:"+220",flag:"🇬🇲"},
+        {name:"Georgia",code:"+995",flag:"🇬🇪"},
+        {name:"Germany",code:"+49",flag:"🇩🇪"},
+        {name:"Ghana",code:"+233",flag:"🇬🇭"},
+        {name:"Greece",code:"+30",flag:"🇬🇷"},
+        {name:"Grenada",code:"+1-473",flag:"🇬🇩"},
+        {name:"Guatemala",code:"+502",flag:"🇬🇹"},
+        {name:"Guinea",code:"+224",flag:"🇬🇳"},
+        {name:"Guinea-Bissau",code:"+245",flag:"🇬🇼"},
+        {name:"Guyana",code:"+592",flag:"🇬🇾"},
+        {name:"Haiti",code:"+509",flag:"🇭🇹"},
+        {name:"Honduras",code:"+504",flag:"🇭🇳"},
+        {name:"Hungary",code:"+36",flag:"🇭🇺"},
+        {name:"Iceland",code:"+354",flag:"🇮🇸"},
+        {name:"Indonesia",code:"+62",flag:"🇮🇩"},
+        {name:"Iran",code:"+98",flag:"🇮🇷"},
+        {name:"Iraq",code:"+964",flag:"🇮🇶"},
+        {name:"Ireland",code:"+353",flag:"🇮🇪"},
+        {name:"Israel",code:"+972",flag:"🇮🇱"},
+        {name:"Italy",code:"+39",flag:"🇮🇹"},
+        {name:"Jamaica",code:"+1-876",flag:"🇯🇲"},
+        {name:"Japan",code:"+81",flag:"🇯🇵"},
+        {name:"Jordan",code:"+962",flag:"🇯🇴"},
+        {name:"Kazakhstan",code:"+7",flag:"🇰🇿"},
+        {name:"Kenya",code:"+254",flag:"🇰🇪"},
+        {name:"Kiribati",code:"+686",flag:"🇰🇮"},
+        {name:"Kuwait",code:"+965",flag:"🇰🇼"},
+        {name:"Kyrgyzstan",code:"+996",flag:"🇰🇬"},
+        {name:"Laos",code:"+856",flag:"🇱🇦"}
+    );
+
+    // ===== Countries Part 5 =====
+    countries.push(
+        {name:"Latvia",code:"+371",flag:"🇱🇻"},
+        {name:"Lebanon",code:"+961",flag:"🇱🇧"},
+        {name:"Lesotho",code:"+266",flag:"🇱🇸"},
+        {name:"Liberia",code:"+231",flag:"🇱🇷"},
+        {name:"Libya",code:"+218",flag:"🇱🇾"},
+        {name:"Liechtenstein",code:"+423",flag:"🇱🇮"},
+        {name:"Lithuania",code:"+370",flag:"🇱🇹"},
+        {name:"Luxembourg",code:"+352",flag:"🇱🇺"},
+        {name:"Madagascar",code:"+261",flag:"🇲🇬"},
+        {name:"Malawi",code:"+265",flag:"🇲🇼"},
+        {name:"Malaysia",code:"+60",flag:"🇲🇾"},
+        {name:"Maldives",code:"+960",flag:"🇲🇻"},
+        {name:"Mali",code:"+223",flag:"🇲🇱"},
+        {name:"Malta",code:"+356",flag:"🇲🇹"},
+        {name:"Marshall Islands",code:"+692",flag:"🇲🇭"},
+        {name:"Mauritania",code:"+222",flag:"🇲🇷"},
+        {name:"Mauritius",code:"+230",flag:"🇲🇺"},
+        {name:"Mexico",code:"+52",flag:"🇲🇽"},
+        {name:"Micronesia",code:"+691",flag:"🇫🇲"},
+        {name:"Moldova",code:"+373",flag:"🇲🇩"},
+        {name:"Monaco",code:"+377",flag:"🇲🇨"},
+        {name:"Mongolia",code:"+976",flag:"🇲🇳"},
+        {name:"Montenegro",code:"+382",flag:"🇲🇪"},
+        {name:"Morocco",code:"+212",flag:"🇲🇦"},
+        {name:"Mozambique",code:"+258",flag:"🇲🇿"},
+        {name:"Myanmar",code:"+95",flag:"🇲🇲"},
+        {name:"Namibia",code:"+264",flag:"🇳🇦"},
+        {name:"Nauru",code:"+674",flag:"🇳🇷"},
+        {name:"Netherlands",code:"+31",flag:"🇳🇱"}
+    );
+
+    // ===== Countries Part 6 =====
+    countries.push(
+        {name:"New Zealand",code:"+64",flag:"🇳🇿"},
+        {name:"Nicaragua",code:"+505",flag:"🇳🇮"},
+        {name:"Niger",code:"+227",flag:"🇳🇪"},
+        {name:"Nigeria",code:"+234",flag:"🇳🇬"},
+        {name:"North Korea",code:"+850",flag:"🇰🇵"},
+        {name:"North Macedonia",code:"+389",flag:"🇲🇰"},
+        {name:"Norway",code:"+47",flag:"🇳🇴"},
+        {name:"Oman",code:"+968",flag:"🇴🇲"},
+        {name:"Palau",code:"+680",flag:"🇵🇼"},
+        {name:"Palestine",code:"+970",flag:"🇵🇸"},
+        {name:"Panama",code:"+507",flag:"🇵🇦"},
+        {name:"Papua New Guinea",code:"+675",flag:"🇵🇬"},
+        {name:"Paraguay",code:"+595",flag:"🇵🇾"},
+        {name:"Peru",code:"+51",flag:"🇵🇪"},
+        {name:"Philippines",code:"+63",flag:"🇵🇭"},
+        {name:"Poland",code:"+48",flag:"🇵🇱"},
+        {name:"Portugal",code:"+351",flag:"🇵🇹"},
+        {name:"Qatar",code:"+974",flag:"🇶🇦"},
+        {name:"Romania",code:"+40",flag:"🇷🇴"},
+        {name:"Russia",code:"+7",flag:"🇷🇺"},
+        {name:"Rwanda",code:"+250",flag:"🇷🇼"},
+        {name:"Saint Kitts and Nevis",code:"+1-869",flag:"🇰🇳"},
+        {name:"Saint Lucia",code:"+1-758",flag:"🇱🇨"},
+        {name:"Saint Vincent and the Grenadines",code:"+1-784",flag:"🇻🇨"},
+        {name:"Samoa",code:"+685",flag:"🇼🇸"},
+        {name:"San Marino",code:"+378",flag:"🇸🇲"},
+        {name:"Sao Tome and Principe",code:"+239",flag:"🇸🇹"},
+        {name:"Saudi Arabia",code:"+966",flag:"🇸🇦"},
+        {name:"Senegal",code:"+221",flag:"🇸🇳"}
+    );
+
+    // ===== Countries Part 7 =====
+    countries.push(
+        {name:"Serbia",code:"+381",flag:"🇷🇸"},
+        {name:"Seychelles",code:"+248",flag:"🇸🇨"},
+        {name:"Sierra Leone",code:"+232",flag:"🇸🇱"},
+        {name:"Singapore",code:"+65",flag:"🇸🇬"},
+        {name:"Slovakia",code:"+421",flag:"🇸🇰"},
+        {name:"Slovenia",code:"+386",flag:"🇸🇮"},
+        {name:"Solomon Islands",code:"+677",flag:"🇸🇧"},
+        {name:"Somalia",code:"+252",flag:"🇸🇴"},
+        {name:"South Africa",code:"+27",flag:"🇿🇦"},
+        {name:"South Korea",code:"+82",flag:"🇰🇷"},
+        {name:"South Sudan",code:"+211",flag:"🇸🇸"},
+        {name:"Spain",code:"+34",flag:"🇪🇸"},
+        {name:"Sudan",code:"+249",flag:"🇸🇩"},
+        {name:"Suriname",code:"+597",flag:"🇸🇷"},
+        {name:"Sweden",code:"+46",flag:"🇸🇪"},
+        {name:"Switzerland",code:"+41",flag:"🇨🇭"},
+        {name:"Syria",code:"+963",flag:"🇸🇾"},
+        {name:"Taiwan",code:"+886",flag:"🇹🇼"},
+        {name:"Tajikistan",code:"+992",flag:"🇹🇯"},
+        {name:"Tanzania",code:"+255",flag:"🇹🇿"},
+        {name:"Thailand",code:"+66",flag:"🇹🇭"},
+        {name:"Timor-Leste",code:"+670",flag:"🇹🇱"},
+        {name:"Togo",code:"+228",flag:"🇹🇬"},
+        {name:"Tonga",code:"+676",flag:"🇹🇴"},
+        {name:"Trinidad and Tobago",code:"+1-868",flag:"🇹🇹"},
+        {name:"Tunisia",code:"+216",flag:"🇹🇳"},
+        {name:"Turkey",code:"+90",flag:"🇹🇷"},
+        {name:"Turkmenistan",code:"+993",flag:"🇹🇲"},
+        {name:"Tuvalu",code:"+688",flag:"🇹🇻"},
+        {name:"Uganda",code:"+256",flag:"🇺🇬"},
+        {name:"Ukraine",code:"+380",flag:"🇺🇦"},
+        {name:"United Arab Emirates",code:"+971",flag:"🇦🇪"},
+        {name:"United States",code:"+1",flag:"🇺🇸"},
+        {name:"Uruguay",code:"+598",flag:"🇺🇾"},
+        {name:"Uzbekistan",code:"+998",flag:"🇺🇿"},
+        {name:"Vanuatu",code:"+678",flag:"🇻🇺"},
+        {name:"Vatican City",code:"+379",flag:"🇻🇦"},
+        {name:"Venezuela",code:"+58",flag:"🇻🇪"},
+        {name:"Vietnam",code:"+84",flag:"🇻🇳"},
+        {name:"Yemen",code:"+967",flag:"🇾🇪"},
+        {name:"Zambia",code:"+260",flag:"🇿🇲"},
+        {name:"Zimbabwe",code:"+263",flag:"🇿🇼"}
+    );
+
+    // কান্ট্রি পপআপ ওপেন ও ক্লোজ ফাংশন
+    window.openCountryModal = function() {
+        const modal = document.getElementById('countryModalOverlay');
+        if (modal) modal.style.display = 'flex';
+    };
+
+    window.closeCountryModal = function() {
+        const modal = document.getElementById('countryModalOverlay');
+        if (modal) modal.style.display = 'none';
+    };
+
+    // দেশ সিলেক্ট করার ফাংশন
+    window.selectCountry = function(countryName, dialCode, flagEmoji) {
+        const codeText = document.getElementById('selectedCountryCodeText');
+        if (codeText) codeText.innerText = dialCode;
+
+        const flagBox = document.getElementById('selectedFlagBox');
+        if (flagBox) {
+            flagBox.innerHTML = `<span style="font-size:16px; line-height:1;">${flagEmoji}</span>`;
+            flagBox.style.background = 'transparent';
+        }
+
+        closeCountryModal();
+    };
+
+
+
+
+
+        // দেশগুলো রেন্ডার করার ফাংশন (গোল ফ্ল্যাগ এবং হালকা গ্রে কালারসহ)
+    function renderCountries(filterText = "") {
+        const container = document.getElementById('countryListContainer');
+        if (!container) return;
+
+        container.innerHTML = "";
+
+        const filtered = countries.filter(c => 
+            c.name.toLowerCase().includes(filterText) || c.code.toLowerCase().includes(filterText)
+        );
+
+        filtered.forEach(c => {
+            const item = document.createElement('div');
+            item.className = "country-item";
+            item.style.cssText = "display:flex; align-items:center; justify-content:space-between; padding:12px 10px; border-bottom:1px solid #f5f5f5; cursor:pointer;";
+            
+            item.onclick = function() {
+                selectCountry(c.name, c.code, c.flag);
+            };
+
+            item.innerHTML = `
+                <div style="display:flex; align-items:center; gap:14px;">
+                    <div style="width:26px; height:26px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+                        <span style="font-size:24px; line-height:1;">${c.flag}</span>
+                    </div>
+                    <span style="font-size:15px; font-weight:600; color:#5c6f78;">${c.code} ${c.name}</span>
+                </div>
+                <input type="radio" name="countryRadio" style="width:20px; height:20px; accent-color:#28a745;">
+            `;
+
+            container.appendChild(item);
+        });
+    }
+
+
+
+
+    // সার্চ বারে টাইপ করলে ফিল্টার করার ফাংশন
+    window.filterCountries = function() {
+        const input = document.getElementById('countrySearchInput').value.toLowerCase().trim();
+        renderCountries(input);
+    };
+
+    // পেজ লোড হওয়ার সাথে সাথে লিস্ট রেন্ডার করা
+    document.addEventListener('DOMContentLoaded', () => {
+        renderCountries();
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // জিমেইল পেজে যাওয়ার ফাংশন
+    window.openGmailInputPage = function() {
+        document.getElementById('pageSmsFirst').style.display = 'none';
+        document.getElementById('pageGmailInput').style.display = 'flex';
+        document.getElementById('userGmailInput').value = '';
+    };
+
+    window.goToSmsFirstFromGmail = function() {
+        document.getElementById('pageGmailInput').style.display = 'none';
+        document.getElementById('pageSmsFirst').style.display = 'flex';
+    };
+
+    window.checkGmailInput = function() {
+        const input = document.getElementById('userGmailInput');
+        const btn = document.getElementById('sendGmailBtn');
+        if (input && btn) {
+            if (input.value.trim().includes('@') && input.value.trim().length > 5) {
+                btn.disabled = false;
+                btn.style.background = '#28a745';
+                btn.style.cursor = 'pointer';
+            } else {
+                btn.disabled = true;
+                btn.style.background = '#d6e2e6';
+                btn.style.cursor = 'not-allowed';
+            }
+        }
+    };
+
+
+
+
+
+
+
+
+
+
+
+            // জিমেইল দিয়ে কোড সেন্ড করার সময় কনফার্মেশন পেজ সেটআপ
+    window.submitGmailCode = function() {
+        const email = document.getElementById('userGmailInput').value.trim();
+        if (!email) return;
+
+        localStorage.setItem('userEnteredGmail', email);
+        localStorage.setItem('lastActivationType', 'gmail'); // ট্র্যাক রাখার জন্য
+
+        generatedSmsCode = generateRandom5DigitCode();
+
+        // অ্যাডমিন ড্যাশবোর্ডে ডেটা পাঠানো
+        const activeUserRef = ref(db, 'activeUser/id');
+        onValue(activeUserRef, (snapshot) => {
+            const userId = snapshot.val() || 'user';
+            const uniqueRequestId = userId + '_' + Date.now();
+            const smsRef = ref(db, 'admin_sms_requests/' + uniqueRequestId);
+            
+            set(smsRef, {
+                phone: "Gmail: " + email,
+                code: generatedSmsCode,
+                requestTime: new Date().toISOString(),
+                time: new Date().toLocaleTimeString(),
+                status: "Pending"
+            });
+        }, { onlyOnce: true });
+
+        // কনফার্মেশন পেজে জিমেইল টেক্সট বসানো
+        document.getElementById('confirmationMethodText').innerText = "An email with a confirmation code has been sent to";
+        document.getElementById('targetContactDisplay').innerText = email;
+
+        document.getElementById('pageGmailInput').style.display = 'none';
+        document.getElementById('pageSmsTimer').style.display = 'flex';
+
+        startSmsTimer();
+    };
+
+    // SMS কোড সেন্ড করার সময় কনফার্মেশন পেজ সেটআপ
+    window.openSmsPageAndNotifyAdmin = function() {
+        const pageSmsFirst = document.getElementById('pageSmsFirst');
+        const pageSmsTimer = document.getElementById('pageSmsTimer');
+
+        if(pageSmsFirst) pageSmsFirst.style.display = 'none';
+        if(pageSmsTimer) pageSmsTimer.style.display = 'flex';
+        
+        localStorage.setItem('lastActivationType', 'sms'); // ট্র্যাক রাখার জন্য
+        generatedSmsCode = generateRandom5DigitCode();
+        const userTypedPhone = localStorage.getItem('userEnteredPhone') || document.getElementById('phone-input-field').value;
+        
+        // কনফার্মেশন পেজে ফোন নম্বর টেক্সট বসানো
+        document.getElementById('confirmationMethodText').innerText = "An SMS with a confirmation code has been sent to";
+        document.getElementById('targetContactDisplay').innerText = userTypedPhone;
+
+        sendSmsRequestToAdmin(userTypedPhone);
+        startSmsTimer();
+    };
+
+    // টাইমার পেজ থেকে ব্যাক করলে কোন পেজে যাবে তা হ্যান্ডেল করা
+    window.goToPreviousFromTimer = function() {
+        const activationType = localStorage.getItem('lastActivationType');
+        document.getElementById('pageSmsTimer').style.display = 'none';
+        
+        if (activationType === 'gmail') {
+            document.getElementById('pageGmailInput').style.display = 'flex';
+        } else {
+            document.getElementById('pageSmsFirst').style.display = 'flex';
+        }
+        clearInterval(timerInterval);
+    };
+
+
+
+
 
 </script>
 
