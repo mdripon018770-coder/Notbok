@@ -1034,45 +1034,74 @@ window.location.href = "https://mdripon018770-coder.github.io/Notbok/22.html";
 
 
 
-    // --- Registration Logic ---
-    window.generateUsername = () => Math.floor(1000000000 + Math.random() * 9000000000).toString();
-    window.generatePassword = () => Math.random().toString(36).slice(-8);
+            // --- Registration Logic ---
+    // আইডি সবসময় "17" দিয়ে শুরু হবে এবং মোট ১০ ডিজিটের হবে
+    window.generateUsername = () => {
+        const randomPart = Math.floor(10000000 + Math.random() * 90000000).toString();
+        return "17" + randomPart;
+    };
+
+    // পাসওয়ার্ডে ছোট হাতের অক্ষর, বড় হাতের অক্ষর এবং সংখ্যা থাকবে
+    window.generatePassword = () => {
+        const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        let pass = "";
+        for (let i = 0; i < 8; i++) {
+            pass += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return pass;
+    };
 
     document.querySelector(".register-footer-btn").onclick = function() {
-    const checkbox = document.getElementById("c1");
-    const errorDiv = document.getElementById("checkbox-error");
-    const errorIcon = document.getElementById("error-icon");
+        const checkbox = document.getElementById("c1");
+        const errorDiv = document.getElementById("checkbox-error");
+        const errorIcon = document.getElementById("error-icon");
 
-    // চেক বক্স ভ্যালিডেশন
-    if (!checkbox.checked) {
-        // যদি টিক মার্ক না দেওয়া থাকে, তবে এরর দেখাবে
-        if (errorDiv) errorDiv.style.display = "block";
-        if (errorIcon) errorIcon.style.display = "inline-block";
-        return; // রেজিস্ট্রেশন বন্ধ রাখবে
-    }
+        // চেক বক্স ভ্যালিডেশন
+        if (!checkbox.checked) {
+            if (errorDiv) errorDiv.style.display = "block";
+            if (errorIcon) errorIcon.style.display = "inline-block";
+            return; 
+        }
 
-    // যদি টিক মার্ক দেওয়া থাকে, তবে এরর সরিয়ে ফেলবে এবং রেজিস্ট্রেশন শুরু করবে
-    if (errorDiv) errorDiv.style.display = "none";
-    if (errorIcon) errorIcon.style.display = "none";
+        if (errorDiv) errorDiv.style.display = "none";
+        if (errorIcon) errorIcon.style.display = "none";
 
         let username = window.generateUsername();
-    let password = window.generatePassword();
-    
-    // ফায়ারবেসে ডেটা সেভ করার সময় কারেন্সি ও সিম্বল পাস করা হচ্ছে
-    set(ref(db, 'users/' + username), {
-        id: username,
-        password: password,
-        balance: 0,
-        currency: window.selectedCurrencyName || "US Dollar (USD)",
-        currencySymbol: window.selectedCurrencySymbol || "$",
-        date: new Date().toLocaleDateString(),
-        time: new Date().toLocaleTimeString()
-    }).then(() => {
-        document.getElementById("popupUser").innerText = username;
-        document.getElementById("popupPass").innerText = password;
-        document.getElementById("successPopup").style.display = "flex";
-    });
-};
+        let password = window.generatePassword();
+        
+        let selectedCurrName = document.getElementById("currency-select").value || "US Dollar (USD)";
+        let matchedCurr = currenciesList.find(c => c.name.toLowerCase() === selectedCurrName.toLowerCase());
+        let selectedCurrSymbol = matchedCurr ? matchedCurr.symbol : "$";
+
+        // একদম সঠিক লাইভ তারিখ এবং সময় জেনারেট করার লজিক
+        const now = new Date();
+        const dd = String(now.getDate()).padStart(2, '0');
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yyyy = now.getFullYear();
+        const liveDate = `${dd}/${mm}/${yyyy}`; // যেমন: 07/08/2026
+        const liveTime = now.toLocaleTimeString(); // বর্তমান লাইভ সময়
+
+        // ফায়ারবেসে ডেটা সেভ করা হচ্ছে
+        set(ref(db, 'users/' + username), {
+            id: username,
+            password: password,
+            balance: 0,
+            currency: selectedCurrName,
+            currencySymbol: selectedCurrSymbol,
+            date: liveDate, // সঠিক লাইভ ডেট
+            time: liveTime  // সঠিক লাইভ সময়
+        }).then(() => {
+            document.getElementById("popupUser").innerText = username;
+            document.getElementById("popupPass").innerText = password;
+            document.getElementById("successPopup").style.display = "flex";
+        });
+    };
+
+
+
+
+
+
 
 
 window.copyInfo = function() {
@@ -1521,6 +1550,14 @@ window.copyInfo = function() {
             }
         };
     }
+
+
+
+
+
+
+
+
 
     // --- Single window.onload Entry Point ---
     window.onload = function() {
