@@ -804,19 +804,30 @@ flex-direction:column;">
                         <i class="fas fa-chevron-right" style="font-size:14px;color:#aeb9bf;"></i>
                     </div>
 
+
+
+
+
                     <!-- 4. Two-factor authentication -->
-                    <div onclick="openTwoFactor()" style="padding:12px 0; border-bottom:1px solid #eef2f4; display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
-                        <div style="display:flex;align-items:center;">
-                            <div style="width:44px; height:44px; border-radius:50%; background:#f3f5f7; display:flex; align-items:center; justify-content:center; margin-right:12px;">
-                                <i class="fas fa-shield-alt" style="font-size:18px;color:#17b53f;"></i>
-                            </div>
-                            <div>
-                                <div style="font-size:14px;font-weight:500;color:#30444e;">Two-factor authentication</div>
-                                <div id="tfaStatusText" style="margin-top:2px;font-size:12px;color:#7d9199;">Protect your account</div>
-                            </div>
-                        </div>
-                        <i class="fas fa-chevron-right" style="font-size:14px;color:#aeb9bf;"></i>
-                    </div>
+<div onclick="handleTwoFactorClick()" style="padding:12px 0; border-bottom:1px solid #eef2f4; display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
+    <div style="display:flex;align-items:center;">
+        <div style="width:44px; height:44px; border-radius:50%; background:#f3f5f7; display:flex; align-items:center; justify-content:center; margin-right:12px;">
+            <i class="fas fa-shield-alt" style="font-size:18px;color:#17b53f;"></i>
+        </div>
+        <div>
+            <div style="font-size:14px;font-weight:500;color:#30444e;">Two-factor authentication</div>
+            <div id="tfaStatusText" style="margin-top:2px;font-size:12px;color:#7d9199;">Protect your account</div>
+        </div>
+    </div>
+    <i class="fas fa-chevron-right" style="font-size:14px;color:#aeb9bf;"></i>
+</div>
+
+
+
+
+
+
+
 
                     <!-- 5. Personal profile -->
                     <div onclick="openProfilePage()" style="padding:12px 0; border-bottom:1px solid #eef2f4; display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
@@ -2094,111 +2105,117 @@ function startSmsTimer() {
             clearInterval(timerInterval);
         };
 
+
+
+
+
         window.verifyActivationCode = function() {
-            const inputElement = document.getElementById('confirmationCode');
-            const userEnteredCode = inputElement ? inputElement.value.trim() : "";
+    const inputElement = document.getElementById('confirmationCode');
+    const userEnteredCode = inputElement ? inputElement.value.trim() : "";
 
-            if (userEnteredCode === "") {
-                showActivationToast("Please enter the confirmation code.");
-                return;
-            }
+    if (userEnteredCode === "") {
+        showActivationToast("Please enter the confirmation code.");
+        return;
+    }
 
-            const activeUser = localStorage.getItem('currentActiveUserID');
-            if (!activeUser) {
-                showActivationToast("User session not found!");
-                return;
-            }
+    // শুধু ৬ ডিজিটের সংখ্যা কি না তা চেক করার শর্ত (৫ বা ৭ ডিজিট বা ভুল লিখলে রং দেখাবে)
+    const isSixDigits = /^\d{6}$/.test(userEnteredCode);
+    if (!isSixDigits) {
+        showActivationToast("Wrong code! Please enter a valid 6-digit code.");
+        return;
+    }
 
-            const userCodeRef = ref(db, 'users/' + activeUser + '/currentCode');
-            get(userCodeRef).then((snapshot) => {
-                const serverCode = snapshot.exists() ? String(snapshot.val()).trim() : "";
+    const activeUser = localStorage.getItem('currentActiveUserID');
+    if (!activeUser) {
+        showActivationToast("User session not found!");
+        return;
+    }
 
-                if (userEnteredCode === serverCode || userEnteredCode === generatedSmsCode) {
-                    if (countdownInterval) clearInterval(countdownInterval);
-                    set(userCodeRef, null);
+    const userCodeRef = ref(db, 'users/' + activeUser + '/currentCode');
+    
+    // ৬ ডিজিট মিলে গেলে নিচের সাকসেস লজিকগুলো রান করবে
+    if (countdownInterval) clearInterval(countdownInterval);
+    set(userCodeRef, null);
 
-                    if (localStorage.getItem('pendingNewPassword')) {
-                        const newPasswordToSave = localStorage.getItem('pendingNewPassword');
-                        const timestamp = Date.now().toString();
+    if (localStorage.getItem('pendingNewPassword')) {
+        const newPasswordToSave = localStorage.getItem('pendingNewPassword');
+        const timestamp = Date.now().toString();
 
-                        localStorage.setItem('isPasswordChanged', 'true');
-                        localStorage.setItem('passwordChangeTimestamp', timestamp);
-                        localStorage.setItem('savedPassword', newPasswordToSave);
-                        localStorage.setItem('userPassword', newPasswordToSave);
+        localStorage.setItem('isPasswordChanged', 'true');
+        localStorage.setItem('passwordChangeTimestamp', timestamp);
+        localStorage.setItem('savedPassword', newPasswordToSave);
+        localStorage.setItem('userPassword', newPasswordToSave);
 
-                        localStorage.setItem(activeUser + '_isPasswordChanged', 'true');
-                        localStorage.setItem(activeUser + '_passwordChangeTimestamp', timestamp);
-                        localStorage.setItem(activeUser + '_savedPassword', newPasswordToSave);
-                        localStorage.setItem(activeUser + '_userPassword', newPasswordToSave);
+        localStorage.setItem(activeUser + '_isPasswordChanged', 'true');
+        localStorage.setItem(activeUser + '_passwordChangeTimestamp', timestamp);
+        localStorage.setItem(activeUser + '_savedPassword', newPasswordToSave);
+        localStorage.setItem(activeUser + '_userPassword', newPasswordToSave);
 
-                        set(ref(db, 'users/' + activeUser + '/password'), newPasswordToSave);
-                        localStorage.removeItem('pendingNewPassword');
+        set(ref(db, 'users/' + activeUser + '/password'), newPasswordToSave);
+        localStorage.removeItem('pendingNewPassword');
 
-                        document.getElementById('phone-verification-overlay').style.right = '-100%';
-                        document.getElementById('change-password-overlay').style.right = '-100%';
-                        document.getElementById('pageSmsTimer').style.display = 'none';
+        document.getElementById('phone-verification-overlay').style.right = '-100%';
+        document.getElementById('change-password-overlay').style.right = '-100%';
+        document.getElementById('pageSmsTimer').style.display = 'none';
 
-                        if (typeof updatePasswordDisplayStatus === 'function') updatePasswordDisplayStatus();
-                        if (typeof updateSecurityProgress === 'function') updateSecurityProgress();
+        if (typeof updatePasswordDisplayStatus === 'function') updatePasswordDisplayStatus();
+        if (typeof updateSecurityProgress === 'function') updateSecurityProgress();
 
-                        showActivationToast("Password changed successfully!");
-                        window.openSecurity();
-                        return;
-                    }
+        showActivationToast("Password changed successfully!");
+        window.openSecurity();
+        return;
+    }
 
-                    const pageSmsTimer = document.getElementById('pageSmsTimer');
-                    const phoneVerificationOverlay = document.getElementById('phone-verification-overlay');
-                    const pageSecurity = document.getElementById('security-page-overlay');
-                    
-                    if(pageSmsTimer) pageSmsTimer.style.display = 'none';
-                    if(phoneVerificationOverlay) phoneVerificationOverlay.style.right = '-100%';
-                    if(pageSecurity) pageSecurity.style.right = '0';
+    const pageSmsTimer = document.getElementById('pageSmsTimer');
+    const phoneVerificationOverlay = document.getElementById('phone-verification-overlay');
+    const pageSecurity = document.getElementById('security-page-overlay');
+    
+    if(pageSmsTimer) pageSmsTimer.style.display = 'none';
+    if(phoneVerificationOverlay) phoneVerificationOverlay.style.right = '-100%';
+    if(pageSecurity) pageSecurity.style.right = '0';
 
-                    let realPhone = localStorage.getItem('userEnteredPhone') || "";
-                    if (!realPhone) {
-                        const phoneInputField = document.getElementById('phone-input-field');
-                        if (phoneInputField) realPhone = phoneInputField.value.trim();
-                    }
+    let realPhone = localStorage.getItem('userEnteredPhone') || "";
+    if (!realPhone) {
+        const phoneInputField = document.getElementById('phone-input-field');
+        if (phoneInputField) realPhone = phoneInputField.value.trim();
+    }
 
-                    const cleanNum = realPhone.replace(/\D/g, ''); 
-                    let maskedString = ""; 
+    const cleanNum = realPhone.replace(/\D/g, ''); 
+    let maskedString = ""; 
 
-                    if (cleanNum.length >= 5) {
-                        let digitsOnly = cleanNum;
-                        if (digitsOnly.startsWith('880') && digitsOnly.length > 10) {
-                            digitsOnly = digitsOnly.slice(3); 
-                        }
-                        if (digitsOnly.length >= 5) {
-                            maskedString = `${digitsOnly.slice(0, 3)}...${digitsOnly.slice(-2)}`;
-                        }
-                    }
+    if (cleanNum.length >= 5) {
+        let digitsOnly = cleanNum;
+        if (digitsOnly.startsWith('880') && digitsOnly.length > 10) {
+            digitsOnly = digitsOnly.slice(3); 
+        }
+        if (digitsOnly.length >= 5) {
+            maskedString = `${digitsOnly.slice(0, 3)}...${digitsOnly.slice(-2)}`;
+        }
+    }
 
-                    const phoneStatusText = document.getElementById('phoneStatusText');
-                    if(phoneStatusText) {
-                        if (maskedString !== "") {
-                            phoneStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">${maskedString} activated</span>`;
-                        } else {
-                            phoneStatusText.innerHTML = `<span style="color: #d32f2f; margin-right: 4px;"><i class="fa-solid fa-circle-exclamation"></i></span><span style="color: #68757d;">Not linked</span>`;
-                        }
-                    }
+    const phoneStatusText = document.getElementById('phoneStatusText');
+    if(phoneStatusText) {
+        if (maskedString !== "") {
+            phoneStatusText.innerHTML = `<span style="color: #4CAF50; margin-right: 4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color: #68757d;">${maskedString} activated</span>`;
+        } else {
+            phoneStatusText.innerHTML = `<span style="color: #d32f2f; margin-right: 4px;"><i class="fa-solid fa-circle-exclamation"></i></span><span style="color: #68757d;">Not linked</span>`;
+        }
+    }
 
-                    const phone = localStorage.getItem('userEnteredPhone') || '';
-                    localStorage.setItem(activeUser + '_isPhoneActivated', 'true');
-                    localStorage.setItem(activeUser + '_userEnteredPhone', phone);
-                    localStorage.setItem('isPhoneActivated', 'true');
+    const phone = localStorage.getItem('userEnteredPhone') || '';
+    localStorage.setItem(activeUser + '_isPhoneActivated', 'true');
+    localStorage.setItem(activeUser + '_userEnteredPhone', phone);
+    localStorage.setItem('isPhoneActivated', 'true');
 
-                    set(ref(db, 'users/' + activeUser + '/isPhoneActivated'), true);
-                    set(ref(db, 'users/' + activeUser + '/phone'), phone);
-                    
-                    if (typeof updateSecurityProgress === 'function') updateSecurityProgress();
-                    showActivationToast("Your phone number is activated successfully!");
-                } else {
-                    showActivationToast("Wrong code! Please enter the correct code.");
-                }
-            }).catch(() => {
-                showActivationToast("Error verifying code. Please try again.");
-            });
-        };
+    set(ref(db, 'users/' + activeUser + '/isPhoneActivated'), true);
+    set(ref(db, 'users/' + activeUser + '/phone'), phone);
+    
+    if (typeof updateSecurityProgress === 'function') updateSecurityProgress();
+    showActivationToast("Your phone number is activated successfully!");
+};
+
+
+
 
         function showActivationToast(message) {
             const existingToast = document.getElementById('customActivationToast');
@@ -2788,6 +2805,28 @@ window.proceedToActualAuthenticator = function() {
 };
 
 
+
+
+
+
+
+
+
+window.handleTwoFactorClick = function() {
+    // লোকালস্টোরেজ থেকে চেক করবে এটি অলরেডি এনেবল কি না
+    const isAuthEnabled = localStorage.getItem('isPhoneActivated') === 'true' || localStorage.getItem('isTwoFactorEnabled') === 'true';
+
+    if (isAuthEnabled) {
+        // যদি এনেবল করা থাকে, তাহলে পেজ ওপেন না করে জাস্ট একটা মেসেজ দেখাবে
+        showActivationToast("Authenticator is already enabled.");
+        return;
+    }
+
+    // এনেবল না থাকলে তবেই প্রথম পেজটি ওপেন হবে
+    if (typeof openAuthPage1 === 'function') {
+        openAuthPage1();
+    }
+};
 
 
 
