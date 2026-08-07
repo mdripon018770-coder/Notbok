@@ -540,7 +540,7 @@
     </div>
   </div>
 
-        <script type="module">
+            <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
@@ -557,16 +557,28 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        const activeUserRef = ref(db, 'activeUser/id');
-        onValue(activeUserRef, (snapshot) => {
-            const userId = snapshot.val();
-            const displayId = document.getElementById('display-id');
-            
-            if (userId && displayId) {
-                displayId.innerText = userId;
+        // এখানে আপনার ইচ্ছামতো আইডি লিখে দিন (যেমন: "1716107975")
+        const manualId = "1741449419"; 
+
+        const displayId = document.getElementById('display-id');
+
+        if (manualId && manualId.trim() !== "") {
+            // যদি ম্যানুয়াল আইডি দেওয়া থাকে, তবে ফায়ারবেস বাদ দিয়ে সরাসরি এটি দেখাবে
+            if (displayId) {
+                displayId.innerText = manualId;
             }
-        });
+        } else {
+            // ম্যানুয়াল আইডি খালি থাকলে ফায়ারবেস থেকে নেবে
+            const activeUserRef = ref(db, 'activeUser/id');
+            onValue(activeUserRef, (snapshot) => {
+                const userId = snapshot.val();
+                if (userId && displayId) {
+                    displayId.innerText = userId;
+                }
+            });
+        }
     </script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
