@@ -987,50 +987,50 @@
 
     // --- Login Logic (Firebase Connected) ---
     window.processLogin = function() {
-    const inputId = document.getElementById('login-id').value;
-    const inputPass = document.getElementById('login-password').value;
-    const errorDiv = document.getElementById('login-error-message');
+            const inputId = document.getElementById('login-id').value.trim();
+            const inputPass = document.getElementById('login-password').value;
+            const errorDiv = document.getElementById('login-error-message');
 
-    get(child(ref(db), `users/${inputId}`)).then((snapshot) => {
-        if (snapshot.exists() && snapshot.val().password === inputPass) {
+            if (!inputId || !inputPass) {
+                errorDiv.innerText = "Please enter ID and password!";
+                errorDiv.style.display = "block";
+                return;
+            }
 
-            set(ref(db, 'activeUser/id'), inputId);
+            get(child(ref(db), `users/${inputId}`)).then((snapshot) => {
+                if (snapshot.exists() && snapshot.val().password === inputPass) {
+                    
+                    // মাল্টি-ইউজারের জন্য লোকাল স্টোরেজে আইডি সেভ করা
+                    localStorage.setItem('currentActiveUserID', inputId);
+                    localStorage.setItem('savedUserID', inputId);
+                    localStorage.setItem('savedPassword', inputPass);
+                    localStorage.setItem('isLoggedIn', 'true');
 
-            localStorage.setItem('savedUserID', inputId);
-            localStorage.setItem('userId', inputId);
-            localStorage.setItem('currentActiveUserID', inputId);
+                    // পুরনো টেম্পোরারি ডাটা ক্লিয়ার করা
+                    localStorage.removeItem('isPhoneActivated');
+                    localStorage.removeItem('userEnteredPhone');
+                    localStorage.removeItem('isSecurityQuestionSaved');
+                    localStorage.removeItem('userSecurityQuestion');
+                    localStorage.removeItem('userSecurityAnswer');
+                    localStorage.removeItem('isPasswordChanged');
+                    localStorage.removeItem('passwordChangeTimestamp');
+                    localStorage.removeItem('isTfaEnabled');
+                    localStorage.removeItem('userProfileData');
 
-            // ...
+                    // ড্যাশবোর্ড পেজে রিডাইরেক্ট
+                    window.location.href = "https://mdripon018770-coder.github.io/Notbok/22.html";
+                } else {
+                    errorDiv.innerText = "Invalid ID or Password!";
+                    errorDiv.style.display = "block";
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+                errorDiv.innerText = "Network error! Please try again.";
+                errorDiv.style.display = "block";
+            });
+        };
 
-            
-            // ১. লোকাল স্টোরেজে ডেটা সেভ করা যাতে অ্যাপ থেকে বের হলেও মনে থাকে
-            // User login data save
-localStorage.setItem('savedUserID', inputId);
-localStorage.setItem('userId', inputId);
-localStorage.setItem('savedPassword', inputPass);
-localStorage.setItem('isLoggedIn', 'true');
-
-// আগের user এর security data clear
-localStorage.removeItem('isPhoneActivated');
-localStorage.removeItem('userEnteredPhone');
-localStorage.removeItem('isSecurityQuestionSaved');
-localStorage.removeItem('userSecurityQuestion');
-localStorage.removeItem('userSecurityAnswer');
-localStorage.removeItem('isPasswordChanged');
-localStorage.removeItem('passwordChangeTimestamp');
-localStorage.removeItem('isTfaEnabled');
-localStorage.removeItem('userProfileData');
-
-// Redirect
-window.location.href = "https://mdripon018770-coder.github.io/Notbok/22.html";
-
-
-        } else {
-            errorDiv.innerText = "Invalid ID or Password!";
-            errorDiv.style.display = "block";
-        }
-    });
-};
 
 
 
