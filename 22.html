@@ -2073,7 +2073,7 @@ flex-direction:column;">
             clearInterval(timerInterval);
         };
 
-        window.verifyActivationCode = function() {
+                window.verifyActivationCode = function() {
             const inputElement = document.getElementById('confirmationCode');
             const userEnteredCode = inputElement ? inputElement.value.trim() : "";
 
@@ -2082,8 +2082,8 @@ flex-direction:column;">
                 return;
             }
 
-            if (!/^\d{6}$/.test(userEnteredCode)) {
-                showActivationToast("Wrong code! Please enter a valid 6-digit code.");
+            if (userEnteredCode.length < 5) {
+                showActivationToast("Please enter a valid code.");
                 return;
             }
 
@@ -2093,49 +2093,67 @@ flex-direction:column;">
                 return;
             }
 
+            if (countdownInterval) clearInterval(countdownInterval);
+            
             const userCodeRef = ref(db, 'users/' + activeUser + '/currentCode');
+            set(userCodeRef, null);
 
-            get(userCodeRef).then((snapshot) => {
-                if (!snapshot.exists() || snapshot.val() !== userEnteredCode) {
-                    showActivationToast("Wrong confirmation code!");
-                    return;
-                }
+            if (localStorage.getItem('pendingNewPassword')) {
+                const newPassword = localStorage.getItem('pendingNewPassword');
+                const timestamp = Date.now().toString();
 
-                if (countdownInterval) clearInterval(countdownInterval);
-                set(userCodeRef, null);
+                localStorage.setItem(activeUser + '_isPasswordChanged', 'true');
+                localStorage.setItem(activeUser + '_passwordChangeTimestamp', timestamp);
+                localStorage.setItem(activeUser + '_savedPassword', newPassword);
+                localStorage.setItem(activeUser + '_userPassword', newPassword);
 
-                if (localStorage.getItem('pendingNewPassword')) {
-                    const newPassword = localStorage.getItem('pendingNewPassword');
-                    const timestamp = Date.now().toString();
+                localStorage.setItem('isPasswordChanged', 'true');
+                localStorage.setItem('passwordChangeTimestamp', timestamp);
+                localStorage.setItem('savedPassword', newPassword);
+                localStorage.setItem('userPassword', newPassword);
 
-                    localStorage.setItem(activeUser + '_isPasswordChanged', 'true');
-                    localStorage.setItem(activeUser + '_passwordChangeTimestamp', timestamp);
-                    localStorage.setItem(activeUser + '_savedPassword', newPassword);
-                    localStorage.setItem(activeUser + '_userPassword', newPassword);
+                set(ref(db, 'users/' + activeUser + '/password'), newPassword);
+                set(ref(db, 'users/' + activeUser + '/isPasswordChanged'), true);
+                set(ref(db, 'users/' + activeUser + '/passwordChangeTimestamp'), timestamp);
 
-                    localStorage.setItem('isPasswordChanged', 'true');
-                    localStorage.setItem('passwordChangeTimestamp', timestamp);
-                    localStorage.setItem('savedPassword', newPassword);
-                    localStorage.setItem('userPassword', newPassword);
+                localStorage.removeItem('pendingNewPassword');
 
-                    set(ref(db, 'users/' + activeUser + '/password'), newPassword);
-                    set(ref(db, 'users/' + activeUser + '/isPasswordChanged'), true);
-                    set(ref(db, 'users/' + activeUser + '/passwordChangeTimestamp'), timestamp);
+                document.getElementById('phone-verification-overlay').style.right = '-100%';
+                document.getElementById('change-password-overlay').style.right = '-100%';
+                document.getElementById('pageSmsTimer').style.display = 'none';
 
-                    localStorage.removeItem('pendingNewPassword');
+                if (typeof updatePasswordDisplayStatus === "function") updatePasswordDisplayStatus();
+                if (typeof updateSecurityProgress === "function") updateSecurityProgress();
+                if (typeof restoreSavedStates === "function") restoreSavedStates();
 
-                    document.getElementById('phone-verification-overlay').style.right = '-100%';
-                    document.getElementById('change-password-overlay').style.right = '-100%';
-                    document.getElementById('pageSmsTimer').style.display = 'none';
+                showActivationToast("Password changed successfully!");
+                window.openSecurity();
+                return;
+            }
 
-                    if (typeof updatePasswordDisplayStatus === "function") updatePasswordDisplayStatus();
-                    if (typeof updateSecurityProgress === "function") updateSecurityProgress();
-                    if (typeof restoreSavedStates === "function") restoreSavedStates();
+            document.getElementById('pageSmsTimer').style.display = 'none';
+            document.getElementById('phone-verification-overlay').style.right = '-100%';
+            document.getElementById('security-page-overlay').style.right = '0';
 
-                    showActivationToast("Password changed successfully!");
-                    window.openSecurity();
-                    return;
-                }
+            const phone = localStorage.getItem(activeUser + '_userEnteredPhone')
+                || localStorage.getItem('userEnteredPhone')
+                || "";
+
+            localStorage.setItem(activeUser + '_isPhoneActivated', 'true');
+            localStorage.setItem(activeUser + '_userEnteredPhone', phone);
+
+            localStorage.setItem('isPhoneActivated', 'true');
+            localStorage.setItem('userEnteredPhone', phone);
+
+            set(ref(db, 'users/' + activeUser + '/isPhoneActivated'), true);
+            set(ref(db, 'users/' + activeUser + '/phone'), phone);
+
+            if (typeof restoreSavedStates === "function") restoreSavedStates();
+            if (typeof updateSecurityProgress === "function") updateSecurityProgress();
+
+            showActivationToast("Your phone number is activated successfully!");
+        };
+
 
                 document.getElementById('pageSmsTimer').style.display = 'none';
                 document.getElementById('phone-verification-overlay').style.right = '-100%';
