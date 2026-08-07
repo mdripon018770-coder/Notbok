@@ -1340,7 +1340,7 @@ flex-direction:column;">
             }
         };
 
-        window.saveProfile = function() {
+                window.saveProfile = function() {
             const saveBtn = document.getElementById('saveBtn');
 
             if (saveBtn) {
@@ -1360,33 +1360,43 @@ flex-direction:column;">
                     savedData = JSON.parse(localStorage.getItem("userProfileData")) || {};
                 }
 
+                // সব ইনপুট ফিল্ডের আইডি এবং ভ্যালু ডায়নামিক্যালি ক্যাপচার করা
                 inputs.forEach(input => {
-                    if (input && input.value && input.value.trim() !== "") {
+                    if (input && input.id && input.value && input.value.trim() !== "") {
                         savedData[input.id] = input.value.trim();
                     }
                 });
 
-                const isComplete =
-                    savedData["reg-name"] &&
-                    savedData["reg-username"] &&
-                    savedData["reg-email"] &&
-                    savedData["reg-phone"] &&
-                    savedData["reg-city"] &&
-                    savedData["reg-country"];
-
+                // ফায়ারবেস বা লোকালস্টোরেজে প্রোফাইল অবজেক্ট এবং মূল ফিল্ডগুলো সরাসরি সেভ করা
                 localStorage.setItem("userProfileData", JSON.stringify(savedData));
-                localStorage.setItem("isProfileFilled", isComplete ? "true" : "false");
+                localStorage.setItem("isProfileFilled", "true");
 
                 if (activeUser) {
                     localStorage.setItem(activeUser + "_userProfileData", JSON.stringify(savedData));
-                    localStorage.setItem(activeUser + "_isProfileFilled", isComplete ? "true" : "false");
+                    localStorage.setItem(activeUser + "_isProfileFilled", "true");
 
-                    set(ref(db, "users/" + activeUser + "/profile"), savedData);
-                    set(ref(db, "users/" + activeUser + "/isProfileFilled"), !!isComplete);
+                    // ফায়ারবেসের সরাসরি রুটেও নাম, ইমেল, ফোন, কান্ট্রি, সিটি সেভ করে দেওয়া যাতে ড্যাশবোর্ডে ইনস্ট্যান্ট পায়
+                    const profileUpdates = {
+                        profile: savedData,
+                        isProfileFilled: true
+                    };
+
+                    // আলাদা আলাদা ফিল্ড থাকলে সেগুলোও ফায়ারবেসে ম্যাপ করে দেওয়া
+                    inputs.forEach(input => {
+                        if (input && input.id && input.value && input.value.trim() !== "") {
+                            if (input.id.includes('name') && !input.id.includes('user')) profileUpdates.fullName = input.value.trim();
+                            if (input.id.includes('user')) profileUpdates.username = input.value.trim();
+                            if (input.id.includes('email')) profileUpdates.email = input.value.trim();
+                            if (input.id.includes('phone')) profileUpdates.phone = input.value.trim();
+                            if (input.id.includes('city')) profileUpdates.city = input.value.trim();
+                            if (input.id.includes('country')) profileUpdates.country = input.value.trim();
+                        }
+                    });
+
+                    set(ref(db, "users/" + activeUser), profileUpdates);
                 }
 
                 loadProfileData();
-                window.checkAndHideFields();
 
                 if (saveBtn) {
                     saveBtn.innerText = "Save";
@@ -1394,15 +1404,14 @@ flex-direction:column;">
                     saveBtn.disabled = false;
                 }
 
-                closeForm();
-
+                if (typeof closeForm === "function") closeForm();
                 if (typeof updateSecurityProgress === "function") updateSecurityProgress();
                 if (typeof restoreSavedStates === "function") restoreSavedStates();
 
-            }, 2000);
+            }, 1000);
         };
 
-                async function loadProfileData() {
+        async function loadProfileData() {
             const activeUser = localStorage.getItem("currentActiveUserID") || localStorage.getItem("userId");
 
             if (!activeUser) return;
@@ -1415,36 +1424,46 @@ flex-direction:column;">
 
                 const data = snapshot.val();
 
-                // এখানে data.date যুক্ত করা হয়েছে যাতে রেজিস্ট্রেশনের লাইভ ডেট সঠিকভাবে শো করে
+                // রেজিস্ট্রেশন ডেট সেট করা
                 const regDate = data.createdAt || data.regDate || data.date || "Not available";
                 const regDateEl = document.getElementById("display-reg-date");
                 if (regDateEl) regDateEl.innerText = regDate;
 
-                let profileNameVal = activeUser;
+                // ফায়ারবেস থেকে সরাসরি অথবা profile অবজেক্ট থেকে ডেটা রিড করার ব্যবস্থা
+                const prof = data.profile || {};
+                
+                const fullNameVal = data.fullName || prof["reg-name"] || prof["name"] || "";
+                const usernameVal = data.username || prof["reg-username"] || prof["username"] || "";
+                const emailVal = data.email || prof["reg-email"] || prof["email"] || "";
+                const phoneVal = data.phone || prof["reg-phone"] || prof["phone"] || "";
+                const cityVal = data.city || prof["reg-city"] || prof["city"] || "";
+                const countryVal = data.country || prof["reg-country"] || prof["country"] || "";
 
-                if (data.fullName && data.fullName.trim() !== "") {
-                    profileNameVal = data.fullName;
-                } else if (data.username && data.username.trim() !== "") {
-                    profileNameVal = data.username;
-                }
-
+                // UI এর ডিসপ্লে এলিমেন্টগুলোতে ডেটা বসানো
                 const displayName = document.getElementById("display-name");
-                if (displayName) displayName.innerText = data.fullName || "Not filled in";
+                if (displayName) displayName.innerText = fullNameVal !== "" ? fullNameVal : "Not filled in";
 
                 const displayUsername = document.getElementById("display-username");
-                if (displayUsername) displayUsername.innerText = data.username || "Not filled in";
+                if (displayUsername) displayUsername.innerText = usernameVal !== "" ? usernameVal : "Not filled in";
 
                 const displayEmail = document.getElementById("display-email");
-                if (displayEmail) displayEmail.innerText = data.email || "Not filled in";
+                if (displayEmail) displayEmail.innerText = emailVal !== "" ? emailVal : "Not filled in";
 
                 const displayPhone = document.getElementById("display-phone");
-                if (displayPhone) displayPhone.innerText = data.phone || "Not filled in";
+                if (displayPhone) displayPhone.innerText = phoneVal !== "" ? phoneVal : "Not filled in";
 
                 const displayCity = document.getElementById("display-city");
-                if (displayCity) displayCity.innerText = data.city || "Not filled in";
+                if (displayCity) displayCity.innerText = cityVal !== "" ? cityVal : "Not filled in";
 
                 const displayCountry = document.getElementById("display-country");
-                if (displayCountry) displayCountry.innerText = data.country || "Not filled in";
+                if (displayCountry) displayCountry.innerText = countryVal !== "" ? countryVal : "Not filled in";
+
+                let profileNameVal = activeUser;
+                if (fullNameVal !== "") {
+                    profileNameVal = fullNameVal;
+                } else if (usernameVal !== "") {
+                    profileNameVal = usernameVal;
+                }
 
                 const nameDisplay = document.getElementById("profileName");
                 if (nameDisplay) nameDisplay.innerText = profileNameVal;
@@ -1453,6 +1472,7 @@ flex-direction:column;">
                 console.error("Profile Load Error:", err);
             }
         }
+
 
 
         document.addEventListener('DOMContentLoaded', () => {
