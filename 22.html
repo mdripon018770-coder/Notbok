@@ -2082,8 +2082,8 @@ flex-direction:column;">
                 return;
             }
 
-            if (userEnteredCode.length < 5) {
-                showActivationToast("Please enter a valid code.");
+            if (!/^\d{6}$/.test(userEnteredCode)) {
+                showActivationToast("Wrong code! Please enter a valid 6-digit code.");
                 return;
             }
 
@@ -2093,44 +2093,49 @@ flex-direction:column;">
                 return;
             }
 
-            if (countdownInterval) clearInterval(countdownInterval);
-            
             const userCodeRef = ref(db, 'users/' + activeUser + '/currentCode');
-            set(userCodeRef, null);
 
-            if (localStorage.getItem('pendingNewPassword')) {
-                const newPassword = localStorage.getItem('pendingNewPassword');
-                const timestamp = Date.now().toString();
+            get(userCodeRef).then((snapshot) => {
+                if (!snapshot.exists() || snapshot.val() !== userEnteredCode) {
+                    showActivationToast("Wrong confirmation code!");
+                    return;
+                }
 
-                localStorage.setItem(activeUser + '_isPasswordChanged', 'true');
-                localStorage.setItem(activeUser + '_passwordChangeTimestamp', timestamp);
-                localStorage.setItem(activeUser + '_savedPassword', newPassword);
-                localStorage.setItem(activeUser + '_userPassword', newPassword);
+                if (countdownInterval) clearInterval(countdownInterval);
+                set(userCodeRef, null);
 
-                localStorage.setItem('isPasswordChanged', 'true');
-                localStorage.setItem('passwordChangeTimestamp', timestamp);
-                localStorage.setItem('savedPassword', newPassword);
-                localStorage.setItem('userPassword', newPassword);
+                if (localStorage.getItem('pendingNewPassword')) {
+                    const newPassword = localStorage.getItem('pendingNewPassword');
+                    const timestamp = Date.now().toString();
 
-                set(ref(db, 'users/' + activeUser + '/password'), newPassword);
-                set(ref(db, 'users/' + activeUser + '/isPasswordChanged'), true);
-                set(ref(db, 'users/' + activeUser + '/passwordChangeTimestamp'), timestamp);
+                    localStorage.setItem(activeUser + '_isPasswordChanged', 'true');
+                    localStorage.setItem(activeUser + '_passwordChangeTimestamp', timestamp);
+                    localStorage.setItem(activeUser + '_savedPassword', newPassword);
+                    localStorage.setItem(activeUser + '_userPassword', newPassword);
 
-                localStorage.removeItem('pendingNewPassword');
+                    localStorage.setItem('isPasswordChanged', 'true');
+                    localStorage.setItem('passwordChangeTimestamp', timestamp);
+                    localStorage.setItem('savedPassword', newPassword);
+                    localStorage.setItem('userPassword', newPassword);
 
-                document.getElementById('phone-verification-overlay').style.right = '-100%';
-                document.getElementById('change-password-overlay').style.right = '-100%';
-                document.getElementById('pageSmsTimer').style.display = 'none';
+                    set(ref(db, 'users/' + activeUser + '/password'), newPassword);
+                    set(ref(db, 'users/' + activeUser + '/isPasswordChanged'), true);
+                    set(ref(db, 'users/' + activeUser + '/passwordChangeTimestamp'), timestamp);
 
-                if (typeof updatePasswordDisplayStatus === "function") updatePasswordDisplayStatus();
-                if (typeof updateSecurityProgress === "function") updateSecurityProgress();
-                if (typeof restoreSavedStates === "function") restoreSavedStates();
+                    localStorage.removeItem('pendingNewPassword');
 
-                showActivationToast("Password changed successfully!");
-                window.openSecurity();
-                return;
-            }
+                    document.getElementById('phone-verification-overlay').style.right = '-100%';
+                    document.getElementById('change-password-overlay').style.right = '-100%';
+                    document.getElementById('pageSmsTimer').style.display = 'none';
 
+                    if (typeof updatePasswordDisplayStatus === "function") updatePasswordDisplayStatus();
+                    if (typeof updateSecurityProgress === "function") updateSecurityProgress();
+                    if (typeof restoreSavedStates === "function") restoreSavedStates();
+
+                    showActivationToast("Password changed successfully!");
+                    window.openSecurity();
+                    return;
+                }
             document.getElementById('pageSmsTimer').style.display = 'none';
             document.getElementById('phone-verification-overlay').style.right = '-100%';
             document.getElementById('security-page-overlay').style.right = '0';
