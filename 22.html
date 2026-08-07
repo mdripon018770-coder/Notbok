@@ -2756,6 +2756,9 @@ flex-direction:column;">
             if (page2) page2.style.right = '-100%';
         };
 
+
+
+
         window.proceedToActualAuthenticator = function() {
             closeAuthPage2();
             if (typeof openTwoFactor === 'function') {
@@ -2775,6 +2778,36 @@ flex-direction:column;">
                 openAuthPage1();
             }
         };
+
+
+
+
+
+
+window.checkCurrentPassInput = function() {
+    const currentPassInput = document.getElementById('current-pass');
+    const nextBtn = document.getElementById('passNextBtn');
+
+    if (currentPassInput && nextBtn) {
+        if (currentPassInput.value.trim().length > 0) {
+            nextBtn.disabled = false;
+            nextBtn.style.backgroundColor = '#28a745';
+            nextBtn.style.cursor = 'pointer';
+        } else {
+            nextBtn.disabled = true;
+            nextBtn.style.backgroundColor = '#d0e1d4';
+            nextBtn.style.cursor = 'not-allowed';
+        }
+    }
+};
+
+
+
+
+
+
+
+
     </script>
 
 </body>
