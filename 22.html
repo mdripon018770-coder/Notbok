@@ -2073,7 +2073,7 @@ flex-direction:column;">
             clearInterval(timerInterval);
         };
 
-                window.verifyActivationCode = function() {
+               window.verifyActivationCode = function() {
             const inputElement = document.getElementById('confirmationCode');
             const userEnteredCode = inputElement ? inputElement.value.trim() : "";
 
@@ -2136,28 +2136,6 @@ flex-direction:column;">
                     window.openSecurity();
                     return;
                 }
-            document.getElementById('pageSmsTimer').style.display = 'none';
-            document.getElementById('phone-verification-overlay').style.right = '-100%';
-            document.getElementById('security-page-overlay').style.right = '0';
-
-            const phone = localStorage.getItem(activeUser + '_userEnteredPhone')
-                || localStorage.getItem('userEnteredPhone')
-                || "";
-
-            localStorage.setItem(activeUser + '_isPhoneActivated', 'true');
-            localStorage.setItem(activeUser + '_userEnteredPhone', phone);
-
-            localStorage.setItem('isPhoneActivated', 'true');
-            localStorage.setItem('userEnteredPhone', phone);
-
-            set(ref(db, 'users/' + activeUser + '/isPhoneActivated'), true);
-            set(ref(db, 'users/' + activeUser + '/phone'), phone);
-
-            if (typeof restoreSavedStates === "function") restoreSavedStates();
-            if (typeof updateSecurityProgress === "function") updateSecurityProgress();
-
-            showActivationToast("Your phone number is activated successfully!");
-        };
 
 
                 document.getElementById('pageSmsTimer').style.display = 'none';
