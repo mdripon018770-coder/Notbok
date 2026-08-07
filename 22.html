@@ -1228,7 +1228,7 @@ flex-direction:column;">
 
 
 
-        <!-- Scripts -->
+            <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
@@ -1247,18 +1247,25 @@ flex-direction:column;">
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        window.openDeposit = function () {
+                window.openDeposit = function () {
             const overlay = document.getElementById("deposit-page-overlay");
             const frame = document.getElementById("deposit-frame");
 
             if (overlay) overlay.style.zIndex = "5000";
             if (frame) frame.src = "";
 
+            // লোকালস্টোরেজ থেকে রিয়েল ইউজার আইডি পিক করা
+            const activeUser = localStorage.getItem("currentActiveUserID") || localStorage.getItem("userId") || "";
+
             setTimeout(() => {
-                if (frame) frame.src = "https://mdripon018770-coder.github.io/Notbok/22dp.html";
+                // আইফ্রেমের লিংকের সাথে সঠিক ইউজার আইডি পাস করে দেওয়া
+                if (frame) {
+                    frame.src = `https://mdripon018770-coder.github.io/Notbok/22dp.html?userid=${activeUser}`;
+                }
                 if (overlay) overlay.classList.add("active");
             }, 50);
         };
+
 
         window.closeDeposit = function () {
             const overlay = document.getElementById("deposit-page-overlay");
@@ -1269,6 +1276,7 @@ flex-direction:column;">
                 if (frame) frame.src = "";
             }, 400);
         };
+
 
         window.switchTab = function(tab) {
             const home = document.getElementById('home-content');
