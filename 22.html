@@ -1402,7 +1402,7 @@ flex-direction:column;">
             }, 2000);
         };
 
-        async function loadProfileData() {
+                async function loadProfileData() {
             const activeUser = localStorage.getItem("currentActiveUserID") || localStorage.getItem("userId");
 
             if (!activeUser) return;
@@ -1415,7 +1415,8 @@ flex-direction:column;">
 
                 const data = snapshot.val();
 
-                const regDate = data.createdAt || data.regDate || "Not available";
+                // এখানে data.date যুক্ত করা হয়েছে যাতে রেজিস্ট্রেশনের লাইভ ডেট সঠিকভাবে শো করে
+                const regDate = data.createdAt || data.regDate || data.date || "Not available";
                 const regDateEl = document.getElementById("display-reg-date");
                 if (regDateEl) regDateEl.innerText = regDate;
 
@@ -1452,6 +1453,7 @@ flex-direction:column;">
                 console.error("Profile Load Error:", err);
             }
         }
+
 
         document.addEventListener('DOMContentLoaded', () => {
             const currentStoredUser = localStorage.getItem('currentActiveUserID');
