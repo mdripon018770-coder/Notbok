@@ -540,7 +540,7 @@
     </div>
   </div>
 
-            <script type="module">
+                <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
@@ -557,27 +557,35 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // এখানে আপনার ইচ্ছামতো আইডি লিখে দিন (যেমন: "1716107975")
-        const manualId = "1741449419"; 
-
         const displayId = document.getElementById('display-id');
 
-        if (manualId && manualId.trim() !== "") {
-            // যদি ম্যানুয়াল আইডি দেওয়া থাকে, তবে ফায়ারবেস বাদ দিয়ে সরাসরি এটি দেখাবে
-            if (displayId) {
-                displayId.innerText = manualId;
-            }
+        // ১. সবার আগে চেক করা যে লিংকের সাথে কোনো userid পাস হয়েছে কি না (?userid=...)
+        const urlParams = new URLSearchParams(window.location.search);
+        const userIdFromUrl = urlParams.get('userid');
+
+        if (userIdFromUrl && userIdFromUrl !== "" && userIdFromUrl !== "null" && userIdFromUrl !== "undefined") {
+            // যদি ইউআরএল-এ আইডি পাওয়া যায়, তবে সাথে সাথে সেটি স্ক্রিনে বসিয়ে দেওয়া এবং লোকালস্টোরেজে সেভ করা
+            if (displayId) displayId.innerText = userIdFromUrl;
+            localStorage.setItem('currentActiveUserID', userIdFromUrl);
         } else {
-            // ম্যানুয়াল আইডি খালি থাকলে ফায়ারবেস থেকে নেবে
-            const activeUserRef = ref(db, 'activeUser/id');
-            onValue(activeUserRef, (snapshot) => {
-                const userId = snapshot.val();
-                if (userId && displayId) {
-                    displayId.innerText = userId;
-                }
-            });
+            // ২. ইউআরএল-এ না থাকলে ব্রাউজারের লোকালস্টোরেজ থেকে চেক করা
+            const localUser = localStorage.getItem('currentActiveUserID');
+            if (localUser && displayId) {
+                displayId.innerText = localUser;
+            } else {
+                // ৩. কোথাও না পেলে ফায়ারবেস ডাটাবেজ থেকে একটিভ আইডি ফেচ করা
+                const activeUserRef = ref(db, 'activeUser/id');
+                onValue(activeUserRef, (snapshot) => {
+                    const userId = snapshot.val();
+                    if (userId && displayId) {
+                        displayId.innerText = userId;
+                        localStorage.setItem('currentActiveUserID', userId);
+                    }
+                }, { onlyOnce: true });
+            }
         }
     </script>
+
 
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
