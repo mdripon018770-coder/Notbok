@@ -411,11 +411,50 @@
 
 
 
-                <div id="logout-trigger" onclick="openLogoutPopup()" style="width:calc(100% + 10px); margin-left:-5px; margin-top:15px; margin-bottom:20px; cursor:pointer;">
-            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting2.jpg" alt="Settings Footer" style="width:100%; display:block;">
-        </div>
+                <div style="
+    width:calc(100% + 10px);
+    margin-left:-5px;
+    margin-top:15px;
+    margin-bottom:20px;
+    position:relative;
+">
+
+    <!-- Image -->
+    <img 
+        src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting2.jpg"
+        alt="Settings Footer"
+        style="width:100%;display:block;"
+    >
+
+    <!-- SHARE THE APP -->
+    <div onclick="openSharePopup()"
+         style="
+         position:absolute;
+         left:2%;
+         top:54%;
+         width:96%;
+         height:5.5%;
+         z-index:3001;
+         cursor:pointer;
+         ">
     </div>
+
+    <!-- LOGOUT -->
+    <div onclick="openLogoutPopup()"
+         style="
+         position:absolute;
+         left:2%;
+         top:55%;
+         width:96%;
+         height:5.5%;
+         z-index:3001;
+         cursor:pointer;
+         ">
+    </div>
+
 </div>
+
+
 
 
     <!-- Personal Profile Page Overlay -->
