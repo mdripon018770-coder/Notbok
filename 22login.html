@@ -1,3 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>22Bet Loading & Home</title>
+    
+    <!-- অ্যান্ড্রয়েড ক্রোম এবং মোবাইল ব্রাউজারের জন্য স্ট্যাটাস ও নেভিগেশন বার কালার পরিবর্তন -->
+    <meta name="theme-color" content="#0c3e44">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#0c3e44">
+
+    <!-- Font Awesome Icons Link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            background-color: #0c3e44; /* পেজ এবং নিচের নেভিগেশন বারের সাথে ম্যাচিং কালার */
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            font-family: sans-serif; 
+        }
+    
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #0c3e44; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; font-family: sans-serif; }
+        
+                /* --- Loading Screen --- */
+        #loading-screen { 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%; 
+            height: 100%; 
+            background-image: url('https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/l.jpg');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .progress-container { 
+            display: flex; 
+            gap: 16px; 
+            align-items: center; 
+            justify-content: center; 
+            position: absolute;
+            top: 62%; 
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            white-space: nowrap;
+        }
+
+        .ball { 
+            font-size: 14px; 
+            color: #ffffff;
+            opacity: 0.25; 
+            transition: opacity 0.4s ease, color 0.4s ease; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 16px;
+            height: 16px;
+        }
+
+        .eight-ball { 
+            font-weight: bold; 
+            font-size: 10px; 
+            border-radius: 50%; 
+            background-color: #ffffff; /* ব্যাকগ্রাউন্ড সাদা */
+            color: #000000;            /* লেখা কালো */
+            text-align: center; 
+            line-height: 16px;         /* বলের মাঝখানে টেক্সট এলাইন করার জন্য */
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            transition: all 0.3s ease;
+        }
+        
+        .ball.revealed {
+            opacity: 0.85;
+        }
+        
+        .eight-ball.revealed {
+            border-color: rgba(255, 255, 255, 0.85);
+        }
+        
+        .active-spinning { 
+            opacity: 1 !important;
+            color: #ffffff !important; 
+            animation: rotateBall 0.7s linear infinite; 
+        }
+        
+        .eight-ball.active-spinning {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border-color: #ffffff !important;
+            box-shadow: 0 0 8px rgba(255,255,255,0.8); /* হালকা সাদা গ্লো ইফেক্ট */
+        }
+
+        .stopping-style {
+            transition: transform 0.8s cubic-bezier(0.1, 1, 0.1, 1);
+        }
+
+        @keyframes rotateBall { 
+            0% { transform: scale(1.1) rotate(0deg); } 
+            100% { transform: scale(1.1) rotate(360deg); } 
+        }
+        
+        .version-info { 
+            position: absolute; 
+            bottom: 22px; 
+            right: 22px; 
+            color: #ffffff; 
+            font-size: 12px; 
+            opacity: 0.85; 
+        }
+
+        /* --- Home Screen --- */
+        #home-screen { display: none; width: 100%; height: 100%; background-color: #f4f7f9; flex-direction: column; position: relative; }
+        .content-area { flex: 1; overflow-y: auto; padding-bottom: 62px; position: relative; }
+        
+        .home-main-pic { width: 100%; position: relative; }
+        .home-main-pic img { width: 100%; height: auto; display: block; }
+
+        .home-reg-overlay { position: absolute; top: 17.2%; right: 4%; width: 45%; height: 5.2%; background-color: transparent; cursor: pointer; z-index: 10; }
+        .home-login-overlay { position: absolute; top: 17.2%; left: 4%; width: 45%; height: 5.2%; background-color: transparent; cursor: pointer; z-index: 10; }
+
+        /* --- Bottom Navigation --- */
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            background: #f7f9fa; 
+            display: flex; 
+            justify-content: space-around; 
+            align-items: flex-end; 
+            padding: 4px 0 6px 0; 
+            border-top: 1px solid #e6ecf0; 
+            z-index: 100; 
+            height: 64px; 
+        }
+        .nav-item { 
+            text-align: center; 
+            color: #728b93; 
+            font-size: 11px; 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: flex-end; 
+            text-decoration: none; 
+            font-weight: 600; 
+            height: 100%;
+            cursor: pointer;
+        }
+        .nav-item i { 
+            display: block; 
+            font-size: 23px; 
+            margin-bottom: 3px; 
+        }
+        .nav-item.active { 
+            color: #21b14c; 
+        }
+        
+        /* --- Bet Slip আইকন পজিশন ফিক্স (নিচে নামানো হয়েছে) --- */
+        .bet-slip-container { 
+            position: relative; 
+            overflow: visible; 
+        }
+        .bet-slip-circle { 
+            background: linear-gradient(135deg, #1ca643, #29be55); 
+            width: 50px; 
+            height: 50px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            box-shadow: 0 -1px 6px rgba(33,177,76,0.25), 0 3px 6px rgba(0,0,0,0.1); 
+            border: 3px solid #fff; 
+            position: absolute; 
+            top: -24px; /* অরিজিনাল স্ক্রিনশটের মতো পারফেক্টলি নিচে নামানো হয়েছে */
+            left: 50%; 
+            transform: translateX(-50%); 
+        }
+        
+        /* আসল অ্যাপের মতো সোজা ও চ্যাপ্টা জোড়া টিকিট */
+        .original-ticket-icon {
+            position: relative;
+            width: 24px;
+            height: 16px;
+        }
+        .original-ticket-icon::before {
+            content: '';
+            position: absolute;
+            left: 2px;
+            top: -2px;
+            width: 18px;
+            height: 13px;
+            background-color: rgba(255, 255, 255, 0.6);
+            border-radius: 2px;
+        }
+        .original-ticket-icon::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 24px;
+            height: 14px;
+            background-color: #ffffff;
+            border-radius: 2px;
+            background-image: radial-gradient(circle at center, #21b14c 1.5px, transparent 1.5px);
+            background-size: 6px 14px;
+            background-repeat: repeat-x;
+            background-position: center;
+        }
+        
+        .bet-slip-container span { 
+            margin-top: 2px; 
+            color: #728b93;
+        }
+
+        /* --- Menu আইকন (৪ ব্লকের rounded গ্রিড) --- */
+        .custom-menu-icon { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 3px; 
+            width: 18px; 
+            height: 18px; 
+            margin-bottom: 6px; 
+        }
+        .custom-menu-icon div { 
+            background-color: #728b93; 
+            border-radius: 2px; 
+        }
+        .nav-item.active .custom-menu-icon div { 
+            background-color: #21b14c; 
+        }
+
+        /* --- Registration Page --- */
+        #registration-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f0f4f7; z-index: 1000; overflow: hidden; }
+        .reg-image-container { position: relative; width: 100%; height: 100%; }
+        .reg-image-container img { width: 100%; height: 100%; object-fit: fill; display: block; }
+        
+        .reg-back-overlay { position: absolute; top: 15px; left: 15px; width: 50px; height: 50px; background-color: transparent; cursor: pointer; z-index: 1005; }
+        .reg-phone-overlay { position: absolute; top: 49%; left: 4.5%; width: 91%; height: 8.5%; background-color: transparent; cursor: pointer; z-index: 1005; }
+
+        /* --- Login Page --- */
+        #login-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f0f4f7; z-index: 1000; }
+        .login-top-bar { height: 35%; width: 100%; position: relative; background-image: url('https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/logi.jpg'); background-size: 100% 100%; background-repeat: no-repeat; background-position: center; }
+        .login-back-overlay { position: absolute; top: 10.5%; left: 3.5%; width: 13vw; height: 13vw; background-color: transparent; cursor: pointer; z-index: 1005; }
+
+        .login-card-container { height: 65%; width: 100%; background-color: #f0f4f7; border-top-left-radius: 30px; border-top-right-radius: 30px; padding: 30px 25px 20px 25px; display: flex; flex-direction: column; position: relative; overflow-y: auto; }
+        .login-title { font-size: 32px; font-weight: bold; color: #0b3238; margin-bottom: 35px; }
+        .login-input-group { margin-bottom: 30px; display: flex; flex-direction: column; }
+        .login-label { font-size: 16px; color: #79989c; margin-bottom: -4px; }
+        .login-input-row { display: flex; align-items: center; border-bottom: 1px solid #c2d1d4; padding-bottom: 6px; }
+        .login-input-row input { width: 100%; border: none; outline: none; background: transparent; font-size: 18px; color: #0b3238; padding-top: 4px; }
+        
+        .login-phone-box-icon { background-color: #00b03e; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; margin-left: 10px; }
+        .login-toggle-password { color: #79989c; font-size: 18px; cursor: pointer; margin-left: 10px; }
+        
+        .login-submit-btn { background-color: #00b03e; color: white; font-size: 16px; font-weight: bold; text-align: center; padding: 15px; border-radius: 10px; margin-top: 15px; cursor: pointer; }
+        .forgot-password-link { text-align: center; color: #00b03e; font-size: 15px; font-weight: bold; margin-top: 25px; cursor: pointer; }
+        .login-footer-register { width: 100%; text-align: center; font-size: 14px; color: #79989c; margin-top: auto; padding-top: 30px; }
+        .login-footer-register span { color: #00b03e; font-weight: bold; margin-left: 5px; cursor: pointer; }
+
+        /* --- Phone Registration Form Page --- */
+        #phone-registration-form {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f0f4f7;
+    z-index: 1100;
+    flex-direction: column;
+}
+
+.phone-reg-header {
+    background-color: #fff;
+    padding: 12px 15px 8px;
+    border-bottom: 1px solid #e0e0e0;
+    color: #5c8389;
+    position: relative;
+    text-align: center;
+}
+
+.phone-reg-header i {
+    position: absolute;
+    left: 15px;
+    top: 18px;
+    font-size: 18px;
+}
+
+.phone-reg-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.phone-reg-sub-title {
+    text-align: center;
+    color: #8a9ea0;
+    font-size: 12px;
+    margin-top: 2px;
+    margin-bottom: 0;
+}
+
+.phone-reg-content {
+    padding: 15px;
+    flex: 1;
+    overflow-y: auto;
+}
+        
+        /* রেজিস্ট্রেশন কার্ডের হাইট এবং প্যাডিং বাড়ানো হয়েছে */
+.form-card { 
+    background: #fff; 
+    border-radius: 15px; 
+    padding: 20px 15px; /* প্যাডিং বাড়িয়ে বক্সটিকে বড় করা হয়েছে */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+    margin-bottom: 20px; 
+}
+
+/* ইনপুট বক্সের হাইট এবং গ্যাপ বাড়ানো হয়েছে */
+.input-box { 
+    margin-bottom: 20px; 
+    position: relative; 
+    border-bottom: 1.5px solid #e0e0e0; /* বর্ডার সামান্য গাঢ় করা হয়েছে */
+    padding-bottom: 12px; /* নিচের দিকে জায়গা বাড়ানো হয়েছে */
+}
+
+/* ইনপুট এবং সিলেক্ট এলিমেন্টের সাইজ বড় করা হয়েছে */
+.input-row input, .input-row select { 
+    border: none; 
+    outline: none; 
+    width: 100%; 
+    font-size: 16px; /* ফন্ট সাইজ বড় করা হয়েছে */
+    color: #333; 
+    background: transparent;
+    padding: 5px 0; /* ইনপুট ফিল্ডের হাইট বাড়াতে প্যাডিং */
+}
+
+/* প্রোমো কোড বক্সটি আলাদাভাবে বড় করার জন্য */
+.input-box:last-child {
+    padding-bottom: 15px;
+}
+
+        
+        .legal-link { display: flex; align-items: center; gap: 10px; color: #24b24a; font-size: 14px; margin-bottom: 15px; font-weight: 500; }
+        .legal-link i { font-size: 18px; }
+        .checkbox-group { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; }
+        .checkbox-group input { width: 20px; height: 20px; accent-color: #24b24a; margin-top: 2px; }
+        .checkbox-group label { font-size: 12px; color: #4a6669; line-height: 1.4; }
+        
+        /* --- Registration Button --- */
+.register-footer-btn {
+    position: fixed;
+    left: 15px;
+    right: 15px;
+    bottom: 20px;
+    background-color: #24b24a;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    border-radius: 14px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 1200;
+}
+
+/* --- Legal & Checkbox --- */
+.checkbox-group { 
+    display: flex; 
+    align-items: flex-start; 
+    gap: 12px; 
+    margin-bottom: 15px; 
+    padding: 0 15px; 
+}
+
+.legal-link { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    color: #24b24a; 
+    font-size: 14px; 
+    margin-bottom: 15px; 
+    font-weight: 500; 
+    padding: 0 15px; 
+}
+
+/* --- Country Popup (Updated) --- */
+.country-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.4);
+    z-index: 9999;
+}
+
+.country-sheet {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 90%; /* একটু বড় করা হয়েছে */
+    background: #fff;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* পপআপের উপরের ছোট ড্র্যাগ বার */
+.sheet-line {
+    width: 40px;
+    height: 4px;
+    background: #ccc;
+    margin: 10px auto;
+    border-radius: 2px;
+}
+
+.country-sheet h2 {
+    text-align: center;
+    font-size: 20px;
+    color: #0b3238;
+    margin: 5px 0 15px 0;
+}
+
+.country-search {
+    padding: 0 15px 10px;
+}
+
+.country-search input {
+    width: 100%;
+    padding: 12px 15px;
+    border: none;
+    background: #eef3fa;
+    border-radius: 12px;
+    font-size: 16px;
+    color: #597385;
+}
+
+/* "Recommended" এবং "Other" সেকশন টাইটেল */
+.section-title {
+    padding: 10px 15px;
+    font-size: 14px;
+    color: #597385;
+    font-weight: 600;
+}
+
+#country-list-container {
+    flex: 1; 
+    overflow-y: auto;
+}
+
+.country-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 16px;
+    color: #0b3238;
+}
+
+.country-row span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ছোট গোল ফ্ল্যাগ আইকন স্টাইল (Screenshot অনুযায়ী) */
+.flag-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* --- Row & Radio Styles --- */
+.country-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px;
+    border-bottom: 1px solid #eee;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.radio-circle {
+    width: 26px;
+    height: 26px;
+    border: 3px solid #b8c7d5;
+    border-radius: 50%;
+}
+
+.radio-circle.active {
+    border-color: #3f8cff;
+    position: relative;
+}
+
+.radio-circle.active:after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: #3f8cff;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+@keyframes popupUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+/* --- Success Popup Styling --- */
+#successPopup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.4);
+    z-index: 99999;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.popup-content {
+    width: 95%;
+    max-width: 450px;
+    background: #ffffff;
+    border-radius: 25px 25px 0 0;
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+    animation: popupUp 0.4s ease-out; /* এখানে আপনার তৈরি করা অ্যানিমেশনটি যোগ করা হলো */
+}
+
+.game-slider {
+            width: 100%;
+            overflow: hidden;
+            margin: 5px 0 10px 0; /* নিচের দিকের অতিরিক্ত গ্যাপ কমানোর জন্য মার্জিন ঠিক করা হলো */
+            position: relative;
+        }
+
+        .game-track {
+            display: flex;
+            gap: 12px;
+            width: max-content;
+            animation: smoothInfiniteSlide 16s linear infinite;
+        }
+
+        .game-track img {
+            width: 280px;
+            height: 180px;
+            border-radius: 16px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        @keyframes smoothInfiniteSlide {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                /* ৪টি ছবি এবং তাদের মাঝের ১২ পিক্সেল গ্যাপের টোটাল সাইজ হিসাব করে পারফেক্ট লুপ করা হয়েছে */
+                transform: translateX(calc(-4 * (260px + 12px)));
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="progress-container">
+            <div id="b1" class="ball"><i class="fas fa-volleyball"></i></div>
+            <div id="b2" class="ball"><i class="fas fa-basketball-ball"></i></div>
+            <div id="b3" class="ball"><i class="fas fa-baseball"></i></div> 
+            <div id="b4" class="ball"><i class="fas fa-volleyball"></i></div>
+            <div id="b5" class="ball"><i class="fas fa-baseball"></i></div>
+            <div id="b6" class="ball eight-ball">8</div>
+            <div id="b7" class="ball"><i class="fas fa-baseball-ball"></i></div>
+            <div id="b8" class="ball"><i class="fas fa-volleyball-ball"></i></div>
+        </div>
+        <div class="version-info">22Bet v.253.0.2</div>
+    </div>
+
+    <!-- Home Screen -->
+<div id="home-screen">
+    <div class="content-area">
+        <div class="home-main-pic">
+            <div class="home-login-overlay" onclick="showLogin()"></div>
+            <div class="home-reg-overlay" onclick="showReg()"></div>
+            <img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/hom.jpg" alt="Home Content">
+        </div>
+
+        <!-- Banner Slider Area (সঠিক পজিশনে আনা হয়েছে) -->
+        <div class="game-slider">
+    <div class="game-track">
+        <!-- প্রথম সেট (1, 2, 3, 4) -->
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/fru.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/royal.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/burning.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/scratch.jpg">
+        
+        <!-- দ্বিতীয় সেট (স্মুথ লুপের জন্য ডুপ্লিকেট) -->
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/fru.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/royal.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/burning.jpg">
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/scratch.jpg">
+    </div>
+</div>
+</div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active"><i class="fas fa-fire"></i><span>Popular</span></div>
+            <div class="nav-item"><i class="fas fa-star"></i><span>Favorites</span></div>
+            
+            <!-- Bet slip: পজিশন পারফেক্টলি নিচে নামানো হয়েছে -->
+            <div class="nav-item bet-slip-container">
+                <div class="bet-slip-circle">
+                    <div class="original-ticket-icon"></div>
+                </div>
+                <span>Bet slip</span>
+            </div>
+            
+            <div class="nav-item"><i class="fas fa-clock"></i><span>History</span></div>
+            
+            <!-- Menu: ৪ ব্লকের কাস্টম গ্রিড আইকন -->
+            <div class="nav-item">
+                <div class="custom-menu-icon">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <span>Menu</span>
+            </div>
+        </div>
+    </div>
+
+        <!-- Registration Selection Page -->
+    <div id="registration-page">
+        <div class="reg-image-container">
+            <div class="reg-back-overlay" onclick="hideReg()"></div>
+            <div class="reg-phone-overlay" onclick="showPhoneReg()"></div>
+            <img src="https://task-rk.github.io/task/rejis.jpg" alt="Registration Selection">
+        </div>
+    </div>
+
+        <!-- Login Page View -->
+    <div id="login-page">
+        <div class="login-top-bar">
+            <div class="login-back-overlay" onclick="hideLogin()"></div>
+        </div>
+        <div class="login-card-container">
+            <div class="login-title">Log in</div>
+            
+            <div class="login-input-group">
+                <p class="login-label">Email or ID</p>
+                <div class="login-input-row">
+                    <input type="text" id="login-id">
+                    <div class="login-phone-box-icon"><i class="fas fa-mobile-alt"></i></div>
+                </div>
+            </div>
+
+            <div class="login-input-group">
+                <p class="login-label">Password</p>
+                <div class="login-input-row">
+                    <input type="password" id="login-password">
+                    <i class="far fa-eye-slash login-toggle-password" onclick="togglePasswordVisibility()"></i>
+                </div>
+            </div>
+
+            <div class="login-submit-btn" onclick="processLogin()">Log in</div>
+            
+            <!-- এখানে এরর মেসেজ দেখানোর ডিভটি যুক্ত করা হয়েছে -->
+            <div id="login-error-message" style="color: red; display: none; margin-top: 15px; text-align: center; font-weight: bold; font-size: 14px;"></div>
+
+            <div class="forgot-password-link">Forgot your password?</div>
+            <div class="login-footer-register">Don't have an account? <span onclick="switchLoginToReg()">Register</span></div>
+        </div>
+    </div>
+
+
+    <!-- Phone Registration Form Page -->
+    <div id="phone-registration-form">
+        <div class="phone-reg-header">
+    <i class="fas fa-arrow-left" onclick="hidePhoneReg()"></i>
+    <h3>Registration</h3>
+    <p class="phone-reg-sub-title">By phone</p>
+</div>
+
+<div class="phone-reg-content">
+    <div class="form-card">
+        <!-- Country -->
+        <!-- নতুন আপডেট করা কোড -->
+<div class="input-box">
+    <p class="input-label">Country *</p>
+    <div class="input-row" onclick="showCountryPopup()" style="cursor:pointer;">
+        <input type="text" id="country-name" value="United States (+1)" readonly style="cursor:pointer;">
+        <i class="fas fa-chevron-down" style="font-size:12px;color:#8a9ea0;"></i>
+    </div>
+</div>
+
+        <!-- Currency -->
+<div class="input-box">
+    <p class="input-label">Currency *</p>
+    <div class="input-row" onclick="showCurrencyPopup()" style="cursor:pointer;">
+        <input type="text" id="currency-select" placeholder="Select currency" readonly style="width:100%; border:none; background:transparent; outline:none; cursor:pointer;">
+        <i class="fas fa-chevron-down" style="font-size:12px;color:#8a9ea0;"></i>
+    </div>
+</div>
+
+
+
+        <!-- Bonus -->
+        <div class="input-box">
+            <p class="input-label">Bonus</p>
+            <div class="input-row">
+                <select>
+                    <option>Bonus for sports</option>
+                    <option>Reject bonuses</option>
+                    <option>Casino Bonus</option>
+                </select>
+                <i class="fas fa-chevron-down" style="font-size:12px;color:#8a9ea0;"></i>
+            </div>
+        </div>
+
+        <!-- Promo -->
+        <div class="input-box" style="border-bottom:none;">
+            <div class="input-row">
+                <input type="text" placeholder="Promo code (optional)">
+            </div>
+        </div>
+    </div>
+
+    <!-- Legal Links -->
+    <div class="legal-link"><i class="fas fa-file-alt"></i> Terms and Conditions</div>
+    <div class="legal-link"><i class="fas fa-file-alt"></i> Privacy Policy</div>
+
+    <!-- Updated Checkbox Section -->
+<div class="checkbox-group" id="checkbox-container" style="padding: 0 15px; margin-top: 10px; flex-direction: column;">
+    <div style="display: flex; align-items: flex-start; gap: 12px;">
+        <input type="checkbox" id="c1" style="width: 24px; height: 24px; cursor: pointer;">
+        <label for="c1" style="font-size: 14px; color: #4a6669; line-height: 1.4;">
+            I am over 18 years of age and I confirm that I have read and agree to the company's terms and conditions and privacy policy.
+        </label>
+        <!-- লাল সতর্কবার্তার আইকন (ডিফল্ট হিডেন) -->
+        <i id="error-icon" class="fas fa-exclamation-circle" style="color: red; display: none; margin-left: 5px; font-size: 18px;"></i>
+    </div>
+    <div id="checkbox-error" style="color: red; font-size: 12px; margin-top: 5px; display: none; padding-left: 36px;">
+        You must agree to the terms and conditions.
+    </div>
+</div>
+
+
+<div class="register-footer-btn" onclick="hidePhoneReg()">Register</div>
+
+<div id="country-popup" class="country-popup">
+    <div class="country-sheet">
+        <div class="sheet-line"></div>
+        <h2>Select country</h2>
+        
+        <div class="country-search">
+            <input type="text" id="countrySearch" placeholder="Country" onkeyup="filterCountries()">
+        </div>
+
+        <div id="country-list-container">
+            <!-- জাভাস্ক্রিপ্ট দিয়ে এখানে ডেটা আসবে -->
+        </div>
+    </div>
+</div>
+
+
+<!-- Currency Popup Modal -->
+<div id="currency-popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999;">
+    <div style="position:absolute; bottom:0; width:100%; background:#fff; border-top-left-radius:20px; border-top-right-radius:20px; max-height:80vh; display:flex; flex-direction:column;">
+        <!-- Header & Drag bar -->
+        <div style="text-align:center; padding:10px;"><div style="width:40px; height:4px; background:#ccc; border-radius:2px; margin:0 auto;"></div></div>
+        <div style="font-size:18px; font-weight:bold; text-align:center; padding-bottom:10px; color:#0b1e36;">Select currency</div>
+        
+        <!-- Search Box -->
+        <div style="padding: 0 15px 10px 15px;">
+            <input type="text" id="currencySearch" placeholder="Currency" onkeyup="filterCurrencies()" style="width:100%; padding:12px; border:none; background:#f0f2f5; border-radius:10px; outline:none;">
+        </div>
+
+        <!-- Currency List Container -->
+        <div id="currency-list-container" style="overflow-y:auto; padding: 0 15px 20px 15px; flex-grow:1;">
+            <!-- Dynamic Currencies will load here -->
+        </div>
+    </div>
+</div>
+
+
+<div id="successPopup" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.4);
+    z-index: 99999;
+    justify-content: center;
+    align-items: flex-end;">
+
+    <div class="popup-content" style="
+        width: 95%;
+        max-width: 450px;
+        background: #ffffff;
+        border-radius: 25px 25px 0 0;
+        padding: 30px 20px;
+        text-align: center;
+        box-shadow: 0 -5px 15px rgba(0,0,0,0.1);">
+
+        <!-- Success Icon -->
+        <div style="
+            width: 80px;
+            height: 80px;
+            background: #e8f5ec;
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;">
+            <div style="
+                width: 50px;
+                height: 50px;
+                background: #53bc67;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 28px;
+                color: #fff;">
+                ✓
+            </div>
+        </div>
+
+        <!-- Title -->
+        <h2 style="margin: 0 0 20px 0; font-size: 24px; color: #06335d; font-weight: 700;">
+            Registration successful!
+        </h2>
+
+        <!-- Credentials Box -->
+        <div style="
+            background: #f2f5f7;
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span style="color: #6f8796; font-size: 17px;">Username:</span>
+                <b id="popupUser" style="color: #06335d; font-size: 18px;"></b>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: #6f8796; font-size: 17px;">Password:</span>
+                <b id="popupPass" style="color: #06335d; font-size: 18px;"></b>
+            </div>
+        </div>
+
+        <!-- Copy & Share Buttons -->
+<div style="display: flex; gap: 15px; margin-bottom: 20px;">
+    <!-- আপডেট করা Copy বাটন -->
+    <button id="copyBtn" onclick="copyInfo()" style="
+        flex: 1;
+        height: 55px;
+        border: none;
+        background: #e7eff3;
+        border-radius: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #597385;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;">
+        <i class='far fa-copy'></i> <span id="copyText">Copy</span>
+    </button>
+    
+    <!-- Share বাটন একই থাকবে -->
+    <button onclick="shareInfo()" style="
+        flex: 1;
+        height: 55px;
+        border: none;
+        background: #e7eff3;
+        border-radius: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #597385;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;">
+        <i class='fas fa-share'></i> Share
+    </button>
+</div>
+
+        <!-- Next Button -->
+        <button onclick="nextRegistration()" style="
+            width: 100%;
+            height: 55px;
+            background: #53bc67;
+            border: none;
+            border-radius: 14px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;">
+            Next
+        </button>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <script type="module">
     // --- Firebase & Imports ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
@@ -614,25 +1581,39 @@ window.copyInfo = function() {
 
 
 
-       // --- Single window.onload Entry Point ---
+           // --- Single window.onload Entry Point ---
     window.onload = function() {
-        // নতুন রেজিস্ট্রেশনের সময় যাতে পুরনো ক্যাশ বা অটো রিডাইরেক্ট সমস্যা না করে
-        const justRegistered = localStorage.getItem('justRegistered');
-        
-        if (justRegistered === 'true') {
-            localStorage.removeItem('justRegistered');
-        } else {
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-            if (isLoggedIn === 'true') {
-                window.location.href = "https://mdripon018770-coder.github.io/Notbok/22.html";
-                return; 
+        try {
+            // নতুন রেজিস্ট্রেশনের সময় যাতে পুরনো ক্যাশ বা অটো রিডাইরেক্ট সমস্যা না করে
+            const justRegistered = localStorage.getItem('justRegistered');
+            
+            if (justRegistered === 'true') {
+                localStorage.removeItem('justRegistered');
+            } else {
+                const isLoggedIn = localStorage.getItem('isLoggedIn');
+                if (isLoggedIn === 'true') {
+                    window.location.replace("https://mdripon018770-coder.github.io/Notbok/22.html");
+                    return; 
+                }
             }
+            
+            // লোডিং স্ক্রিন এবং কান্ট্রি লিস্ট লোড করা
+            if (typeof window.startLoadingSequence === 'function') {
+                window.startLoadingSequence();
+            }
+            if (typeof window.loadCountries === 'function') {
+                window.loadCountries();
+            }
+        } catch (e) {
+            console.error("Window load error:", e);
+            // যদি কোনো এরর হয়ও, তবুও যেন স্ক্রিন সাদা হয়ে আটকে না থাকে
+            const loadingScreen = document.getElementById('loading-screen');
+            const homeScreen = document.getElementById('home-screen');
+            if (loadingScreen) loadingScreen.style.display = 'none';
+            if (homeScreen) homeScreen.style.display = 'flex';
         }
-        
-        // সাধারণ নিয়ম অনুযায়ী লোডিং স্ক্রিন এবং অ্যাপ চালু হবে
-        window.startLoadingSequence();
-        window.loadCountries();
     };
+
 
 
 
