@@ -566,7 +566,7 @@
 .game-slider {
             width: 100%;
             overflow: hidden;
-            margin: 5px 0 10px 0; /* নিচের দিকের অতিরিক্ত গ্যাপ কমানোর জন্য মার্জিন ঠিক করা হলো */
+            margin: 10px 0;
             position: relative;
         }
 
@@ -578,9 +578,9 @@
         }
 
         .game-track img {
-            width: 280px;
-            height: 180px;
-            border-radius: 16px;
+            width: 260px;
+            height: 140px;
+            border-radius: 20px;
             object-fit: cover;
             flex-shrink: 0;
         }
@@ -985,28 +985,6 @@
     const db = getDatabase(app);
     const analytics = getAnalytics(app);
 
-
-
-    // পেজ লোড হওয়ার সাথে সাথে সেভ থাকা ইউজার আইডি ও পাসওয়ার্ড ইনপুটে বসানোর কোড
-    document.addEventListener("DOMContentLoaded", function() {
-        const savedID = localStorage.getItem('savedUserID');
-        const savedPass = localStorage.getItem('savedPassword');
-
-        if (savedID) {
-            const idInput = document.getElementById('login-id');
-            if (idInput) idInput.value = savedID;
-        }
-
-        if (savedPass) {
-            const passInput = document.getElementById('login-password');
-            if (passInput) passInput.value = savedPass;
-        }
-    });
-
-
-
-
-
     // --- Login Logic (Firebase Connected) ---
     window.processLogin = function() {
             const inputId = document.getElementById('login-id').value.trim();
@@ -1169,7 +1147,7 @@ window.copyInfo = function() {
     // --- Loading & Navigation Logic ---
     window.startLoadingSequence = function() {
         const totalBalls = 8;
-        const ballActiveTime = 1100; 
+        const ballActiveTime = 2200; 
         function runSequence(idx) {
             if (idx > totalBalls) {
                 setTimeout(() => {
@@ -1581,39 +1559,25 @@ window.copyInfo = function() {
 
 
 
-           // --- Single window.onload Entry Point ---
+       // --- Single window.onload Entry Point ---
     window.onload = function() {
-        try {
-            // নতুন রেজিস্ট্রেশনের সময় যাতে পুরনো ক্যাশ বা অটো রিডাইরেক্ট সমস্যা না করে
-            const justRegistered = localStorage.getItem('justRegistered');
-            
-            if (justRegistered === 'true') {
-                localStorage.removeItem('justRegistered');
-            } else {
-                const isLoggedIn = localStorage.getItem('isLoggedIn');
-                if (isLoggedIn === 'true') {
-                    window.location.replace("https://mdripon018770-coder.github.io/Notbok/22.html");
-                    return; 
-                }
+        // নতুন রেজিস্ট্রেশনের সময় যাতে পুরনো ক্যাশ বা অটো রিডাইরেক্ট সমস্যা না করে
+        const justRegistered = localStorage.getItem('justRegistered');
+        
+        if (justRegistered === 'true') {
+            localStorage.removeItem('justRegistered');
+        } else {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn === 'true') {
+                window.location.href = "https://mdripon018770-coder.github.io/Notbok/22.html";
+                return; 
             }
-            
-            // লোডিং স্ক্রিন এবং কান্ট্রি লিস্ট লোড করা
-            if (typeof window.startLoadingSequence === 'function') {
-                window.startLoadingSequence();
-            }
-            if (typeof window.loadCountries === 'function') {
-                window.loadCountries();
-            }
-        } catch (e) {
-            console.error("Window load error:", e);
-            // যদি কোনো এরর হয়ও, তবুও যেন স্ক্রিন সাদা হয়ে আটকে না থাকে
-            const loadingScreen = document.getElementById('loading-screen');
-            const homeScreen = document.getElementById('home-screen');
-            if (loadingScreen) loadingScreen.style.display = 'none';
-            if (homeScreen) homeScreen.style.display = 'flex';
         }
+        
+        // সাধারণ নিয়ম অনুযায়ী লোডিং স্ক্রিন এবং অ্যাপ চালু হবে
+        window.startLoadingSequence();
+        window.loadCountries();
     };
-
 
 
 
