@@ -411,10 +411,12 @@
 
 
 
-        <div id="logout-trigger" style="width:calc(100% + 10px); margin-left:-5px; margin-top:15px; margin-bottom:20px; cursor:pointer;">
+                <div id="logout-trigger" onclick="openLogoutPopup()" style="width:calc(100% + 10px); margin-left:-5px; margin-top:15px; margin-bottom:20px; cursor:pointer;">
             <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting2.jpg" alt="Settings Footer" style="width:100%; display:block;">
         </div>
     </div>
+</div>
+
 
     <!-- Personal Profile Page Overlay -->
     <div id="personal-profile-overlay" style="position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #eef2f5; z-index: 4000; transition: right 0.4s ease; overflow-y: auto;">
@@ -1228,6 +1230,46 @@ flex-direction:column;">
 
 
 
+
+
+
+
+<!-- Logout Confirmation Popup Modal -->
+<div id="logoutPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#fff; width:85%; max-width:340px; border-radius:16px; padding:20px; text-align:center; box-shadow:0 4px 20px rgba(0,0,0,0.15);">
+        <h3 style="color:#21b14c; font-size:20px; margin-bottom:10px; font-weight:700;">Log out</h3>
+        <p style="color:#555; font-size:14px; line-height:1.4; margin-bottom:20px;">
+            Are you sure you want to log out?<br>Your login details will be saved on this device.
+        </p>
+        
+        <!-- অপশন ১: Log out (আইডি পাসওয়ার্ড সেভ থাকবে) -->
+        <div onclick="confirmLogout(true)" style="padding:14px 0; color:#21b14c; font-size:16px; font-weight:600; border-top:1px solid #eee; cursor:pointer;">
+            Log out
+        </div>
+        
+        <!-- অপশন ২: Log out without saving (সব মুছে যাবে) -->
+        <div onclick="confirmLogout(false)" style="padding:14px 0; color:#21b14c; font-size:16px; font-weight:600; border-top:1px solid #eee; cursor:pointer;">
+            Log out without saving login details
+        </div>
+        
+        <!-- অপশন ৩: Cancel -->
+        <div onclick="closeLogoutPopup()" style="padding:14px 0; color:#21b14c; font-size:16px; font-weight:600; border-top:1px solid #eee; cursor:pointer;">
+            Cancel
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
             <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script type="module">
@@ -1539,14 +1581,65 @@ flex-direction:column;">
                 }
             });
 
-            const logoutTrigger = document.getElementById('logout-trigger');
-            if(logoutTrigger) {
-                logoutTrigger.addEventListener('click', function() {
-                    localStorage.removeItem('currentActiveUserID');
-                    localStorage.removeItem('isLoggedIn');
-                    window.location.replace("https://mdripon018770-coder.github.io/Notbok/22login.html");
-                });
+                      // --- নতুন আপডেট করা পপআপ ওপেন করার লজিক (ইভেন্ট ডেলিগেশন) ---
+document.addEventListener('click', function(event) {
+    if (event.target && (event.target.id === 'logout-trigger' || event.target.closest('#logout-trigger'))) {
+        const logoutPopup = document.getElementById('logoutPopup');
+        if (logoutPopup) {
+            logoutPopup.style.display = 'flex'; 
+        }
+    }
+});
+
+// ২. পপআপ বন্ধ করার ফাংশন
+window.closeLogoutPopup = function() {
+    const logoutPopup = document.getElementById('logoutPopup');
+    if (logoutPopup) {
+        logoutPopup.style.display = 'none';
+    }
+};
+
+// ৩. নতুন আপডেট করা লগআউট ফাংশন
+window.confirmLogout = function(saveDetails) {
+    closeLogoutPopup();
+
+    // ফুলস্ক্রিন লোডিং ওভারলে দেখানো
+    const loaderDiv = document.createElement('div');
+    loaderDiv.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:#ffffff; z-index:99999; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:sans-serif;";
+    loaderDiv.innerHTML = `
+        <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #28a745; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <p style="margin-top: 15px; color: #1a2b3c; font-size: 16px; font-weight: 600;">Logging out...</p>
+        <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+    `;
+    document.body.appendChild(loaderDiv);
+
+    setTimeout(() => {
+        const activeUser = localStorage.getItem('currentActiveUserID');
+
+        if (saveDetails) {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('currentActiveUserID');
+            
+            if (activeUser) {
+                localStorage.setItem('savedUserID', activeUser);
             }
+        } else {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('active_user');
+            localStorage.removeItem('savedUserID');
+            localStorage.removeItem('savedPassword');
+            localStorage.removeItem('currentActiveUserID');
+            localStorage.removeItem('userPassword');
+        }
+
+        window.location.replace("https://mdripon018770-coder.github.io/Notbok/22login.html");
+    }, 1200);
+};
+
+
+
+
+
 
             loadProfileData();
             window.checkAndHideFields();
@@ -2808,6 +2901,16 @@ window.checkCurrentPassInput = function() {
         }
     }
 };
+
+
+
+
+
+
+
+
+
+
 
 
 
