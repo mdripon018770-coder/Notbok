@@ -563,34 +563,41 @@
     animation: popupUp 0.4s ease-out; /* এখানে আপনার তৈরি করা অ্যানিমেশনটি যোগ করা হলো */
 }
 
+
+
+
 .game-slider {
-            width: 100%;
-            overflow: hidden;
-            margin: 5px 0 10px 0; /* নিচের দিকের অতিরিক্ত গ্যাপ কমানোর জন্য মার্জিন ঠিক করা হলো */
-            position: relative;
-        }
+    width: 100%;
+    overflow: hidden;
+    margin: 25px 0 -120px 0;
+    position: relative;
+    padding-top: 10px;
+}
 
+.game-track {
+    display: flex;
+    gap: 12px;
+    width: max-content;
+    animation: smoothInfiniteSlide 16s linear infinite;
+}
 
-        .game-track {
-            display: flex;
-            gap: 12px;
-            width: max-content;
-            animation: smoothInfiniteSlide 16s linear infinite;
-        }
+.game-track img {
+    width: 280px;
+    height: 160px;
+    border-radius: 16px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
 
-        .game-track img {
-            width: 280px;
-            height: 160px;
-            border-radius: 16px;
-            object-fit: cover;
-            flex-shrink: 0;
-        }
+@keyframes smoothInfiniteSlide {
+    0% {
+        transform: translateX(0);
+    }
 
-        @keyframes smoothInfiniteSlide {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(calc(-4 * (260px + 12px))); }
-        }
-
+    100% {
+        transform: translateX(calc(-4 * (280px + 12px)));
+    }
+}
 
 
 
