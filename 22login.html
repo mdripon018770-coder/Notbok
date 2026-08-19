@@ -959,12 +959,6 @@
 
 
 
-
-
-
-
-
-
 <script type="module">
     // --- Firebase & Imports ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
@@ -1031,10 +1025,7 @@
             });
         };
 
-
-
-
-            // --- Registration Logic ---
+    // --- Registration Logic ---
     // আইডি সবসময় "17" দিয়ে শুরু হবে এবং মোট ১০ ডিজিটের হবে
     window.generateUsername = () => {
         const randomPart = Math.floor(10000000 + Math.random() * 90000000).toString();
@@ -1097,32 +1088,24 @@
         });
     };
 
-
-
-
-
-
-
-
-window.copyInfo = function() {
-    const user = document.getElementById("popupUser").innerText;
-    const pass = document.getElementById("popupPass").innerText;
-    const copyTextSpan = document.getElementById("copyText");
-    const copyBtn = document.getElementById("copyBtn");
-    
-    navigator.clipboard.writeText(`Username: ${user}\nPassword: ${pass}`);
-    
-    // বাটন টেক্সট এবং কালার পরিবর্তন
-    copyTextSpan.innerText = "Copied";
-    copyBtn.style.color = "#24b24a"; 
-    
-    // ২ সেকেন্ড পর আবার আগের অবস্থায় ফিরে আসা
-    setTimeout(() => {
-        copyTextSpan.innerText = "Copy";
-        copyBtn.style.color = "#597385";
-    }, 2000);
-};
-
+    window.copyInfo = function() {
+        const user = document.getElementById("popupUser").innerText;
+        const pass = document.getElementById("popupPass").innerText;
+        const copyTextSpan = document.getElementById("copyText");
+        const copyBtn = document.getElementById("copyBtn");
+        
+        navigator.clipboard.writeText(`Username: ${user}\nPassword: ${pass}`);
+        
+        // বাটন টেক্সট এবং কালার পরিবর্তন
+        copyTextSpan.innerText = "Copied";
+        copyBtn.style.color = "#24b24a"; 
+        
+        // ২ সেকেন্ড পর আবার আগের অবস্থায় ফিরে আসা
+        setTimeout(() => {
+            copyTextSpan.innerText = "Copy";
+            copyBtn.style.color = "#597385";
+        }, 2000);
+    };
 
     // --- Next Button ---
     window.nextRegistration = function() {
@@ -1142,7 +1125,6 @@ window.copyInfo = function() {
     window.showLogin = () => document.getElementById('login-page').style.display = 'block';
     window.hideLogin = () => document.getElementById('login-page').style.display = 'none';
     window.switchLoginToReg = () => { window.hideLogin(); window.showReg(); };
-
 
     // --- Loading & Navigation Logic ---
     window.startLoadingSequence = function() {
@@ -1172,9 +1154,7 @@ window.copyInfo = function() {
         runSequence(1);
     };
 
-
-
-   // --- Country Data ---
+    // --- Country Data ---
     const countries = [
         { name: "Afghanistan", code: "+93", flag: "🇦🇫", currency: "Afghani (AFN)" }, 
         { name: "Albania", code: "+355", flag: "🇦🇱", currency: "Lek (ALL)" },
@@ -1551,15 +1531,7 @@ window.copyInfo = function() {
         };
     }
 
-
-
-
-
-
-
-
-
-       // --- Single window.onload Entry Point ---
+    // --- Single window.onload Entry Point ---
     window.onload = function() {
         // নতুন রেজিস্ট্রেশনের সময় যাতে পুরনো ক্যাশ বা অটো রিডাইরেক্ট সমস্যা না করে
         const justRegistered = localStorage.getItem('justRegistered');
@@ -1578,12 +1550,13 @@ window.copyInfo = function() {
         window.startLoadingSequence();
         window.loadCountries();
     };
-
-
-
-
-
 </script>
+
+
+
+
+
+
 
 
 
