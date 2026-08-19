@@ -1224,33 +1224,6 @@ flex-direction:column;">
 
 
 
-<script>
-
-// পেজ লোড হওয়ার সাথে সাথেই চেক করুন ইউজার লগইন করা আছে কিনা
-document.addEventListener("DOMContentLoaded", function() {
-    const activeUser = localStorage.getItem("currentActiveUserID") || localStorage.getItem("loggedInUser");
-    const isLogged = localStorage.getItem("isLoggedIn");
-
-    // যদি ইউজার আইডি বা লগইন স্ট্যাটাস না থাকে, তবেই শুধু লগইন পেজে ফেরত পাঠাবে
-    if (!activeUser || isLogged !== "true") {
-        console.warn("Unauthorized access! Redirecting to login...");
-        window.location.href = "login.html"; // আপনার লগইন পেজের সঠিক লিঙ্ক এখানে দিন
-        return;
-    }
-
-    // যদি লগইন করা থাকে, তবে আইডি বা ব্যালেন্স স্ক্রিনে শো করানোর কোড এখানে রান হবে
-    console.log("Logged in user ID:", activeUser);
-    
-    // উদাহরণস্বরূপ: ইউজার আইডি দেখানোর জন্য
-    const idDisplayElement = document.getElementById("userIdDisplay");
-    if (idDisplayElement) {
-        idDisplayElement.innerText = activeUser;
-    }
-});
-
-
-
-</script>
 
 
 
