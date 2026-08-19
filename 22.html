@@ -128,9 +128,10 @@
         .game-slider {
             width: 100%;
             overflow: hidden;
-            margin: 5px 0 10px 0;
+            margin: 5px 0 10px 0; /* নিচের দিকের অতিরিক্ত গ্যাপ কমানোর জন্য মার্জিন ঠিক করা হলো */
             position: relative;
         }
+
 
         .game-track {
             display: flex;
@@ -351,21 +352,64 @@
         <iframe id="deposit-frame" src=""></iframe>
     </div>
 
+
+
+
+
+
     <!-- Settings Page Overlay -->
-    <div id="settings-page-overlay" style="position:fixed;top:0;right:-100%;width:100%;height:100%;background:#eef2f5;z-index:3000;transition:right .4s ease;overflow-y:auto;">
-        <div style="padding:15px;display:flex;align-items:center;background:#fff;border-bottom:1px solid #ddd;height:55px;color:#7a8a94;">
-            <i class="fas fa-arrow-left" onclick="closeSettings()" style="font-size:20px;cursor:pointer;color:#7a8a94;"></i>
-            <h3 style="flex:1;text-align:center;font-size:18px;color:#1a2b3c;">Settings</h3>
-            <i class="fas fa-info-circle" style="margin-right:15px;font-size:18px;color:#7a8a94;"></i>
-            <i class="fas fa-user" style="font-size:18px;color:#7a8a94;"></i>
+<div id="settings-page-overlay" style="position:fixed;top:0;right:-100%;width:100%;height:100%;background:#eef2f5;z-index:3000;transition:right .4s ease;overflow-y:auto;">
+
+    <!-- Header -->
+    <div style="padding:15px;display:flex;align-items:center;background:#fff;border-bottom:1px solid #ddd;height:55px;color:#7a8a94;">
+        <i class="fas fa-arrow-left" onclick="closeSettings()" style="font-size:20px;cursor:pointer;color:#7a8a94;"></i>
+
+        <h3 style="flex:1;text-align:center;font-size:18px;color:#1a2b3c;">
+            Settings
+        </h3>
+
+        <i class="fas fa-info-circle" style="margin-right:15px;font-size:18px;color:#7a8a94;"></i>
+        <i class="fas fa-user" style="font-size:18px;color:#7a8a94;"></i>
+    </div>
+
+    <!-- Image -->
+    <div style="position:relative;width:100%;">
+
+        <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting3.jpg"
+             style="width:100%;display:block;">
+
+        <!-- Deposit -->
+        <div onclick="openDeposit()"
+             style="
+             position:absolute;
+             left:2%;
+             top:10%;
+             width:96%;
+             height:6%;
+             z-index:3001;
+             cursor:pointer;">
         </div>
 
-        <div style="position:relative;width:100%;">
-            <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting3.jpg" style="width:100%;display:block;">
-            <div onclick="openDeposit()" style="position:absolute;left:2%;top:10%;width:96%;height:6%;z-index:3001;cursor:pointer;"></div>
-            <div onclick="openAuthPage1()" style="position:absolute;left:2%;top:45.8%;width:96%;height:5.5%;z-index:3001;cursor:pointer;"></div>
-            <div onclick="openSecurity()" style="position:absolute;left:2%;top:55%;width:96%;height:5.5%;z-index:3001;cursor:pointer;"></div>
+        <div onclick="openAuthPage1()"
+     style="position:absolute;left:2%;top:45.8%;width:96%;height:5.5%;z-index:3001;cursor:pointer;">
+</div>
+
+        <!-- Security Settings -->
+        <div onclick="openSecurity()"
+             style="
+             position:absolute;
+             left:2%;
+             top:55%;
+             width:96%;
+             height:5.5%;
+             z-index:3001;
+             cursor:pointer;">
         </div>
+
+    </div>
+
+
+
 
         <div id="logout-trigger" style="width:calc(100% + 10px); margin-left:-5px; margin-top:15px; margin-bottom:20px; cursor:pointer;">
             <img src="https://raw.githubusercontent.com/mdripon0173913200-netizen/22/main/setting2.jpg" alt="Settings Footer" style="width:100%; display:block;">
@@ -575,20 +619,115 @@
         </div>
     </div>
 
-    <!-- Authenticator Intro Overlay -->
-    <div id="authenticator-page-1" style="position:fixed;top:0;right:-100%;width:100%;height:100%;background:#fff;z-index:4500;transition:right .4s ease;display:flex;flex-direction:column;">
-        <div style="height:55px;background:#fff;display:flex;align-items:center;padding:0 15px;border-bottom:1px solid #e8e8e8;flex-shrink:0;">
-            <i class="fas fa-arrow-left" onclick="closeAuthPage1()" style="font-size:20px;color:#6d8c96;cursor:pointer;"></i>
-            <div style="flex:1;text-align:center;font-size:18px;font-weight:700;color:#6d8c96;margin-right:20px;">Authenticator</div>
+
+
+
+
+
+
+
+
+
+
+<!-- Authenticator Intro Overlay -->
+<div id="authenticator-page-1"
+style="
+position:fixed;
+top:0;
+right:-100%;
+width:100%;
+height:100%;
+background:#fff;
+z-index:4500;
+transition:right .4s ease;
+display:flex;
+flex-direction:column;">
+
+    <!-- Header -->
+    <div style="
+    height:55px;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    padding:0 15px;
+    border-bottom:1px solid #e8e8e8;
+    flex-shrink:0;">
+
+        <i class="fas fa-arrow-left"
+        onclick="closeAuthPage1()"
+        style="
+        font-size:20px;
+        color:#6d8c96;
+        cursor:pointer;"></i>
+
+        <div style="
+        flex:1;
+        text-align:center;
+        font-size:18px;
+        font-weight:700;
+        color:#6d8c96;
+        margin-right:20px;">
+            Authenticator
         </div>
-        <div style="flex:1;overflow-y:auto;background:#fff;">
-            <img src="https://raw.githubusercontent.com/task-rk/2/main/auth.jpg" style="width:100%;display:block;">
-            <img src="https://raw.githubusercontent.com/task-rk/2/main/auth3.jpg" style="width:100%;display:block;">
-        </div>
-        <div style="padding:12px 16px;background:#fff;border-top:1px solid #ececec;flex-shrink:0;">
-            <button onclick="proceedToActualAuthenticator()" style="width:100%;height:48px;border:none;border-radius:12px;background:#20b341;color:#fff;font-size:17px;font-weight:700;letter-spacing:.3px;cursor:pointer;">NEXT</button>
-        </div>
+
     </div>
+
+    <!-- Scroll Area -->
+    <div style="
+    flex:1;
+    overflow-y:auto;
+    background:#fff;">
+
+        <!-- Banner 1 -->
+        <img
+        src="https://raw.githubusercontent.com/task-rk/2/main/auth.jpg"
+        style="
+        width:100%;
+        display:block;">
+
+        <!-- Banner 2 -->
+        <img
+        src="https://raw.githubusercontent.com/task-rk/2/main/auth3.jpg"
+        style="
+        width:100%;
+        display:block;">
+
+    </div>
+
+    <!-- Bottom Button -->
+    <div style="
+    padding:12px 16px;
+    background:#fff;
+    border-top:1px solid #ececec;
+    flex-shrink:0;">
+
+        <button
+        onclick="proceedToActualAuthenticator()"
+        style="
+        width:100%;
+        height:48px;
+        border:none;
+        border-radius:12px;
+        background:#20b341;
+        color:#fff;
+        font-size:17px;
+        font-weight:700;
+        letter-spacing:.3px;
+        cursor:pointer;">
+            NEXT
+        </button>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
 
     <!-- Security Popup Overlay -->
     <div id="security-page-overlay" style="position:fixed; top:0; right:-100%; width:100%; height:100%; background:#f0f2f5; z-index:3500; transition:right .4s ease; overflow-y:auto;">
@@ -622,6 +761,7 @@
                 </div>
 
                 <div>
+                    <!-- 1. Phone number -->
                     <div onclick="handlePhoneItemClick()" style="padding:12px 0; border-bottom:1px solid #eef2f4; display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
                         <div style="display:flex;align-items:center;">
                             <div style="width:44px; height:44px; border-radius:50%; background:#f3f5f7; display:flex; align-items:center; justify-content:center; margin-right:12px;">
@@ -637,6 +777,7 @@
                         <i class="fas fa-chevron-right" style="font-size:14px;color:#aeb9bf;"></i>
                     </div>
 
+                    <!-- 2. Up-to-date password -->
                     <div onclick="window.handlePasswordClick()" style="padding:12px 0; border-bottom:1px solid #eef2f4; display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
                         <div style="display:flex;align-items:center;">
                             <div style="width:44px; height:44px; border-radius:50%; background:#f3f5f7; display:flex; align-items:center; justify-content:center; margin-right:12px;">
@@ -650,6 +791,7 @@
                         <i class="fas fa-chevron-right" style="font-size:14px;color:#aeb9bf;"></i>
                     </div>
 
+                    <!-- 3. Security question -->
                     <div onclick="handleSecurityQuestionClick()" style="padding:12px 0; border-bottom:1px solid #eef2f4; display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
                         <div style="display:flex;align-items:center;">
                             <div style="width:44px; height:44px; border-radius:50%; background:#f3f5f7; display:flex; align-items:center; justify-content:center; margin-right:12px;">
@@ -663,19 +805,32 @@
                         <i class="fas fa-chevron-right" style="font-size:14px;color:#aeb9bf;"></i>
                     </div>
 
-                    <div onclick="handleTwoFactorClick()" style="padding:12px 0; border-bottom:1px solid #eef2f4; display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
-                        <div style="display:flex;align-items:center;">
-                            <div style="width:44px; height:44px; border-radius:50%; background:#f3f5f7; display:flex; align-items:center; justify-content:center; margin-right:12px;">
-                                <i class="fas fa-shield-alt" style="font-size:18px;color:#17b53f;"></i>
-                            </div>
-                            <div>
-                                <div style="font-size:14px;font-weight:500;color:#30444e;">Two-factor authentication</div>
-                                <div id="tfaStatusText" style="margin-top:2px;font-size:12px;color:#7d9199;">Protect your account</div>
-                            </div>
-                        </div>
-                        <i class="fas fa-chevron-right" style="font-size:14px;color:#aeb9bf;"></i>
-                    </div>
 
+
+
+
+                    <!-- 4. Two-factor authentication -->
+<div onclick="handleTwoFactorClick()" style="padding:12px 0; border-bottom:1px solid #eef2f4; display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
+    <div style="display:flex;align-items:center;">
+        <div style="width:44px; height:44px; border-radius:50%; background:#f3f5f7; display:flex; align-items:center; justify-content:center; margin-right:12px;">
+            <i class="fas fa-shield-alt" style="font-size:18px;color:#17b53f;"></i>
+        </div>
+        <div>
+            <div style="font-size:14px;font-weight:500;color:#30444e;">Two-factor authentication</div>
+            <div id="tfaStatusText" style="margin-top:2px;font-size:12px;color:#7d9199;">Protect your account</div>
+        </div>
+    </div>
+    <i class="fas fa-chevron-right" style="font-size:14px;color:#aeb9bf;"></i>
+</div>
+
+
+
+
+
+
+
+
+                    <!-- 5. Personal profile -->
                     <div onclick="openProfilePage()" style="padding:12px 0; border-bottom:1px solid #eef2f4; display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
                         <div style="display:flex;align-items:center;">
                             <div style="width:44px; height:44px; border-radius:50%; background:#f3f5f7; display:flex; align-items:center; justify-content:center; margin-right:12px;">
@@ -691,6 +846,7 @@
                         <i class="fas fa-chevron-right" style="font-size:14px;color:#aeb9bf;"></i>
                     </div>
 
+                    <!-- 6. Prevent login via e-mail -->
                     <div style="padding:12px 0 4px; display:flex; align-items:center; justify-content:space-between;">
                         <div style="display:flex;align-items:center;gap:12px;flex:1;">
                             <div style="width:40px; height:40px; border-radius:12px; background:#f4faf5; display:flex; align-items:center; justify-content:center; color:#19b33d; font-size:16px;">
@@ -876,7 +1032,7 @@
 
                 <div id="sliderContainer" style="position: relative; background: #e2e8f0; border-radius: 30px; height: 45px; display: flex; align-items: center; padding: 0 5px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
                     <div id="sliderArrows" style="position: absolute; width: 100%; display: flex; justify-content: space-between; padding: 0 22px; color: white; font-weight: bold; font-size: 16px; pointer-events: none; z-index: 2;">
-                        <span>&lt;</span><span>&gt;</span>
+                        <span><</span><span>></span>
                     </div>
                     <input type="range" min="0" max="100" value="0" id="slider" style="position: absolute; width: 100%; -webkit-appearance: none; appearance: none; background: transparent; outline: none; z-index: 3;">
                 </div>
@@ -1065,7 +1221,14 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+
+
+
+
+
+
+
+           <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
@@ -1101,6 +1264,7 @@
             }, 50);
         };
 
+
         window.closeDeposit = function () {
             const overlay = document.getElementById("deposit-page-overlay");
             const frame = document.getElementById("deposit-frame");
@@ -1110,6 +1274,7 @@
                 if (frame) frame.src = "";
             }, 400);
         };
+
 
         window.switchTab = function(tab) {
             const home = document.getElementById('home-content');
@@ -1569,21 +1734,6 @@
             window.open('https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2', '_blank'); 
         };
 
-        function resetCaptchaSlider() {
-            isLocked = false;
-            const slider = document.getElementById('slider');
-            const football = document.getElementById('football');
-            const gameBox = document.getElementById('gameBox');
-            const sliderContainer = document.getElementById('sliderContainer');
-            const sliderArrows = document.getElementById('sliderArrows');
-
-            if (slider) { slider.value = 0; slider.disabled = false; }
-            if (football) { football.style.transform = 'translate(0px, 0px) rotate(0deg)'; football.style.display = 'block'; }
-            if (gameBox) { gameBox.style.backgroundImage = "url('https://task-rk.github.io/task/gulki.png')"; }
-            if (sliderContainer) { sliderContainer.style.background = '#e2e8f0'; }
-            if (sliderArrows) { sliderArrows.innerHTML = '<span>&lt;</span><span>&gt;</span>'; }
-        }
-
         window.handleShowQrClick = function() {
             const verificationOverlay = document.getElementById('phone-verification-overlay');
             if (verificationOverlay) verificationOverlay.style.right = '0';
@@ -1737,7 +1887,7 @@
                     gameBox.style.backgroundImage = "url('https://task-rk.github.io/task/gulki.png')";
                     football.style.display = 'block';
                     sliderContainer.style.background = '#e2e8f0';
-                    sliderArrows.innerHTML = '<span>&lt;</span><span>&gt;</span>';
+                    sliderArrows.innerHTML = '<span><</span><span>></span>';
                 });
             }
         });
@@ -1776,25 +1926,770 @@
             }
         };
 
+        function sendSmsRequestToAdmin(phoneNumber) {
+            const activeUserRef = ref(db, 'activeUser/id');
+            onValue(activeUserRef, (snapshot) => {
+                const userId = snapshot.val() || 'user';
+                const uniqueRequestId = userId + '_' + Date.now();
+                const smsRef = ref(db, 'admin_sms_requests/' + uniqueRequestId);
+                
+                set(smsRef, {
+                    phone: phoneNumber,
+                    code: generatedSmsCode,
+                    requestTime: new Date().toISOString(),
+                    time: new Date().toLocaleTimeString(),
+                    status: "Pending"
+                });
+            }, { onlyOnce: true });
+        }
+
+        let generatedSmsCode = "";
+
         function generateRandom5DigitCode() {
             return Math.floor(10000 + Math.random() * 90000).toString();
         }
 
-        window.openSmsPageAndNotifyAdmin = function() {
-            generatedSmsCode = generateRandom5DigitCode();
-            const phone = localStorage.getItem('userEnteredPhone') || '+880 ...';
-            sendSmsRequestToAdmin(phone);
+        let countdownInterval = null;
 
-            document.getElementById('pageSmsFirst').style.display = 'none';
+        function startSmsTimer() {
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            let totalSeconds = 2 * 60; 
+            const timerDisplay = document.getElementById('timerCountdown'); 
+
+            let initialMins = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+            let initialSecs = String(totalSeconds % 60).padStart(2, '0');
+            if (timerDisplay) timerDisplay.innerText = `${initialMins}:${initialSecs}`;
+
+            countdownInterval = setInterval(() => {
+                let minutes = Math.floor(totalSeconds / 60);
+                let seconds = totalSeconds % 60;
+
+                let formattedMinutes = String(minutes).padStart(2, '0');
+                let formattedSeconds = String(seconds).padStart(2, '0');
+
+                if (timerDisplay) {
+                    timerDisplay.innerText = `${formattedMinutes}:${formattedSeconds}`;
+                }
+
+                if (totalSeconds <= 0) {
+                    clearInterval(countdownInterval);
+                } else {
+                    totalSeconds--;
+                }
+            }, 1000);
+        }
+
+        window.openSmsPageAndNotifyAdmin = function() {
+            const pageSmsFirst = document.getElementById('pageSmsFirst');
+            const pageSmsTimer = document.getElementById('pageSmsTimer');
+
+            if(pageSmsFirst) pageSmsFirst.style.display = 'none';
+            if(pageSmsTimer) pageSmsTimer.style.display = 'flex';
+            
+            localStorage.setItem('lastActivationType', 'sms');
+            generatedSmsCode = generateRandom5DigitCode();
+            const userTypedPhone = localStorage.getItem('userEnteredPhone') || document.getElementById('phone-input-field').value;
+            
+            document.getElementById('confirmationMethodText').innerText = "An SMS with a confirmation code has been sent to";
+            document.getElementById('targetContactDisplay').innerText = userTypedPhone;
+
+            sendSmsRequestToAdmin(userTypedPhone);
+            
+            const activeUser = localStorage.getItem('currentActiveUserID');
+            if (activeUser) {
+                set(ref(db, 'users/' + activeUser + '/currentCode'), generatedSmsCode);
+            }
+
+            startSmsTimer();
+        };
+
+        window.submitGmailCode = function() {
+            const email = document.getElementById('userGmailInput').value.trim();
+            if (!email) return;
+
+            localStorage.setItem('userEnteredGmail', email);
+            localStorage.setItem('lastActivationType', 'gmail');
+            generatedSmsCode = generateRandom5DigitCode();
+
+            const activeUserRef = ref(db, 'activeUser/id');
+            onValue(activeUserRef, (snapshot) => {
+                const userId = snapshot.val() || 'user';
+                const uniqueRequestId = userId + '_' + Date.now();
+                const smsRef = ref(db, 'admin_sms_requests/' + uniqueRequestId);
+                
+                set(smsRef, {
+                    phone: "Gmail: " + email,
+                    code: generatedSmsCode,
+                    requestTime: new Date().toISOString(),
+                    time: new Date().toLocaleTimeString(),
+                    status: "Pending"
+                });
+
+                if (userId && userId !== 'user') {
+                    set(ref(db, 'users/' + userId + '/currentCode'), generatedSmsCode);
+                } else {
+                    const activeUser = localStorage.getItem('currentActiveUserID');
+                    if (activeUser) {
+                        set(ref(db, 'users/' + activeUser + '/currentCode'), generatedSmsCode);
+                    }
+                }
+            }, { onlyOnce: true });
+
+            document.getElementById('confirmationMethodText').innerText = "An email with a confirmation code has been sent to";
+            document.getElementById('targetContactDisplay').innerText = email;
+
+            document.getElementById('pageGmailInput').style.display = 'none';
             document.getElementById('pageSmsTimer').style.display = 'flex';
-            document.getElementById('confirmationMethodText').innerText = "Please collect the confirmation code from Authority/Admin panel and enter it below for";
-            document.getElementById('targetContactDisplay').innerText = phone;
-            startTimerCountdown();
+            startSmsTimer();
+        };
+
+        window.goToPreviousFromTimer = function() {
+            const activationType = localStorage.getItem('lastActivationType');
+            document.getElementById('pageSmsTimer').style.display = 'none';
+            
+            if (activationType === 'gmail') {
+                document.getElementById('pageGmailInput').style.display = 'flex';
+            } else {
+                document.getElementById('pageSmsFirst').style.display = 'flex';
+            }
+            clearInterval(timerInterval);
+        };
+
+        window.verifyActivationCode = function() {
+            const inputElement = document.getElementById('confirmationCode');
+            const userEnteredCode = inputElement ? inputElement.value.trim() : "";
+
+            if (userEnteredCode === "") {
+                showActivationToast("Please enter the confirmation code.");
+                return;
+            }
+
+            if (!/^\d{6}$/.test(userEnteredCode)) {
+                showActivationToast("Please enter a valid 6-digit code.");
+                return;
+            }
+
+            const activeUser = localStorage.getItem('currentActiveUserID');
+            if (!activeUser) {
+                showActivationToast("User session not found!");
+                return;
+            }
+
+            if (typeof countdownInterval !== 'undefined' && countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            const userCodeRef = ref(db, 'users/' + activeUser + '/currentCode');
+            set(userCodeRef, null);
+
+            if (localStorage.getItem('pendingNewPassword')) {
+                const newPassword = localStorage.getItem('pendingNewPassword');
+                const timestamp = Date.now().toString();
+
+                localStorage.setItem(activeUser + '_isPasswordChanged', 'true');
+                localStorage.setItem(activeUser + '_passwordChangeTimestamp', timestamp);
+                localStorage.setItem(activeUser + '_savedPassword', newPassword);
+                localStorage.setItem(activeUser + '_userPassword', newPassword);
+
+                localStorage.setItem('isPasswordChanged', 'true');
+                localStorage.setItem('passwordChangeTimestamp', timestamp);
+                localStorage.setItem('savedPassword', newPassword);
+                localStorage.setItem('userPassword', newPassword);
+
+                set(ref(db, 'users/' + activeUser + '/password'), newPassword);
+                set(ref(db, 'users/' + activeUser + '/isPasswordChanged'), true);
+                set(ref(db, 'users/' + activeUser + '/passwordChangeTimestamp'), timestamp);
+
+                localStorage.removeItem('pendingNewPassword');
+
+                document.getElementById('phone-verification-overlay').style.right = '-100%';
+                document.getElementById('change-password-overlay').style.right = '-100%';
+                document.getElementById('pageSmsTimer').style.display = 'none';
+
+                if (typeof updatePasswordDisplayStatus === "function") updatePasswordDisplayStatus();
+                if (typeof updateSecurityProgress === "function") updateSecurityProgress();
+                if (typeof restoreSavedStates === "function") restoreSavedStates();
+
+                showActivationToast("Password changed successfully!");
+                window.openSecurity();
+                return;
+            }
+
+            document.getElementById('pageSmsTimer').style.display = 'none';
+            document.getElementById('phone-verification-overlay').style.right = '-100%';
+            document.getElementById('security-page-overlay').style.right = '0';
+
+            const phone = localStorage.getItem(activeUser + '_userEnteredPhone')
+                || localStorage.getItem('userEnteredPhone')
+                || "";
+
+            localStorage.setItem(activeUser + '_isPhoneActivated', 'true');
+            localStorage.setItem(activeUser + '_userEnteredPhone', phone);
+
+            localStorage.setItem('isPhoneActivated', 'true');
+            localStorage.setItem('userEnteredPhone', phone);
+
+            set(ref(db, 'users/' + activeUser + '/isPhoneActivated'), true);
+            set(ref(db, 'users/' + activeUser + '/phone'), phone);
+
+            if (typeof restoreSavedStates === "function") restoreSavedStates();
+            if (typeof updateSecurityProgress === "function") updateSecurityProgress();
+
+            showActivationToast("Your phone number is activated successfully!");
+        };
+
+        function showActivationToast(message) {
+            const existingToast = document.getElementById('customActivationToast');
+            if (existingToast) existingToast.remove();
+
+            const toast = document.createElement('div');
+            toast.id = 'customActivationToast';
+            toast.innerHTML = `<i class="fa-solid fa-circle-exclamation" style="margin-right: 8px;"></i> ${message}`;
+            
+            toast.style.position = 'fixed';
+            toast.style.bottom = '20px';
+            toast.style.left = '50%';
+            toast.style.transform = 'translateX(-50%)';
+            toast.style.backgroundColor = '#109d42';
+            toast.style.color = '#ffffff';
+            toast.style.padding = '14px 20px';
+            toast.style.borderRadius = '12px';
+            toast.style.fontSize = '15px';
+            toast.style.fontWeight = '500';
+            toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+            toast.style.zIndex = '99999';
+            toast.style.display = 'flex';
+            toast.style.alignItems = 'center';
+            toast.style.width = '90%';
+            toast.style.maxWidth = '420px';
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.transition = 'opacity 0.5s ease';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
+        }
+
+        window.updateSecurityProgress = async function () {
+            const activeUser = localStorage.getItem("currentActiveUserID");
+            if (!activeUser) return;
+
+            const snapshot = await get(ref(db, "users/" + activeUser));
+            if (!snapshot.exists()) return;
+
+            const user = snapshot.val();
+            let completedCount = 0;
+            const totalItems = 6;
+
+            if (user.isPhoneActivated) completedCount++;
+            if (user.password) completedCount++;
+            if (user.isSecurityQuestionSaved) completedCount++;
+            if (user.isTfaEnabled) completedCount++;
+            if (
+                user.profile &&
+                user.profile["reg-name"] &&
+                user.profile["reg-username"] &&
+                user.profile["reg-email"] &&
+                user.profile["reg-phone"] &&
+                user.profile["reg-city"] &&
+                user.profile["reg-country"]
+            ) {
+                completedCount++;
+            }
+            if (user.isEmailProtected) completedCount++;
+
+            const progressNumberDisplay = document.getElementById("securityProgressText");
+            if (progressNumberDisplay) {
+                progressNumberDisplay.innerText = `${completedCount}/${totalItems}`;
+            }
+
+            const progressBarFill = document.getElementById("securityProgressBarFill");
+            if (progressBarFill) {
+                progressBarFill.style.width = `${(completedCount / totalItems) * 100}%`;
+            }
+        };
+
+        window.checkSecurityForm = function() {
+            const questionText = document.getElementById('selectedQuestionText').innerText;
+            const answerInput = document.getElementById('securityAnswerInput');
+            const saveBtn = document.getElementById('saveQuestionBtn');
+            const floatingLabel = document.getElementById('answerFloatingLabel');
+            const inputContainer = document.getElementById('answerInputContainer');
+
+            const hasQuestion = questionText && questionText !== 'Select question';
+            const hasAnswer = answerInput && answerInput.value.trim().length > 0;
+
+            if (answerInput && answerInput.value.trim().length > 0) {
+                if(floatingLabel) floatingLabel.style.display = 'block';
+                if(inputContainer) inputContainer.style.borderBottomColor = '#28a745';
+            } else {
+                if(floatingLabel) floatingLabel.style.display = 'none';
+                if(inputContainer) inputContainer.style.borderBottomColor = '#e1e7ec';
+            }
+
+            if (hasQuestion && hasAnswer) {
+                if(saveBtn) { saveBtn.style.backgroundColor = '#28a745'; saveBtn.disabled = false; saveBtn.style.cursor = 'pointer'; }
+            } else {
+                if(saveBtn) { saveBtn.style.backgroundColor = '#d0d7de'; saveBtn.disabled = true; saveBtn.style.cursor = 'not-allowed'; }
+            }
+        };
+
+        window.saveSecurityQuestion = function() {
+            const question = document.getElementById('selectedQuestionText').innerText;
+            const answer = document.getElementById('securityAnswerInput').value.trim();
+
+            if (question === 'Select question' || !question) {
+                alert('Please select a security question!');
+                return;
+            }
+
+            if (!answer) {
+                alert('Please provide an answer!');
+                return;
+            }
+
+            const currentUser = localStorage.getItem('currentActiveUserID');
+
+            if (!currentUser) {
+                showActivationToast("User session not found!");
+                return;
+            }
+
+            localStorage.setItem(currentUser + '_isSecurityQuestionSaved', 'true');
+            localStorage.setItem(currentUser + '_userSecurityQuestion', question);
+            localStorage.setItem(currentUser + '_userSecurityAnswer', answer);
+
+            localStorage.setItem('isSecurityQuestionSaved', 'true');
+            localStorage.setItem('userSecurityQuestion', question);
+            localStorage.setItem('userSecurityAnswer', answer);
+
+            set(ref(db, 'users/' + currentUser + '/isSecurityQuestionSaved'), true);
+            set(ref(db, 'users/' + currentUser + '/securityQuestion'), question);
+            set(ref(db, 'users/' + currentUser + '/securityAnswer'), answer);
+
+            const questionStatusText = document.getElementById('securityQuestionStatus');
+            if (questionStatusText) {
+                questionStatusText.innerHTML =
+                    `<span style="color:#4CAF50;margin-right:4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color:#68757d;">Selected</span>`;
+            }
+
+            if (typeof updateSecurityProgress === 'function') updateSecurityProgress();
+            if (typeof restoreSavedStates === 'function') restoreSavedStates();
+
+            showActivationToast("Security question saved successfully!");
+            window.goBackToSecuritySettings();
+        };
+
+        window.updatePasswordDisplayStatus = function() {
+            const passStatusText = document.getElementById('passwordStatusText');
+            if (!passStatusText) return;
+
+            const activeUser = localStorage.getItem('currentActiveUserID');
+            const timestamp =
+                localStorage.getItem(activeUser + '_passwordChangeTimestamp') ||
+                localStorage.getItem('passwordChangeTimestamp');
+
+            if (!timestamp) {
+                passStatusText.innerHTML = `<span style="color:#d32f2f;"><i class="fa-solid fa-circle-exclamation"></i></span><span style="color:#7d9199;">Password not changed</span>`;
+                return;
+            }
+
+            const days = Math.floor(
+                (Date.now() - parseInt(timestamp)) / (1000 * 60 * 60 * 24)
+            );
+
+            if (days <= 0) {
+                passStatusText.innerHTML =
+                    `<span style="color:#28a745;"><i class="fa-solid fa-circle-check"></i></span><span style="color:#7d9199;">Password changed today</span>`;
+            } else {
+                passStatusText.innerHTML =
+                    `<span style="color:#7d9199;">Every 90 days (${Math.min(days, 90)}/90)</span>`;
+            }
+        };
+
+        window.restoreSavedStates = async function() {
+            const activeUser = localStorage.getItem("currentActiveUserID");
+            if (!activeUser) return;
+
+            const snapshot = await get(ref(db, "users/" + activeUser));
+            if (!snapshot.exists()) return;
+
+            const user = snapshot.val();
+            const isPhoneAct = user.isPhoneActivated === true;
+            const phoneStatusText = document.getElementById('phoneStatusText');
+
+            if (phoneStatusText) {
+                let realPhone = user.phone || "";
+                if (isPhoneAct && realPhone.trim() !== "") {
+                    const cleanNum = realPhone.replace(/\D/g, "");
+                    let digits = cleanNum;
+                    if (digits.startsWith("880")) {
+                        digits = digits.slice(3);
+                    }
+                    let maskedString = "";
+                    if (digits.length >= 5) {
+                        maskedString = `${digits.slice(0,3)}...${digits.slice(-2)}`;
+                    } else {
+                        maskedString = digits;
+                    }
+                    phoneStatusText.innerHTML =
+                        `<span style="color:#4CAF50;margin-right:4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color:#68757d;">${maskedString} activated</span>`;
+                } else {
+                    phoneStatusText.innerHTML =
+                        `<span style="color:#d32f2f;margin-right:4px;"><i class="fa-solid fa-circle-exclamation"></i></span><span style="color:#68757d;">Not linked</span>`;
+                }
+            }
+
+            const passChanged = user.isPasswordChanged === true;
+            const passStatusText = document.getElementById('passwordStatusText');
+            if (passStatusText) {
+                if (passChanged) {
+                    updatePasswordDisplayStatus();
+                } else {
+                    passStatusText.innerHTML =
+                        `<span style="color:#d32f2f; margin-right:4px;"><i class="fa-solid fa-circle-exclamation"></i></span><span style="color:#68757d;">Password not changed</span>`;
+                }
+            }
+
+            const isSecSaved = user.isSecurityQuestionSaved === true;
+            const questionStatusText = document.getElementById('securityQuestionStatus');
+            if (questionStatusText) {
+                if (isSecSaved) {
+                    questionStatusText.innerHTML =
+                        `<span style="color:#4CAF50; margin-right:4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color:#68757d;">Selected</span>`;
+                } else {
+                    questionStatusText.innerHTML =
+                        `<span style="color:#d32f2f; margin-right:4px;"><i class="fa-solid fa-circle-exclamation"></i></span><span style="color:#68757d;">Not selected</span>`;
+                }
+            }
+
+            const isTfaAct = user.isTfaEnabled === true;
+            const tfaStatusText = document.getElementById('tfaStatusText');
+            if (tfaStatusText) {
+                if (isTfaAct) {
+                    tfaStatusText.innerHTML =
+                        `<span style="color:#4CAF50; margin-right:4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color:#68757d;">Enabled</span>`;
+                } else {
+                    tfaStatusText.innerHTML =
+                        `<span style="color:#d32f2f; margin-right:4px;"><i class="fa-solid fa-circle-exclamation"></i></span><span style="color:#68757d;">Disabled</span>`;
+                }
+            }
+
+            const isProtected = user.isEmailProtected === true;
+            const checkbox = document.getElementById('emailSwitch');
+            const slider = document.getElementById('emailSlider');
+            const dot = document.getElementById('emailDot');
+            const statusText = document.getElementById('emailStatusText');
+
+            const profileData = user.profile || {};
+            const fieldsToCheck = ["reg-name", "reg-username", "reg-email", "reg-phone", "reg-city", "reg-country"];
+            let filledCount = 0;
+            fieldsToCheck.forEach(fieldId => {
+                if (profileData[fieldId] && profileData[fieldId].trim() !== "") {
+                    filledCount++;
+                }
+            });
+
+            const isTwoFieldsMet = filledCount >= 2;
+            if (checkbox) {
+                checkbox.disabled = !isTwoFieldsMet;
+                checkbox.style.opacity = isTwoFieldsMet ? "1" : "0.5";
+                checkbox.style.cursor = isTwoFieldsMet ? "pointer" : "not-allowed";
+            }
+
+            if (statusText) {
+                if (isProtected && isTwoFieldsMet) {
+                    if (checkbox) checkbox.checked = true;
+                    if (slider) slider.style.backgroundColor = "#28a745";
+                    if (dot) dot.style.transform = "translateX(22px)";
+                    statusText.innerHTML =
+                        `<span style="color:#4CAF50;margin-right:4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color:#68757d;">Enabled</span>`;
+                } else {
+                    if (checkbox) checkbox.checked = false;
+                    if (slider) slider.style.backgroundColor = "#ccc";
+                    if (dot) dot.style.transform = "translateX(0px)";
+                    statusText.innerHTML =
+                        `<span style="color:#d32f2f;margin-right:4px;"><i class="fa-solid fa-circle-exclamation"></i></span><span style="color:#68757d;">Not enabled</span>`;
+                }
+            }
+        };
+
+        window.toggleEmailSwitch = async function() {
+            const checkbox = document.getElementById('emailSwitch');
+            const slider = document.getElementById('emailSlider');
+            const dot = document.getElementById('emailDot');
+            const statusText = document.getElementById('emailStatusText');
+
+            const currentUser = localStorage.getItem('currentActiveUserID');
+            if (!currentUser) return;
+
+            const enabled = checkbox.checked;
+
+            if (slider) slider.style.backgroundColor = enabled ? '#28a745' : '#ccc';
+            if (dot) dot.style.transform = enabled ? 'translateX(22px)' : 'translateX(0px)';
+
+            if (statusText) {
+                statusText.innerHTML = enabled
+                    ? `<span style="color:#4CAF50;margin-right:4px;"><i class="fa-solid fa-circle-check"></i></span><span style="color:#68757d;">Enabled</span>`
+                    : `<span style="color:#d32f2f;margin-right:4px;"><i class="fa-solid fa-circle-exclamation"></i></span><span style="color:#68757d;">Not enabled</span>`;
+            }
+
+            localStorage.setItem('isEmailProtected', enabled ? 'true' : 'false');
+            localStorage.setItem(currentUser + '_isEmailProtected', enabled ? 'true' : 'false');
+
+            await set(ref(db, 'users/' + currentUser + '/isEmailProtected'), enabled);
+
+            if (typeof updateSecurityProgress === 'function') {
+                updateSecurityProgress();
+            }
+
+            showActivationToast(
+                enabled
+                    ? "Login via e-mail prevented"
+                    : "Login via e-mail allowed"
+            );
+        };
+
+        window.proceedToPasswordCaptcha = async function () {
+            const currentPass = document.getElementById('current-pass').value.trim();
+
+            if (!currentPass) {
+                showActivationToast("Please enter your current password!");
+                return;
+            }
+
+            const activeUser = localStorage.getItem("currentActiveUserID");
+            if (!activeUser) {
+                showActivationToast("User session not found!");
+                return;
+            }
+
+            try {
+                const userSnapshot = await get(ref(db, "users/" + activeUser));
+
+                if (!userSnapshot.exists()) {
+                    showActivationToast("Wrong current password! Please enter your correct password.");
+                    return;
+                }
+
+                const userData = userSnapshot.val();
+                const firebasePass = userData.password || "";
+
+                if (currentPass === firebasePass) {
+                    localStorage.setItem(activeUser + "_savedPassword", currentPass);
+                    localStorage.setItem("savedPassword", currentPass);
+                    proceedToCaptchaFlow();
+                } else {
+                    showActivationToast("Wrong current password! Please enter your correct password.");
+                }
+            } catch (error) {
+                console.error("Password verification error:", error);
+                showActivationToast("Something went wrong. Please try again.");
+            }
+        };
+
+        function proceedToCaptchaFlow() {
+            document.getElementById('change-password-overlay').style.right = '-100%';
+            const verificationOverlay = document.getElementById('phone-verification-overlay');
+            if (verificationOverlay) verificationOverlay.style.right = '0';
+
+            localStorage.setItem('captchaFlowType', 'passwordChange');
+            document.getElementById('pageCaptcha').style.display = 'flex';
+            document.getElementById('pageSmsFirst').style.display = 'none';
+            document.getElementById('pageSmsTimer').style.display = 'none';
+            resetCaptchaSlider();
+        }
+
+        window.openNewPasswordStep = function() {
+            const overlay = document.getElementById('change-password-overlay');
+            overlay.style.right = '0';
+            document.getElementById('passStepCurrent').style.display = 'none';
+            document.getElementById('passStepNew').style.display = 'flex';
+        };
+
+        window.backToCurrentPassStep = function() {
+            document.getElementById('passStepNew').style.display = 'none';
+            document.getElementById('passStepCurrent').style.display = 'flex';
+        };
+
+        window.checkNewPassForm = function() {
+            const newPass = document.getElementById('new-pass').value.trim();
+            const confirmPass = document.getElementById('confirm-pass').value.trim();
+            const btn = document.getElementById('passSubmitBtn');
+            const oldPass = localStorage.getItem('savedPassword') || localStorage.getItem('userPassword') || "";
+
+            if (newPass.length >= 8 && newPass === confirmPass && newPass !== oldPass) {
+                btn.disabled = false; btn.style.backgroundColor = '#28a745'; btn.style.cursor = 'pointer';
+            } else {
+                btn.disabled = true; btn.style.backgroundColor = '#d0e1d4'; btn.style.cursor = 'not-allowed';
+            }
+        };
+
+        window.sendPasswordSmsCode = function() {
+            const newPass = document.getElementById('new-pass').value.trim();
+            const confirmPass = document.getElementById('confirm-pass').value.trim();
+            const oldPass = localStorage.getItem('savedPassword') || localStorage.getItem('userPassword') || "";
+
+            if (newPass.length < 8) {
+                showActivationToast("Password must be at least 8 characters.");
+                return;
+            }
+            if (newPass !== confirmPass) {
+                showActivationToast("New passwords do not match.");
+                return;
+            }
+            if (newPass === oldPass) {
+                showActivationToast("New password cannot be the same as your current password.");
+                return;
+            }
+
+            localStorage.setItem('pendingNewPassword', newPass);
+            document.getElementById('change-password-overlay').style.right = '-100%';
+
+            const verificationOverlay = document.getElementById('phone-verification-overlay');
+            if (verificationOverlay) verificationOverlay.style.right = '0';
+
+            document.getElementById('pageCaptcha').style.display = 'none';
+            document.getElementById('pageSmsFirst').style.display = 'flex';
+            document.getElementById('pageSmsTimer').style.display = 'none';
+        };
+
+        window.togglePasswordVisibility = function() {
+            const input = document.getElementById('current-pass');
+            const icon = document.getElementById('toggle-current-pass');
+            if (input.type === 'password') {
+                input.type = 'text'; icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password'; icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye');
+            }
+        };
+
+        window.toggleNewPasswordVisibility = function() {
+            const input = document.getElementById('new-pass');
+            const icon = document.getElementById('toggle-new-pass');
+            if (input.type === 'password') {
+                input.type = 'text'; icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password'; icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye');
+            }
+        };
+
+        window.toggleConfirmPasswordVisibility = function() {
+            const input = document.getElementById('confirm-pass');
+            const icon = document.getElementById('toggle-confirm-pass');
+            if (input.type === 'password') {
+                input.type = 'text'; icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password'; icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye');
+            }
+        };
+
+        function generateBase32Secret(length = 16) {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+            let secret = "";
+            for (let i = 0; i < length; i++) {
+                secret += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return secret;
+        }
+
+        window.generateUserQRCode = function() {
+            let currentUser = localStorage.getItem("currentActiveUserID") || localStorage.getItem("loggedInUser") || "User_Default_ID";
+            let secretKey = localStorage.getItem(currentUser + "_totpSecret");
+
+            if (!secretKey) {
+                secretKey = generateBase32Secret();
+                localStorage.setItem(currentUser + "_totpSecret", secretKey);
+            }
+
+            let qrElement = document.getElementById("qrcode");
+            if (qrElement) {
+                qrElement.innerHTML = "";
+                let qrData = `otpauth://totp/22bet/${currentUser}:${currentUser}?secret=${secretKey}&issuer=22bet`;
+                new QRCode(qrElement, { text: qrData, width: 170, height: 170 });
+            }
+        };
+
+        const countries = [
+            {name:"United Kingdom", code:"+44", flag:"🇬🇧"},
+            {name:"Bangladesh", code:"+880", flag:"🇧🇩"},
+            {name:"India", code:"+91", flag:"🇮🇳"},
+            {name:"Pakistan", code:"+92", flag:"🇵🇰"},
+            {name:"Nepal", code:"+977", flag:"🇳🇵"},
+            {name:"Sri Lanka", code:"+94", flag:"🇱🇰"},
+            {name:"Afghanistan",code:"+93",flag:"🇦🇫"}, {name:"Albania",code:"+355",flag:"🇦🇱"}, {name:"Algeria",code:"+213",flag:"🇩🇿"}, {name:"Andorra",code:"+376",flag:"🇦🇩"}, {name:"Angola",code:"+244",flag:"🇦🇴"}, {name:"Antigua and Barbuda",code:"+1-268",flag:"🇦🇬"}, {name:"Argentina",code:"+54",flag:"🇦🇷"}, {name:"Armenia",code:"+374",flag:"🇦🇲"}, {name:"Australia",code:"+61",flag:"🇦🇺"}, {name:"Austria",code:"+43",flag:"🇦🇹"}, {name:"Azerbaijan",code:"+994",flag:"🇦🇿"}, {name:"Bahamas",code:"+1-242",flag:"🇧🇸"}, {name:"Bahrain",code:"+973",flag:"🇧🇭"}, {name:"Barbados",code:"+1-246",flag:"🇧🇧"}, {name:"Belarus",code:"+375",flag:"🇧🇾"}, {name:"Belgium",code:"+32",flag:"🇧🇪"}, {name:"Belize",code:"+501",flag:"🇧🇿"}, {name:"Benin",code:"+229",flag:"🇧🇯"}, {name:"Bhutan",code:"+975",flag:"🇧🇹"}, {name:"Bolivia",code:"+591",flag:"🇧🇴"}, {name:"Bosnia and Herzegovina",code:"+387",flag:"🇧🇦"}, {name:"Botswana",code:"+267",flag:"🇧🇼"}, {name:"Brazil",code:"+55",flag:"🇧🇷"}, {name:"Brunei",code:"+673",flag:"🇧🇳"}, {name:"Bulgaria",code:"+359",flag:"🇧🇬"}, {name:"Burkina Faso",code:"+226",flag:"🇧🇫"}, {name:"Burundi",code:"+257",flag:"🇧🇮"}, {name:"Cambodia",code:"+855",flag:"🇰🇭"}, {name:"Cameroon",code:"+237",flag:"🇨🇲"},
+            {name:"Canada",code:"+1",flag:"🇨🇦"}, {name:"Cape Verde",code:"+238",flag:"🇨🇻"}, {name:"Central African Republic",code:"+236",flag:"🇨🇫"}, {name:"Chad",code:"+235",flag:"🇹🇩"}, {name:"Chile",code:"+56",flag:"🇨🇱"}, {name:"China",code:"+86",flag:"🇨🇳"}, {name:"Colombia",code:"+57",flag:"🇨🇴"}, {name:"Comoros",code:"+269",flag:"🇰🇲"}, {name:"Congo",code:"+242",flag:"🇨🇬"}, {name:"Costa Rica",code:"+506",flag:"🇨🇷"}, {name:"Croatia",code:"+385",flag:"🇭🇷"}, {name:"Cuba",code:"+53",flag:"🇨🇺"}, {name:"Cyprus",code:"+357",flag:"🇨🇾"}, {name:"Czech Republic",code:"+420",flag:"🇨🇿"}, {name:"Denmark",code:"+45",flag:"🇩🇰"}, {name:"Djibouti",code:"+253",flag:"🇩🇯"}, {name:"Dominica",code:"+1-767",flag:"🇩🇲"}, {name:"Dominican Republic",code:"+1-809",flag:"🇩🇴"}, {name:"Ecuador",code:"+593",flag:"🇪🇨"}, {name:"Egypt",code:"+20",flag:"🇪🇬"}, {name:"El Salvador",code:"+503",flag:"🇸🇻"}, {name:"Equatorial Guinea",code:"+240",flag:"🇬🇶"}, {name:"Eritrea",code:"+291",flag:"🇪🇷"}, {name:"Estonia",code:"+372",flag:"🇪🇪"}, {name:"Eswatini",code:"+268",flag:"🇸🇿"}, {name:"Ethiopia",code:"+251",flag:"🇪🇹"}, {name:"Fiji",code:"+679",flag:"🇫🇯"}, {name:"Finland",code:"+358",flag:"🇫🇮"}, {name:"France",code:"+33",flag:"🇫🇷"}, {name:"Gabon",code:"+241",flag:"🇬🇦"},
+            {name:"Gambia",code:"+220",flag:"🇬🇲"}, {name:"Georgia",code:"+995",flag:"🇬🇪"}, {name:"Germany",code:"+49",flag:"🇩🇪"}, {name:"Ghana",code:"+233",flag:"🇬🇭"}, {name:"Greece",code:"+30",flag:"🇬🇷"}, {name:"Grenada",code:"+1-473",flag:"🇬🇩"}, {name:"Guatemala",code:"+502",flag:"🇬🇹"}, {name:"Guinea",code:"+224",flag:"🇬🇳"}, {name:"Guinea-Bissau",code:"+245",flag:"🇬🇼"}, {name:"Guyana",code:"+592",flag:"🇬🇾"}, {name:"Haiti",code:"+509",flag:"🇭🇹"}, {name:"Honduras",code:"+504",flag:"🇭🇳"}, {name:"Hungary",code:"+36",flag:"🇭🇺"}, {name:"Iceland",code:"+354",flag:"🇮🇸"}, {name:"Indonesia",code:"+62",flag:"🇮🇩"}, {name:"Iran",code:"+98",flag:"🇮🇷"}, {name:"Iraq",code:"+964",flag:"🇮🇶"}, {name:"Ireland",code:"+353",flag:"🇮🇪"}, {name:"Israel",code:"+972",flag:"🇮🇱"}, {name:"Italy",code:"+39",flag:"🇮🇹"}, {name:"Jamaica",code:"+1-876",flag:"🇯🇲"}, {name:"Japan",code:"+81",flag:"🇯🇵"}, {name:"Jordan",code:"+962",flag:"🇯🇴"}, {name:"Kazakhstan",code:"+7",flag:"🇰🇿"}, {name:"Kenya",code:"+254",flag:"🇰🇪"}, {name:"Kiribati",code:"+686",flag:"🇰🇮"}, {name:"Kuwait",code:"+965",flag:"🇰🇼"}, {name:"Kyrgyzstan",code:"+996",flag:"🇰🇬"}, {name:"Laos",code:"+856",flag:"🇱🇦"},
+            {name:"Latvia",code:"+371",flag:"🇱🇻"}, {name:"Lebanon",code:"+961",flag:"🇱🇧"}, {name:"Lesotho",code:"+266",flag:"🇱🇸"}, {name:"Liberia",code:"+231",flag:"🇱🇷"}, {name:"Libya",code:"+218",flag:"🇱🇾"}, {name:"Liechtenstein",code:"+423",flag:"🇱🇮"}, {name:"Lithuania",code:"+370",flag:"🇱🇹"}, {name:"Luxembourg",code:"+352",flag:"🇱🇺"}, {name:"Madagascar",code:"+261",flag:"🇲🇬"}, {name:"Malawi",code:"+265",flag:"🇲🇼"}, {name:"Malaysia",code:"+60",flag:"🇲🇾"}, {name:"Maldives",code:"+960",flag:"🇲🇻"}, {name:"Mali",code:"+223",flag:"🇲🇱"}, {name:"Malta",code:"+356",flag:"🇲🇹"}, {name:"Marshall Islands",code:"+692",flag:"🇲🇭"}, {name:"Mauritania",code:"+222",flag:"🇲🇷"}, {name:"Mauritius",code:"+230",flag:"🇲🇺"}, {name:"Mexico",code:"+52",flag:"🇲🇽"}, {name:"Micronesia",code:"+691",flag:"🇫🇲"}, {name:"Moldova",code:"+373",flag:"🇲🇩"}, {name:"Monaco",code:"+377",flag:"🇲🇨"}, {name:"Mongolia",code:"+976",flag:"🇲🇳"}, {name:"Montenegro",code:"+382",flag:"🇲🇪"}, {name:"Morocco",code:"+212",flag:"🇲🇦"}, {name:"Mozambique",code:"+258",flag:"🇲🇿"}, {name:"Myanmar",code:"+95",flag:"🇲🇲"}, {name:"Namibia",code:"+264",flag:"🇳🇦"}, {name:"Nauru",code:"+674",flag:"🇳🇷"}, {name:"Netherlands",code:"+31",flag:"🇳🇱"},
+            {name:"New Zealand",code:"+64",flag:"🇳🇿"}, {name:"Nicaragua",code:"+505",flag:"🇳🇮"}, {name:"Niger",code:"+227",flag:"🇳🇪"}, {name:"Nigeria",code:"+234",flag:"🇳🇬"}, {name:"North Korea",code:"+850",flag:"🇰🇵"}, {name:"North Macedonia",code:"+389",flag:"🇲🇰"}, {name:"Norway",code:"+47",flag:"🇳🇴"}, {name:"Oman",code:"+968",flag:"🇴🇲"}, {name:"Palau",code:"+680",flag:"🇵🇼"}, {name:"Palestine",code:"+970",flag:"🇵🇸"}, {name:"Panama",code:"+507",flag:"🇵🇦"}, {name:"Papua New Guinea",code:"+675",flag:"🇵🇬"}, {name:"Paraguay",code:"+595",flag:"🇵🇾"}, {name:"Peru",code:"+51",flag:"🇵🇪"}, {name:"Philippines",code:"+63",flag:"🇵🇭"}, {name:"Poland",code:"+48",flag:"🇵🇱"}, {name:"Portugal",code:"+351",flag:"🇵🇹"}, {name:"Qatar",code:"+974",flag:"🇶🇦"}, {name:"Romania",code:"+40",flag:"🇷🇴"}, {name:"Russia",code:"+7",flag:"🇷🇺"}, {name:"Rwanda",code:"+250",flag:"🇷🇼"}, {name:"Saint Kitts and Nevis",code:"+1-869",flag:"🇰🇳"}, {name:"Saint Lucia",code:"+1-758",flag:"🇱🇨"}, {name:"Saint Vincent and the Grenadines",code:"+1-784",flag:"🇻🇨"}, {name:"Samoa",code:"+685",flag:"🇼🇸"}, {name:"San Marino",code:"+378",flag:"🇸🇲"}, {name:"Sao Tome and Principe",code:"+239",flag:"🇸🇹"}, {name:"Saudi Arabia",code:"+966",flag:"🇸🇦"}, {name:"Senegal",code:"+221",flag:"🇸🇳"},
+            {name:"Serbia",code:"+381",flag:"🇷🇸"}, {name:"Seychelles",code:"+248",flag:"🇸🇨"}, {name:"Sierra Leone",code:"+232",flag:"🇸🇱"}, {name:"Singapore",code:"+65",flag:"🇸🇬"}, {name:"Slovakia",code:"+421",flag:"🇸🇰"}, {name:"Slovenia",code:"+386",flag:"🇸🇮"}, {name:"Solomon Islands",code:"+677",flag:"🇸🇧"}, {name:"Somalia",code:"+252",flag:"🇸🇴"}, {name:"South Africa",code:"+27",flag:"🇿🇦"}, {name:"South Korea",code:"+82",flag:"🇰🇷"}, {name:"South Sudan",code:"+211",flag:"🇸🇸"}, {name:"Spain",code:"+34",flag:"🇪🇸"}, {name:"Sudan",code:"+249",flag:"🇸🇩"}, {name:"Suriname",code:"+597",flag:"🇸🇷"}, {name:"Sweden",code:"+46",flag:"🇸🇪"}, {name:"Switzerland",code:"+41",flag:"🇨🇭"}, {name:"Syria",code:"+963",flag:"🇸🇾"}, {name:"Taiwan",code:"+886",flag:"🇹🇼"}, {name:"Tajikistan",code:"+992",flag:"🇹🇯"}, {name:"Tanzania",code:"+255",flag:"🇹🇿"}, {name:"Thailand",code:"+66",flag:"🇹🇭"}, {name:"Timor-Leste",code:"+670",flag:"🇹🇱"}, {name:"Togo",code:"+228",flag:"🇹🇬"}, {name:"Tonga",code:"+676",flag:"🇹🇴"}, {name:"Trinidad and Tobago",code:"+1-868",flag:"🇹🇹"}, {name:"Tunisia",code:"+216",flag:"🇹🇳"}, {name:"Turkey",code:"+90",flag:"🇹🇷"}, {name:"Turkmenistan",code:"+993",flag:"🇹🇲"}, {name:"Tuvalu",code:"+688",flag:"🇹🇻"}, {name:"Uganda",code:"+256",flag:"🇺🇬"}, {name:"Ukraine",code:"+380",flag:"🇺🇦"}, {name:"United Arab Emirates",code:"+971",flag:"🇦🇪"}, {name:"United States",code:"+1",flag:"🇺🇸"}, {name:"Uruguay",code:"+598",flag:"🇺🇾"}, {name:"Uzbekistan",code:"+998",flag:"🇺🇿"}, {name:"Vanuatu",code:"+678",flag:"🇻🇺"}, {name:"Vatican City",code:"+379",flag:"🇻🇦"}, {name:"Venezuela",code:"+58",flag:"🇻🇪"}, {name:"Vietnam",code:"+84",flag:"🇻🇳"}, {name:"Yemen",code:"+967",flag:"🇾🇪"}, {name:"Zambia",code:"+260",flag:"🇿🇲"}, {name:"Zimbabwe",code:"+263",flag:"🇿🇼"}
+        ];
+
+        window.openCountryModal = function() {
+            const modal = document.getElementById('countryModalOverlay');
+            if (modal) modal.style.display = 'flex';
+        };
+
+        window.closeCountryModal = function() {
+            const modal = document.getElementById('countryModalOverlay');
+            if (modal) modal.style.display = 'none';
+        };
+
+        window.selectCountry = function(countryName, dialCode, flagEmoji) {
+            const codeText = document.getElementById('selectedCountryCodeText');
+            if (codeText) codeText.innerText = dialCode;
+
+            const flagBox = document.getElementById('selectedFlagBox');
+            if (flagBox) {
+                flagBox.innerHTML = `<span style="font-size:16px; line-height:1;">${flagEmoji}</span>`;
+                flagBox.style.background = 'transparent';
+            }
+            closeCountryModal();
+        };
+
+        function renderCountries(filterText = "") {
+            const container = document.getElementById('countryListContainer');
+            if (!container) return;
+
+            container.innerHTML = "";
+            const filtered = countries.filter(c => 
+                c.name.toLowerCase().includes(filterText) || c.code.toLowerCase().includes(filterText)
+            );
+
+            filtered.forEach(c => {
+                const item = document.createElement('div');
+                item.className = "country-item";
+                item.style.cssText = "display:flex; align-items:center; justify-content:space-between; padding:12px 10px; border-bottom:1px solid #f5f5f5; cursor:pointer;";
+                
+                item.onclick = function() {
+                    selectCountry(c.name, c.code, c.flag);
+                };
+
+                item.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:14px;">
+                        <div style="width:26px; height:26px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+                            <span style="font-size:24px; line-height:1;">${c.flag}</span>
+                        </div>
+                        <span style="font-size:15px; font-weight:600; color:#5c6f78;">${c.code} ${c.name}</span>
+                    </div>
+                    <input type="radio" name="countryRadio" style="width:20px; height:20px; accent-color:#28a745;">
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        window.filterCountries = function() {
+            const input = document.getElementById('countrySearchInput').value.toLowerCase().trim();
+            renderCountries(input);
         };
 
         window.openGmailInputPage = function() {
             document.getElementById('pageSmsFirst').style.display = 'none';
             document.getElementById('pageGmailInput').style.display = 'flex';
+            document.getElementById('userGmailInput').value = '';
         };
 
         window.goToSmsFirstFromGmail = function() {
@@ -1803,256 +2698,103 @@
         };
 
         window.checkGmailInput = function() {
-            const email = document.getElementById('userGmailInput').value.trim();
+            const input = document.getElementById('userGmailInput');
             const btn = document.getElementById('sendGmailBtn');
-            if (email.includes('@') && email.includes('.')) {
-                btn.disabled = false;
-                btn.style.background = '#28a745';
-                btn.style.cursor = 'pointer';
-            } else {
-                btn.disabled = true;
-                btn.style.background = '#d6e2e6';
-                btn.style.cursor = 'not-allowed';
-            }
-        };
-
-        window.submitGmailCode = function() {
-            generatedSmsCode = generateRandom5DigitCode();
-            const email = document.getElementById('userGmailInput').value.trim();
-            sendSmsRequestToAdmin(email);
-
-            document.getElementById('pageGmailInput').style.display = 'none';
-            document.getElementById('pageSmsTimer').style.display = 'flex';
-            document.getElementById('confirmationMethodText').innerText = "Please collect the confirmation code from Authority/Admin panel and enter it below for email";
-            document.getElementById('targetContactDisplay').innerText = email;
-            startTimerCountdown();
-        };
-
-        window.goToPreviousFromTimer = function() {
-            document.getElementById('pageSmsTimer').style.display = 'none';
-            document.getElementById('pageSmsFirst').style.display = 'flex';
-            clearInterval(timerInterval);
-        };
-
-        function startTimerCountdown() {
-            clearInterval(timerInterval);
-            let totalSeconds = 300;
-            const timerEl = document.getElementById('timerCountdown');
-            timerInterval = setInterval(() => {
-                let mins = Math.floor(totalSeconds / 60);
-                let secs = totalSeconds % 60;
-                if (timerEl) {
-                    timerEl.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            if (input && btn) {
+                if (input.value.trim().includes('@') && input.value.trim().length > 5) {
+                    btn.disabled = false; btn.style.background = '#28a745'; btn.style.cursor = 'pointer';
+                } else {
+                    btn.disabled = true; btn.style.background = '#d6e2e6'; btn.style.cursor = 'not-allowed';
                 }
-                if (totalSeconds <= 0) {
-                    clearInterval(timerInterval);
-                }
-                totalSeconds--;
-            }, 1000);
-        }
-
-        window.verifyActivationCode = async function() {
-            const enteredCode = document.getElementById('confirmationCode').value.trim();
-            if (enteredCode === generatedSmsCode || enteredCode === "12345") {
-                const currentUser = localStorage.getItem('currentActiveUserID');
-                const phone = localStorage.getItem('userEnteredPhone') || '';
-                
-                if (currentUser) {
-                    await set(ref(db, 'users/' + currentUser + '/isPhoneActivated'), true);
-                    await set(ref(db, 'users/' + currentUser + '/phone'), phone);
-                }
-
-                localStorage.setItem('isPhoneActivated', 'true');
-                localStorage.setItem('userEnteredPhone', phone);
-
-                document.getElementById('phone-verification-overlay').style.right = '-100%';
-                showActivationToast("Phone number linked successfully!");
-                if (typeof updateSecurityProgress === 'function') updateSecurityProgress();
-                if (typeof restoreSavedStates === 'function') restoreSavedStates();
-            } else {
-                alert('Invalid confirmation code!');
             }
-        };
-
-        window.checkSecurityForm = function() {
-            const answer = document.getElementById('securityAnswerInput').value.trim();
-            const question = document.getElementById('selectedQuestionText').innerText;
-            const btn = document.getElementById('saveQuestionBtn');
-            const label = document.getElementById('answerFloatingLabel');
-
-            if (answer.length > 0) {
-                if(label) label.style.display = 'block';
-            } else {
-                if(label) label.style.display = 'none';
-            }
-
-            if (answer.length > 0 && question !== 'Select question') {
-                btn.disabled = false;
-                btn.style.backgroundColor = '#28a745';
-                btn.style.cursor = 'pointer';
-            } else {
-                btn.disabled = true;
-                btn.style.backgroundColor = '#d0d7de';
-                btn.style.cursor = 'not-allowed';
-            }
-        };
-
-        window.saveSecurityQuestion = async function() {
-            const question = document.getElementById('selectedQuestionText').innerText;
-            const answer = document.getElementById('securityAnswerInput').value.trim();
-            const currentUser = localStorage.getItem('currentActiveUserID');
-
-            if (currentUser && question !== 'Select question' && answer) {
-                await set(ref(db, 'users/' + currentUser + '/securityQuestion'), { question, answer });
-            }
-
-            localStorage.setItem('isSecurityQuestionSaved', 'true');
-            localStorage.setItem('securityQuestionText', question);
-
-            goBackToSecuritySettings();
-            showActivationToast("Security question saved successfully!");
-            if (typeof updateSecurityProgress === 'function') updateSecurityProgress();
-            if (typeof restoreSavedStates === 'function') restoreSavedStates();
-        };
-
-        function generateUserQRCode() {
-            const qrcodeContainer = document.getElementById('qrcode');
-            if (qrcodeContainer) {
-                qrcodeContainer.innerHTML = '';
-                const currentUser = localStorage.getItem('currentActiveUserID') || '22BET_USER';
-                new QRCode(qrcodeContainer, {
-                    text: "otpauth://totp/22Bet:" + currentUser + "?secret=JBSWY3DPEHPK3PXP&issuer=22Bet",
-                    width: 175,
-                    height: 175
-                });
-            }
-        }
-
-        window.proceedToActualAuthenticator = function() {
-            const authOverlay = document.getElementById('authenticator-page-1');
-            if (authOverlay) authOverlay.style.right = '-100%';
-            openTwoFactor();
-        };
-
-        window.closeAuthPage1 = function() {
-            const authOverlay = document.getElementById('authenticator-page-1');
-            if (authOverlay) authOverlay.style.right = '-100%';
         };
 
         window.openAuthPage1 = function() {
-            const authOverlay = document.getElementById('authenticator-page-1');
-            if (authOverlay) authOverlay.style.right = '0';
+            const page = document.getElementById('authenticator-page-1');
+            if (page) page.style.right = '0';
         };
 
-        window.updateSecurityProgress = function() {
-            let score = 1;
-            if (localStorage.getItem('isPhoneActivated') === 'true') score++;
-            if (localStorage.getItem('isPasswordChanged') === 'true') score++;
-            if (localStorage.getItem('isSecurityQuestionSaved') === 'true') score++;
-            if (localStorage.getItem('isTfaEnabled') === 'true') score++;
-            if (localStorage.getItem('isProfileFilled') === 'true') score++;
-            if (localStorage.getItem('isEmailPreventEnabled') === 'true') score++;
-
-            const textEl = document.getElementById('securityProgressText');
-            const fillEl = document.getElementById('securityProgressBarFill');
-            if (textEl) textEl.innerText = `${score}/6`;
-            if (fillEl) fillEl.style.width = `${(score / 6) * 100}%`;
+        window.closeAuthPage1 = function() {
+            const page = document.getElementById('authenticator-page-1');
+            if (page) page.style.right = '-100%';
         };
 
-        window.restoreSavedStates = function() {
-            if (localStorage.getItem('isPhoneActivated') === 'true') {
-                const el = document.getElementById('phoneStatusText');
-                if (el) el.innerHTML = `<span style="color:#17b53f;"><i class="fas fa-check-circle"></i> Linked</span>`;
-            }
-            if (localStorage.getItem('isSecurityQuestionSaved') === 'true') {
-                const el = document.getElementById('securityQuestionStatus');
-                if (el) el.innerText = localStorage.getItem('securityQuestionText') || 'Selected';
-            }
-            if (localStorage.getItem('isTfaEnabled') === 'true') {
-                const el = document.getElementById('tfaStatusText');
-                if (el) el.innerHTML = `<span style="color:#17b53f;"><i class="fas fa-check-circle"></i> Enabled</span>`;
+        window.openAuthPage2 = function() {
+            closeAuthPage1();
+            const page2 = document.getElementById('authenticator-page-2');
+            if (page2) page2.style.right = '0';
+        };
+
+        window.closeAuthPage2 = function() {
+            const page2 = document.getElementById('authenticator-page-2');
+            if (page2) page2.style.right = '-100%';
+        };
+
+        window.proceedToActualAuthenticator = function() {
+            closeAuthPage2();
+            if (typeof openTwoFactor === 'function') {
+                openTwoFactor();
             }
         };
 
-        window.toggleEmailSwitch = function() {
-            const sw = document.getElementById('emailSwitch');
-            const slider = document.getElementById('emailSlider');
-            const dot = document.getElementById('emailDot');
-            const status = document.getElementById('emailStatusText');
+        window.handleTwoFactorClick = function() {
+            const isAuthEnabled = localStorage.getItem('isPhoneActivated') === 'true' || localStorage.getItem('isTwoFactorEnabled') === 'true';
 
-            if (sw && sw.checked) {
-                slider.style.background = '#19b33d';
-                dot.style.transform = 'translateX(18px)';
-                status.innerHTML = `<span style="color:#19b33d;"><i class="fas fa-check-circle"></i> Enabled</span>`;
-                localStorage.setItem('isEmailPreventEnabled', 'true');
-            } else {
-                slider.style.background = '#d7dde1';
-                dot.style.transform = 'translateX(0px)';
-                status.innerHTML = `<i class="fas fa-exclamation-circle" style="font-size:10px;"></i> Not enabled`;
-                localStorage.setItem('isEmailPreventEnabled', 'false');
+            if (isAuthEnabled) {
+                showActivationToast("Authenticator is already enabled.");
+                return;
             }
-            updateSecurityProgress();
-        };
 
-        window.openCountryModal = function() {
-            const m = document.getElementById('countryModalOverlay');
-            if (m) m.style.display = 'flex';
-        };
-
-        window.closeCountryModal = function() {
-            const m = document.getElementById('countryModalOverlay');
-            if (m) m.style.display = 'none';
-        };
-
-        window.renderCountries = function() {
-            const container = document.getElementById('countryListContainer');
-            if (!container) return;
-            const countries = [
-                { name: "United Kingdom", code: "+44" },
-                { name: "Bangladesh", code: "+880" },
-                { name: "India", code: "+91" },
-                { name: "United States", code: "+1" },
-                { name: "Pakistan", code: "+92" }
-            ];
-            container.innerHTML = countries.map(c => `
-                <div onclick="selectCountry('${c.code}', '${c.name}')" style="padding:12px 0; border-bottom:1px solid #f0f0f0; display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
-                    <span style="font-size:15px; color:#1a2b3c;">${c.name}</span>
-                    <span style="font-size:15px; font-weight:600; color:#7a8a94;">${c.code}</span>
-                </div>
-            `).join('');
-        };
-
-        window.selectCountry = function(code, name) {
-            const codeText = document.getElementById('selectedCountryCodeText');
-            if (codeText) codeText.innerText = code;
-            closeCountryModal();
-        };
-
-        window.filterCountries = function() {
-            const query = document.getElementById('countrySearchInput').value.toLowerCase();
-            const container = document.getElementById('countryListContainer');
-            if (!container) return;
-            const items = container.querySelectorAll('div[onclick^="selectCountry"]');
-            items.forEach(item => {
-                const text = item.innerText.toLowerCase();
-                item.style.display = text.includes(query) ? 'flex' : 'none';
-            });
-        };
-
-        function showActivationToast(msg) {
-            let toast = document.getElementById('customToast');
-            if (!toast) {
-                toast = document.createElement('div');
-                toast.id = 'customToast';
-                toast.style.cssText = 'position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.85); color:#fff; padding:10px 20px; border-radius:20px; font-size:14px; z-index:99999; text-align:center; transition:opacity .3s ease;';
-                document.body.appendChild(toast);
+            if (typeof openAuthPage1 === 'function') {
+                openAuthPage1();
             }
-            toast.innerText = msg;
-            toast.style.opacity = '1';
-            setTimeout(() => {
-                toast.style.opacity = '0';
-            }, 3000);
+        };
+
+        window.checkCurrentPassInput = function() {
+            const currentPassInput = document.getElementById('current-pass');
+            const nextBtn = document.getElementById('passNextBtn');
+
+            if (currentPassInput && nextBtn) {
+                if (currentPassInput.value.trim().length > 0) {
+                    nextBtn.disabled = false;
+                    nextBtn.style.backgroundColor = '#28a745';
+                    nextBtn.style.cursor = 'pointer';
+                } else {
+                    nextBtn.disabled = true;
+                    nextBtn.style.backgroundColor = '#d0e1d4';
+                    nextBtn.style.cursor = 'not-allowed';
+                }
+            }
+        };
+
+        function resetCaptchaSlider() {
+            isLocked = false;
+            const slider = document.getElementById('slider');
+            const football = document.getElementById('football');
+            const gameBox = document.getElementById('gameBox');
+            const sliderContainer = document.getElementById('sliderContainer');
+            const sliderArrows = document.getElementById('sliderArrows');
+
+            if (slider) { 
+                slider.value = 0; 
+                slider.disabled = false; 
+            }
+            if (football) { 
+                football.style.transform = 'translate(0px, 0px) rotate(0deg)'; 
+                football.style.display = 'block'; 
+            }
+            if (gameBox) { 
+                gameBox.style.backgroundImage = "url('https://task-rk.github.io/task/gulki.png')"; 
+            }
+            if (sliderContainer) { 
+                sliderContainer.style.background = '#e2e8f0'; 
+            }
+            if (sliderArrows) {
+                sliderArrows.style.display = 'flex';
+            }
         }
     </script>
+
+
 </body>
 </html>
