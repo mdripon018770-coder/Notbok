@@ -1490,42 +1490,46 @@ flex-direction:column;">
             if (idDisplay) idDisplay.innerText = 'id: ' + currentStoredUser;
             
             const userRef = ref(db, 'users/' + currentStoredUser);
-            onValue(userRef, (userSnapshot) => {
-                const data = userSnapshot.val();
-                if (data) {
-                    const balance = data.balance !== undefined ? data.balance : 0;
-                    let currencySymbol = '৳'; 
-                    if (data.currencySymbol) {
-                        currencySymbol = data.currencySymbol;
-                    } else if (data.currency === 'USD' || data.country === 'USA') {
-                        currencySymbol = '$';
-                    } else if (data.country === 'Bangladesh' || data.currency === 'BDT') {
-                        currencySymbol = '৳';
-                    }
-                    
-                    const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
-                    updatedDisplays.forEach(el => {
-                        el.innerText = `${balance} ${currencySymbol}`;
-                    });
+onValue(userRef, (userSnapshot) => {
+    const data = userSnapshot.val();
+    if (data) {
+        const balance = data.balance !== undefined ? data.balance : 0;
+        
+        // Fix: Sothik currency symbol ber korar logic
+        let currencySymbol = '৳'; 
+        if (data.currencySymbol && data.currencySymbol.trim() !== "") {
+            currencySymbol = data.currencySymbol;
+        } else if (data.currency === 'USD' || data.country === 'USA') {
+            currencySymbol = '$';
+        } else if (data.currency === 'BDT' || data.country === 'Bangladesh') {
+            currencySymbol = '৳';
+        } else {
+            currencySymbol = '৳'; // Default Taka kore dilam jate 'L' ba onno vul symbol na ase
+        }
+        
+        const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
+        updatedDisplays.forEach(el => {
+            el.innerText = `${balance} ${currencySymbol}`;
+        });
 
-                    localStorage.setItem('isProfileFilled', data.isProfileFilled ? 'true' : 'false');
-                    if (data.profile) {
-                        localStorage.setItem('userProfileData', JSON.stringify(data.profile));
-                    }
-                    localStorage.setItem('isPhoneActivated', data.isPhoneActivated ? 'true' : 'false');
-                    if (data.phone) {
-                        localStorage.setItem('userEnteredPhone', data.phone);
-                    }
+        localStorage.setItem('isProfileFilled', data.isProfileFilled ? 'true' : 'false');
+        if (data.profile) {
+            localStorage.setItem('userProfileData', JSON.stringify(data.profile));
+        }
+        localStorage.setItem('isPhoneActivated', data.isPhoneActivated ? 'true' : 'false');
+        if (data.phone) {
+            localStorage.setItem('userEnteredPhone', data.phone);
+        }
 
-                    loadProfileData();
-                    window.checkAndHideFields();
-                    if (typeof restoreSavedStates === 'function') restoreSavedStates();
-                    if (typeof updateSecurityProgress === 'function') updateSecurityProgress();
-                } else {
-                    const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
-                    updatedDisplays.forEach(el => el.innerText = `0 ৳`);
-                }
-            });
+        loadProfileData();
+        window.checkAndHideFields();
+        if (typeof restoreSavedStates === 'function') restoreSavedStates();
+        if (typeof updateSecurityProgress === 'function') updateSecurityProgress();
+    } else {
+        const updatedDisplays = document.querySelectorAll('.wallet-info span, .balance-pill span');
+        updatedDisplays.forEach(el => el.innerText = `0 ৳`);
+    }
+});
 
             const logoutTrigger = document.getElementById('logout-trigger');
             if(logoutTrigger) {
