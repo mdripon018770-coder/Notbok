@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foodpanda - Amar Bazar</title>
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        body {
+            background-color: #0f172a;
+            color: #fff;
+            padding-bottom: 70px;
+        }
+        /* Header */
+        .header {
+            background: #1e293b;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .header h2 {
+            font-size: 18px;
+            color: #00d4ff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-btn, .cart-icon {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        /* Search Bar */
+        .search-box {
+            padding: 15px 20px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+        /* Categories Scroll */
+        .categories {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 0 20px 10px 20px;
+            scrollbar-width: none;
+        }
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+        .cat-chip {
+            background: #1e293b;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+        .cat-chip.active, .cat-chip:hover {
+            background: #2563eb;
+            color: #fff;
+        }
+        /* Food Grid */
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px 20px;
+        }
+        .food-card {
+            background: #1e293b;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        /* Updated Image Container to Cover Full Width & Top Space */
+        .food-img {
+            width: 100%;
+            height: 140px; 
+            background: #1e293b;
+            overflow: hidden;
+            position: relative;
+        }
+        .food-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .food-info {
+            padding: 12px 10px;
+        }
+        .food-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .food-price {
+            font-size: 14px;
+            color: #38bdf8;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .add-btn {
+            width: 100%;
+            background: #2563eb;
+            border: none;
+            color: #fff;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .add-btn:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <button class="back-btn" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></button>
+        <h2><i class="fa-solid fa-utensils" style="color: #ff385c;"></i> Foodpanda Corner</h2>
+        <button class="cart-icon" onclick="openCart()"><i class="fa-solid fa-cart-shopping"></i></button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-box">
+        <input type="text" placeholder="সুস্বাদু খাবার খুঁজুন..." id="searchFood" onkeyup="filterFood()">
+    </div>
+
+    <!-- Categories -->
+    <div class="categories">
+        <div class="cat-chip active" onclick="filterCat('all')">সব খাবার</div>
+        <div class="cat-chip" onclick="filterCat('fastfood')">ফাস্টফুড ও স্ন্যাক্স</div>
+        <div class="cat-chip" onclick="filterCat('desi')">দেশীয় ও মাংস</div>
+        <div class="cat-chip" onclick="filterCat('sweet')">মিষ্টি ও ডেজার্ট</div>
+    </div>
+
+    <!-- Food Items Grid -->
+    <div class="food-grid" id="foodContainer">
+        
+        <!-- ১. পুডিং -->
+        <div class="food-card" data-category="sweet">
+            <div class="food-img"><img src="https://task-rk.github.io/task/puting.jpg" alt="পুডিং"></div>
+            <div class="food-info">
+                <div class="food-title">স্পেশাল পুডিং</div>
+                <div class="food-price">৳১২০.০০</div>
+                <button class="add-btn" onclick="addToCart('স্পেশাল পুডিং', 120)">অর্ডার করুন</button>
+            </div>
+        </div>
+
+        <!-- ২. মুড়ি -->
+        <div class="food-card" data-category="fastfood">
+            <div class="food-img"><img src="https://task-rk.github.io/task/muri.jpg" alt="মুড়ি"></div>
+            <div class="food-info">
+                <div class="food-title">মাসালা ঝালমুড়ি</div>
+                <div class="food-price">৳৬০.০০</div>
+                <button class="add-btn" onclick="addToCart('মাসালা ঝালমুড়ি', 60)">অর্ডার করুন</button>
+            </div>
+        </div>
+
+        <!-- ৩. খাসির মাংস -->
+        <div class="food-card" data-category="desi">
+            <div class="food-img"><img src="https://task-rk.github.io/task/khasi.jpg" alt="খাসির মাংস"></div>
+            <div class="food-info">
+                <div class="food-title">খাসির মাংসের রোস্ট</div>
+                <div class="food-price">৳৪৫০.০০</div>
+                <button class="add-btn" onclick="addToCart('খাসির মাংসের রোস্ট', 450)">অর্ডার করুন</button>
+            </div>
+        </div>
+
+        <!-- ৪. মুরগির মাংস -->
+        <div class="food-card" data-category="desi">
+            <div class="food-img"><img src="https://task-rk.github.io/task/murgi.jpg" alt="মুরগির মাংস"></div>
+            <div class="food-info">
+                <div class="food-title">দেশি মুরগির ঝোল</div>
+                <div class="food-price">৳২৮০.০০</div>
+                <button class="add-btn" onclick="addToCart('দেশি মুরগির ঝোল', 280)">অর্ডার করুন</button>
+            </div>
+        </div>
+
+        <!-- ৫. ফুচকা -->
+        <div class="food-card" data-category="fastfood">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500" alt="ফুচকা"></div>
+            <div class="food-info">
+                <div class="food-title">টেস্টি ফুচকা</div>
+                <div class="food-price">৳১০০.০০</div>
+                <button class="add-btn" onclick="addToCart('টেস্টি ফুচকা', 100)">অর্ডার করুন</button>
+            </div>
+        </div>
+
+        <!-- ৬. চটপটি -->
+        <div class="food-card" data-category="fastfood">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500" alt="চটপটি"></div>
+            <div class="food-info">
+                <div class="food-title">স্পেশাল চটপটি</div>
+                <div class="food-price">৳৯০.০০</div>
+                <button class="add-btn" onclick="addToCart('স্পেশাল চটপটি', 90)">অর্ডার করুন</button>
+            </div>
+        </div>
+
+        <!-- ৭. হালিম -->
+        <div class="food-card" data-category="desi">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=500" alt="হালিম"></div>
+            <div class="food-info">
+                <div class="food-title">গরুর মাংসের হালিম</div>
+                <div class="food-price">৳১৫০.০০</div>
+                <button class="add-btn" onclick="addToCart('গরুর মাংসের হালিম', 150)">অর্ডার করুন</button>
+            </div>
+        </div>
+
+        <!-- ৮. পিজা -->
+        <div class="food-card" data-category="fastfood">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500" alt="পিজা"></div>
+            <div class="food-info">
+                <div class="food-title">চিকেন চিজ পিজা</div>
+                <div class="food-price">৳৩৫০.০০</div>
+                <button class="add-btn" onclick="addToCart('চিকেন চিজ পিজা', 350)">অর্ডার করুন</button>
+            </div>
+        </div>
+
+        <!-- ৯. বার্গার -->
+        <div class="food-card" data-category="fastfood">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500" alt="বার্গার"></div>
+            <div class="food-info">
+                <div class="food-title">জম্বো বার্গার</div>
+                <div class="food-price">৳২২০.০০</div>
+                <button class="add-btn" onclick="addToCart('জম্বো বার্গার', 220)">অর্ডার করুন</button>
+            </div>
+        </div>
+
+        <!-- ১০. রসমালাই -->
+        <div class="food-card" data-category="sweet">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=500" alt="রসমালাই"></div>
+            <div class="food-info">
+                <div class="food-title">কুমিল্লার রসমালাই</div>
+                <div class="food-price">৳২৫০.০০</div>
+                <button class="add-btn" onclick="addToCart('কুমিল্লার রসমালাই', 250)">অর্ডার করুন</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function addToCart(itemName, price) {
+            Swal.fire({
+                title: 'সফল!',
+                text: `${itemName} কার্টে যোগ করা হয়েছে (মূল্য: ৳${price})`,
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false,
+                background: '#1e293b',
+                color: '#fff'
+            });
+        }
+
+        function openCart() {
+            Swal.fire({
+                title: 'আপনার কার্ট',
+                text: 'আপনার অর্ডার লিস্ট খালি আছে!',
+                icon: 'info',
+                background: '#1e293b',
+                color: '#fff',
+                confirmButtonText: 'ঠিক আছে'
+            });
+        }
+
+        function filterFood() {
+            let input = document.getElementById('searchFood').value.toLowerCase();
+            let cards = document.getElementsByClassName('food-card');
+
+            for (let i = 0; i < cards.length; i++) {
+                let title = cards[i].getElementsByClassName('food-title')[0].innerText.toLowerCase();
+                if (title.includes(input)) {
+                    cards[i].style.display = "flex";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        function filterCat(category) {
+            let chips = document.querySelectorAll('.cat-chip');
+            chips.forEach(chip => chip.classList.remove('active'));
+            event.target.classList.add('active');
+
+            let cards = document.getElementsByClassName('food-card');
+            for (let i = 0; i < cards.length; i++) {
+                let cat = cards[i].getAttribute('data-category');
+                if (category === 'all' || cat === category) {
+                    cards[i].style.display = "flex";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
