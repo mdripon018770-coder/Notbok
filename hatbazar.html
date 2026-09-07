@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hatbazar - Amar Bazar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        body {
+            background-color: #0f172a;
+            color: #fff;
+            padding-bottom: 70px;
+        }
+        /* Header */
+        .header {
+            background: #1e293b;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .header h2 {
+            font-size: 18px;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-btn, .cart-icon {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        /* Search Bar */
+        .search-box {
+            padding: 15px 20px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+        /* Categories Scroll */
+        .categories {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 0 20px 10px 20px;
+            scrollbar-width: none;
+        }
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+        .cat-chip {
+            background: #1e293b;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+        .cat-chip.active, .cat-chip:hover {
+            background: #2563eb;
+            color: #fff;
+        }
+        /* Grid Layout */
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px 20px;
+        }
+        .food-card {
+            background: #1e293b;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .food-img {
+            width: 100%;
+            height: 140px; 
+            background: #1e293b;
+            overflow: hidden;
+            position: relative;
+        }
+        .food-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .food-info {
+            padding: 12px 10px;
+        }
+        .food-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .food-price {
+            font-size: 14px;
+            color: #38bdf8;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .add-btn {
+            width: 100%;
+            background: #2563eb;
+            border: none;
+            color: #fff;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .add-btn:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <button class="back-btn" onclick="window.history.back()"><i class="fa-solid fa-arrow-left"></i></button>
+        <h2><i class="fa-solid fa-store" style="color: #38bdf8;"></i> হাটবাজার কর্নার</h2>
+        <button class="cart-icon" onclick="openCart()"><i class="fa-solid fa-cart-shopping"></i></button>
+    </div>
+
+    <div class="search-box">
+        <input type="text" placeholder="বাজারের জিনিস খুঁজুন (শাক, তেল, মাছ...)" id="searchFood" onkeyup="filterFood()">
+    </div>
+
+    <div class="categories">
+        <div class="cat-chip active" onclick="filterCat('all')">সব বাজার</div>
+        <div class="cat-chip" onclick="filterCat('veg')">শাক-সবজি</div>
+        <div class="cat-chip" onclick="filterCat('mudi')">মুদি আইটেম</div>
+        <div class="cat-chip" onclick="filterCat('fishmeat')">মাছ ও গোশত</div>
+    </div>
+
+    <div class="food-grid" id="foodContainer">
+        
+        <div class="food-card" data-category="veg">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500" class="auto-slider" data-images='["https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500", "https://images.unsplash.com/photo-1597362925123-77861dcf3bc7?w=500"]' alt="শাক সবজি"></div>
+            <div class="food-info">
+                <div class="food-title">তাজা শাক-সবজি (বান্ডেল)</div>
+                <div class="food-price">৳১০০.০০</div>
+                <button class="add-btn" onclick="addToCart('তাজা শাক-সবজি', 100)">অর্ডার করুন</button>
+            </div>
+        </div>
+
+        <div class="food-card" data-category="mudi">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500" class="auto-slider" data-images='["https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500", "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500"]' alt="সয়াবিন তেল ও লবণ"></div>
+            <div class="food-info">
+                <div class="food-title">সয়াবিন তেল ও লবণ</div>
+                <div class="food-price">৳১৯5.০০</div>
+                <button class="add-btn" onclick="addToCart('সয়াবিন তেল ও লবণ', 195)">অর্ডার করুন</button>
+            </div>
+        </div>
+
+        <div class="food-card" data-category="mudi">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500" class="auto-slider" data-images='["https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500", "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=500"]' alt="গোসল ও কাপড় কাঁচা সাবান"></div>
+            <div class="food-info">
+                <div class="food-title">সাবান ও ডিটারজেন্ট প্যাক</div>
+                <div class="food-price">৳১২০.০০</div>
+                <button class="add-btn" onclick="addToCart('সাবান প্যাক', 120)">অর্ডার করুন</button>
+            </div>
+        </div>
+
+        <div class="food-card" data-category="fishmeat">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500" class="auto-slider" data-images='["https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500", "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500"]' alt="তাজা মাছ"></div>
+            <div class="food-info">
+                <div class="food-title">রুই মাছ (১ কেজি)</div>
+                <div class="food-price">৳৩৫০.০০</div>
+                <button class="add-btn" onclick="addToCart('রুই মাছ ১ কেজি', 350)">অর্ডার করুন</button>
+            </div>
+        </div>
+
+        <div class="food-card" data-category="fishmeat">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=500" class="auto-slider" data-images='["https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=500", "https://images.unsplash.com/photo-1544025162-d76694265947?w=500"]' alt="গরুর গোশত"></div>
+            <div class="food-info">
+                <div class="food-title">খাঁটি গরুর গোশত (১ কেজি)</div>
+                <div class="food-price">৳৭৮০.০০</div>
+                <button class="add-btn" onclick="addToCart('গরুর গোশত ১ কেজি', 780)">অর্ডার করুন</button>
+            </div>
+        </div>
+
+        <div class="food-card" data-category="mudi">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500" class="auto-slider" data-images='["https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500", "https://images.unsplash.com/photo-1585998086084-2195dfb428d0?w=500"]' alt="চাল ও ডাল"></div>
+            <div class="food-info">
+                <div class="food-title">মিনিকেট চাল ও মসুর ডাল</div>
+                <div class="food-price">৳৩২০.০০</div>
+                <button class="add-btn" onclick="addToCart('চাল ও ডাল প্যাক', 320)">অর্ডার করুন</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Auto Image Changer Script
+        document.addEventListener("DOMContentLoaded", function () {
+            const sliders = document.querySelectorAll(".auto-slider");
+
+            sliders.forEach(img => {
+                let images = JSON.parse(img.getAttribute("data-images"));
+                let currentIndex = 0;
+
+                setInterval(() => {
+                    currentIndex = (currentIndex + 1) % images.length;
+                    img.style.opacity = 0;
+                    setTimeout(() => {
+                        img.src = images[currentIndex];
+                        img.style.opacity = 1;
+                    }, 300);
+                }, 3500);
+            });
+        });
+
+        function addToCart(itemName, price) {
+            Swal.fire({
+                title: 'সফল!',
+                text: `${itemName} বাজারে অর্ডারের জন্য যোগ করা হয়েছে (মূল্য: ৳${price})`,
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false,
+                background: '#1e293b',
+                color: '#fff'
+            });
+        }
+
+        function openCart() {
+            Swal.fire({
+                title: 'আপনার বাজারের ব্যাগ',
+                text: 'আপনার ব্যাগে কোনো পণ্য নেই!',
+                icon: 'info',
+                background: '#1e293b',
+                color: '#fff',
+                confirmButtonText: 'ঠিক আছে'
+            });
+        }
+
+        function filterFood() {
+            let input = document.getElementById('searchFood').value.toLowerCase();
+            let cards = document.getElementsByClassName('food-card');
+
+            for (let i = 0; i < cards.length; i++) {
+                let title = cards[i].getElementsByClassName('food-title')[0].innerText.toLowerCase();
+                if (title.includes(input)) {
+                    cards[i].style.display = "flex";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        function filterCat(category) {
+            let chips = document.querySelectorAll('.cat-chip');
+            chips.forEach(chip => chip.classList.remove('active'));
+            event.target.classList.add('active');
+
+            let cards = document.getElementsByClassName('food-card');
+            for (let i = 0; i < cards.length; i++) {
+                let cat = cards[i].getAttribute('data-category');
+                if (category === 'all' || cat === category) {
+                    cards[i].style.display = "flex";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bikroy - Amar Bazar</title>
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        body {
+            background-color: #0f172a;
+            color: #fff;
+            padding-bottom: 70px;
+        }
+        /* Header */
+        .header {
+            background: #1e293b;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .header h2 {
+            font-size: 18px;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-btn, .cart-icon {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        /* Search Bar */
+        .search-box {
+            padding: 15px 20px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+        /* Categories Scroll */
+        .categories {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 0 20px 10px 20px;
+            scrollbar-width: none;
+        }
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+        .cat-chip {
+            background: #1e293b;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+        .cat-chip.active, .cat-chip:hover {
+            background: #2563eb;
+            color: #fff;
+        }
+        /* Grid Layout */
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px 20px;
+        }
+        .food-card {
+            background: #1e293b;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .food-img {
+            width: 100%;
+            height: 140px; 
+            background: #1e293b;
+            overflow: hidden;
+            position: relative;
+        }
+        .food-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .food-info {
+            padding: 12px 10px;
+        }
+        .food-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .food-price {
+            font-size: 14px;
+            color: #38bdf8;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .add-btn {
+            width: 100%;
+            background: #2563eb;
+            border: none;
+            color: #fff;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .add-btn:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <button class="back-btn" onclick="window.history.back()"><i class="fa-solid fa-arrow-left"></i></button>
+        <h2><i class="fa-solid fa-tag" style="color: #38bdf8;"></i> পুরোনো পণ্য বিক্রী কর্নার</h2>
+        <button class="cart-icon" onclick="openCart()"><i class="fa-solid fa-cart-shopping"></i></button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-box">
+        <input type="text" placeholder="পণ্য খুঁজুন (মোবাইল, ফ্রিজ, গরু...)" id="searchFood" onkeyup="filterFood()">
+    </div>
+
+    <!-- Categories -->
+    <div class="categories">
+        <div class="cat-chip active" onclick="filterCat('all')">সব পণ্য</div>
+        <div class="cat-chip" onclick="filterCat('electronic')">ইলেকট্রনিক্স</div>
+        <div class="cat-chip" onclick="filterCat('animal')">গবাদি পশু</div>
+        <div class="cat-chip" onclick="filterCat('bird')">পাখি ও কবুতর</div>
+    </div>
+
+    <!-- Grid Items -->
+    <div class="food-grid" id="foodContainer">
+        
+        <!-- ১. মোবাইল -->
+        <div class="food-card" data-category="electronic">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500" class="auto-slider" data-images='["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500", "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=500"]' alt="মোবাইল"></div>
+            <div class="food-info">
+                <div class="food-title">ইউজড স্মার্টফোন</div>
+                <div class="food-price">৳৮,৫০০.০০</div>
+                <button class="add-btn" onclick="addToCart('ইউজড স্মার্টফোন', 8500)">যোগাযোগ করুন</button>
+            </div>
+        </div>
+
+        <!-- ২. টিভি -->
+        <div class="food-card" data-category="electronic">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=500" class="auto-slider" data-images='["https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=500", "https://images.unsplash.com/photo-1461151304267-38535e780c79?w=500"]' alt="টিভি"></div>
+            <div class="food-info">
+                <div class="food-title">স্মার্ট এলইডি টিভি</div>
+                <div class="food-price">৳১২,০০০.০০</div>
+                <button class="add-btn" onclick="addToCart('স্মার্ট এলইডি টিভি', 12000)">যোগাযোগ করুন</button>
+            </div>
+        </div>
+
+        <!-- ৩. ফ্রিজ -->
+        <div class="food-card" data-category="electronic">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=500" class="auto-slider" data-images='["https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=500", "https://images.unsplash.com/photo-1571175336579-4d69112ac6a6?w=500"]' alt="ফ্রিজ"></div>
+            <div class="food-info">
+                <div class="food-title">ডাবল ডোর ফ্রিজ</div>
+                <div class="food-price">৳১৫,৫০০.০০</div>
+                <button class="add-btn" onclick="addToCart('ডাবল ডোর ফ্রিজ', 15500)">যোগাযোগ করুন</button>
+            </div>
+        </div>
+
+        <!-- ৪. বাইসাইকেল -->
+        <div class="food-card" data-category="electronic">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=500" class="auto-slider" data-images='["https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=500", "https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?w=500"]' alt="বাইসাইকেল"></div>
+            <div class="food-info">
+                <div class="food-title">রানিং বাইসাইকেল</div>
+                <div class="food-price">৳৪,৫০০.০০</div>
+                <button class="add-btn" onclick="addToCart('রানিং বাইসাইকেল', 4500)">যোগাযোগ করুন</button>
+            </div>
+        </div>
+
+        <!-- ৫. মুরগি ও হাঁস -->
+        <div class="food-card" data-category="animal">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=500" class="auto-slider" data-images='["https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=500", "https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=500"]' alt="হাঁস মুরগি"></div>
+            <div class="food-info">
+                <div class="food-title">দেশি হাঁস ও মুরগি</div>
+                <div class="food-price">৳১,২০০.০০</div>
+                <button class="add-btn" onclick="addToCart('দেশি হাঁস ও মুরগি', 1200)">যোগাযোগ করুন</button>
+            </div>
+        </div>
+
+        <!-- ৬. গরু ও ছাগল -->
+        <div class="food-card" data-category="animal">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?w=500" class="auto-slider" data-images='["https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?w=500", "https://images.unsplash.com/photo-1534567153574-2b12153a87f0?w=500"]' alt="গরু ছাগল"></div>
+            <div class="food-info">
+                <div class="food-title">লাল ছাগল (পোক্ত)</div>
+                <div class="food-price">৳২২,০০০.০০</div>
+                <button class="add-btn" onclick="addToCart('লাল ছাগল', 22000)">যোগাযোগ করুন</button>
+            </div>
+        </div>
+
+        <!-- ৭. কবুতর ও পাখি -->
+        <div class="food-card" data-category="bird">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1522836924256-6060c1144f2d?w=500" class="auto-slider" data-images='["https://images.unsplash.com/photo-1522836924256-6060c1144f2d?w=500", "https://images.unsplash.com/photo-1555169062-013468b47731?w=500"]' alt="কবুতর"></div>
+            <div class="food-info">
+                <div class="food-title">সিরাজি কবুতর জোড়া</div>
+                <div class="food-price">৳১,৫০০.০০</div>
+                <button class="add-btn" onclick="addToCart('সিরাজি কবুতর জোড়া', 1500)">যোগাযোগ করুন</button>
+            </div>
+        </div>
+
+        <!-- ৮. বিড়াল -->
+        <div class="food-card" data-category="animal">
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500" class="auto-slider" data-images='["https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500", "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=500"]' alt="বিড়াল"></div>
+            <div class="food-info">
+                <div class="food-title">পার্সিয়ান বিড়াল ছানা</div>
+                <div class="food-price">৳৩,০০০.০০</div>
+                <button class="add-btn" onclick="addToCart('পার্সিয়ান বিড়াল ছানা', 3000)">যোগাযোগ করুন</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Auto Image Changer Script
+        document.addEventListener("DOMContentLoaded", function () {
+            const sliders = document.querySelectorAll(".auto-slider");
+
+            sliders.forEach(img => {
+                let images = JSON.parse(img.getAttribute("data-images"));
+                let currentIndex = 0;
+
+                setInterval(() => {
+                    currentIndex = (currentIndex + 1) % images.length;
+                    img.style.opacity = 0;
+                    setTimeout(() => {
+                        img.src = images[currentIndex];
+                        img.style.opacity = 1;
+                    }, 300);
+                }, 3500);
+            });
+        });
+
+        function addToCart(itemName, price) {
+            Swal.fire({
+                title: 'বিজ্ঞাপনদাতা যুক্ত হয়েছে!',
+                text: `${itemName} ক্রয়ের জন্য বিক্রেতার সাথে যোগাযোগের অপশন প্রস্তুত। (মূল্য: ৳${price})`,
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false,
+                background: '#1e293b',
+                color: '#fff'
+            });
+        }
+
+        function openCart() {
+            Swal.fire({
+                title: 'আপনার পছন্দের তালিকা',
+                text: 'কোনো পণ্য সিলেক্ট করা হয়নি!',
+                icon: 'info',
+                background: '#1e293b',
+                color: '#fff',
+                confirmButtonText: 'ঠিক আছে'
+            });
+        }
+
+        function filterFood() {
+            let input = document.getElementById('searchFood').value.toLowerCase();
+            let cards = document.getElementsByClassName('food-card');
+
+            for (let i = 0; i < cards.length; i++) {
+                let title = cards[i].getElementsByClassName('food-title')[0].innerText.toLowerCase();
+                if (title.includes(input)) {
+                    cards[i].style.display = "flex";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        function filterCat(category) {
+            let chips = document.querySelectorAll('.cat-chip');
+            chips.forEach(chip => chip.classList.remove('active'));
+            event.target.classList.add('active');
+
+            let cards = document.getElementsByClassName('food-card');
+            for (let i = 0; i < cards.length; i++) {
+                let cat = cards[i].getAttribute('data-category');
+                if (category === 'all' || cat === category) {
+                    cards[i].style.display = "flex";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
