@@ -1,0 +1,30 @@
+{
+  "id": "/Notbok/NEXORA-Shop.html",
+  "name": "NEXORA Shop",
+  "short_name": "NEXORA",
+  "description": "NEXORA Shop — পণ্য অর্ডার, cashback ও withdrawal ব্যবস্থাপনা।",
+  "lang": "bn-BD",
+  "dir": "ltr",
+  "start_url": "/Notbok/NEXORA-Shop.html",
+  "scope": "/Notbok/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#063a2b",
+  "categories": ["shopping", "lifestyle"],
+  "icons": [
+    {
+      "src": "/Notbok/nexora-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/Notbok/nexora-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
