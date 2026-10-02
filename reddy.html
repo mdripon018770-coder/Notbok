@@ -1,0 +1,4090 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reddy</title>
+<meta name="theme-color" content="#c50b30">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --main-color: #c50b30;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 480px;
+            height: 100vh;
+            background-color: #fff;
+            display: none;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* ================= AUTH VIEWS ================= */
+
+        .login-view {
+            display: none;
+            width: 100%;
+            max-width: 480px;
+            height: 100vh;
+            background-color: #fff;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .login-view.active {
+            display: flex !important;
+        }
+
+        .login-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .login-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        .input-wrapper {
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .input-fieldset {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 0 12px 8px 12px;
+            background: #fff;
+        }
+
+        .input-fieldset:focus-within {
+            border-color: #c50b30;
+        }
+
+        .login-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: #222;
+            padding-top: 4px;
+            background: transparent;
+        }
+
+        .login-bottom-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .main-button {
+            width: 100%;
+            height: 48px;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: 600;
+            background-color: #c50b30;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-button:active {
+            background-color: #a80928;
+        }
+
+        .back-button {
+            width: 100%;
+            height: 48px;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: 600;
+            background-color: transparent;
+            color: #666;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+               /* ================= SETTINGS PAGE ================= */
+
+        #settingsPage {
+            display: none;
+            width: 100%;
+            max-width: 480px;
+            height: 100vh;
+            background: #fff;
+            color: #333;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        #settingsPage.active {
+            display: flex !important;
+        }
+
+        #settingsPage .settings-main {
+            flex: 1;
+            width: 100%;
+            overflow-y: auto;
+            padding: 0 20px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #settingsPage .settings-header {
+            width: 100%;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            flex-shrink: 0;
+        }
+
+        #settingsPage .profile-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 22px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        #settingsPage .profile-avatar {
+            width: 60px;
+            height: 60px;
+            min-width: 60px;
+            border-radius: 50%;
+            background: var(--main-color);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        #settingsPage .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #settingsPage .profile-info h3 {
+            font-size: 18px;
+            color: #222;
+            margin: 0 0 4px 0;
+        }
+
+        #settingsPage .profile-info p {
+            font-size: 14px;
+            color: #888;
+            margin: 0;
+        }
+
+        #settingsPage .settings-option {
+            width: 100%;
+            padding: 17px 0;
+            font-size: 16px;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+
+        #settingsPage .settings-option span {
+            display: block;
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        #settingsPage .logout-option {
+            color: #e53935;
+            font-weight: 600;
+        }
+
+        /* ================= HEADER ================= */
+
+        .app-header {
+            background-color: #fff;
+            color: #222;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .header-title-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            font-size: 18px;
+            color: #555;
+        }
+
+        /* ================= CHAT LIST ================= */
+
+        .chat-list-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 60px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            gap: 15px;
+            border-bottom: 1px solid #f9f9f9;
+            cursor: pointer;
+            position: relative;
+            background-color: #fff;
+        }
+
+        .chat-item:hover {
+            background-color: #f1f1f1;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .chat-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .chat-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #222;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-message-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-message {
+            font-size: 14px;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-grow: 1;
+        }
+
+        .chat-time {
+            font-size: 12px;
+            color: #888;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+
+        /* ================= CHAT ROOM ================= */
+
+        .chat-room-screen {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            inset: 0;
+            height: 100vh;
+            background-color: #ffffff !important;
+            color: #222 !important;
+            z-index: 20;
+        }
+
+        .chat-room-header {
+            background-color: #ffffff !important;
+            color: #222 !important;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            border-bottom: 1px solid #eeeeee !important;
+        }
+
+        .chat-room-header i, 
+        .chat-room-header svg {
+            font-size: 20px;
+            cursor: pointer;
+            color: #222 !important;
+        }
+
+        .room-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #222 !important;
+        }
+
+        .room-status {
+            font-size: 12px;
+            color: #888 !important;
+        }
+
+        .room-avatars-wrapper {
+            background-color: #ffffff !important;
+            padding: 8px 15px;
+            border-bottom: 1px solid #eeeeee !important;
+            display: flex;
+            align-items: center;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        .room-avatars-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .room-avatars-scroll {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-item-wrapper {
+            position: relative;
+            flex-shrink: 0;
+            width: 42px;
+            height: 42px;
+        }
+
+        .avatar-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #72b7ff;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: bold;
+            overflow: hidden;
+        }
+
+        .avatar-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .online-dot {
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            width: 11px;
+            height: 11px;
+            background-color: #22c55e;
+            border: 2px solid #ffffff !important;
+            border-radius: 50%;
+        }
+
+        /* ================= MEMBER POPUP MODAL ================= */
+        .member-popup-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99999;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .member-popup-overlay.active {
+            display: flex;
+        }
+
+        .member-popup-content {
+            width: 100%;
+            max-width: 480px;
+            background: #ffffff;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            max-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .popup-drag-handle {
+            width: 40px;
+            height: 4px;
+            background: #ccc;
+            border-radius: 2px;
+            margin: 0 auto 10px auto;
+        }
+
+        .popup-header {
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+        }
+
+        .member-list-container {
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .popup-member-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f9f9f9;
+        }
+
+        .popup-member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #0088cc;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .popup-member-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .popup-member-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popup-member-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #222;
+        }
+
+        .popup-member-status {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .popup-member-status.online {
+            color: #22c55e;
+        }
+
+        /* ================= MESSAGES & AREA ================= */
+
+        .chat-messages-area {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            padding-bottom: 70px;
+            gap: 10px;
+            background-color: #ffffff !important;
+        }
+
+        .message-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            max-width: 85%;
+        }
+
+        .message-row.mine {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-row.mine .msg-avatar {
+            display: none;
+        }
+
+        .message-row.mine .sender-name {
+            display: none;
+        }
+
+        .msg-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #72b7ff;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+            overflow: hidden;
+            margin-top: 2px;
+        }
+
+        .msg-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .message {
+            padding: 9px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.4;
+            background-color: #f1f3f5;
+            color: #222222;
+            word-break: break-word;
+        }
+
+        .message-row.mine .message {
+            background-color: #e2e8f0;
+            color: #222222;
+        }
+
+        .sender-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: #0066cc;
+            margin-bottom: 3px;
+        }
+
+        .msg-time {
+            font-size: 10px;
+            color: #333333;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        /* ================= INPUT ================= */
+
+        .chat-input-area {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 15px;
+            background-color: #ffffff !important;
+            border-top: 1px solid #eeeeee !important;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+            z-index: 25;
+        }
+
+        .chat-input-area .input-left-icon,
+        .chat-input-area .input-right-icons i {
+            font-size: 20px;
+            color: #555 !important;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+        }
+
+        .chat-input-area input[type="text"] {
+            flex: 1;
+            padding: 10px 0;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            background-color: transparent;
+            color: #222 !important;
+        }
+
+        .chat-input-area input[type="text"]::placeholder {
+            color: #999 !important;
+        }
+
+        .input-right-icons {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* ================= BOTTOM NAV ================= */
+
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: #ffffff;
+            height: 60px;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            border-top: 1px solid #e0e0e0;
+            z-index: 1000;
+        }
+
+        .bottom-nav .nav-item {
+            background: transparent;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            height: 100%;
+            color: #707579;
+            font-size: 20px;
+            transition: color 0.2s ease;
+        }
+
+        .bottom-nav .nav-item i {
+            font-size: 20px;
+        }
+
+        .bottom-nav .nav-item.active {
+            color: #2481cc;
+        }
+
+
+
+        /* ================= UNREAD ================= */
+        /* চ্যাট আনরিড নোটিফিকেশন ব্যাজ ডিজাইন */
+.chat-badge, [id^="badge-"] {
+    background-color: #7f8c8d !important; /* গ্রে (Grey) কালার */
+    color: #ffffff !important;
+    font-size: 11px !important;              /* লেখার সাইজ ছোট করার জন্য */
+    font-weight: 600;
+    min-width: 18px !important;            /* ছোট ও পারফেক্ট গোল করার জন্য */
+    height: 18px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;         /* পুরো গোল (Circle) করার জন্য */
+    display: none;                         /* জাভাস্ক্রিপ্ট দিয়ে ফ্লেক্স করা হবে */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 18px;
+}
+
+        /* ================= APK CARD ================= */
+        .apk-download-card {
+            background-color: #ffffff !important;
+            color: #222222 !important;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .apk-download-card .apk-name {
+            color: #222222 !important;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .apk-download-card .apk-desc {
+            color: #666666 !important;
+            font-size: 11px;
+        }
+
+        .apk-download-card .apk-icon-box {
+            color: #007bff;
+            font-size: 18px;
+        }
+
+        .apk-install-btn {
+            background-color: #007bff;
+            color: #ffffff !important;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Bottom Sheet Overlay */
+        .attachment-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: flex-end;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Sheet Box */
+        .attachment-sheet {
+            background: #ffffff;
+            width: 100%;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            padding: 15px 20px 30px 20px;
+            box-shadow: 0px -5px 20px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.3s ease;
+        }
+
+        .sheet-handle {
+            width: 40px;
+            height: 4px;
+            background: #ccc;
+            border-radius: 2px;
+            margin: 0 auto 15px auto;
+        }
+
+        .attachment-options {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .attachment-options li {
+            display: flex;
+            align-items: center;
+            padding: 14px 10px;
+            font-size: 16px;
+            color: #333;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .attachment-options li:last-child {
+            border-bottom: none;
+        }
+
+        .attachment-options li i {
+            font-size: 20px;
+            margin-right: 15px;
+            color: #555;
+            width: 24px;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+<style>
+#reddySplash{position:fixed;inset:0;background:#fff;z-index:1000000;display:flex;align-items:center;justify-content:center;flex-direction:column}#reddySplash img{width:140px;height:140px;object-fit:contain}#reddySplash strong{font-size:32px;margin-top:20px;color:#222}
+#reddyUpdate{position:fixed;inset:0;background:#0006;z-index:1000001;display:none;align-items:flex-end}#reddyUpdate section{background:#fff;width:100%;border-radius:28px 28px 0 0;padding:28px 24px;box-sizing:border-box;color:#222}#reddyUpdate button{border:0;border-radius:24px;background:#c50b30;color:white;padding:14px 28px;font-size:17px}#reddyUpdateNotes{white-space:pre-wrap;max-height:35vh;overflow:auto;line-height:1.6}#reddyLater{background:#eee!important;color:#333!important;margin-right:10px}
+</style>
+</head>
+<body>
+<div id="reddySplash" role="status" aria-label="Reddy loading"><img src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/r.png" alt="Reddy R logo"><strong>Reddy</strong></div>
+<div id="reddyUpdate" role="dialog" aria-modal="true" aria-labelledby="reddyUpdateTitle"><section><h2 id="reddyUpdateTitle">A new version available</h2><p id="reddyUpdateVersion"></p><p id="reddyUpdateNotes"></p><p id="reddyUpdateSize"></p><button id="reddyLater" type="button">Later</button><button id="reddyDownload" type="button">Update</button></section></div>
+
+<!-- PAGE 1 : WELCOME -->
+<div id="page1" class="login-view active" style="align-items: center; justify-content: center; text-align: center; padding: 40px; overflow: hidden;">
+    <div style="width: 100%; display: flex; flex-direction: column; align-items: center; transform: translateY(50px);">
+        <div class="header-container" style="display: flex; flex-direction: column; align-items: center; width: 100%; margin-bottom: 50px;">
+            <img class="welcome-logo" src="https://raw.githubusercontent.com/mdripon018770-coder/Notbok/main/r.png" alt="Logo" style="width: 120px; height: 120px; margin-bottom: 40px; object-fit: contain;">
+            <h1 class="login-title" style="font-size: 36px; font-weight: 600; margin-bottom: 8px;">Reddy</h1>
+            <p class="login-description" style="color: #666; font-size: 14px;">Welcome<br>to our Android app</p>
+        </div>
+        <div class="footer-container" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+            <button class="main-button" onclick="navigateTo('page2')" style="width: 130px; height: 40px; border-radius: 24px; background-color: #c50b30; color: white; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transform: translateY(60px);">Get started</button>
+            <p class="help-text" style="margin-top: 50px; color: #888; font-size: 14px; transform: translateY(55px);">
+                <a href="https://help.reddy.team/?platform=Android" target="_blank" style="color: #888; text-decoration: none;">
+                    Need help? <span class="faq-highlight" style="color: #c94a63; font-weight: bold;">Reddy FAQ</span>
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- PAGE 2 : ENTER USER ID -->
+<div id="page2" class="login-view" style="position: relative; width: 100%; height: 100vh; background: #ffffff; padding: 0; overflow: hidden;">
+    <div class="page2-main" style="position: absolute; top: 0; left: 0; width: 100%;">
+        <h2 class="page2-title" style="margin: 84px 0 0 0; text-align: center; font-size: 24px; color: #171717;">Enter user ID</h2>
+        <p class="page2-description" style="margin: 27px 0 0 0; text-align: center; font-size: 13px; color: #a7a7a7;">Please enter your user ID</p>
+        <div class="page2-input-area" style="width: calc(100% - 40px); margin: 40px auto 0 auto;">
+            <fieldset class="page2-fieldset" style="width: 100%; height: 56px; border: 2px solid #c50b30; border-radius: 5px; padding: 8px 14px 5px 14px; background: #fff;">
+                <legend style="padding: 0 5px; color: #c50b30; font-size: 13px;">Login</legend>
+                <input type="tel" inputmode="numeric" id="userId" maxlength="11" class="page2-input" autocomplete="off" style="width: 100%; border: none; outline: none; font-size: 16px; background: transparent; color: #222;">
+            </fieldset>
+        </div>
+        <div id="error-p2" class="page2-error" style="width: calc(100% - 40px); margin: 3px auto 0 auto; text-align: center; font-size: 11px; color: #c50b30; min-height: 15px;"></div>
+    </div>
+    <div class="page2-buttons" style="position: absolute; left: 0; bottom: 30px; width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <button type="button" class="page2-next" onclick="validateStepOne()" style="width: calc(100% - 60px); height: 40px; border-radius: 25px; background: #d7072f; color: #fff; border: none; font-size: 14px; font-weight: 700; cursor: pointer;">Next</button>
+        <button type="button" class="page2-back" onclick="navigateTo('page1')" style="margin-top: 15px; background: transparent; border: none; color: #888; font-size: 14px; font-weight: 700; cursor: pointer;">Back</button>
+    </div>
+</div>
+
+<!-- PAGE 3 : CONFIRMATION CODE -->
+<div id="page3" class="login-view" style="position: relative; width: 100%; height: 100vh; background: #ffffff; padding: 0; overflow: hidden;">
+    <div class="page3-main" style="position: absolute; top: 0; left: 0; width: 100%;">
+        <h2 class="page3-title" style="margin: 84px 0 0 0; text-align: center; font-size: 24px; color: #171717;">Enter code</h2>
+        <p class="page3-description" style="margin: 45px 0 0 0; text-align: center; font-size: 13px; color: #a7a7a7;">Enter the password for your Reddy account</p>
+        <div class="page3-input-area" style="width: calc(100% - 40px); margin: 30px auto 0 auto;">
+            <fieldset class="page3-fieldset" style="position: relative; width: 100%; height: 56px; border: 2px solid #c50b30; border-radius: 5px; padding: 8px 14px 5px 14px; background: #fff;">
+                <legend style="padding: 0 5px; color: #c50b30; font-size: 13px;">Password</legend>
+                <input type="password" inputmode="numeric" id="userPass" maxlength="8" class="page3-input" autocomplete="off" style="width: calc(100% - 30px); border: none; outline: none; font-size: 16px; background: transparent; color: #222;">
+                <span id="passwordToggle" class="page3-eye" onclick="togglePasswordVisibility()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #999; font-size: 18px; cursor: pointer;">
+                    <i class="fa-solid fa-eye-slash"></i>
+                </span>
+            </fieldset>
+        </div>
+        <div id="error-p3" class="page3-error" style="width: calc(100% - 40px); margin: 5px auto 0 auto; text-align: center; font-size: 11px; color: #c50b30; min-height: 15px;"></div>
+    </div>
+    <div class="page3-buttons" style="position: absolute; left: 0; bottom: 30px; width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <button type="button" class="page3-signin" onclick="validateStepTwo()" style="width: calc(100% - 60px); height: 40px; border-radius: 25px; background: #d7072f; color: #fff; border: none; font-size: 14px; font-weight: 700; cursor: pointer;">Sign in</button>
+        <button type="button" class="page3-back" onclick="navigateTo('page2')" style="margin-top: 15px; background: transparent; border: none; color: #888; font-size: 14px; font-weight: 700; cursor: pointer;">Back</button>
+    </div>
+</div>
+
+<!-- CHAT CONTAINER & MAIN APP -->
+<div class="chat-container" id="chatContainerMain">
+    <!-- CHAT LIST SCREEN -->
+    <div id="chatListScreen" class="chat-list-screen">
+        <div class="app-header">
+            <div class="header-title-area">
+                <span>All chats</span>
+                <i class="fa-solid fa-chevron-down" style="font-size: 14px; color: #666;"></i>
+            </div>
+            <div class="header-icons">
+                <i class="fa-solid fa-magnifying-glass" id="homeSearchIcon" style="cursor: pointer;" title="Search"></i>
+            </div>
+        </div>
+
+
+
+
+
+        <!-- ROOM 1 -->
+<div class="chat-item" id="chatItem-1" data-room="1" onclick="openChat(1)">
+    <div class="avatar" style="background:#0088cc;">P</div>
+    <div class="chat-details">
+        <div class="chat-header-row">
+            <div class="chat-title">
+                <i class="fa-solid fa-users"></i>
+                <span id="roomTitle1"> </span>
+            </div>
+        </div>
+        <div class="chat-message-row">
+            <div class="chat-message" id="listMsg1"><span>Empty message</span></div>
+            <div class="chat-time" id="roomTime1">--</div>
+        </div>
+    </div>
+    <div id="badge-1" class="unread-badge">0</div>
+</div>
+
+<!-- ROOM 2 -->
+<div class="chat-item" id="chatItem-2" data-room="2" onclick="openChat(2)">
+    <div class="avatar" style="background:#e91e63;">C</div>
+    <div class="chat-details">
+        <div class="chat-header-row">
+            <div class="chat-title">
+                <i class="fa-solid fa-users"></i>
+                <span id="roomTitle2"> </span>
+            </div>
+        </div>
+        <div class="chat-message-row">
+            <div class="chat-message" id="listMsg2"><span>Empty message</span></div>
+            <div class="chat-time" id="roomTime2">--</div>
+        </div>
+    </div>
+    <div id="badge-2" class="unread-badge">0</div>
+</div>
+
+<!-- ROOM 3 -->
+<div class="chat-item" id="chatItem-3" data-room="3" onclick="openChat(3)">
+    <div class="avatar" style="background:#f44336;">N</div>
+    <div class="chat-details">
+        <div class="chat-header-row">
+            <div class="chat-title">
+                <i class="fa-solid fa-users"></i>
+                <span id="roomTitle3"> </span>
+            </div>
+        </div>
+        <div class="chat-message-row">
+            <div class="chat-message" id="listMsg3"><span>Empty message</span></div>
+            <div class="chat-time" id="roomTime3">--</div>
+        </div>
+    </div>
+    <div id="badge-3" class="unread-badge">0</div>
+</div>
+
+<!-- ROOM 4 -->
+<div class="chat-item" id="chatItem-4" data-room="4" onclick="openChat(4)">
+    <div class="avatar" style="background:#0d47a1;">
+        <i class="fa-solid fa-key"></i>
+    </div>
+    <div class="chat-details">
+        <div class="chat-header-row">
+            <div class="chat-title">
+                <span id="roomTitle4"> </span>
+            </div>
+        </div>
+        <div class="chat-message-row">
+            <div class="chat-message" id="listMsg4"><span>Empty message</span></div>
+            <div class="chat-time" id="roomTime4">--</div>
+        </div>
+    </div>
+    <div id="badge-4" class="unread-badge">0</div>
+</div>
+
+<!-- ROOM 5 -->
+<div class="chat-item" id="chatItem-5" data-room="5" onclick="openChat(5)">
+    <div class="avatar" style="background:#ff5722;">F</div>
+    <div class="chat-details">
+        <div class="chat-header-row">
+            <div class="chat-title">
+                <i class="fa-solid fa-users"></i>
+                <span id="roomTitle5"> </span>
+            </div>
+        </div>
+        <div class="chat-message-row">
+            <div class="chat-message" id="listMsg5"><span>Empty message</span></div>
+            <div class="chat-time" id="roomTime5">--</div>
+        </div>
+    </div>
+    <div id="badge-5" class="unread-badge">0</div>
+</div>
+
+<!-- ROOM 6 -->
+<div class="chat-item" id="chatItem-6" data-room="6" onclick="openChat(6)">
+    <div class="avatar" style="background:#8bc34a;">F</div>
+    <div class="chat-details">
+        <div class="chat-header-row">
+            <div class="chat-title">
+                <i class="fa-solid fa-users"></i>
+                <span id="roomTitle6"> </span>
+            </div>
+        </div>
+        <div class="chat-message-row">
+            <div class="chat-message" id="listMsg6"><span>Empty message</span></div>
+            <div class="chat-time" id="roomTime6">--</div>
+        </div>
+    </div>
+    <div id="badge-6" class="unread-badge">0</div>
+</div>
+
+<!-- ROOM 7 -->
+<div class="chat-item" id="chatItem-7" data-room="7" onclick="openChat(7)">
+    <div class="avatar" style="background:#ad1457; overflow:hidden; display:flex; align-items:center; justify-content:center;">
+        <img src="https://task-rk.github.io/task/redi.png" alt="Logo" id="chatLogo7" style="width:100%; height:100%; object-fit:cover;">
+    </div>
+    <div class="chat-details">
+        <div class="chat-header-row">
+            <div class="chat-title">
+                <span id="roomTitle7"> </span>
+            </div>
+        </div>
+        <div class="chat-message-row">
+            <div class="chat-message" id="listMsg7"><span>Empty message</span></div>
+            <div class="chat-time" id="roomTime7">--</div>
+        </div>
+    </div>
+    <div id="badge-7" class="unread-badge">0</div>
+</div>
+
+<!-- ROOM 8 -->
+<div class="chat-item" id="chatItem-8" data-room="8" onclick="openChat(8)">
+    <div class="avatar" style="background:#ff9800; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:bold; font-size:16px;">
+        DS
+    </div>
+    <div class="chat-details">
+        <div class="chat-header-row">
+            <div class="chat-title">
+                <span id="roomTitle8"> </span>
+            </div>
+        </div>
+        <div class="chat-message-row">
+            <div class="chat-message" id="listMsg8"><span>Empty message</span></div>
+            <div class="chat-time" id="roomTime8">--</div>
+        </div>
+    </div>
+    <div id="badge-8" class="unread-badge">0</div>
+</div>
+
+
+
+
+
+
+        <!-- BOTTOM NAV — HOME / CHAT LIST -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="openChatList()">
+                <i class="fa-solid fa-comment"></i>
+            </div>
+            <div class="nav-item" onclick="openCallList()">
+                <i class="fa-solid fa-phone"></i>
+            </div>
+            <div class="nav-item" onclick="openContactsList()">
+                <i class="fa-solid fa-user-group"></i>
+            </div>
+            <div class="nav-item" onclick="openSettingsPage()">
+                <i class="fa-solid fa-gear"></i>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- ROOM 1 -->
+<div id="chatRoom1" class="chat-room-screen">
+    <div class="chat-room-header" style="background:#0088cc; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer;" onclick="openMemberPopup(1)">
+            <i class="fa-solid fa-chevron-left" onclick="event.stopPropagation(); closeChat(1);" style="font-size: 18px; padding: 5px; color: #fff;"></i>
+            
+            <div style="width:36px; height:36px; border-radius:50%; background:#0088cc; border: 1px solid rgba(255,255,255,0.3); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:bold; font-size:16px;">P</div>
+            
+            <div style="flex: 1;">
+                <div class="room-name" id="roomTitle1" style="font-size: 16px; font-weight: 600; color: #fff;">Prepayment | Anil Karmokar Vodafone Cash payment</div>
+                <div class="room-status" id="groupMemberCount1" style="font-size: 11px; color: #e0e0e0;">0 users</div>
+            </div>
+        </div>
+        <i class="fa-solid fa-magnifying-glass" style="font-size: 18px; cursor: pointer; color: #fff; padding: 5px;"></i>
+    </div>
+    
+    <div class="room-avatars-wrapper">
+        <div id="roomAvatarsContainer1" class="room-avatars-scroll"></div>
+    </div>
+
+    <div id="messagesArea1" class="chat-messages-area"></div>
+    
+    <div class="chat-input-area">
+        <input type="file" id="fileInput1" accept="image/*,video/*,audio/*,.apk,application/vnd.android.package-archive" style="display: none;" onchange="handleFileUpload(event, 1)">
+        <i class="fa-solid fa-paperclip input-left-icon" title="Attach" onclick="document.getElementById('fileInput1').click()"></i>
+        <input id="messageInput1" type="text" placeholder="Message" onkeydown="handleEnter(event, 1)">
+        <div class="input-right-icons">
+            <i class="fa-solid fa-paper-plane" title="Send" onclick="sendMessage(1)" style="cursor: pointer;"></i>
+        </div>
+    </div>
+</div>
+
+<!-- ROOM 2 -->
+<div id="chatRoom2" class="chat-room-screen">
+    <div class="chat-room-header" style="background:#e91e63; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer;" onclick="openMemberPopup(2)">
+            <i class="fa-solid fa-chevron-left" onclick="event.stopPropagation(); closeChat(2);" style="font-size: 18px; padding: 5px; color: #fff;"></i>
+            
+            <div style="width:36px; height:36px; border-radius:50%; background:#e91e63; border: 1px solid rgba(255,255,255,0.3); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:bold; font-size:16px;">C</div>
+            
+            <div style="flex: 1;">
+                <div class="room-name" id="roomTitle2" style="font-size: 16px; font-weight: 600; color: #fff;">CS | Anil Karmokar ‏22bet</div>
+                <div class="room-status" id="groupMemberCount2" style="font-size: 11px; color: #e0e0e0;">0 users</div>
+            </div>
+        </div>
+        <i class="fa-solid fa-magnifying-glass" style="font-size: 18px; cursor: pointer; color: #fff; padding: 5px;"></i>
+    </div>
+
+    <div class="room-avatars-wrapper">
+        <div id="roomAvatarsContainer2" class="room-avatars-scroll"></div>
+    </div>
+
+    <div id="messagesArea2" class="chat-messages-area"></div>
+
+    <div class="chat-input-area">
+        <input type="file" id="fileInput2" accept="image/*,video/*,audio/*,.apk,application/vnd.android.package-archive" style="display: none;" onchange="handleFileUpload(event, 2)">
+        <i class="fa-solid fa-paperclip input-left-icon" title="Attach" onclick="document.getElementById('fileInput2').click()"></i>
+        <input id="messageInput2" type="text" placeholder="Message" onkeydown="handleEnter(event, 2)">
+        <div class="input-right-icons">
+            <i class="fa-solid fa-paper-plane" title="Send" onclick="sendMessage(2)" style="cursor: pointer;"></i>
+        </div>
+    </div>
+</div>
+
+<!-- ROOM 3 -->
+<div id="chatRoom3" class="chat-room-screen">
+    <div class="chat-room-header" style="background:#f44336; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer;" onclick="openMemberPopup(3)">
+            <i class="fa-solid fa-chevron-left" onclick="event.stopPropagation(); closeChat(3);" style="font-size: 18px; padding: 5px; color: #fff;"></i>
+            
+            <div style="width:36px; height:36px; border-radius:50%; background:#f44336; border: 1px solid rgba(255,255,255,0.3); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:bold; font-size:16px;">N</div>
+            
+            <div style="flex: 1;">
+                <div class="room-name" id="roomTitle3" style="font-size: 16px; font-weight: 600; color: #fff;">Notifications | Anil Karmokar Vodafone Cash payment</div>
+                <div class="room-status" id="groupMemberCount3" style="font-size: 11px; color: #e0e0e0;">0 users</div>
+            </div>
+        </div>
+        <i class="fa-solid fa-magnifying-glass" style="font-size: 18px; cursor: pointer; color: #fff; padding: 5px;"></i>
+    </div>
+    <div class="room-avatars-wrapper"><div id="roomAvatarsContainer3" class="room-avatars-scroll"></div></div>
+    <div id="messagesArea3" class="chat-messages-area"></div>
+    <div class="chat-input-area">
+        <input type="file" id="fileInput3" accept="image/*,video/*,audio/*,.apk,application/vnd.android.package-archive" style="display: none;" onchange="handleFileUpload(event, 3)">
+        <i class="fa-solid fa-paperclip input-left-icon" title="Attach" onclick="document.getElementById('fileInput3').click()"></i>
+        <input id="messageInput3" type="text" placeholder="Message" onkeydown="handleEnter(event, 3)">
+        <div class="input-right-icons">
+            <i class="fa-solid fa-paper-plane" title="Send" onclick="sendMessage(3)" style="cursor: pointer;"></i>
+        </div>
+    </div>
+</div>
+
+<!-- ROOM 4 -->
+<div id="chatRoom4" class="chat-room-screen">
+    <div class="chat-room-header" style="background:#0d47a1; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer;" onclick="openMemberPopup(4)">
+            <i class="fa-solid fa-chevron-left" onclick="event.stopPropagation(); closeChat(4);" style="font-size: 18px; padding: 5px; color: #fff;"></i>
+            
+            <div style="width:36px; height:36px; border-radius:50%; background:#0d47a1; border: 1px solid rgba(255,255,255,0.3); display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px;">
+                <i class="fa-solid fa-key"></i>
+            </div>
+            
+            <div style="flex: 1;">
+                <div class="room-name" id="roomTitle4" style="font-size: 16px; font-weight: 600; color: #fff;">authenticationBot Bot</div>
+                <div class="room-status" id="roomStatus4" style="font-size: 11px; color: #e0e0e0;">Bot</div>
+            </div>
+        </div>
+        <i class="fa-solid fa-magnifying-glass" style="font-size: 18px; cursor: pointer; color: #fff; padding: 5px;"></i>
+    </div>
+    <div class="room-avatars-wrapper"><div id="roomAvatarsContainer4" class="room-avatars-scroll"></div></div>
+    <div id="messagesArea4" class="chat-messages-area"></div>
+    <div class="chat-input-area">
+        <input type="file" id="fileInput4" accept="image/*,video/*,audio/*,.apk,application/vnd.android.package-archive" style="display: none;" onchange="handleFileUpload(event, 4)">
+        <i class="fa-solid fa-paperclip input-left-icon" title="Attach" onclick="document.getElementById('fileInput4').click()"></i>
+        <input id="messageInput4" type="text" placeholder="Message" onkeydown="handleEnter(event, 4)">
+        <div class="input-right-icons">
+            <i class="fa-solid fa-paper-plane" title="Send" onclick="sendMessage(4)" style="cursor: pointer;"></i>
+        </div>
+    </div>
+</div>
+
+<!-- ROOM 5 -->
+<div id="chatRoom5" class="chat-room-screen">
+    <div class="chat-room-header" style="background:#ff5722; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer;" onclick="openMemberPopup(5)">
+            <i class="fa-solid fa-chevron-left" onclick="event.stopPropagation(); closeChat(5);" style="font-size: 18px; padding: 5px; color: #fff;"></i>
+            
+            <div style="width:36px; height:36px; border-radius:50%; background:#ff5722; border: 1px solid rgba(255,255,255,0.3); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:bold; font-size:16px;">F</div>
+            
+            <div style="flex: 1;">
+                <div class="room-name" id="roomTitle5" style="font-size: 16px; font-weight: 600; color: #fff;">Financial Report | Anil Karmokar</div>
+                <div class="room-status" id="groupMemberCount5" style="font-size: 11px; color: #e0e0e0;">0 users</div>
+            </div>
+        </div>
+        <i class="fa-solid fa-magnifying-glass" style="font-size: 18px; cursor: pointer; color: #fff; padding: 5px;"></i>
+    </div>
+    <div class="room-avatars-wrapper"><div id="roomAvatarsContainer5" class="room-avatars-scroll"></div></div>
+    <div id="messagesArea5" class="chat-messages-area"></div>
+    <div class="chat-input-area">
+        <input type="file" id="fileInput5" accept="image/*,video/*,audio/*,.apk,application/vnd.android.package-archive" style="display: none;" onchange="handleFileUpload(event, 5)">
+        <i class="fa-solid fa-paperclip input-left-icon" title="Attach" onclick="document.getElementById('fileInput5').click()"></i>
+        <input id="messageInput5" type="text" placeholder="Message" onkeydown="handleEnter(event, 5)">
+        <div class="input-right-icons">
+            <i class="fa-solid fa-paper-plane" title="Send" onclick="sendMessage(5)" style="cursor: pointer;"></i>
+        </div>
+    </div>
+</div>
+
+<!-- ROOM 6 -->
+<div id="chatRoom6" class="chat-room-screen">
+    <div class="chat-room-header" style="background:#8bc34a; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer;" onclick="openMemberPopup(6)">
+            <i class="fa-solid fa-chevron-left" onclick="event.stopPropagation(); closeChat(6);" style="font-size: 18px; padding: 5px; color: #fff;"></i>
+            
+            <div style="width:36px; height:36px; border-radius:50%; background:#8bc34a; border: 1px solid rgba(255,255,255,0.3); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:bold; font-size:16px;">F</div>
+            
+            <div style="flex: 1;">
+                <div class="room-name" id="roomTitle6" style="font-size: 16px; font-weight: 600; color: #fff;">Fraud | Anil Karmokar 22bet</div>
+                <div class="room-status" id="groupMemberCount6" style="font-size: 11px; color: #e0e0e0;">0 users</div>
+            </div>
+        </div>
+        <i class="fa-solid fa-magnifying-glass" style="font-size: 18px; cursor: pointer; color: #fff; padding: 5px;"></i>
+    </div>
+    <div class="room-avatars-wrapper"><div id="roomAvatarsContainer6" class="room-avatars-scroll"></div></div>
+    <div id="messagesArea6" class="chat-messages-area"></div>
+    <div class="chat-input-area">
+        <input type="file" id="fileInput6" accept="image/*,video/*,audio/*,.apk,application/vnd.android.package-archive" style="display: none;" onchange="handleFileUpload(event, 6)">
+        <i class="fa-solid fa-paperclip input-left-icon" title="Attach" onclick="document.getElementById('fileInput6').click()"></i>
+        <input id="messageInput6" type="text" placeholder="Message" onkeydown="handleEnter(event, 6)">
+        <div class="input-right-icons">
+            <i class="fa-solid fa-paper-plane" title="Send" onclick="sendMessage(6)" style="cursor: pointer;"></i>
+        </div>
+    </div>
+</div>
+
+<!-- ROOM 7 -->
+<div id="chatRoom7" class="chat-room-screen">
+    <div class="chat-room-header" style="background:#ad1457; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer;" onclick="openMemberPopup(7)">
+            <i class="fa-solid fa-chevron-left" onclick="event.stopPropagation(); closeChat(7);" style="font-size: 18px; padding: 5px; color: #fff;"></i>
+            
+            <div style="width:36px; height:36px; border-radius:50%; background:#ad1457; border: 1px solid rgba(255,255,255,0.3); overflow:hidden; display:flex; align-items:center; justify-content:center;">
+                <img id="roomHeaderLogo7" src="https://task-rk.github.io/task/redi.png" alt="Logo" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            
+            <div style="flex: 1;">
+                <div class="room-name" id="roomTitle7" style="font-size: 16px; font-weight: 600; color: #fff;">Service User</div>
+                <div class="room-status" id="roomStatus7" style="font-size: 11px; color: #e0e0e0;">Group chat</div>
+            </div>
+        </div>
+        <i class="fa-solid fa-magnifying-glass" style="font-size: 18px; cursor: pointer; color: #fff; padding: 5px;"></i>
+    </div>
+    <div class="room-avatars-wrapper"><div id="roomAvatarsContainer7" class="room-avatars-scroll"></div></div>
+    <div id="messagesArea7" class="chat-messages-area"></div>
+    <div class="chat-input-area">
+        <input type="file" id="fileInput7" accept="image/*,video/*,audio/*,.apk,application/vnd.android.package-archive" style="display: none;" onchange="handleFileUpload(event, 7)">
+        <i class="fa-solid fa-paperclip input-left-icon" title="Attach" onclick="document.getElementById('fileInput7').click()"></i>
+        <input id="messageInput7" type="text" placeholder="Message" onkeydown="handleEnter(event, 7)">
+        <div class="input-right-icons">
+            <i class="fa-solid fa-paper-plane" title="Send" onclick="sendMessage(7)" style="cursor: pointer;"></i>
+        </div>
+    </div>
+</div>
+
+<!-- ROOM 8 -->
+<div id="chatRoom8" class="chat-room-screen">
+    <div class="chat-room-header" style="background:#607d8b; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer;" onclick="openMemberPopup(8)">
+            <i class="fa-solid fa-chevron-left" onclick="event.stopPropagation(); closeChat(8);" style="font-size: 18px; padding: 5px; color: #fff;"></i>
+            
+            <div style="width:36px; height:36px; border-radius:50%; background:#ff9800; border: 1px solid rgba(255,255,255,0.3); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:bold; font-size:15px; flex-shrink:0;">
+                DS
+            </div>
+
+            <div style="flex: 1;">
+                <div class="room-name" id="roomTitle8" style="font-size: 16px; font-weight: 600; color: #fff;">DB Security Bot</div>
+                <div class="room-status" id="roomStatus8" style="font-size: 11px; color: #e0e0e0;">Bot</div>
+            </div>
+        </div>
+        <i class="fa-solid fa-magnifying-glass" style="font-size: 18px; cursor: pointer; color: #fff; padding: 5px;"></i>
+    </div>
+    <div class="room-avatars-wrapper"><div id="roomAvatarsContainer8" class="room-avatars-scroll"></div></div>
+    <div id="messagesArea8" class="chat-messages-area"></div>
+    <div class="chat-input-area">
+        <input type="file" id="fileInput8" accept="image/*,video/*,audio/*,.apk,application/vnd.android.package-archive" style="display: none;" onchange="handleFileUpload(event, 8)">
+        <i class="fa-solid fa-paperclip input-left-icon" title="Attach" onclick="document.getElementById('fileInput8').click()"></i>
+        <input id="messageInput8" type="text" placeholder="Message" onkeydown="handleEnter(event, 8)">
+        <div class="input-right-icons">
+            <i class="fa-solid fa-paper-plane" title="Send" onclick="sendMessage(8)" style="cursor: pointer;"></i>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<!-- ================= MEMBER POPUP MODAL CONTAINER ================= -->
+<div id="memberPopupModal" class="member-popup-overlay" onclick="closeMemberPopupOnOutside(event)">
+    <div class="member-popup-content" id="memberPopupBox">
+        <div class="popup-drag-handle"></div>
+        <div class="popup-header">
+            <span id="popupTotalUsers" style="font-weight: 600; color: #222;">0 users</span>
+        </div>
+        <div class="member-list-container" id="popupMemberListContainer"></div>
+    </div>
+</div>
+
+<!-- ================= SETTINGS PAGE ================= -->
+<div id="settingsPage">
+    <div class="settings-header">
+        <i class="fa-solid fa-arrow-left" style="font-size:20px;cursor:pointer;" onclick="backFromSettings()"></i>
+        <span style="font-weight:600;font-size:18px;">Settings</span>
+        <i class="fa-solid fa-ellipsis-vertical" style="font-size:18px;cursor:pointer;"></i>
+    </div>
+
+    <div class="settings-main">
+        <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="uploadProfilePicture(event)">
+
+        <div class="profile-card">
+            <div class="profile-avatar" id="profileAvatarBox" onclick="document.getElementById('profilePicInput').click()" title="Change Profile Picture">
+                <span id="profileAvatarLetter">U</span>
+            </div>
+            <div class="profile-info">
+                <h3 id="profileNameDisplay">User Name</h3>
+                <p id="profileIdDisplay">123456</p>
+            </div>
+        </div>
+
+        <div class="settings-option">
+            <div>Profile Settings<span id="profileBio">Not Set<br>Bio / Info</span></div>
+        </div>
+
+        <div class="settings-option">
+            <div>Username<span id="profileUsername">Not Set</span></div>
+        </div>
+
+        <div class="settings-option logout-option" onclick="logoutUser()">
+            Log out
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item" onclick="openChatList()"><i class="fa-solid fa-comment"></i></div>
+        <div class="nav-item" onclick="openCallList()"><i class="fa-solid fa-phone"></i></div>
+        <div class="nav-item" onclick="openContactsList()"><i class="fa-solid fa-user-group"></i></div>
+        <div class="nav-item active" onclick="openSettingsPage()"><i class="fa-solid fa-gear"></i></div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<!-- ================= MESSAGE ACTION POPUP MODAL ================= -->
+<div id="msgActionModal" class="member-popup-overlay" onclick="closeMsgActionPopup(event)">
+    <div class="member-popup-content" id="msgActionBox" style="padding: 20px;">
+        <div class="popup-drag-handle"></div>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+            <button onclick="confirmCopyMessage()" style="width: 100%; padding: 12px; background: #f1f3f5; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; color: #222;">
+                <i class="fa-solid fa-copy" style="color: #0088cc;"></i> Copy Message
+            </button>
+            <button onclick="confirmDeleteMessage()" style="width: 100%; padding: 12px; background: #ffebee; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; color: #c50b30;">
+                <i class="fa-solid fa-trash" style="color: #c50b30;"></i> Delete Message
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<!-- Attachment Popup / Bottom Sheet -->
+<div id="attachmentPopup" class="attachment-popup-overlay" style="display: none;">
+    <div class="attachment-sheet">
+        <div class="sheet-handle"></div>
+        <ul class="attachment-options">
+            <li onclick="handleAttachment('camera')"><i class="fas fa-camera"></i> Camera</li>
+            <li onclick="handleAttachment('gallery')"><i class="fas fa-image"></i> Gallery</li>
+            <li onclick="handleAttachment('files')"><i class="fas fa-paperclip"></i> Files</li>
+            <li onclick="handleAttachment('drive')"><i class="fab fa-google-drive"></i> Drive</li>
+        </ul>
+    </div>
+</div>
+
+<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="onFileSelected(event)">
+<input type="file" id="galleryInput" accept="image/*" style="display: none;" onchange="onFileSelected(event)">
+<input type="file" id="fileInput" style="display: none;" onchange="onFileSelected(event)">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+const firebaseConfig = {
+    databaseURL: "https://amar-bazar-d99b4-default-rtdb.firebaseio.com"
+};
+
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
+const db = firebase.database();
+
+
+// ================= MULTI SUBGROUP SYSTEM =================
+
+
+
+const subgroupListeners = {};
+
+/*
+Example:
+
+groups/room_1/subgroups/group_1
+    name: "Arif-Ripon-Sumon"
+    members:
+        Arif: true
+        Ripon: true
+        Sumon: true
+*/
+
+
+// ----------------------------------------------------
+// CREATE NEW SUBGROUP
+// ----------------------------------------------------
+async function createRoomSubgroup(roomNumber, subgroupId, subgroupName, members) {
+
+    try {
+
+        if (!roomNumber || !subgroupId || !subgroupName) {
+            console.log("Missing subgroup information");
+            return false;
+        }
+
+        const subgroupData = {
+            name: subgroupName,
+            roomNumber: Number(roomNumber),
+            createdAt: Date.now(),
+            members: {}
+        };
+
+        // Members add করবে
+        members.forEach(userId => {
+
+            if (userId) {
+                subgroupData.members[String(userId)] = true;
+            }
+
+        });
+
+        await db.ref(
+            "groups/room_" +
+            roomNumber +
+            "/subgroups/" +
+            subgroupId
+        ).set(subgroupData);
+
+        console.log(
+            "Subgroup created:",
+            roomNumber,
+            subgroupId
+        );
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "createRoomSubgroup error:",
+            error
+        );
+
+        return false;
+    }
+}
+
+
+
+// ----------------------------------------------------
+// CHECK USER'S SUBGROUP IN A ROOM
+// ----------------------------------------------------
+async function getUserRoomSubgroup(roomNumber, userId) {
+
+    try {
+
+        if (!roomNumber || !userId) {
+            return null;
+        }
+
+        const snapshot = await db.ref(
+            "groups/room_" +
+            roomNumber +
+            "/subgroups"
+        ).once("value");
+
+        if (!snapshot.exists()) {
+            return null;
+        }
+
+        const subgroups = snapshot.val();
+
+        for (const subgroupId in subgroups) {
+
+            const subgroup = subgroups[subgroupId];
+
+            if (
+                subgroup &&
+                subgroup.members &&
+                subgroup.members[String(userId)] === true
+            ) {
+
+                return {
+                    id: subgroupId,
+                    name: subgroup.name || "",
+                    members: subgroup.members || {}
+                };
+
+            }
+        }
+
+        // কোনো subgroup-এর member না
+        return null;
+
+    } catch (error) {
+
+        console.error(
+            "getUserRoomSubgroup error:",
+            error
+        );
+
+        return null;
+    }
+}
+
+
+
+// ----------------------------------------------------
+// CHECK WHETHER TWO USERS ARE IN SAME SUBGROUP
+// ----------------------------------------------------
+async function areUsersInSameSubgroup(
+    roomNumber,
+    userId1,
+    userId2
+) {
+
+    const subgroup = await getUserRoomSubgroup(
+        roomNumber,
+        userId1
+    );
+
+    if (!subgroup) {
+        return false;
+    }
+
+    return subgroup.members &&
+           subgroup.members[String(userId2)] === true;
+}
+
+
+
+// ----------------------------------------------------
+// GET ALL MEMBERS OF A SUBGROUP
+// ----------------------------------------------------
+async function getSubgroupMembers(
+    roomNumber,
+    subgroupId
+) {
+
+    try {
+
+        const snapshot = await db.ref(
+            "groups/room_" +
+            roomNumber +
+            "/subgroups/" +
+            subgroupId +
+            "/members"
+        ).once("value");
+
+        if (!snapshot.exists()) {
+            return {};
+        }
+
+        return snapshot.val() || {};
+
+    } catch (error) {
+
+        console.error(
+            "getSubgroupMembers error:",
+            error
+        );
+
+        return {};
+    }
+}
+
+
+
+// ----------------------------------------------------
+// ADD USER TO SUBGROUP
+// ----------------------------------------------------
+async function addUserToSubgroup(
+    roomNumber,
+    subgroupId,
+    userId
+) {
+
+    if (!roomNumber || !subgroupId || !userId) {
+        return false;
+    }
+
+    try {
+
+        await db.ref(
+            "groups/room_" +
+            roomNumber +
+            "/subgroups/" +
+            subgroupId +
+            "/members/" +
+            String(userId)
+        ).set(true);
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "addUserToSubgroup error:",
+            error
+        );
+
+        return false;
+    }
+}
+
+
+
+// ----------------------------------------------------
+// REMOVE USER FROM SUBGROUP
+// ----------------------------------------------------
+async function removeUserFromSubgroup(
+    roomNumber,
+    subgroupId,
+    userId
+) {
+
+    if (!roomNumber || !subgroupId || !userId) {
+        return false;
+    }
+
+    try {
+
+        await db.ref(
+            "groups/room_" +
+            roomNumber +
+            "/subgroups/" +
+            subgroupId +
+            "/members/" +
+            String(userId)
+        ).remove();
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "removeUserFromSubgroup error:",
+            error
+        );
+
+        return false;
+    }
+}
+
+
+
+// ----------------------------------------------------
+// DELETE SUBGROUP
+// ----------------------------------------------------
+async function deleteRoomSubgroup(
+    roomNumber,
+    subgroupId
+) {
+
+    try {
+
+        await db.ref(
+            "groups/room_" +
+            roomNumber +
+            "/subgroups/" +
+            subgroupId
+        ).remove();
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "deleteRoomSubgroup error:",
+            error
+        );
+
+        return false;
+    }
+}
+
+
+
+// ----------------------------------------------------
+// GET CURRENT USER'S GROUP ID
+// ----------------------------------------------------
+async function getCurrentUserSubgroup(roomNumber) {
+
+    const userId =
+        localStorage.getItem("chatAppUserId") ||
+        currentUserId;
+
+    if (!userId) {
+        return null;
+    }
+
+    return await getUserRoomSubgroup(
+        roomNumber,
+        userId
+    );
+}
+
+
+const CLOUD_NAME = "kbkgzhwg";
+const UPLOAD_PRESET = "chat_upload";
+const uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`;
+
+let currentUserId = localStorage.getItem("chatAppUserId") || "";
+let currentRoom = null;
+const roomListeners = {};
+const roomMemberListeners = {};
+const roomLastActivity = {};
+const globalPrefetchListeners = {}; 
+const memberCheckListeners = {}; // মেম্বারশিপ লিসেনার ট্র্যাক রাখার জন্য নতুন অবজেক্ট
+
+function navigateTo(pageId) {
+    document.querySelectorAll(".login-view").forEach(view => {
+        view.classList.remove("active");
+        view.style.display = "none";
+    });
+
+    const containerMain = document.getElementById("chatContainerMain");
+    if (containerMain) containerMain.style.display = "none";
+
+    const settingsPage = document.getElementById("settingsPage");
+    if (settingsPage) {
+        settingsPage.classList.remove("active");
+        settingsPage.style.display = "none";
+    }
+
+    const target = document.getElementById(pageId);
+    if (target) {
+        target.classList.add("active");
+        target.style.display = "flex";
+    }
+}
+
+function openSettingsPage() {
+    const settingsPage = document.getElementById("settingsPage");
+    if (settingsPage) {
+        settingsPage.style.display = "flex";
+        settingsPage.classList.add("active");
+    }
+
+    try {
+        const userId = currentUserId || localStorage.getItem("chatAppUserId");
+        if (userId) {
+            const cachedProfile = localStorage.getItem("cached_profile_" + userId);
+            if (cachedProfile) {
+                const uVal = JSON.parse(cachedProfile);
+                const userName = uVal.name || ("User " + userId);
+                
+                const nameElement = document.getElementById("profileNameDisplay");
+                if (nameElement) nameElement.innerText = userName;
+
+                const letterElement = document.getElementById("profileAvatarLetter");
+                if (letterElement) letterElement.innerText = userName.charAt(0).toUpperCase();
+
+                if (uVal.photoUrl) {
+                    const avatarBox = document.getElementById("profileAvatarBox");
+                    if (avatarBox) {
+                        avatarBox.innerHTML = `<img src="${uVal.photoUrl}" alt="Profile" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+                    }
+                }
+            }
+            const idElement = document.getElementById("profileIdDisplay");
+            if (idElement) idElement.innerText = userId;
+        }
+    } catch (error) {
+        console.error("Error loading profile:", error);
+    }
+}
+
+function backFromSettings() {
+    const settingsPage = document.getElementById("settingsPage");
+    if (settingsPage) {
+        settingsPage.style.display = "none";
+        settingsPage.classList.remove("active");
+    }
+}
+
+function openChatList() {
+    const settings = document.getElementById("settingsPage");
+    if (settings) {
+        settings.classList.remove("active");
+        settings.style.display = "none";
+    }
+
+    for (let i = 1; i <= 8; i++) {
+        const room = document.getElementById("chatRoom" + i);
+        if (room) room.style.display = "none";
+    }
+
+    const containerMain = document.getElementById("chatContainerMain");
+    if (containerMain) containerMain.style.display = "flex";
+
+    const chatList = document.getElementById("chatListScreen");
+    if (chatList) chatList.style.display = "flex";
+    currentRoom = null;
+}
+
+function openCallList() {
+    showCustomToast("Call list feature coming soon!");
+}
+
+function openContactsList() {
+    showCustomToast("Contacts list feature coming soon!");
+}
+
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById("userPass");
+    const toggleIcon = document.getElementById("passwordToggle")?.querySelector("i");
+    if (!passwordInput || !toggleIcon) return;
+
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggleIcon.classList.remove("fa-eye-slash");
+        toggleIcon.classList.add("fa-eye");
+    } else {
+        passwordInput.type = "password";
+        toggleIcon.classList.remove("fa-eye");
+        toggleIcon.classList.add("fa-eye-slash");
+    }
+}
+
+function validateStepOne() {
+    const input = document.getElementById("userId");
+    const error = document.getElementById("error-p2");
+    if (!input) return;
+    const userId = input.value.trim();
+    if (userId === "") {
+        if (error) error.innerText = "Please enter your user ID";
+        return;
+    }
+    if (error) error.innerText = "";
+    navigateTo("page3");
+}
+
+function validateStepTwo() {
+    const userIdInput = document.getElementById("userId");
+    const passwordInput = document.getElementById("userPass");
+    const error = document.getElementById("error-p3");
+    if (!userIdInput || !passwordInput) return;
+
+    const userId = userIdInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (password === "") {
+        if (error) error.innerText = "Please enter password";
+        return;
+    }
+    if (error) error.innerText = "";
+
+    db.ref("users/" + userId).once("value").then(snapshot => {
+        if (!snapshot.exists()) {
+            if (error) error.innerText = "User ID not found in database!";
+            return;
+        }
+        const userData = snapshot.val();
+        if (String(userData.password || "").trim() === String(password).trim()) {
+            if (error) error.innerText = "";
+            localStorage.setItem("cached_profile_" + userId, JSON.stringify(userData));
+            enterHomePage(userId);
+        } else {
+            if (error) error.innerText = "Incorrect password!";
+        }
+    }).catch(() => {
+        if (error) error.innerText = "Login failed. Please try again.";
+    });
+}
+
+function escapeHtml(text) {
+    if (text === null || text === undefined) return "";
+
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "'");
+}
+
+function formatTime(timestamp) {
+    if (!timestamp) return "Just now";
+    const date = new Date(timestamp);
+    if (isNaN(date.getTime())) return "Just now";
+    return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+}
+
+function updateChatListOrder() {
+    const chatListContainer = document.querySelector(".chat-list");
+    if (!chatListContainer) return;
+    const chatItems = Array.from(chatListContainer.getElementsByClassName("chat-item"));
+
+    chatItems.sort((a, b) => {
+        const roomA = a.getAttribute("data-room");
+        const roomB = b.getAttribute("data-room");
+        const timeA = roomLastActivity[roomA] || 0;
+        const timeB = roomLastActivity[roomB] || 0;
+        return timeB - timeA;
+    });
+
+    chatItems.forEach(item => chatListContainer.appendChild(item));
+}
+
+function openChat(roomNumber) {
+    currentRoom = roomNumber;
+    const chatList = document.getElementById("chatListScreen");
+    if (chatList) chatList.style.display = "none";
+
+    for (let i = 1; i <= 8; i++) {
+        const room = document.getElementById("chatRoom" + i);
+        if (room) room.style.display = "none";
+    }
+
+    const selectedRoom = document.getElementById("chatRoom" + roomNumber);
+    if (selectedRoom) selectedRoom.style.display = "flex";
+
+    const chatItemLogo = document.querySelector(`.chat-item[data-room="${roomNumber}"] img`) || document.getElementById("chatLogo" + roomNumber);
+    const headerLogo = document.getElementById("roomHeaderLogo" + roomNumber);
+    
+    if (headerLogo) {
+        if (chatItemLogo && chatItemLogo.src) {
+            headerLogo.src = chatItemLogo.src;
+            headerLogo.style.display = "block";
+        } else {
+            headerLogo.style.display = "none";
+        }
+    }
+
+    loadRoomMembers(roomNumber);
+
+    const userId = localStorage.getItem("chatAppUserId") || currentUserId;
+    const nowTime = Date.now();
+    localStorage.setItem(`last_read_${userId}_${roomNumber}`, nowTime);
+
+    const badgeElement = document.getElementById(`badge-${roomNumber}`);
+    if (badgeElement) {
+        badgeElement.style.display = "none";
+        badgeElement.innerText = "0";
+    }
+
+    renderCachedMessages(roomNumber);
+    loadRoomMessages(roomNumber);
+}
+
+function closeChat(roomNumber) {
+    if (roomListeners[roomNumber]) {
+        db.ref("groups/room_" + roomNumber + "/messages").off("value", roomListeners[roomNumber]);
+        delete roomListeners[roomNumber];
+    }
+
+    if (roomMemberListeners[roomNumber]) {
+    db.ref(
+        "groups/room_" + roomNumber + "/subgroups"
+    ).off(
+        "value",
+        roomMemberListeners[roomNumber]
+    );
+
+    delete roomMemberListeners[roomNumber];
+}
+
+    const room = document.getElementById("chatRoom" + roomNumber);
+    if (room) room.style.display = "none";
+
+    currentRoom = null;
+    const chatList = document.getElementById("chatListScreen");
+    if (chatList) chatList.style.display = "flex";
+}
+
+function loadRoomMembers(roomNumber) {
+    const avatarsContainer = document.getElementById(
+        "roomAvatarsContainer" + roomNumber
+    );
+
+    const roomStatus =
+        document.getElementById("groupMemberCount" + roomNumber) ||
+        document.getElementById("roomStatus" + roomNumber);
+
+    const userId =
+        localStorage.getItem("chatAppUserId") ||
+        currentUserId;
+
+    if (!avatarsContainer || !userId) return;
+
+    // আগের listener বন্ধ
+    if (roomMemberListeners[roomNumber]) {
+        db.ref(
+            "groups/room_" + roomNumber + "/subgroups"
+        ).off(
+            "value",
+            roomMemberListeners[roomNumber]
+        );
+    }
+
+    const subgroupRef = db.ref(
+        "groups/room_" + roomNumber + "/subgroups"
+    );
+
+    const memberListener = snapshot => {
+
+        avatarsContainer.innerHTML = "";
+
+        if (!snapshot.exists()) {
+            if (roomStatus) {
+                roomStatus.innerText = "0 users";
+            }
+            return;
+        }
+
+        const subgroups = snapshot.val() || {};
+
+        // ==========================================
+        // CURRENT USER-এর SUBGROUP খুঁজে বের করা
+        // ==========================================
+
+        let currentSubgroup = null;
+        let currentSubgroupId = null;
+
+        Object.keys(subgroups).forEach(subgroupId => {
+
+            const subgroup = subgroups[subgroupId];
+
+            if (
+                subgroup &&
+                subgroup.members &&
+                subgroup.members[String(userId)] === true
+            ) {
+                currentSubgroup = subgroup;
+                currentSubgroupId = String(subgroupId);
+            }
+        });
+
+        // ==========================================
+        // USER কোনো subgroup-এ নেই
+        // ==========================================
+
+        if (!currentSubgroup || !currentSubgroupId) {
+
+            if (roomStatus) {
+                roomStatus.innerText = "0 users";
+            }
+
+            avatarsContainer.innerHTML = "";
+
+            return;
+        }
+
+        // ==========================================
+        // শুধু নিজের subgroup-এর members
+        // ==========================================
+
+        const membersObj =
+            currentSubgroup.members || {};
+
+        const memberKeys =
+            Object.keys(membersObj);
+
+        const totalCount =
+            memberKeys.length;
+
+        if (roomStatus) {
+            roomStatus.innerText =
+                `${totalCount} users`;
+        }
+
+        // ==========================================
+        // MEMBER AVATAR দেখানো
+        // ==========================================
+
+        memberKeys.forEach(memberId => {
+
+            // Member profile Firebase থেকে নেওয়া
+            db.ref(
+                "users/" + memberId
+            ).once("value")
+            .then(memberSnapshot => {
+
+                const member =
+                    memberSnapshot.val() || {};
+
+                const name =
+                    member.name ||
+                    "Member";
+
+                const photo =
+                    member.photoUrl ||
+                    "";
+
+                const initial =
+                    name.charAt(0).toUpperCase();
+
+                const isOnline =
+                    member.online === true;
+
+                const onlineDotStyle =
+                    isOnline
+                        ? "display: block;"
+                        : "display: none;";
+
+                const avatarContent =
+                    photo
+                        ? `<img src="${escapeHtml(photo)}" alt="Avatar">`
+                        : `<span>${escapeHtml(initial)}</span>`;
+
+                avatarsContainer.innerHTML += `
+                    <div class="avatar-item-wrapper"
+                         title="${escapeHtml(name)}">
+
+                        <div class="avatar-circle">
+                            ${avatarContent}
+                        </div>
+
+                        <div class="online-dot"
+                             style="${onlineDotStyle}">
+                        </div>
+
+                    </div>
+                `;
+
+            })
+            .catch(error => {
+                console.error(
+                    "Member profile load error:",
+                    error
+                );
+            });
+
+        });
+    };
+
+    // Subgroup-এর উপর live listener
+    subgroupRef.on(
+        "value",
+        memberListener
+    );
+
+    roomMemberListeners[roomNumber] =
+        memberListener;
+}
+
+function loadRoomMessages(roomNumber) {
+    const userId = localStorage.getItem("chatAppUserId") || currentUserId;
+    if (!userId) return;
+
+    const messagesRef = db.ref("groups/room_" + roomNumber + "/messages");
+
+    if (roomListeners[roomNumber]) {
+        messagesRef.off("value", roomListeners[roomNumber]);
+    }
+
+    const listener = async snapshotData => {
+        const data = snapshotData.val() || {};
+        const cacheKey = "cached_messages_group_" + roomNumber + "_" + userId;
+
+        // Current user's subgroup বের করা
+        const subgroup = await getCurrentUserSubgroup(roomNumber);
+
+if (!subgroup || !subgroup.id) {
+    showCustomToast("You are not assigned to this chat group.");
+    return;
+}
+
+const subgroupId = String(subgroup.id);
+
+        // User কোনো subgroup-এ না থাকলে কোনো message দেখাবে না
+        if (!subgroupId) {
+            localStorage.removeItem(cacheKey);
+
+            const messagesArea = document.getElementById(
+                "messagesArea" + roomNumber
+            );
+
+            if (messagesArea) {
+                messagesArea.innerHTML = `
+                    <div class="message">
+                        No messages yet.
+                        <div class="msg-time">You are not assigned to a subgroup</div>
+                    </div>`;
+            }
+
+            return;
+        }
+
+        // শুধু নিজের subgroup-এর message রাখা
+        const filteredMessages = {};
+
+        Object.keys(data).forEach(key => {
+            const message = data[key];
+
+            if (!message) return;
+
+            if (
+                message.subgroupId &&
+                String(message.subgroupId) === subgroupId
+            ) {
+                filteredMessages[key] = message;
+            }
+        });
+
+        // Filter করা message cache করা
+        if (Object.keys(filteredMessages).length > 0) {
+            localStorage.setItem(
+                cacheKey,
+                JSON.stringify(filteredMessages)
+            );
+
+            displayMessages(filteredMessages, roomNumber);
+        } else {
+            localStorage.removeItem(cacheKey);
+
+            const messagesArea = document.getElementById(
+                "messagesArea" + roomNumber
+            );
+
+            if (messagesArea) {
+                messagesArea.innerHTML = `
+                    <div class="message">
+                        No messages yet.
+                        <div class="msg-time">Start conversation</div>
+                    </div>`;
+            }
+        }
+    };
+
+    messagesRef.on("value", listener);
+    roomListeners[roomNumber] = listener;
+}
+
+async function sendMessage(roomNumber) {
+    const input = document.getElementById("messageInput" + roomNumber);
+    if (!input) return;
+
+    const messageText = input.value.trim();
+    if (!messageText) return;
+
+    const userId = localStorage.getItem("chatAppUserId") || currentUserId;
+    if (!userId) return;
+
+    let senderName = "User " + userId;
+    let senderPhoto = "";
+
+    const cachedProfile = localStorage.getItem(
+        "cached_profile_" + userId
+    );
+
+    if (cachedProfile) {
+        try {
+            const profile = JSON.parse(cachedProfile);
+
+            if (profile.name) {
+                senderName = profile.name;
+            }
+
+            if (profile.photoUrl) {
+                senderPhoto = profile.photoUrl;
+            }
+        } catch (error) {}
+    }
+
+    // Current user's subgroup
+    const subgroup = await getCurrentUserSubgroup(roomNumber);
+
+    // Subgroup থাকলে ID যাবে
+    // না থাকলে null যাবে
+    const subgroupId = subgroup
+        ? String(subgroup.id)
+        : null;
+
+    const now = Date.now();
+
+    const messageData = {
+        sender: senderName,
+        senderId: String(userId),
+        senderPhoto: senderPhoto,
+        message: messageText,
+        type: "user",
+
+        // ================= SUBGROUP =================
+        subgroupId: subgroupId,
+
+        time: now,
+        timestamp: now
+    };
+
+    input.value = "";
+
+    localStorage.setItem(
+        `last_read_${userId}_${roomNumber}`,
+        now
+    );
+
+    await db.ref(
+        "groups/room_" + roomNumber + "/messages"
+    ).push(messageData);
+}
+
+async function sendMediaMessageToRoom(
+    fileUrl,
+    fileType,
+    roomNumber,
+    fileName = ""
+) {
+    const userId =
+        localStorage.getItem("chatAppUserId") ||
+        currentUserId;
+
+    if (!userId) return;
+
+    let senderName = "User " + userId;
+    let senderPhoto = "";
+
+    const cachedProfile = localStorage.getItem(
+        "cached_profile_" + userId
+    );
+
+    if (cachedProfile) {
+        try {
+            const profile = JSON.parse(cachedProfile);
+
+            if (profile.name) {
+                senderName = profile.name;
+            }
+
+            if (profile.photoUrl) {
+                senderPhoto = profile.photoUrl;
+            }
+        } catch (error) {}
+    }
+
+    // Current user's subgroup
+    const subgroup = await getCurrentUserSubgroup(roomNumber);
+
+    // Subgroup না থাকলে null
+    const subgroupId = subgroup
+        ? String(subgroup.id)
+        : null;
+
+    const now = Date.now();
+
+    const messageData = {
+        sender: senderName,
+        senderId: String(userId),
+        senderPhoto: senderPhoto,
+        message: fileUrl,
+        type: fileType,
+        fileName: fileName,
+
+        // ================= SUBGROUP =================
+        subgroupId: subgroupId,
+
+        time: now,
+        timestamp: now
+    };
+
+    localStorage.setItem(
+        `last_read_${userId}_${roomNumber}`,
+        now
+    );
+
+    await db.ref(
+        "groups/room_" + roomNumber + "/messages"
+    ).push(messageData);
+}
+
+function handleEnter(event, roomNumber) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        sendMessage(roomNumber);
+    }
+}
+
+function renderCachedMessages(roomNumber) {
+    const messagesArea = document.getElementById("messagesArea" + roomNumber);
+    if (!messagesArea) return;
+    const userId = localStorage.getItem("chatAppUserId") || currentUserId;
+    const cacheKey = "cached_messages_group_" + roomNumber + "_" + userId;
+    const cachedData = localStorage.getItem(cacheKey);
+
+    if (!cachedData) {
+        messagesArea.innerHTML = `<div class="message">No messages yet.<div class="msg-time">Start conversation</div></div>`;
+        return;
+    }
+
+    try {
+        displayMessages(JSON.parse(cachedData), roomNumber);
+    } catch (error) {
+        localStorage.removeItem(cacheKey);
+    }
+}
+
+function displayMessages(messagesObj, roomNumber) {
+    const messagesArea = document.getElementById("messagesArea" + roomNumber);
+    if (!messagesArea) return;
+
+    messagesArea.innerHTML = "";
+
+    if (!messagesObj || typeof messagesObj !== "object") {
+        messagesArea.innerHTML =
+            `<div class="message">
+                No messages yet.
+                <div class="msg-time">Start conversation</div>
+            </div>`;
+        return;
+    }
+
+    let lastMessage = null;
+    let unreadCount = 0;
+
+    const userId =
+        localStorage.getItem("chatAppUserId") ||
+        currentUserId;
+
+    const lastReadTime = Number(
+        localStorage.getItem(
+            `last_read_${userId}_${roomNumber}`
+        ) || 0
+    );
+
+    /*
+    ==========================================
+    MULTI SUBGROUP FILTER
+    ==========================================
+    */
+
+    Object.keys(messagesObj).forEach(key => {
+
+        const data = messagesObj[key];
+
+        if (!data) return;
+
+        /*
+        পুরনো message বা subgroupId ছাড়া
+        কোনো message দেখানো হবে না
+        */
+        if (!data.subgroupId) {
+            return;
+        }
+
+        /*
+        এখানে আবার নিশ্চিত করা হচ্ছে যে
+        loadRoomMessages() থেকে আসা data-তেই
+        valid subgroup message আছে।
+        */
+
+        lastMessage = data;
+
+        const msgTime =
+            data.timestamp ||
+            data.time ||
+            0;
+
+        const senderId =
+            String(data.senderId || "");
+
+        if (
+            msgTime > lastReadTime &&
+            senderId !== String(userId)
+        ) {
+            unreadCount++;
+        }
+
+        const isMine =
+            senderId === String(userId);
+
+        const senderRaw =
+            data.sender ||
+            data.senderName ||
+            "Admin";
+
+        const messageRaw =
+            data.message ||
+            data.content ||
+            "";
+
+        const msgType =
+            data.type ||
+            "text";
+
+        const sender =
+            escapeHtml(senderRaw);
+
+        const time =
+            formatTime(msgTime);
+
+        const senderPhoto =
+            data.senderPhoto ||
+            "";
+
+        const initial =
+            String(senderRaw)
+                .charAt(0)
+                .toUpperCase();
+
+        const avatarHtml =
+            senderPhoto
+                ? `<img src="${escapeHtml(senderPhoto)}" alt="Profile">`
+                : `<span>${escapeHtml(initial)}</span>`;
+
+        let messageContentHtml = "";
+
+        const trimmedMsg =
+            String(messageRaw).trim();
+
+        const lowerMsg =
+            trimmedMsg.toLowerCase();
+
+        /*
+        ================= IMAGE =================
+        */
+
+        if (
+            msgType === "image" ||
+            lowerMsg.startsWith("data:image/") ||
+            lowerMsg.match(
+                /\.(jpeg|jpg|png|gif|webp)$/i
+            )
+        ) {
+
+            messageContentHtml = `
+                <img
+                    src="${escapeHtml(messageRaw)}"
+                    style="
+                        max-width:200px;
+                        border-radius:8px;
+                        cursor:pointer;
+                    "
+                    onclick="openFullscreen(this.src)"
+                >
+            `;
+
+        }
+
+        /*
+        ================= VIDEO =================
+        */
+
+        else if (
+            msgType === "video" ||
+            lowerMsg.startsWith("data:video/") ||
+            lowerMsg.match(
+                /\.(mp4|mkv|webm|mov)$/i
+            )
+        ) {
+
+            messageContentHtml = `
+                <video
+                    src="${escapeHtml(messageRaw)}"
+                    controls
+                    playsinline
+                    style="
+                        max-width:250px;
+                        border-radius:8px;
+                    "
+                ></video>
+            `;
+
+        }
+
+        /*
+        ================= AUDIO =================
+        */
+
+        else if (
+            msgType === "audio" ||
+            lowerMsg.startsWith("data:audio/") ||
+            lowerMsg.match(
+                /\.(mp3|wav|ogg|m4a)$/i
+            )
+        ) {
+
+            messageContentHtml = `
+                <audio
+                    src="${escapeHtml(messageRaw)}"
+                    controls
+                    style="max-width:250px;"
+                ></audio>
+            `;
+
+        }
+
+        /*
+        ================= FILE =================
+        */
+
+        else if (
+            msgType === "file" ||
+            lowerMsg.startsWith("http")
+        ) {
+
+            const cleanUrl =
+                trimmedMsg.split(" ")[0];
+
+            const urlParts =
+                cleanUrl.split("/");
+
+            const fileName =
+                data.fileName ||
+                urlParts[urlParts.length - 1] ||
+                "Download File";
+
+            const appDisplayName =
+                fileName.split("?")[0];
+
+            messageContentHtml = `
+                <div class="apk-download-card">
+
+                    <div class="apk-card-left">
+
+                        <div class="apk-icon-box">
+                            <i class="fa-solid fa-file"></i>
+                        </div>
+
+                        <div class="apk-info">
+
+                            <div class="apk-name">
+                                ${escapeHtml(appDisplayName)}
+                            </div>
+
+                            <div class="apk-desc">
+                                Secure Download
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <a
+                        href="${escapeHtml(cleanUrl)}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="apk-install-btn"
+                    >
+                        Download
+                    </a>
+
+                </div>
+            `;
+
+        }
+
+        /*
+        ================= TEXT =================
+        */
+
+        else {
+
+            messageContentHtml = `
+                <p
+                    style="
+                        margin:0;
+                        word-break:break-all;
+                    "
+                >
+                    ${escapeHtml(messageRaw)}
+                </p>
+            `;
+        }
+
+        /*
+        ================= MESSAGE ROW =================
+        */
+
+        const messageRowDiv =
+            document.createElement("div");
+
+        messageRowDiv.className =
+            `message-row ${isMine ? "mine" : ""}`;
+
+        messageRowDiv.innerHTML = `
+
+            <div class="msg-avatar">
+                ${avatarHtml}
+            </div>
+
+            <div class="message">
+
+                ${
+                    !isMine
+                    ? `<div class="sender-name">${sender}</div>`
+                    : ""
+                }
+
+                <div class="msg-content-wrapper">
+
+                    <div>
+                        ${messageContentHtml}
+                    </div>
+
+                    <div
+                        class="msg-time-container"
+                        style="
+                            display:flex;
+                            align-items:center;
+                            justify-content:flex-end;
+                            gap:5px;
+                            font-size:10px;
+                            color:#888;
+                            margin-top:4px;
+                        "
+                    >
+
+                        <span>
+                            ${time}
+                        </span>
+
+                        <i
+                            class="fa-solid fa-clone"
+                            style="font-size:10px;"
+                        ></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+        messagesArea.appendChild(
+            messageRowDiv
+        );
+
+        attachMessageClickListeners(
+            messageRowDiv,
+            key,
+            roomNumber,
+            messageRaw
+        );
+
+    });
+
+    /*
+    ================= SCROLL =================
+    */
+
+    messagesArea.scrollTop =
+        messagesArea.scrollHeight;
+
+    /*
+    ================= ROOM PREVIEW =================
+    */
+
+    if (lastMessage) {
+
+        const lastTextRaw =
+            lastMessage.message ||
+            lastMessage.content ||
+            "";
+
+        const listMessage =
+            document.getElementById(
+                "listMsg" + roomNumber
+            );
+
+        if (listMessage) {
+
+            if (
+                lastMessage.type === "image"
+            ) {
+
+                listMessage.innerHTML =
+                    `<span>📷 Photo</span>`;
+
+            }
+
+            else if (
+                lastMessage.type === "video"
+            ) {
+
+                listMessage.innerHTML =
+                    `<span>🎥 Video</span>`;
+
+            }
+
+            else if (
+                lastMessage.type === "audio"
+            ) {
+
+                listMessage.innerHTML =
+                    `<span>🎵 Audio</span>`;
+
+            }
+
+            else if (
+                lastMessage.type === "file" ||
+                String(lastTextRaw)
+                    .toLowerCase()
+                    .includes(".apk")
+            ) {
+
+                listMessage.innerHTML =
+                    `<span>📦 File</span>`;
+
+            }
+
+            else {
+
+                listMessage.innerHTML =
+                    `<span>${escapeHtml(lastTextRaw)}</span>`;
+            }
+        }
+
+        const timeElement =
+            document.getElementById(
+                "roomTime" + roomNumber
+            );
+
+        const msgTime =
+            lastMessage.timestamp ||
+            lastMessage.time ||
+            0;
+
+        if (timeElement) {
+            timeElement.innerText =
+                formatTime(msgTime);
+        }
+
+        roomLastActivity[roomNumber] =
+            msgTime;
+
+        updateChatListOrder();
+    }
+
+    /*
+    ================= UNREAD BADGE =================
+    */
+
+    const badgeElement =
+        document.getElementById(
+            `badge-${roomNumber}`
+        );
+
+    if (badgeElement) {
+
+        if (
+            unreadCount > 0 &&
+            currentRoom !== roomNumber
+        ) {
+
+            badgeElement.innerText =
+                unreadCount;
+
+            badgeElement.style.display =
+                "flex";
+
+        } else {
+
+            badgeElement.style.display =
+                "none";
+        }
+    }
+}
+
+function openMemberPopup(roomNumber) {
+    const modal = document.getElementById("memberPopupModal");
+    if (modal) {
+        modal.classList.add("active");
+        loadPopupMembersData(roomNumber);
+    }
+}
+
+function closeMemberPopup() {
+    const modal = document.getElementById("memberPopupModal");
+    if (modal) {
+        modal.classList.remove("active");
+    }
+}
+
+function closeMemberPopupOnOutside(event) {
+    const popupBox = document.getElementById("memberPopupBox");
+    if (popupBox && !popupBox.contains(event.target)) {
+        closeMemberPopup();
+    }
+}
+
+function loadPopupMembersData(roomNumber) {
+    const container = document.getElementById("popupMemberListContainer");
+    const totalUsersText = document.getElementById("popupTotalUsers");
+
+    const userId =
+        localStorage.getItem("chatAppUserId") ||
+        currentUserId;
+
+    if (!container || !userId) return;
+
+    container.innerHTML = `
+        <div style="text-align:center; color:#899bb1; padding:20px;">
+            Loading members...
+        </div>
+    `;
+
+    db.ref(
+        "groups/room_" + roomNumber + "/subgroups"
+    ).once("value").then(snapshot => {
+
+        container.innerHTML = "";
+
+        if (!snapshot.exists()) {
+            if (totalUsersText) {
+                totalUsersText.innerText = "0 users";
+            }
+
+            container.innerHTML = `
+                <div style="text-align:center; color:#899bb1; padding:20px;">
+                    No subgroup found
+                </div>
+            `;
+
+            return;
+        }
+
+        const subgroups = snapshot.val() || {};
+
+        let currentSubgroup = null;
+
+        // Find current user's subgroup
+        Object.keys(subgroups).forEach(subgroupId => {
+            const subgroup = subgroups[subgroupId];
+
+            if (
+                subgroup &&
+                subgroup.members &&
+                subgroup.members[String(userId)] === true
+            ) {
+                currentSubgroup = subgroup;
+            }
+        });
+
+        // User is not assigned to any subgroup
+        if (!currentSubgroup) {
+            if (totalUsersText) {
+                totalUsersText.innerText = "0 users";
+            }
+
+            container.innerHTML = `
+                <div style="text-align:center; color:#899bb1; padding:20px;">
+                    You are not assigned to a subgroup
+                </div>
+            `;
+
+            return;
+        }
+
+        const membersObj =
+            currentSubgroup.members || {};
+
+        const memberIds =
+            Object.keys(membersObj);
+
+        if (totalUsersText) {
+            totalUsersText.innerText =
+                `${memberIds.length} users`;
+        }
+
+        if (memberIds.length === 0) {
+            container.innerHTML = `
+                <div style="text-align:center; color:#899bb1; padding:20px;">
+                    No members
+                </div>
+            `;
+
+            return;
+        }
+
+        memberIds.forEach(memberId => {
+
+            db.ref(
+                "users/" + memberId
+            ).once("value").then(memberSnapshot => {
+
+                const member =
+                    memberSnapshot.val() || {};
+
+                const name =
+                    member.name ||
+                    "User " + memberId;
+
+                const photo =
+                    member.photoUrl ||
+                    "";
+
+                const initial =
+                    name.charAt(0).toUpperCase();
+
+                const isOnline =
+                    member.online === true;
+
+                const statusText =
+                    isOnline
+                        ? "Online"
+                        : "Last seen recently";
+
+                const statusClass =
+                    isOnline
+                        ? "online"
+                        : "offline";
+
+                const avatarContent =
+                    photo
+                        ? `
+                            <img
+                                src="${escapeHtml(photo)}"
+                                alt="Avatar"
+                            >
+                          `
+                        : `
+                            <span>
+                                ${escapeHtml(initial)}
+                            </span>
+                          `;
+
+                container.innerHTML += `
+                    <div class="popup-member-item">
+
+                        <div class="popup-member-avatar">
+                            ${avatarContent}
+                        </div>
+
+                        <div class="popup-member-info">
+
+                            <span class="popup-member-name">
+                                ${escapeHtml(name)}
+                            </span>
+
+                            <span class="popup-member-status ${statusClass}">
+                                ${statusText}
+                            </span>
+
+                        </div>
+
+                    </div>
+                `;
+
+            }).catch(error => {
+                console.error(
+                    "Popup member profile error:",
+                    error
+                );
+            });
+        });
+
+    }).catch(error => {
+
+        console.error(
+            "loadPopupMembersData error:",
+            error
+        );
+
+        container.innerHTML = `
+            <div style="text-align:center; color:#ff6b6b; padding:20px;">
+                Failed to load members
+            </div>
+        `;
+
+    });
+}
+
+
+async function handleFileUpload(event, roomNumber) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const userId = localStorage.getItem("chatAppUserId") || currentUserId;
+    if (!userId) {
+        showCustomToast("Please login first.");
+        event.target.value = "";
+        return;
+    }
+
+    const MAX_FILE_SIZE = 100 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+        showCustomToast("File অনেক বড়। সর্বোচ্চ 100MB পর্যন্ত পাঠানো যাবে।");
+        event.target.value = "";
+        return;
+    }
+
+    try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", UPLOAD_PRESET);
+
+        const response = await fetch(uploadUrl, { method: "POST", body: formData });
+        if (!response.ok) throw new Error("Cloudinary upload failed");
+
+        const result = await response.json();
+        const fileUrl = result.secure_url;
+        if (!fileUrl) throw new Error("Cloudinary URL পাওয়া যায়নি");
+
+        let fileType = "file";
+        if (file.type.startsWith("image/")) fileType = "image";
+        else if (file.type.startsWith("video/")) fileType = "video";
+        else if (file.type.startsWith("audio/")) fileType = "audio";
+
+        await sendMediaMessageToRoom(fileUrl, fileType, roomNumber, file.name);
+    } catch (error) {
+        showCustomToast("File পাঠানো যায়নি।");
+    }
+    event.target.value = "";
+}
+
+function handleFileUpload1(event) {
+    handleFileUpload(event, 1);
+}
+
+async function uploadProfilePicture(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const userId = localStorage.getItem("chatAppUserId") || currentUserId;
+    if (!userId) return;
+
+    try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", UPLOAD_PRESET);
+
+        const response = await fetch(uploadUrl, { method: "POST", body: formData });
+        if (!response.ok) throw new Error("Profile upload failed");
+
+        const result = await response.json();
+        const imageUrl = result.secure_url;
+        if (!imageUrl) throw new Error("Profile URL পাওয়া যায়নি");
+
+        const cachedProfileKey = "cached_profile_" + userId;
+        const cachedProfile = localStorage.getItem(cachedProfileKey);
+        const profile = cachedProfile ? JSON.parse(cachedProfile) : {};
+        profile.photoUrl = imageUrl;
+        localStorage.setItem(cachedProfileKey, JSON.stringify(profile));
+
+        const avatarBox = document.getElementById("profileAvatarBox");
+        if (avatarBox) {
+            avatarBox.innerHTML = `<img src="${escapeHtml(imageUrl)}" alt="Profile">`;
+        }
+
+        await db.ref("users/" + userId).update({ photoUrl: imageUrl });
+
+        for (let i = 1; i <= 8; i++) {
+            const groupMemberRef = db.ref("groups/room_" + i + "/members/" + userId);
+            const groupSnap = await groupMemberRef.once("value");
+            if (groupSnap.exists()) {
+                await groupMemberRef.update({ photoUrl: imageUrl });
+            }
+        }
+
+        showCustomToast("Upload complete!");
+    } catch (error) {
+        console.error(error);
+        showCustomToast("Profile picture upload failed.");
+    }
+    event.target.value = "";
+}
+
+function showCustomToast(message) {
+    let existingToast = document.getElementById("customAppToast");
+    if (existingToast) existingToast.remove();
+
+    const toast = document.createElement("div");
+    toast.id = "customAppToast";
+    toast.innerText = message;
+    toast.style.cssText = "position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.85); color:#fff; padding:10px 20px; border-radius:20px; font-size:14px; z-index:99999; box-shadow:0 4px 10px rgba(0,0,0,0.3);";
+    
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        if (toast) toast.remove();
+    }, 2500);
+}
+
+function enterHomePage(userId) {
+    currentUserId = String(userId);
+    localStorage.setItem("chatAppUserId", String(userId));
+
+    // ===== ONLINE / OFFLINE PRESENCE =====
+    const userStatusRef = db.ref("users/" + userId);
+
+    db.ref(".info/connected").on("value", (snapshot) => {
+        if (snapshot.val() === true) {
+
+            // App বন্ধ / internet disconnect হলে offline হবে
+            userStatusRef.onDisconnect().update({
+                online: false,
+                lastSeen: firebase.database.ServerValue.TIMESTAMP
+            });
+
+            // Connected থাকলে online
+            userStatusRef.update({
+                online: true
+            });
+        }
+    });
+    // ===== ONLINE / OFFLINE PRESENCE END =====
+
+    for (let i = 1; i <= 8; i++) {
+        const listNameElements = document.querySelectorAll("#roomTitle" + i);
+        listNameElements.forEach(element => {
+            element.innerText = "--";
+        });
+    }
+
+    db.ref("users/" + userId + "/chatNames").on("value", (snapshot) => {
+        if (snapshot.exists()) {
+            const chatNames = snapshot.val();
+
+            for (let i = 1; i <= 8; i++) {
+                const customName = chatNames["room_" + i];
+
+                if (customName) {
+                    const listNameElements = document.querySelectorAll("#roomTitle" + i);
+
+                    listNameElements.forEach(element => {
+                        element.innerText = customName;
+                    });
+                }
+            }
+        }
+    });
+
+
+    navigateTo("chatContainerMain");
+    const chatList = document.getElementById("chatListScreen");
+    if (chatList) chatList.style.display = "flex";
+
+    for (let i = 1; i <= 8; i++) {
+        const room = document.getElementById("chatRoom" + i);
+        if (room) room.style.display = "none";
+    }
+    currentRoom = null;
+    preFetchAllRoomsData();
+}
+
+window.onload = function() {
+    const savedUser = localStorage.getItem("chatAppUserId");
+    if (savedUser) {
+        enterHomePage(savedUser);
+    } else {
+        navigateTo("page1");
+    }
+};
+
+window.globalPrefetchListeners = window.globalPrefetchListeners || {};
+window.memberCheckListeners = window.memberCheckListeners || {};
+
+function preFetchAllRoomsData() {
+    const userId =
+        localStorage.getItem("chatAppUserId") ||
+        currentUserId;
+
+    if (!userId) return;
+
+    // পুরানো prefetch listeners বন্ধ
+    Object.keys(globalPrefetchListeners).forEach(path => {
+        if (db && db.ref && globalPrefetchListeners[path]) {
+            db.ref(path).off(
+                "value",
+                globalPrefetchListeners[path]
+            );
+        }
+    });
+
+    window.globalPrefetchListeners = {};
+
+    // পুরানো member listeners বন্ধ
+    Object.keys(memberCheckListeners).forEach(path => {
+        if (db && db.ref && memberCheckListeners[path]) {
+            db.ref(path).off(
+                "value",
+                memberCheckListeners[path]
+            );
+        }
+    });
+
+    window.memberCheckListeners = {};
+
+    /*
+    ==========================================
+    ROOM 1 - ROOM 8
+    ==========================================
+    */
+
+    for (let i = 1; i <= 8; i++) {
+
+        const roomNum = i;
+
+        const subgroupPath =
+            "groups/room_" +
+            roomNum +
+            "/subgroups";
+
+        const messagePath =
+            "groups/room_" +
+            roomNum +
+            "/messages";
+
+
+        /*
+        ==========================================
+        SUBGROUP LISTENER
+        ==========================================
+        */
+
+        const subgroupRef =
+            db.ref(subgroupPath);
+
+        const subgroupListener =
+            subgroupSnap => {
+
+                const listMessage =
+                    document.getElementById(
+                        "listMsg" + roomNum
+                    );
+
+                const timeElement =
+                    document.getElementById(
+                        "roomTime" + roomNum
+                    );
+
+                const badgeElement =
+                    document.getElementById(
+                        `badge-${roomNum}`
+                    );
+
+                const groups =
+                    subgroupSnap.val() || {};
+
+                /*
+                ==================================
+                CURRENT USER'S SUBGROUP FIND
+                ==================================
+                */
+
+                let currentSubgroupId = null;
+
+                Object.keys(groups).forEach(groupId => {
+
+                    const group =
+                        groups[groupId];
+
+                    if (
+                        group &&
+                        group.members &&
+                        group.members[
+                            String(userId)
+                        ] === true
+                    ) {
+
+                        currentSubgroupId =
+                            String(groupId);
+                    }
+                });
+
+
+                /*
+                ==================================
+                USER NOT IN ANY SUBGROUP
+                ==================================
+                */
+
+                if (!currentSubgroupId) {
+
+                    if (listMessage) {
+                        listMessage.innerHTML =
+                            `<span>No messages yet</span>`;
+                    }
+
+                    if (timeElement) {
+                        timeElement.innerText =
+                            "--";
+                    }
+
+                    if (badgeElement) {
+                        badgeElement.style.display =
+                            "none";
+                    }
+
+                    roomLastActivity[roomNum] =
+                        0;
+
+                    return;
+                }
+
+
+                /*
+                ==================================
+                MESSAGE LISTENER
+                ==================================
+                */
+
+                const existingListener =
+                    globalPrefetchListeners[
+                        messagePath
+                    ];
+
+                if (existingListener) {
+
+                    db.ref(messagePath).off(
+                        "value",
+                        existingListener
+                    );
+
+                    delete globalPrefetchListeners[
+                        messagePath
+                    ];
+                }
+
+
+                const messagesRef =
+                    db.ref(messagePath);
+
+
+                const msgListener =
+                    snapshot => {
+
+                        const currentListMsg =
+                            document.getElementById(
+                                "listMsg" + roomNum
+                            );
+
+                        const currentTimeEl =
+                            document.getElementById(
+                                "roomTime" + roomNum
+                            );
+
+                        const currentBadge =
+                            document.getElementById(
+                                `badge-${roomNum}`
+                            );
+
+
+                        if (!snapshot.exists()) {
+
+                            if (currentListMsg) {
+                                currentListMsg.innerHTML =
+                                    `<span>No messages yet</span>`;
+                            }
+
+                            if (currentTimeEl) {
+                                currentTimeEl.innerText =
+                                    "--";
+                            }
+
+                            if (currentBadge) {
+                                currentBadge.style.display =
+                                    "none";
+                            }
+
+                            roomLastActivity[
+                                roomNum
+                            ] = 0;
+
+                            return;
+                        }
+
+
+                        const messagesObj =
+                            snapshot.val() || {};
+
+                        let lastMessage = null;
+                        let unreadCount = 0;
+
+
+                        const lastReadTime =
+                            Number(
+                                localStorage.getItem(
+                                    `last_read_${userId}_${roomNum}`
+                                ) || 0
+                            );
+
+
+                        /*
+                        ==============================
+                        ONLY CURRENT SUBGROUP MESSAGES
+                        ==============================
+                        */
+
+                        Object.keys(messagesObj).forEach(
+                            msgKey => {
+
+                                const data =
+                                    messagesObj[msgKey];
+
+                                if (!data) return;
+
+
+                                /*
+                                IMPORTANT:
+                                subgroupId ছাড়া message
+                                এখানে ignore হবে
+                                */
+
+                                if (
+                                    !data.subgroupId
+                                ) {
+                                    return;
+                                }
+
+
+                                if (
+                                    String(
+                                        data.subgroupId
+                                    ) !==
+                                    String(
+                                        currentSubgroupId
+                                    )
+                                ) {
+                                    return;
+                                }
+
+
+                                lastMessage =
+                                    data;
+
+
+                                const msgTime =
+                                    data.timestamp ||
+                                    data.time ||
+                                    0;
+
+                                const senderId =
+                                    String(
+                                        data.senderId ||
+                                        ""
+                                    );
+
+
+                                if (
+                                    msgTime >
+                                        lastReadTime &&
+                                    senderId !==
+                                        String(userId)
+                                ) {
+
+                                    unreadCount++;
+                                }
+                            }
+                        );
+
+
+                        /*
+                        ==================================
+                        NO MESSAGE FOR THIS SUBGROUP
+                        ==================================
+                        */
+
+                        if (!lastMessage) {
+
+                            if (currentListMsg) {
+                                currentListMsg.innerHTML =
+                                    `<span>No messages yet</span>`;
+                            }
+
+                            if (currentTimeEl) {
+                                currentTimeEl.innerText =
+                                    "--";
+                            }
+
+                            if (currentBadge) {
+                                currentBadge.style.display =
+                                    "none";
+                            }
+
+                            roomLastActivity[
+                                roomNum
+                            ] = 0;
+
+                        }
+
+                        /*
+                        ==================================
+                        LAST MESSAGE
+                        ==================================
+                        */
+
+                        else {
+
+                            const lastTextRaw =
+                                lastMessage.message ||
+                                lastMessage.content ||
+                                "";
+
+
+                            if (currentListMsg) {
+
+                                if (
+                                    lastMessage.type ===
+                                    "image"
+                                ) {
+
+                                    currentListMsg.innerHTML =
+                                        `<span>📷 Photo</span>`;
+
+                                }
+
+                                else if (
+                                    lastMessage.type ===
+                                    "video"
+                                ) {
+
+                                    currentListMsg.innerHTML =
+                                        `<span>🎥 Video</span>`;
+
+                                }
+
+                                else if (
+                                    lastMessage.type ===
+                                    "audio"
+                                ) {
+
+                                    currentListMsg.innerHTML =
+                                        `<span>🎵 Audio</span>`;
+
+                                }
+
+                                else if (
+                                    lastMessage.type ===
+                                        "file" ||
+                                    String(
+                                        lastTextRaw
+                                    )
+                                        .toLowerCase()
+                                        .includes(".apk")
+                                ) {
+
+                                    currentListMsg.innerHTML =
+                                        `<span>📦 File</span>`;
+
+                                }
+
+                                else {
+
+                                    currentListMsg.innerHTML =
+                                        `<span>${escapeHtml(
+                                            lastTextRaw
+                                        )}</span>`;
+                                }
+                            }
+
+
+                            const msgTime =
+                                lastMessage.timestamp ||
+                                lastMessage.time ||
+                                0;
+
+
+                            if (currentTimeEl) {
+
+                                currentTimeEl.innerText =
+                                    formatTime(msgTime);
+                            }
+
+
+                            roomLastActivity[
+                                roomNum
+                            ] = msgTime;
+                        }
+
+
+                        /*
+                        ==================================
+                        UNREAD BADGE
+                        ==================================
+                        */
+
+                        if (currentBadge) {
+
+                            if (
+                                unreadCount > 0 &&
+                                currentRoom !== roomNum
+                            ) {
+
+                                currentBadge.innerText =
+                                    unreadCount;
+
+                                currentBadge.style.display =
+                                    "flex";
+
+                            }
+
+                            else {
+
+                                currentBadge.style.display =
+                                    "none";
+                            }
+                        }
+
+
+                        /*
+                        ==================================
+                        SORT ROOM LIST
+                        ==================================
+                        */
+
+                        if (
+                            typeof updateChatListOrder ===
+                            "function"
+                        ) {
+
+                            updateChatListOrder();
+                        }
+                    };
+
+
+                messagesRef.on(
+                    "value",
+                    msgListener
+                );
+
+                globalPrefetchListeners[
+                    messagePath
+                ] = msgListener;
+            };
+
+
+        /*
+        ==========================================
+        LISTEN FOR SUBGROUP CHANGES
+        ==========================================
+        */
+
+        subgroupRef.on(
+            "value",
+            subgroupListener
+        );
+
+        memberCheckListeners[
+            subgroupPath
+        ] = subgroupListener;
+    }
+}
+
+async function logoutUser() {
+    const userId =
+        localStorage.getItem("chatAppUserId") ||
+        currentUserId;
+
+    // Logout করার আগে user-কে offline করা
+    if (userId) {
+        try {
+            await db.ref("users/" + userId).update({
+                online: false,
+                lastSeen: firebase.database.ServerValue.TIMESTAMP
+            });
+        } catch (error) {
+            console.error("Offline update failed:", error);
+        }
+
+        // Login data remove
+        localStorage.removeItem("chatAppUserId");
+        localStorage.removeItem("cached_profile_" + userId);
+    }
+
+    // Current user/room reset
+    currentUserId = "";
+    currentRoom = null;
+
+    // Login inputs reset
+    const userIdInput = document.getElementById("userId");
+    const userPassInput = document.getElementById("userPass");
+    const errorP2 = document.getElementById("error-p2");
+    const errorP3 = document.getElementById("error-p3");
+
+    if (userIdInput) userIdInput.value = "";
+    if (userPassInput) userPassInput.value = "";
+    if (errorP2) errorP2.innerText = "";
+    if (errorP3) errorP3.innerText = "";
+
+    // Main chat hide
+    const chatContainer = document.getElementById("chatContainerMain");
+    if (chatContainer) {
+        chatContainer.style.display = "none";
+    }
+
+    // Settings hide
+    const settings = document.getElementById("settingsPage");
+    if (settings) {
+        settings.style.display = "none";
+    }
+
+    // Welcome page
+    navigateTo("page1");
+}
+
+let selectedMessageKey = null;
+let selectedRoomNumber = null;
+let selectedMessageText = "";
+
+function attachMessageClickListeners(messageElement, msgKey, roomNum, msgText) {
+    messageElement.style.cursor = "pointer";
+    
+    messageElement.addEventListener("click", (e) => {
+        if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO' || e.target.tagName === 'A' || e.target.closest('a')) {
+            return; 
+        }
+        
+        e.stopPropagation(); 
+        openMsgActionPopup(msgKey, roomNum, msgText);
+    });
+}
+
+function openMsgActionPopup(msgKey, roomNum, msgText) {
+    selectedMessageKey = msgKey;
+    selectedRoomNumber = roomNum;
+    selectedMessageText = msgText;
+
+    const modal = document.getElementById("msgActionModal");
+    if (modal) modal.style.display = "flex";
+}
+
+function closeMsgActionPopupDirect() {
+    const modal = document.getElementById("msgActionModal");
+    if (modal) modal.style.display = "none";
+    selectedMessageKey = null;
+    selectedRoomNumber = null;
+    selectedMessageText = "";
+}
+
+function closeMsgActionPopup(event) {
+    const box = document.getElementById("msgActionBox");
+    if (box && !box.contains(event.target)) {
+        closeMsgActionPopupDirect();
+    }
+}
+
+function confirmDeleteMessage() {
+    if (!selectedMessageKey || !selectedRoomNumber) return;
+
+    const userId = localStorage.getItem("chatAppUserId") || currentUserId;
+    const dbRef = db.ref("groups/room_" + selectedRoomNumber + "/messages/" + selectedMessageKey);
+
+    // অতিরিক্ত সিকিউরিটি: শুধুমাত্র নিজের পাঠানো মেসেজ ডিলিট করার সুযোগ দিতে চাইলে ভেরিফাই করতে পারেন
+    dbRef.once("value").then(snapshot => {
+        if (snapshot.exists()) {
+            const msgData = snapshot.val();
+            // আপনি চাইলে এখানে সবার জন্য ডিলিট বা শুধুমাত্র নিজের মেসেজ ডিলিট করার শর্ত দিতে পারেন
+            dbRef.remove().then(() => {
+                closeMsgActionPopupDirect();
+                showCustomToast("Message deleted successfully.");
+            }).catch(() => {
+                showCustomToast("Failed to delete message.");
+                closeMsgActionPopupDirect();
+            });
+        }
+    });
+}
+
+function confirmCopyMessage() {
+    if (!selectedMessageText) return;
+
+    navigator.clipboard.writeText(selectedMessageText).then(() => {
+        showCustomToast("Message copied to clipboard!");
+        closeMsgActionPopupDirect();
+    }).catch(() => {
+        showCustomToast("Failed to copy message.");
+        closeMsgActionPopupDirect();
+    });
+}
+
+
+
+
+function openFullscreen(imageUrl) {
+    if (!imageUrl) return;
+
+    const overlay = document.createElement("div");
+
+    overlay.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.95);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+    `;
+
+    const img = document.createElement("img");
+
+    img.src = imageUrl;
+    img.style.cssText = `
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    `;
+
+    overlay.appendChild(img);
+
+    overlay.addEventListener("click", () => {
+        overlay.remove();
+    });
+
+    document.body.appendChild(overlay);
+}
+
+
+// Reddy navigation and startup. Increment APP_BUILD in each new APK release.
+const REDDY_APP_BUILD = 1;
+let reddyRestoring = false;
+function reddyRecord(route, reset = false) {
+    if (reddyRestoring) return;
+    const state = history.state;
+    if (reset || !state || !state.reddy) {
+        history.replaceState({reddy:true, route, depth:0}, "");
+    } else if (JSON.stringify(state.route) !== JSON.stringify(route)) {
+        history.pushState({reddy:true, route, depth:state.depth+1}, "");
+    }
+}
+const reddyNavigate = navigateTo;
+navigateTo = function(pageId) {
+    reddyNavigate(pageId);
+    reddyRecord({page:pageId}, pageId === "chatContainerMain" || pageId === "page1");
+};
+const reddyOpenChat = openChat;
+openChat = function(room) { reddyOpenChat(room); reddyRecord({page:"chat", room:Number(room)}); };
+const reddySettings = openSettingsPage;
+openSettingsPage = function() { reddySettings(); reddyRecord({page:"settingsPage"}); };
+const reddyChatList = openChatList;
+openChatList = function() { reddyChatList(); reddyRecord({page:"chatContainerMain"}); };
+const reddyCloseChat = closeChat;
+closeChat = function(room) {
+    if (!reddyRestoring && history.state?.reddy && history.state.depth > 0) history.back();
+    else { reddyCloseChat(room); openChatList(); }
+};
+backFromSettings = function() {
+    if (history.state?.reddy && history.state.depth > 0) history.back();
+    else openChatList();
+};
+window.addEventListener("popstate", event => {
+    if (!event.state?.reddy) return;
+    const route = event.state.route;
+    if (!localStorage.getItem("chatAppUserId") && ["chat", "settingsPage", "chatContainerMain"].includes(route.page)) {
+        reddyRestoring = true; navigateTo("page1"); reddyRestoring = false;
+        reddyRecord({page:"page1"}, true); return;
+    }
+    reddyRestoring = true;
+    try {
+        if (currentRoom !== null) reddyCloseChat(currentRoom);
+        if (route.page === "chat") { reddyChatList(); reddyOpenChat(route.room); }
+        else if (route.page === "settingsPage") { reddyChatList(); reddySettings(); }
+        else if (route.page === "chatContainerMain") reddyChatList();
+        else reddyNavigate(route.page);
+    } finally { reddyRestoring = false; }
+});
+const reddyOriginalLoad = window.onload;
+window.onload = async function(event) {
+    const wait = new Promise(resolve => setTimeout(resolve, 4000));
+    // Optional public database configuration: appConfig/reddy/update
+    const check = db.ref("appConfig/reddy/update").once("value")
+        .then(s => s.val()).catch(() => null);
+    if (reddyOriginalLoad) reddyOriginalLoad.call(window, event);
+    await wait;
+    document.getElementById("reddySplash").style.display = "none";
+    const config = await Promise.race([check, new Promise(resolve => setTimeout(()=>resolve(null),2500))]);
+    if (!config || !Number.isInteger(config.build) || config.build <= REDDY_APP_BUILD) return;
+    let url;
+    try { url = new URL(config.downloadUrl); if (url.protocol !== "https:") return; } catch { return; }
+    document.getElementById("reddyUpdateVersion").textContent = "Version: " + String(config.version || config.build);
+    document.getElementById("reddyUpdateNotes").textContent = String(config.notes || "A new update is ready.");
+    document.getElementById("reddyUpdateSize").textContent = String(config.size || "");
+    const modal = document.getElementById("reddyUpdate");
+    modal.style.display = "flex";
+    document.getElementById("reddyLater").onclick = () => modal.style.display = "none";
+    document.getElementById("reddyDownload").onclick = () => { window.location.href = url.href; };
+};
+</script>
+
+
+
+
+
+</body>
+</html>
